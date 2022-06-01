@@ -26,15 +26,18 @@ public class WizardController extends OidcTokenAwareController {
     private ToolConfig toolConfig = null;
 
     @Autowired
-    WizardService courseUnlockerService = null;
+    WizardService wizardService = null;
 
-    @RequestMapping("/launch")
-    public ModelAndView launch(Model model, HttpServletRequest request) {
+    @RequestMapping("/loading")
+    public String loading(Model model) {
         OidcAuthenticationToken token = getTokenWithoutContext();
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
         String courseId = oidcTokenUtils.getCourseId();
 
-        return index(courseId, model, request);
+        model.addAttribute("context", courseId);
+        model.addAttribute("hideFooter", true);
+        model.addAttribute("toolPath", "/app/index/" + courseId);
+        return "loading";
     }
 
     @RequestMapping("/index/{courseId}")
@@ -42,6 +45,7 @@ public class WizardController extends OidcTokenAwareController {
     public ModelAndView index(@PathVariable("courseId") String courseId, Model model, HttpServletRequest request) {
         log.debug("in /index");
         OidcAuthenticationToken token = getValidatedToken(courseId);
+        model.addAttribute("hello", "Hello, " + courseId);
 
         return new ModelAndView("index");
     }

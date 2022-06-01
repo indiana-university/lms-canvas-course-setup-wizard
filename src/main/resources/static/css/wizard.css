@@ -1,0 +1,29 @@
+/* Loading icon and text while saving */
+
+.loading-inline-text {
+    font-style: italic;
+    padding-left: 0.4em;
+}
+
+.loading-inline {
+    opacity: 0.8;
+}
+
+.rvt-modal__controls .loading-inline {
+    padding-right: 1.0em;
+}
+
+/* Intial Loading screen */
+#load {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 25%;
+    height: 25%;
+    white-space: nowrap;
+}
+/* End of loading screen stuff */
+

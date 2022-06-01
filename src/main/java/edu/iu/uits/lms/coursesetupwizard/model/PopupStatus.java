@@ -5,6 +5,9 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Model {
-    private String courseId;
+public class PopupStatus {
+   private String courseId;
+   private String userId;
+   private boolean dismissed;
+
 }

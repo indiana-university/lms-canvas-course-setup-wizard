@@ -1,32 +1,19 @@
 <!DOCTYPE HTML>
 <html lang="en-US"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
 <head>
+    <meta charset="utf-8"/>
     <title>Course Setup Wizard</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" type="text/css" th:href="@{/app/jsrivet/rivet-bundle.min.css}" />
-
-    <style>
-        #load {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            margin: auto;
-            width: 25%;
-            height: 25%;
-            white-space: nowrap;
-        }
-    </style>
 </head>
 <body>
-<div class="rvt-container" role="main">
-    <div id="load" class="rvt-flex rvt-justify-center">
-        <div class="rvt-loader rvt-loader--lg" aria-label="Content loading"></div><span class="rvt-ts-md rvt-m-left-sm">Loading...</span>
+    <div layout:fragment="content">
+        <span th:text="${hello}">hello</span>
     </div>
-</div>
+
+    <th:block layout:fragment="script">
+
+    </th:block>
 </body>
 </html>

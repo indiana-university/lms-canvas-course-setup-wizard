@@ -22,14 +22,15 @@ public class SecurityConfig {
 
     @Configuration
     @Order(SecurityProperties.BASIC_AUTH_ORDER - 4)
-    public static class CourseUnlockerRestSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+    public static class RestSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
             http.requestMatchers().antMatchers("/rest/**")
                     .and()
                     .authorizeRequests()
-                    .antMatchers("/rest/unlockstatus/**").permitAll()
+                    .antMatchers("/rest/popup/**")
+                    .access("hasAuthority('SCOPE_lms:edsdev') or (hasAuthority('SCOPE_lms:rest') and hasAuthority('ROLE_LMS_REST_ADMINS'))")
                     .antMatchers("/rest/**").access("hasAuthority('SCOPE_lms:rest') and hasAuthority('ROLE_LMS_REST_ADMINS')")
                     .and()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -41,7 +42,7 @@ public class SecurityConfig {
 
     @Configuration
     @Order(SecurityProperties.BASIC_AUTH_ORDER - 3)
-    public static class CourseUnlockerWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+    public static class AppSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
         @Autowired
         private LmsDefaultGrantedAuthoritiesMapper lmsDefaultGrantedAuthoritiesMapper;
@@ -72,7 +73,7 @@ public class SecurityConfig {
         @Override
         public void configure(WebSecurity web) throws Exception {
             // ignore everything except paths specified
-            web.ignoring().antMatchers("/actuator/**", "/app/jsrivet/**");
+            web.ignoring().antMatchers("/app/jsrivet/**", "/app/webjars/**", "/actuator/**", "/app/css/**", "/app/js/**", "/favicon.ico");
         }
 
     }
