@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>Course Setup Wizard</title>
+</head>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+  <div th:insert="import/wizardSteps.html :: steps(currentStep=3)"></div>
+
+  <div class="rvt-row rvt-p-top-md">
+    <div class="rvt-cols-8-md rvt-flow rvt-prose">
+      <form id="wizard-form" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+        <fieldset class="rvt-fieldset">
+          <legend class="rvt-legend [ rvt-ts-20 rvt-p-bottom-xs ]">
+            <h2>Adjust dates</h2>
+          </legend>
+          <dl>
+            <dt>Import from</dt>
+            <dd th:text="${selectedCourseLabel}">Course Label</dd>
+          </dl>
+          <p>
+            As part of a course import, you can adjust the due dates associated with course events
+            and assignments to fit within the start and end dates of the upcoming course. If the
+            imported course and the current course are the same duration (e.g., 8 weeks, 16 weeks, etc),
+            each due date will be moved to the same relative day and time in the term.
+          </p>
+          <p>
+            What do you want to do with the event and assignment due dates during the import?
+          </p>
+          <ul class="rvt-list-plain">
+            <li>
+              <div class="rvt-radio">
+                <input type="radio" name="dateOption" id="radio-1-1" value="adjust" aria-describedby="option-message">
+                <label for="radio-1-1">Adjust the dates for the new term</label>
+              </div>
+              <div class="rvt-disclosure rvt-m-bottom-sm rvt-m-left-lg" data-rvt-disclosure="disclosure-adjusting-dates">
+                <button type="button" class="rvt-disclosure__toggle" data-rvt-disclosure-toggle aria-expanded="false">Learn more about adjusting dates</button>
+                <div class="rvt-disclosure__content" data-rvt-disclosure-target hidden>
+                  <div class="rvt-prose rvt-flow">
+                    <p>
+                      When adjusting dates, you will be asked to provide the start and end dates
+                      for the course you are importing and the current course. Canvas will use
+                      this information to distribute events and assignments with due dates as
+                      evenly as possible across the current course and keep them due on the same
+                      day of the week as the original course. You'll also be given the option to
+                      make day substitutions to adjust for changing class schedules, such as
+                      moving all assignments with Monday due dates to Tuesdays.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="rvt-radio">
+                <input type="radio" name="dateOption" id="radio-1-2" value="remove" aria-describedby="option-message">
+                <label for="radio-1-2">Remove all dates</label>
+              </div>
+              <div class="rvt-disclosure rvt-m-bottom-sm rvt-m-left-lg" data-rvt-disclosure="disclosure-removing-dates">
+                <button type="button" class="rvt-disclosure__toggle" data-rvt-disclosure-toggle aria-expanded="false">Learn more about removing dates</button>
+                <div class="rvt-disclosure__content" data-rvt-disclosure-target hidden>
+                  <div class="rvt-prose rvt-flow">
+                    <p>
+                      The following tools will have dates removed during the import process:
+                    <ul class="rvt-list">
+                      <li>Assignments (due, availability, and peer-review dates)</li>
+                      <li>Announcements (delayed post dates)</li>
+                      <li>Quizzes (due, availability, and show correct answers dates)</li>
+                      <li>Calendar events (start and end dates)</li>
+                      <li>Modules (unlock dates)</li>
+                      <li>Files (availability dates)</li>
+                    </ul>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div class="rvt-radio">
+                <input type="radio" name="dateOption" id="radio-1-3" value="no-change" aria-describedby="option-message">
+                <label for="radio-1-3">Leave dates as is; do not make any changes</label>
+              </div>
+            </li>
+          </ul>
+          <div id="select-alert" class="rvt-inline-alert rvt-inline-alert--standalone rvt-inline-alert--danger rvt-display-none">
+              <span class="rvt-inline-alert__icon">
+                  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                      <g fill="currentColor">
+                          <path d="M8,0a8,8,0,1,0,8,8A8,8,0,0,0,8,0ZM8,14a6,6,0,1,1,6-6A6,6,0,0,1,8,14Z" />
+                          <path d="M10.83,5.17a1,1,0,0,0-1.41,0L8,6.59,6.59,5.17A1,1,0,0,0,5.17,6.59L6.59,8,5.17,9.41a1,1,0,1,0,1.41,1.41L8,9.41l1.41,1.41a1,1,0,0,0,1.41-1.41L9.41,8l1.41-1.41A1,1,0,0,0,10.83,5.17Z" />
+                      </g>
+                  </svg>
+              </span>
+            <span class="rvt-inline-alert__message" id="option-message">Select an option before continuing.</span>
+          </div>
+          <input type="hidden" name="currentPage" value="3">
+          <div th:insert="import/wizardSteps.html :: buttons(nextOnclick='return doSubmit();')"></div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+    function doSubmit() {
+        var checkedRadio = document.querySelector('input[name="dateOption"]:checked');
+        if (checkedRadio == null) {
+            var allRadio = document.getElementsByName("dateOption");
+            allRadio.forEach(btn => {
+                btn.setAttribute("aria-invalid", "true");
+            })
+            alertMessage = document.getElementById('select-alert');
+            alertMessage.classList.remove("rvt-display-none");
+            allRadio[0].focus();
+            return false;
+        }
+    }
+    </script>
+</th:block>
+</body>
+</html>

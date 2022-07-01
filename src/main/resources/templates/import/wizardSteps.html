@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<div th:fragment="steps">
+    <nav>
+        <ol class="rvt-steps rvt-p-bottom-md rvt-cols-8-md">
+            <li class="rvt-steps__item" th:each="item,itemStat : ${importSteps}">
+                <th:block th:with="activeLink=${itemStat.index < currentStep},isCurrentIndicator=${currentStep == (itemStat.index+1)} ? 'step'">
+                    <span th:unless="${activeLink}" class="rvt-steps__item-content" th:aria-current="${isCurrentIndicator}">
+                        <span class="rvt-steps__label" th:text="${item.name}">Step name</span>
+                        <span class="rvt-steps__indicator" th:text="${itemStat.index+1}">Step number</span>
+                    </span>
+                    <a th:if="${activeLink}" th:href="${item.link}" class="rvt-steps__item-content" th:aria-current="${isCurrentIndicator}">
+                        <span class="rvt-steps__label" th:text="${item.name}">Step name</span>
+                        <span class="rvt-steps__indicator" th:text="${itemStat.index+1}">Step number</span>
+                    </a>
+                </th:block>
+            </li>
+        </ol>
+    </nav>
+</div>
+
+<div th:fragment="buttons">
+    <div class="rvt-button-group [ rvt-m-top-xl ]">
+        <button class="rvt-button rvt-button--secondary" name="action"
+                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_BACK}">Back</button>
+        <button th:unless="${isSubmit}" class="rvt-button" name="action" th:attr="onclick=${nextOnclick != null} ? |${nextOnclick}|"
+                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_NEXT}">Next</button>
+        <button th:if="${isSubmit}" class="rvt-button" name="action"
+                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_SUBMIT}">Submit</button>
+    </div>
+    <div class="[ rvt-m-top-xl ]">
+        <button class="rvt-button rvt-button--secondary" name="action"
+                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">Restart Wizard</button>
+    </div>
+</div>
+
+</body>
+
+</html>

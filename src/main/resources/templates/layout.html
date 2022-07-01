@@ -8,27 +8,40 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="stylesheet" type="text/css" th:href="@{/app/jsrivet/rivet.min.css}" />
-    <link rel="stylesheet" type="text/css" th:href="@{/app/css/wizard.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/app/jsrivet/rivet-icons.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/app/css/coursesetupwizard.css}"/>
 </head>
-<body>
+<body class="rvt-layout">
+<a class="rvt-header-wrapper__skip-link" href="#main-content">Skip to main content</a>
 
-<div layout:fragment="content" class="rvt-container" role="main">
-    Page content goes here
-    <!--
-        add something like this to the child page to complete the page layout
-
-        <div class="rvt-grid">
-            <div class="rvt-grid__item">
-                <span>Grid item</span>
-            </div>
+<main id="main-content" class="rvt-flex rvt-flex-column rvt-grow-1">
+    <div class="rvt-bg-black-000 rvt-border-bottom rvt-p-top-xl">
+        <div class="rvt-container-lg rvt-prose rvt-flow rvt-p-bottom-xl">
+            <h1 class="rvt-m-top-xs">Course Setup Wizard</h1>
         </div>
+    </div>
 
-        See https://rivet.uits.iu.edu/components/layout/grid/ for options, depending on what's needed.
-    -->
+    <div class="rvt-layout__wrapper [ rvt-p-tb-md ]">
 
-</div>
+        <div layout:fragment="content" class="rvt-container-lg">
+            Page content goes here
+            <!--
+                add something like this to the child page to complete the page layout
 
+                <div class="rvt-grid">
+                    <div class="rvt-grid__item">
+                        <span>Grid item</span>
+                    </div>
+                </div>
+
+                See https://rivet.uits.iu.edu/components/layout/grid/ for options, depending on what's needed.
+            -->
+
+        </div>
+    </div>
+</main>
 
 
 <footer th:unless="${hideFooter}" class="rvt-ts-12 rvt-container rvt-m-top-lg">
@@ -36,8 +49,13 @@
 </footer>
 
 <script type="text/javascript" th:src="@{/app/jsrivet/rivet.min.js}"></script>
+<script defer th:src="@{/app/jsrivet/rivet-icons.js}"></script>
+<script type="module" th:src="@{/app/jsrivet/rivet-icon-element.js}"></script>
 <script type="text/javascript" th:src="@{/app/webjars/jquery/jquery.min.js}"></script>
-<script type="text/javascript" th:src="@{/app/js/wizard.js}"></script>
+<script type="text/javascript" th:src="@{/app/js/coursesetupwizard.js}"></script>
+<script>
+  Rivet.init();
+</script>
 
 <th:block layout:fragment="script">
     <!--

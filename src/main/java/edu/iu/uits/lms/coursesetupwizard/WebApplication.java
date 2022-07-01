@@ -5,6 +5,7 @@ import edu.iu.uits.lms.common.samesite.EnableCookieFilter;
 import edu.iu.uits.lms.common.server.GitRepositoryState;
 import edu.iu.uits.lms.common.server.ServerInfo;
 import edu.iu.uits.lms.common.server.ServerUtils;
+import edu.iu.uits.lms.common.session.EnableCourseSessionService;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.lti.config.EnableGlobalErrorHandler;
 import edu.iu.uits.lms.lti.config.EnableLtiClient;
@@ -25,6 +26,7 @@ import java.util.Date;
 @EnableGlobalErrorHandler
 @EnableCanvasClient
 @EnableCookieFilter(ignoredRequestPatterns = "/rest/**")
+@EnableCourseSessionService(sessionKey = "csw_course_session")
 @EnableConfigurationProperties(GitRepositoryState.class)
 public class WebApplication {
 

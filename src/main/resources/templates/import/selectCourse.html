@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>Course Setup Wizard</title>
+</head>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+  <div th:insert="import/wizardSteps.html :: steps(currentStep=1)"></div>
+
+  <div class="rvt-row rvt-p-top-md">
+    <div class="rvt-cols-8-md rvt-flow rvt-prose">
+      <form id="wizard-form" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+        <fieldset class="rvt-fieldset">
+          <legend class="rvt-legend [ rvt-ts-20 rvt-p-bottom-xs ]">
+            <h2>Select course</h2>
+          </legend>
+          <p>
+            Import content from another course into this course.
+          </p>
+          <!-- The below container div will dynamically be replaced by a react component with a label and select input -->
+          <div id="react_select_container"></div>
+          <div id="select-alert" class="rvt-inline-alert rvt-inline-alert--standalone rvt-inline-alert--danger rvt-display-none">
+              <span class="rvt-inline-alert__icon">
+                  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                      <g fill="currentColor">
+                          <path d="M8,0a8,8,0,1,0,8,8A8,8,0,0,0,8,0ZM8,14a6,6,0,1,1,6-6A6,6,0,0,1,8,14Z" />
+                          <path d="M10.83,5.17a1,1,0,0,0-1.41,0L8,6.59,6.59,5.17A1,1,0,0,0,5.17,6.59L6.59,8,5.17,9.41a1,1,0,1,0,1.41,1.41L8,9.41l1.41,1.41a1,1,0,0,0,1.41-1.41L9.41,8l1.41-1.41A1,1,0,0,0,10.83,5.17Z" />
+                      </g>
+                  </svg>
+              </span>
+            <span class="rvt-inline-alert__message" id="option-message">Select a course before continuing.</span>
+          </div>
+          <input type="hidden" name="currentPage" value="1">
+
+          <div th:insert="import/wizardSteps.html :: buttons(nextOnclick='return doSubmit();')"></div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<th:block layout:fragment="script">
+
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+    const courseId = /*[[${courseId}]]*/
+    const selectedCourseId = /*[[${selectedCourseId}]]*/
+    const customId = /*[[${customId}]]*/
+    const csrfHeaderName = /*[[${_csrf.headerName}]]*/
+    const csrfValue = /*[[${_csrf.token}]]*/
+    /*]]>*/
+
+    function doSubmit() {
+        //Select control
+        var inputControl = document.querySelector('input[id="course-select-input"]');
+        //Hidden input with the actual value
+        var inputValue = document.querySelector('input[name="selectedCourseId"]');
+        if (inputValue.value == "") {
+            inputControl.setAttribute("aria-invalid", "true");
+            alertMessage = document.getElementById('select-alert');
+            alertMessage.classList.remove("rvt-display-none");
+            inputControl.focus();
+            return false;
+        }
+    }
+
+  </script>
+  <script type="text/javascript" th:src="@{/app/jsreact/lms-lti-coursesetupwizard/lms-lti-coursesetupwizard.js}"></script>
+</th:block>
+</body>
+</html>

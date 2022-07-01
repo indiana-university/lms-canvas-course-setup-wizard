@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>Course Setup Wizard</title>
+</head>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+  <div th:insert="import/wizardSteps.html :: steps(currentStep=2)"></div>
+
+  <div class="rvt-row rvt-p-top-md">
+    <div class="rvt-cols-8-md rvt-flow rvt-prose">
+      <form id="wizard-form" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+        <fieldset class="rvt-fieldset">
+          <legend class="rvt-legend [ rvt-ts-20 rvt-p-bottom-xs ]">
+            <h2>Select content</h2>
+          </legend>
+          <dl>
+            <dt>Import from</dt>
+            <dd th:text="${selectedCourseLabel}">Course Label</dd>
+          </dl>
+          <ul class="rvt-list-plain">
+            <li>
+              <div class="rvt-radio">
+                <input type="radio" name="importContentOption" id="radio-1-1" aria-describedby="option-message"
+                       th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).CONTENT_OPTION_ALL}">
+                <label for="radio-1-1">Import the entire course as is (all content and settings)</label>
+              </div>
+            </li>
+            <li>
+              <div class="rvt-radio">
+                <input type="radio" name="importContentOption" id="radio-1-2" aria-describedby="option-message"
+                       th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).CONTENT_OPTION_SELECT}">
+                <label for="radio-1-2">
+                  Select specific content to import (after you submit the wizard, you’ll be prompted to select the tools and items you wish to import)
+                </label>
+              </div>
+            </li>
+          </ul>
+          <div id="select-alert" class="rvt-inline-alert rvt-inline-alert--standalone rvt-inline-alert--danger rvt-display-none">
+              <span class="rvt-inline-alert__icon">
+                  <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                      <g fill="currentColor">
+                          <path d="M8,0a8,8,0,1,0,8,8A8,8,0,0,0,8,0ZM8,14a6,6,0,1,1,6-6A6,6,0,0,1,8,14Z" />
+                          <path d="M10.83,5.17a1,1,0,0,0-1.41,0L8,6.59,6.59,5.17A1,1,0,0,0,5.17,6.59L6.59,8,5.17,9.41a1,1,0,1,0,1.41,1.41L8,9.41l1.41,1.41a1,1,0,0,0,1.41-1.41L9.41,8l1.41-1.41A1,1,0,0,0,10.83,5.17Z" />
+                      </g>
+                  </svg>
+              </span>
+            <span class="rvt-inline-alert__message" id="option-message">Select an option before continuing.</span>
+          </div>
+          <input type="hidden" name="currentPage" value="2">
+          <div th:insert="import/wizardSteps.html :: buttons(nextOnclick='return doSubmit();')"></div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+    function doSubmit() {
+        var checkedRadio = document.querySelector('input[name="importContentOption"]:checked');
+        if (checkedRadio == null) {
+            var allRadio = document.getElementsByName("importContentOption");
+            allRadio.forEach(btn => {
+                btn.setAttribute("aria-invalid", "true");
+            })
+            alertMessage = document.getElementById('select-alert');
+            alertMessage.classList.remove("rvt-display-none");
+            allRadio[0].focus();
+            return false;
+        }
+    }
+    </script>
+</th:block>
+</body>
+</html>

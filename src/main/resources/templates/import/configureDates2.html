@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>Course Setup Wizard</title>
+</head>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+  <div th:insert="import/wizardSteps.html :: steps(currentStep=3)"></div>
+
+  <div class="rvt-row rvt-p-top-md">
+    <div class="rvt-cols-8-md rvt-flow rvt-prose">
+      <form id="wizard-form" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+        <fieldset class="rvt-fieldset">
+          <legend class="rvt-legend [ rvt-ts-20 rvt-p-bottom-xs ]">
+            <h2>Adjust dates</h2>
+          </legend>
+          <dl>
+            <dt>Import from</dt>
+            <dd th:text="${selectedCourseLabel}">Course Label</dd>
+          </dl>
+          <p>
+            Canvas will use the dates you provide to distribute event and due dates across the term for the current course.
+          </p>
+          <p>
+            Recommendations:
+          <ul class="rvt-list">
+            <li><span class="rvt-text-bold">Same term lengths:</span> (e.g. both courses are 16 week, 8 week, etc.), enter the first day of class for both classes and leave the last day of class empty for both. Use the actual start date for both classes, not the term start date.</li>
+            <li><span class="rvt-text-bold">Different term lengths:</span> Enter first and last day dates for both courses, using the actual first and last date of class, not the term start and end dates.</li>
+          </ul>
+          </p>
+          <table class="rvt-table-plain">
+            <caption class="rvt-sr-only">Table of inputs for start and end dates</caption>
+            <thead>
+            <tr>
+              <th></th>
+              <th scope="col" id="first-class">First day of class</th>
+              <th scope="col" id="last-class">Last day of class</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <th scope="row" id="original-course">Original course</th>
+              <td><input type="date" id="original-first" name="classDates.origFirst" class="rvt-text-input"
+                         aria-labelledby="original-course first-class" th:value="${selectedClassDates?.origFirst}"/></td>
+              <td><input type="date" id="original-last" name="classDates.origLast" class="rvt-text-input"
+                         aria-labelledby="original-course last-class" th:value="${selectedClassDates?.origLast}"/></td>
+            </tr>
+            <tr>
+              <th scope="row" id="this-course">This course</th>
+              <td><input type="date" id="this-first" name="classDates.thisFirst" class="rvt-text-input"
+                         aria-labelledby="this-course first-class" th:value="${selectedClassDates?.thisFirst}"/></td>
+              <td><input type="date" id="this-last" name="classDates.thisLast" class="rvt-text-input"
+                         aria-labelledby="this-course last-class" th:value="${selectedClassDates?.thisLast}"/></td>
+            </tr>
+            </tbody>
+          </table>
+          <input type="hidden" name="currentPage" value="4">
+          <div th:insert="import/wizardSteps.html :: buttons"></div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<th:block layout:fragment="script">
+
+</th:block>
+</body>
+</html>

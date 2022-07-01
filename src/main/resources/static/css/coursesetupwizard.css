@@ -1,3 +1,7 @@
+.table-width-override {
+    width: auto !important;
+}
+
 /* Loading icon and text while saving */
 
 .loading-inline-text {

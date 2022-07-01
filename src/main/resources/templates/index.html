@@ -1,19 +1,171 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html lang="en-US"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
-    <meta charset="utf-8"/>
     <title>Course Setup Wizard</title>
 </head>
-<body>
-    <div layout:fragment="content">
-        <span th:text="${hello}">hello</span>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+    <div class="rvt-row rvt-p-top-md">
+        <div class="rvt-cols-8-md rvt-flow rvt-prose">
+            <h2>About the Course Setup Wizard</h2>
+            <p>
+                The course setup wizard can help you with common tasks like importing content from another course,
+                applying a template, or adding the IU Home Page to your course.
+            </p>
+            <p>
+                The Course Setup Wizard can only be run once per course, so choose the option that will save you
+                the most time and effort.
+            </p>
+            <p>
+                If you exit the wizard via the Exit button, you will return to your course home page. This wizard will
+                continue to be available to you until you or another instructor completes the wizard or publishes the
+                course. You can restart the wizard via the wizard pop-up (if you haven’t permanently dismissed it) or by
+                going to course Settings and clicking Course Setup Wizard in the sidebar.
+            </p>
+            <form id="wizard-form" th:action="@{|/app/${courseId}/menu|}" method="post" enctype="multipart/form-data">
+                <fieldset class="rvt-fieldset">
+                    <legend class="rvt-legend [ rvt-ts-20 rvt-p-bottom-xs ]">
+                        <h2>What do you want to do?</h2>
+                    </legend>
+                    <ul class="rvt-list-plain">
+                        <li>
+                            <div class="rvt-radio">
+                                <input type="radio" name="menuChoice" id="radio-1-1" value="import" aria-describedby="option-message">
+                                <label for="radio-1-1">Import content from another Canvas course</label>
+                            </div>
+                            <div class="rvt-disclosure rvt-m-bottom-sm rvt-m-left-lg" data-rvt-disclosure="disclosure-import">
+                                <button type="button" class="rvt-disclosure__toggle" data-rvt-disclosure-toggle aria-expanded="false">Learn more about course imports</button>
+                                <div class="rvt-disclosure__content" data-rvt-disclosure-target hidden>
+                                    <div class="rvt-prose rvt-flow">
+                                        <h3>Import content from another Canvas course</h3>
+                                        <p>
+                                            The import option is great if you want to re-use instructional materials stored in another
+                                            course in Canvas. You can import content from:
+                                        <ul class="rvt-list">
+                                            <li>Any of your own courses, including previous offerings or a master version of the current course</li>
+                                            <li>A previous offering or master version of the current course developed by someone else (provided you’ve been given access to your colleague’s course).</li>
+                                        </ul>
+                                        </p>
+                                        <p>
+                                            After you select the course you want to import, you’ll be asked whether you want to bring in
+                                            all content and settings or select specific items to import. Additionally, you’ll be given
+                                            an opportunity to control how items with due dates are treated.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <!--                                <li>-->
+                        <!--                                    <div class="rvt-radio">-->
+                        <!--                                        <input type="radio" name="menuChoice" id="radio-1-2" value="theme" aria-describedby="option-message">-->
+                        <!--                                        <label for="radio-1-2">Select the theme (page design), banner image, and colors for this course</label>-->
+                        <!--                                    </div>-->
+                        <!--                                </li>-->
+                        <li>
+                            <div class="rvt-radio">
+                                <input type="radio" name="menuChoice" id="radio-1-3" value="template" aria-describedby="option-message">
+                                <label for="radio-1-3">Apply a template to this course</label>
+                            </div>
+                            <div class="rvt-disclosure rvt-m-bottom-sm rvt-m-left-lg" data-rvt-disclosure="disclosure-template">
+                                <button type="button" class="rvt-disclosure__toggle" data-rvt-disclosure-toggle aria-expanded="false">Learn more about course templates</button>
+                                <div class="rvt-disclosure__content" data-rvt-disclosure-target hidden>
+                                    <div class="rvt-prose rvt-flow">
+                                        <h3>Apply a template to this course</h3>
+                                        <p>
+                                            This option is if you want to create course content based on professionally-designed template elements.
+                                        </p>
+                                        <p>
+                                            <span class="rvt-text-bold"> Note:</span> This option is most useful for creating new course content.
+                                            If you want to apply a template to existing course materials, contact your
+                                            <a href="https://kb.iu.edu/d/aitz" target="_blank">campus teaching and learning center <rvt-icon name="link-external"></rvt-icon></a> for assistance.
+                                        </p>
+                                        <p>
+                                            A template is a collection of content, settings, and design and/or branding elements that can
+                                            be imported into a Canvas course. Created using pedagogical best practices, templates often
+                                            include a home page and sample syllabus, as well as sample assignments, discussion forums,
+                                            pages, and modules that can be duplicated and customized as needed. Text prompts may be provided
+                                            to guide you through the process of creating your course content.
+                                        </p>
+                                        <p>
+                                            Should you proceed with this wizard option, you’ll be presented with the list of templates that
+                                            are available to you. The IU Course template, developed by UITS eLearning Design and Services, is
+                                            available to all instructors. If your campus, school, or department has published templates, they
+                                            will be included in the list as well. Once you’ve made a selection and completed the wizard, the
+                                            selected template will be imported into your course. Look for instructions on what to do next on the
+                                            course home page or an unpublished module or page for instructors.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="rvt-radio">
+                                <input type="radio" name="menuChoice" id="radio-1-4" value="homepage" aria-describedby="option-message">
+                                <label for="radio-1-4">Add a professionally-designed, customizable IU Home Page to this course</label>
+                            </div>
+                            <div class="rvt-disclosure rvt-m-bottom-sm rvt-m-left-lg" data-rvt-disclosure="disclosure-homepage">
+                                <button type="button" class="rvt-disclosure__toggle" data-rvt-disclosure-toggle aria-expanded="false">Learn more about the IU Home Page</button>
+                                <div class="rvt-disclosure__content" data-rvt-disclosure-target hidden>
+                                    <div class="rvt-prose rvt-flow">
+                                        <h3>Import content from another Canvas course</h3>
+                                        <p>This option is if you want to use the IU Home Page as the foundation for your course home page.</p>
+                                        <p>
+                                            The home page is the first page your students will see when they access your course. It sets
+                                            the tone for your course and ideally should be welcoming, engaging, and informative.
+                                            Developed by UITS eLearning Design and Services, the IU Home Page is an attractive and
+                                            accessible Canvas page with content that you can customize or replace with your own text.
+                                            Boldface text in brackets in the home page are instructions for you, not your students.
+                                            Be sure to delete all instructions (as well as the “Under Construction” banner) before
+                                            publishing your course.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <div id="select-alert" class="rvt-inline-alert rvt-inline-alert--standalone rvt-inline-alert--danger rvt-display-none">
+                        <span class="rvt-inline-alert__icon">
+                            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                                <g fill="currentColor">
+                                    <path d="M8,0a8,8,0,1,0,8,8A8,8,0,0,0,8,0ZM8,14a6,6,0,1,1,6-6A6,6,0,0,1,8,14Z" />
+                                    <path d="M10.83,5.17a1,1,0,0,0-1.41,0L8,6.59,6.59,5.17A1,1,0,0,0,5.17,6.59L6.59,8,5.17,9.41a1,1,0,1,0,1.41,1.41L8,9.41l1.41,1.41a1,1,0,0,0,1.41-1.41L9.41,8l1.41-1.41A1,1,0,0,0,10.83,5.17Z" />
+                                </g>
+                            </svg>
+                        </span>
+                        <span class="rvt-inline-alert__message" id="option-message">Select an option before continuing.</span>
+                    </div>
+                </fieldset>
+                <div class="rvt-button-group [ rvt-m-top-md ]">
+                    <button class="rvt-button rvt-button--secondary">Exit</button>
+                    <button class="rvt-button" onclick="return doSubmit();">Continue</button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <th:block layout:fragment="script">
+</div>
 
-    </th:block>
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+    function doSubmit() {
+        var checkedRadio = document.querySelector('input[name="menuChoice"]:checked');
+        if (checkedRadio == null) {
+            var allRadio = document.getElementsByName("menuChoice");
+            allRadio.forEach(btn => {
+                btn.setAttribute("aria-invalid", "true");
+            })
+            alertMessage = document.getElementById('select-alert');
+            alertMessage.classList.remove("rvt-display-none");
+            allRadio[0].focus();
+            return false;
+        }
+    }
+    </script>
+</th:block>
 </body>
 </html>

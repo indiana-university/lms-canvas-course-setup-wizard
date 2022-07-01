@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>Course Setup Wizard</title>
+</head>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+  <div th:insert="import/wizardSteps.html :: steps(currentStep=4)"></div>
+
+  <div class="rvt-row rvt-p-top-md">
+    <div class="rvt-cols-8-md rvt-flow rvt-prose">
+      <form id="wizard-form" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+        <h2>Review and submit</h2>
+        <dl>
+          <dt>Import from</dt>
+          <dd th:text="${selectedCourseLabel}">Course Label</dd>
+        </dl>
+        <dl>
+          <dt>Content selection</dt>
+          <th:block th:switch="${menuOption}">
+            <th:block th:case="*">
+          <dd>Import the entire course, all content, and settings</dd>
+          <dt>First day of class</dt>
+          <dd>Original: 2022-01-15</dd>
+          <dd>New: 2022-08-22</dd>
+          <dt>Last day of class</dt>
+          <dd>Original: 2022-05-22</dd>
+          <dd>New: 2022-12-19</dd>
+          <dt>Day of the week adjustments</dt>
+          <dd>Monday changing to Tuesday</dd>
+          <dd>Wednesday changing to Thursday</dd>
+          <!--                            <dd>No adjustments</dd>-->
+            </th:block>
+          </th:block>
+        </dl>
+        <p>
+          After you <span class="rvt-text-bold">Submit</span> this form, you will be redirected from this
+          wizard to the Import Content page in your course. A progress bar will appear while the import is
+          being processed. Once the import is complete, you can begin to update the imported content as needed.
+        </p>
+        <p>
+          <span class="rvt-text-bold">Note:</span> The home page from the imported course will become the
+          new home page in the current course. No home page adjustments should be needed.
+        </p>
+        <input type="hidden" name="currentPage" value="7">
+        <div th:insert="import/wizardSteps.html :: buttons(isSubmit=true)"></div>
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<th:block layout:fragment="script">
+
+  <script th:inline="javascript">
+  /*<![CDATA[*/
+    const courseId = /*[[${courseId}]]*/
+    const selectedCourseId = /*[[${selectedCourseId}]]*/
+    const customId = /*[[${customId}]]*/
+    const csrfHeaderName = /*[[${_csrf.headerName}]]*/
+    const csrfValue = /*[[${_csrf.token}]]*/
+    /*]]>*/
+  </script>
+  <script type="text/javascript" th:src="@{/app/jsreact/lms-lti-coursesetupwizard/lms-lti-coursesetupwizard.js}"></script>
+</th:block>
+</body>
+</html>

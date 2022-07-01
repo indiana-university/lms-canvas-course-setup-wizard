@@ -1,5 +1,6 @@
 package edu.iu.uits.lms.coursesetupwizard.services;
 
+import edu.iu.uits.lms.coursesetupwizard.amqp.WizardImportMessageSender;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
 import edu.iu.uits.lms.lti.LTIConstants;
@@ -34,6 +35,9 @@ public class AppLaunchSecurityTest {
    @MockBean
    private WizardService wizardService;
 
+   @MockBean
+   private WizardImportMessageSender wizardImportMessageSender;
+
    @BeforeEach
    public void setup() {
 //      Model status = new Model(true, true, "1234");
@@ -43,7 +47,7 @@ public class AppLaunchSecurityTest {
    @Test
    public void appNoAuthnLaunch() throws Exception {
       //This is a secured endpoint and should not allow access without authn
-      mvc.perform(get("/app/index/"  + COURSE_ID_TST)
+      mvc.perform(get("/app/"  + COURSE_ID_TST + "/index")
             .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isForbidden());
@@ -56,7 +60,7 @@ public class AppLaunchSecurityTest {
 
       SecurityContextHolder.getContext().setAuthentication(token);
 
-      mvc.perform(get("/app/index/" + COURSE_ID_TST)
+      mvc.perform(get("/app/"  + COURSE_ID_TST + "/index")
                       .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
                       .contentType(MediaType.APPLICATION_JSON))
               .andExpect(status().isInternalServerError())
@@ -72,7 +76,7 @@ public class AppLaunchSecurityTest {
       SecurityContextHolder.getContext().setAuthentication(token);
 
       //This is a secured endpoint and should not allow access without authn
-      mvc.perform(get("/app/index/" + COURSE_ID_TST)
+      mvc.perform(get("/app/"  + COURSE_ID_TST + "/index")
               .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
               .contentType(MediaType.APPLICATION_JSON))
               .andExpect(status().isOk());
@@ -86,7 +90,7 @@ public class AppLaunchSecurityTest {
       SecurityContextHolder.getContext().setAuthentication(token);
 
       //This is a secured endpoint and should not allow access without instructor authn
-      mvc.perform(get("/app/index/" + COURSE_ID_TST)
+      mvc.perform(get("/app/"  + COURSE_ID_TST + "/index")
               .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
               .contentType(MediaType.APPLICATION_JSON))
               .andExpect(status().isForbidden());
