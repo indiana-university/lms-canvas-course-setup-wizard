@@ -6,6 +6,7 @@ import edu.iu.uits.lms.lti.service.OidcTokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
@@ -17,13 +18,13 @@ import java.util.List;
 @Slf4j
 public class BackendToolController extends WizardController {
 
-   @GetMapping("/courses")
+   @GetMapping("/{courseId}/courses")
    @Secured({LTIConstants.INSTRUCTOR_AUTHORITY})
-   public List<SelectableCourse> getCourses() {
-      log.debug("in /tool/courses");
-      OidcAuthenticationToken token = getTokenWithoutContext();
+   public List<SelectableCourse> getCourses(@PathVariable("courseId") String courseId) {
+      log.debug("in /tool/{}/courses", courseId);
+      OidcAuthenticationToken token = getValidatedToken(courseId);
       OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
 
-      return wizardService.getSelectableCourses(oidcTokenUtils.getUserLoginId());
+      return wizardService.getSelectableCourses(oidcTokenUtils.getUserLoginId(), courseId);
    }
 }

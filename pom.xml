@@ -152,10 +152,6 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-amqp</artifactId>
-        </dependency>
-        <dependency>
             <groupId>edu.iu.uits.lms</groupId>
             <artifactId>lms-canvas-lti-framework</artifactId>
             <version>${lms-canvas-lti-framework.version}</version>

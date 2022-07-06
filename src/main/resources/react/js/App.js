@@ -54,7 +54,7 @@ class App extends React.Component {
 }
 
 function getCourses() {
-    return axios.get(`/tool/courses`);
+    return axios.get(`/tool/${courseId}/courses`);
 }
 
 export default App

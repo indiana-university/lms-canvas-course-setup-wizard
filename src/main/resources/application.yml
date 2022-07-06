@@ -33,24 +33,9 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: ${oauth.tokenprovider.url}/.well-known/jwks.json
-  rabbitmq:
-    addresses: ${lms.rabbitmq.address.${app.env}}
-    username: ${lms.rabbitmq.username.${app.env}}
-    password: ${lms.rabbitmq.password.${app.env}}
-    virtualHost: ${lms.rabbitmq.virtualHost.${app.env}}
-    listener.simple:
-      acknowledge-mode: manual
-      missing-queues-fatal: false
-      retry:
-        enabled: true
-        initial-interval: 3s
-        max-attempts: 3
-        max-interval: 10s
-        multiplier: 2
 course-setup-wizard:
   version: @app.version@
   env: ${app.env}
-  wizardImportQueueName: csw_import_${lms.rabbitmq.queue_env_suffix}
 
 server:
   error:

@@ -2,6 +2,7 @@ package edu.iu.uits.lms.coursesetupwizard.controller;
 
 import edu.iu.uits.lms.canvas.services.CanvasService;
 import edu.iu.uits.lms.common.session.CourseSessionService;
+import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.coursesetupwizard.model.ImportModel;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
@@ -23,9 +24,6 @@ import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenti
 import javax.servlet.http.HttpSession;
 
 import static edu.iu.uits.lms.coursesetupwizard.Constants.KEY_IMPORT_MODEL;
-import static edu.iu.uits.lms.coursesetupwizard.Constants.MENU_HOMEPAGE;
-import static edu.iu.uits.lms.coursesetupwizard.Constants.MENU_IMPORT;
-import static edu.iu.uits.lms.coursesetupwizard.Constants.MENU_TEMPLATE;
 
 @Controller
 @RequestMapping("/app")
@@ -63,7 +61,10 @@ public class WizardController extends OidcTokenAwareController {
         OidcAuthenticationToken token = getValidatedToken(courseId);
         model.addAttribute("courseId", courseId);
         courseSessionService.removeAttributeFromSession(httpSession, courseId, KEY_IMPORT_MODEL);
-        return new ModelAndView("index");
+
+        // Go to the regular index page if wizard hasn't been run for this course yet, otherwise, go to the page with the warning message on it
+        String viewName = wizardService.alreadyCompletedForCourse(courseId) ? "alreadyCompleted" : "index";
+        return new ModelAndView(viewName);
     }
 
     @PostMapping("/{courseId}/menu")
@@ -78,17 +79,26 @@ public class WizardController extends OidcTokenAwareController {
         importModel.setCourseId(courseId);
         courseSessionService.addAttributeToSession(httpSession, courseId, KEY_IMPORT_MODEL, importModel);
 
-        switch (menuChoice) {
-            case MENU_IMPORT:
+        Constants.MAIN_OPTION mainOption = Constants.MAIN_OPTION.valueOf(menuChoice);
+        switch (mainOption) {
+            case IMPORT:
                 return new ModelAndView("redirect:/app/import/" + courseId + "/selectCourse");
-            case MENU_TEMPLATE:
+            case TEMPLATE:
                 return new ModelAndView("index");
-            case MENU_HOMEPAGE:
+            case HOMEPAGE:
                 return new ModelAndView("index");
             default:
                 return new ModelAndView("index");
         }
 
+    }
+
+    @PostMapping("/{courseId}/exit")
+    @Secured({LTIConstants.INSTRUCTOR_AUTHORITY})
+    public ModelAndView exit(@PathVariable("courseId") String courseId, Model model) {
+        model.addAttribute("redirectUrl", getCanvasCourseToolUrl(courseId));
+        // redirect to the Canvas course home page
+        return new ModelAndView(redirectToCanvas());
     }
 
     @RequestMapping(value = "/redirectToCanvas")
@@ -98,6 +108,10 @@ public class WizardController extends OidcTokenAwareController {
 
     protected String getCanvasContentMigrationsToolUrl(String courseId) {
         return canvasService.getBaseUrl() + "/courses/" + courseId + "/content_migrations";
+    }
+
+    protected String getCanvasCourseToolUrl(String courseId) {
+        return canvasService.getBaseUrl() + "/courses/" + courseId;
     }
 
 }

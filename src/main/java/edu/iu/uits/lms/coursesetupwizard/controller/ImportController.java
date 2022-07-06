@@ -1,7 +1,6 @@
 package edu.iu.uits.lms.coursesetupwizard.controller;
 
-import edu.iu.uits.lms.coursesetupwizard.amqp.WizardImportMessage;
-import edu.iu.uits.lms.coursesetupwizard.amqp.WizardImportMessageSender;
+import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.model.ImportModel;
 import edu.iu.uits.lms.coursesetupwizard.model.SelectableCourse;
 import edu.iu.uits.lms.lti.LTIConstants;
@@ -9,7 +8,7 @@ import edu.iu.uits.lms.lti.service.OidcTokenUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -37,11 +36,6 @@ import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_BACK;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_HOME;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_NEXT;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_SUBMIT;
-import static edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION_ALL;
-import static edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION_SELECT;
-import static edu.iu.uits.lms.coursesetupwizard.Constants.DATE_OPTION_ADJUST;
-import static edu.iu.uits.lms.coursesetupwizard.Constants.DATE_OPTION_NOCHANGE;
-import static edu.iu.uits.lms.coursesetupwizard.Constants.DATE_OPTION_REMOVE;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.KEY_IMPORT_MODEL;
 
 @Controller
@@ -52,9 +46,6 @@ public class ImportController extends WizardController {
    private static final String[] PAGES = {"/app/{0}/index", "/app/import/{0}/selectCourse",
          "/app/import/{0}/selectContent", "/app/import/{0}/adjustDates", "/app/import/{0}/classDates",
          "/app/import/{0}/dayMapping", "/app/import/{0}/review"};
-
-   @Autowired
-   private WizardImportMessageSender wizardImportMessageSender;
 
    /**
     * Gets called before EVERY controller method
@@ -189,22 +180,28 @@ public class ImportController extends WizardController {
 
          MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
          //Content selection
-         if (CONTENT_OPTION_ALL.equalsIgnoreCase(importModel.getImportContentOption())) {
+         Constants.CONTENT_OPTION contentOption = Constants.CONTENT_OPTION.valueOf(importModel.getImportContentOption());
+         if (Constants.CONTENT_OPTION.ALL.equals(contentOption)) {
             multiValueMap.add("Content selection", "Import the entire course, all content, and settings");
-         } else if (CONTENT_OPTION_SELECT.equalsIgnoreCase(importModel.getImportContentOption())) {
+         } else if(Constants.CONTENT_OPTION.SELECT.equals(contentOption)) {
             multiValueMap.add("Content selection", "Select specific content");
          }
 
-         if (DATE_OPTION_REMOVE.equalsIgnoreCase(importModel.getDateOption())) {
-            multiValueMap.add("Date adjustments", "Remove all dates");
-         } else if (DATE_OPTION_NOCHANGE.equalsIgnoreCase(importModel.getDateOption())) {
-            multiValueMap.add("Date adjustments", "Leave dates as is; do not make any changes");
-         } else {
-            //first/last day of class
-            multiValueMap.addAll(importModel.getClassDates().getReviewableValues());
+         Constants.DATE_OPTION dateOption = Constants.DATE_OPTION.valueOf(importModel.getDateOption());
+         switch (dateOption) {
+            case REMOVE:
+               multiValueMap.add("Date adjustments", "Remove all dates");
+               break;
+            case NOCHANGE:
+               multiValueMap.add("Date adjustments", "Leave dates as is; do not make any changes");
+               break;
+            default:
+               //first/last day of class
+               multiValueMap.addAll(importModel.getClassDates().getReviewableValues());
 
-            //day of week adjustments
-            multiValueMap.addAll(importModel.getDayChanges().getReviewableValues());
+               //day of week adjustments
+               multiValueMap.addAll(importModel.getDayChanges().getReviewableValues());
+               break;
          }
          model.addAttribute("reviewValues", multiValueMap);
       }
@@ -224,6 +221,9 @@ public class ImportController extends WizardController {
 
       int pageIndex = 0;
 
+      Constants.DATE_OPTION dateOption = EnumUtils.getEnum(Constants.DATE_OPTION.class, importModel.getDateOption());
+      Constants.DATE_OPTION sessionDateOption = EnumUtils.getEnum(Constants.DATE_OPTION.class, sessionImportModel.getDateOption());
+
       switch (action) {
          case ACTION_HOME:
             //Reset stuff
@@ -233,32 +233,33 @@ public class ImportController extends WizardController {
             pageIndex = currentPage - 1;
             //On the review page, go back to the first date page if we are remove or no change
             if (currentPage == 6 && sessionImportModel.getDateOption() != null &&
-                  (DATE_OPTION_REMOVE.equalsIgnoreCase(sessionImportModel.getDateOption()) ||
-                        DATE_OPTION_NOCHANGE.equalsIgnoreCase(sessionImportModel.getDateOption()))) {
+                  (Constants.DATE_OPTION.REMOVE.equals(sessionDateOption) ||
+                        Constants.DATE_OPTION.NOCHANGE.equals(sessionDateOption))) {
                pageIndex = currentPage - 3;
             }
             break;
          case ACTION_NEXT:
             pageIndex = currentPage + 1;
-            if (importModel.getDateOption() != null) {
-               switch (importModel.getDateOption()) {
-                  case DATE_OPTION_ADJUST:
+            if (dateOption != null) {
+               switch (dateOption) {
+                  case ADJUST:
                      pageIndex = currentPage + 1;
                      break;
-                  case DATE_OPTION_REMOVE:
+                  case REMOVE:
+                  case NOCHANGE:
                      pageIndex = PAGES.length - 1;
-                     break;
-                  case DATE_OPTION_NOCHANGE:
-                     pageIndex = PAGES.length - 1;
+                     //Clear out the values if we don't need them (in case we already set them, then went back and changed the option)
+                     sessionImportModel.setClassDates(null);
+                     sessionImportModel.setDayChanges(null);
                      break;
                }
-               sessionImportModel.setDateOption(importModel.getDateOption());
+               sessionImportModel.setDateOption(dateOption.name());
             }
 
             //Course selection page
             if (importModel.getSelectedCourseId() != null) {
                sessionImportModel.setSelectedCourseId(importModel.getSelectedCourseId());
-               sessionImportModel.setSelectedCourseLabel(lookupCourseLabel(importModel.getSelectedCourseId(), oidcTokenUtils.getUserLoginId()));
+               sessionImportModel.setSelectedCourseLabel(lookupCourseLabel(courseId, importModel.getSelectedCourseId(), oidcTokenUtils.getUserLoginId()));
             }
             //Content selection page
             if (importModel.getImportContentOption() != null) {
@@ -272,8 +273,7 @@ public class ImportController extends WizardController {
             }
             break;
          case ACTION_SUBMIT:
-            WizardImportMessage wim = new WizardImportMessage(sessionImportModel);
-            wizardImportMessageSender.send(wim);
+            wizardService.doCourseImport(sessionImportModel, oidcTokenUtils.getUserLoginId());
             model.addAttribute("redirectUrl", getCanvasContentMigrationsToolUrl(courseId));
             // redirect to the Canvas tool
             return new ModelAndView(redirectToCanvas());
@@ -282,8 +282,8 @@ public class ImportController extends WizardController {
       return new ModelAndView("redirect:" + url);
    }
 
-   private String lookupCourseLabel(String selectedCourseId, String userLoginId) {
-      List<SelectableCourse> selectableCourses = wizardService.getSelectableCourses(userLoginId);
+   private String lookupCourseLabel(String currentCourseId, String selectedCourseId, String userLoginId) {
+      List<SelectableCourse> selectableCourses = wizardService.getSelectableCourses(userLoginId, currentCourseId);
 
       Map<String, String> courseMap = selectableCourses.stream()
             .collect(Collectors.toMap(SelectableCourse::getValue, SelectableCourse::getLabel, (a, b) -> b));

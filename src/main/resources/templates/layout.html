@@ -41,6 +41,7 @@
 
         </div>
     </div>
+    <div th:insert="fragments.html :: exitModal"></div>
 </main>
 
 
@@ -55,6 +56,11 @@
 <script type="text/javascript" th:src="@{/app/js/coursesetupwizard.js}"></script>
 <script>
   Rivet.init();
+
+  function doExit() {
+      return false;
+  }
+
 </script>
 
 <th:block layout:fragment="script">

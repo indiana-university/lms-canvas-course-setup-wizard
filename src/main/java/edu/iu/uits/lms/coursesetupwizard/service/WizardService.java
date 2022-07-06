@@ -6,24 +6,27 @@ import edu.iu.uits.lms.canvas.model.ContentMigrationCreateWrapper;
 import edu.iu.uits.lms.canvas.model.Course;
 import edu.iu.uits.lms.canvas.services.ContentMigrationService;
 import edu.iu.uits.lms.canvas.services.CourseService;
+import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.model.ImportModel;
 import edu.iu.uits.lms.coursesetupwizard.model.PopupStatus;
 import edu.iu.uits.lms.coursesetupwizard.model.SelectableCourse;
+import edu.iu.uits.lms.coursesetupwizard.model.WizardCourseStatus;
+import edu.iu.uits.lms.coursesetupwizard.model.WizardUserCourse;
+import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION_SELECT;
-import static edu.iu.uits.lms.coursesetupwizard.Constants.DATE_OPTION_ADJUST;
-import static edu.iu.uits.lms.coursesetupwizard.Constants.DATE_OPTION_REMOVE;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.INSTRUCTOR_COURSES_CACHE_NAME;
 
 @Service
@@ -36,28 +39,45 @@ public class WizardService {
    @Autowired
    private ContentMigrationService contentMigrationService;
 
+   @Autowired
+   private WizardUserCourseRepository wizardUserCourseRepository;
+
+   @Autowired
+   private WizardCourseStatusRepository wizardCourseStatusRepository;
+
    public PopupStatus getPopupDismissedStatus(String courseId, String userId) {
-      //TODO Add correct implementation (LMSA-8259)
-      throw new NotImplementedException();
+      List<WizardUserCourse> records = wizardUserCourseRepository.findByUsernameAndCourseIdOrGlobal(userId, courseId);
+      boolean alreadyCompleted = alreadyCompletedForCourse(courseId);
+      return new PopupStatus(courseId, userId, (!CollectionUtils.isEmpty(records) && !alreadyCompleted));
    }
 
    public PopupStatus dismissPopup(String courseId, String userId, boolean global) {
-      //TODO Add correct implementation (LMSA-8259)
-      throw new NotImplementedException();
+      String coureIdToCheck = global ? WizardUserCourse.GLOBAL : courseId;
+      WizardUserCourse record = wizardUserCourseRepository.findByUsernameAndCourseId(userId, coureIdToCheck);
+
+      if (record == null) {
+         record = WizardUserCourse.builder().username(userId).courseId(coureIdToCheck).build();
+      }
+      wizardUserCourseRepository.save(record);
+
+      return new PopupStatus(courseId, userId, true);
    }
 
    @Cacheable(value = INSTRUCTOR_COURSES_CACHE_NAME, cacheManager = "CourseSetupWizardCacheManager")
-   public List<SelectableCourse> getSelectableCourses(String networkId) {
+   public List<SelectableCourse> getSelectableCourses(String networkId, String currentCourseId) {
       List<Course> courses = courseService.getCoursesTaughtBy(networkId, true, false, true);
       courses.sort(Comparator.comparing((Course c) -> c.getTerm().getStartAt(), Comparator.nullsFirst(Comparator.reverseOrder()))
             .thenComparing(Course::getSisCourseId, Comparator.nullsLast(Comparator.naturalOrder()))
             .thenComparing(Course::getName));
 
-      return courses.stream().map(SelectableCourse::new)
+      //Filter out current course
+      return courses.stream()
+            .filter(c -> !currentCourseId.equals(c.getId()))
+            .map(SelectableCourse::new)
             .collect(Collectors.toList());
    }
 
-   public void doCourseImport(ImportModel importModel) {
+   public void doCourseImport(ImportModel importModel, String userLoginId) {
       String courseId = importModel.getCourseId();
       String sourceCourseId = importModel.getSelectedCourseId();
 
@@ -72,17 +92,17 @@ public class WizardService {
       settings.setSourceCourseId(sourceCourseId);
 
       //selective importing
-      wrapper.setSelectiveImport(CONTENT_OPTION_SELECT.equalsIgnoreCase(importModel.getImportContentOption()));
+      wrapper.setSelectiveImport(Constants.CONTENT_OPTION.SELECT.name().equalsIgnoreCase(importModel.getImportContentOption()));
 
-      if (DATE_OPTION_ADJUST.equalsIgnoreCase(importModel.getDateOption()) ||
-            DATE_OPTION_REMOVE.equalsIgnoreCase(importModel.getDateOption())) {
+      if (Constants.DATE_OPTION.ADJUST.name().equalsIgnoreCase(importModel.getDateOption()) ||
+            Constants.DATE_OPTION.REMOVE.name().equalsIgnoreCase(importModel.getDateOption())) {
          ContentMigrationCreateWrapper.DateShiftOptions dateShifts = new ContentMigrationCreateWrapper.DateShiftOptions();
          wrapper.setDateShiftOptions(dateShifts);
 
          //remove dates or not
-         dateShifts.setRemoveDates(DATE_OPTION_REMOVE.equalsIgnoreCase(importModel.getDateOption()));
+         dateShifts.setRemoveDates(Constants.DATE_OPTION.REMOVE.name().equalsIgnoreCase(importModel.getDateOption()));
          //shift dates or not
-         dateShifts.setShiftDates(DATE_OPTION_ADJUST.equalsIgnoreCase(importModel.getDateOption()));
+         dateShifts.setShiftDates(Constants.DATE_OPTION.ADJUST.name().equalsIgnoreCase(importModel.getDateOption()));
 
          //date shifting
          ImportModel.ClassDates classDates = importModel.getClassDates();
@@ -105,6 +125,25 @@ public class WizardService {
 
       ContentMigration cm = contentMigrationService.initiateContentMigration(courseId, null, wrapper);
       log.info("{}", cm);
+
+      Constants.MAIN_OPTION mainOption = Constants.MAIN_OPTION.valueOf(importModel.getMenuChoice());
+      Constants.CONTENT_OPTION contentOption = EnumUtils.getEnum(Constants.CONTENT_OPTION.class, importModel.getImportContentOption());
+      Constants.DATE_OPTION dateOption = EnumUtils.getEnum(Constants.DATE_OPTION.class, importModel.getDateOption());
+
+      WizardCourseStatus wizardCourseStatus = new WizardCourseStatus();
+      wizardCourseStatus.setCourseId(courseId);
+      wizardCourseStatus.setCompletedBy(userLoginId);
+      wizardCourseStatus.setContentOption(contentOption);
+      wizardCourseStatus.setDateAdjustmentOption(dateOption);
+      wizardCourseStatus.setMainOption(mainOption);
+      wizardCourseStatus.setContentMigrationId(cm.getId());
+      wizardCourseStatusRepository.save(wizardCourseStatus);
+
+   }
+
+   public boolean alreadyCompletedForCourse(String courseId) {
+      WizardCourseStatus wcs = wizardCourseStatusRepository.findByCourseId(courseId);
+      return wcs != null;
    }
 
 }

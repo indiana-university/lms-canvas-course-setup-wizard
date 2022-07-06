@@ -1,7 +1,8 @@
 package edu.iu.uits.lms.coursesetupwizard.services;
 
-import edu.iu.uits.lms.coursesetupwizard.amqp.WizardImportMessageSender;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
+import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.service.TestUtils;
@@ -36,7 +37,10 @@ public class AppLaunchSecurityTest {
    private WizardService wizardService;
 
    @MockBean
-   private WizardImportMessageSender wizardImportMessageSender;
+   private WizardCourseStatusRepository wizardCourseStatusRepository;
+
+   @MockBean
+   private WizardUserCourseRepository wizardUserCourseRepository;
 
    @BeforeEach
    public void setup() {

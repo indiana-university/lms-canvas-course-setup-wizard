@@ -1,7 +1,8 @@
 package edu.iu.uits.lms.coursesetupwizard.services;
 
-import edu.iu.uits.lms.coursesetupwizard.amqp.WizardImportMessageSender;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
+import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
 import edu.iu.uits.lms.lti.service.TestUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,10 @@ public class RestLaunchSecurityTest {
    private WizardService wizardService;
 
    @MockBean
-   private WizardImportMessageSender wizardImportMessageSender;
+   private WizardCourseStatusRepository wizardCourseStatusRepository;
+
+   @MockBean
+   private WizardUserCourseRepository wizardUserCourseRepository;
 
    @Test
    public void restNoAuthnLaunch() throws Exception {

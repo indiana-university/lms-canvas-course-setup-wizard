@@ -13,5 +13,4 @@ public class ToolConfig {
 
    private String version;
    private String env;
-   private String wizardImportQueueName;
 }

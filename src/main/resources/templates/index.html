@@ -18,14 +18,89 @@
                 applying a template, or adding the IU Home Page to your course.
             </p>
             <p>
-                The Course Setup Wizard can only be run once per course, so choose the option that will save you
-                the most time and effort.
+                <span class="rvt-text-bold">Note:</span> The Course Setup Wizard can only be run once per
+                course, so choose the option that will save you the most time and effort.
+            </p>
+            <h2 class="header-flow-override rvt-p-top-md">Learn more about the options</h2>
+            <p>
+                <div class="rvt-disclosure rvt-m-bottom-sm" data-rvt-disclosure="disclosure-course-imports">
+                    <button type="button" class="rvt-disclosure__toggle" data-rvt-disclosure-toggle aria-expanded="false">Learn more about course imports</button>
+                    <div class="rvt-disclosure__content" data-rvt-disclosure-target hidden>
+                        <div class="rvt-prose rvt-flow">
+                            <p>
+                                Choose this option if you want to re-use instructional materials stored in
+                                another course in Canvas. You can import content from:
+                            </p>
+                            <ul class="rvt-list">
+                                <li>Any of your own courses, including previous offerings or a master version of the current course</li>
+                                <li>A previous offering or master version of the current course developed by someone else (provided you’ve been given access to your colleague’s course).</li>
+                            </ul>
+                            <p>
+                                After you select the course you want to import, you’ll be asked whether you want
+                                to bring in all content and settings or select specific items to import.
+                                Additionally, you’ll be given an opportunity to control how items with due dates
+                                are treated.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </p>
             <p>
-                If you exit the wizard via the Exit button, you will return to your course home page. This wizard will
-                continue to be available to you until you or another instructor completes the wizard or publishes the
-                course. You can restart the wizard via the wizard pop-up (if you haven’t permanently dismissed it) or by
-                going to course Settings and clicking Course Setup Wizard in the sidebar.
+            <div class="rvt-disclosure rvt-m-bottom-sm" data-rvt-disclosure="disclosure-course-templates">
+                <button type="button" class="rvt-disclosure__toggle" data-rvt-disclosure-toggle aria-expanded="false">Learn more about course templates</button>
+                <div class="rvt-disclosure__content" data-rvt-disclosure-target hidden>
+                    <div class="rvt-prose rvt-flow">
+                        <p>
+                            Choose this option if you want to create course content based on
+                            professionally-designed template elements.
+                        </p>
+                        <p>
+                            <span class="rvt-text-bold">Note:</span> This option is most useful for creating new
+                            course content. If you want to apply a template to existing course materials,
+                            contact your campus teaching and learning center for assistance.
+                        </p>
+                        <p>
+                            A template is a collection of content, settings, and design and/or branding elements
+                            that can be imported into a Canvas course. Created using pedagogical best practices,
+                            templates often include a home page and sample syllabus, as well as sample
+                            assignments, discussion forums, pages, and modules that can be duplicated and
+                            customized as needed. Text prompts may be provided to guide you through the process
+                            of creating your course content.
+                        </p>
+                        <p>
+                            Should you choose this wizard option, you’ll be presented with the list of templates
+                            that are available to you. The IU Course template, developed by UITS eLearning
+                            Design and Services, is available to all instructors. If your campus, school, or
+                            department has published templates, they will be included in the list as well. Once
+                            you’ve made a selection and completed the wizard, the selected template will be
+                            imported into your course. Look for instructions on what to do next on the course
+                            home page or an unpublished module or page for instructors.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            </p>
+            <p>
+            <div class="rvt-disclosure rvt-m-bottom-sm" data-rvt-disclosure="disclosure-home-page">
+                <button type="button" class="rvt-disclosure__toggle" data-rvt-disclosure-toggle aria-expanded="false">Learn more about the IU Home Page</button>
+                <div class="rvt-disclosure__content" data-rvt-disclosure-target hidden>
+                    <div class="rvt-prose rvt-flow">
+                        <p>
+                            Choose this option if you want to use the IU Home Page as the foundation for your
+                            course home page.
+                        </p>
+                        <p>
+                            The home page is the first page your students will see when they access your course.
+                            It sets the tone for your course and ideally should be welcoming, engaging, and
+                            informative. Developed by UITS eLearning Design and Services, the IU Home Page is an
+                            attractive and accessible Canvas page with content that you can customize or replace
+                            with your own text. Boldface text in brackets in the home page are instructions for
+                            you, not your students. Be sure to delete all instructions (as well as the “Under
+                            Construction” banner) before publishing your course.
+                        </p>
+                    </div>
+                </div>
+            </div>
             </p>
             <form id="wizard-form" th:action="@{|/app/${courseId}/menu|}" method="post" enctype="multipart/form-data">
                 <fieldset class="rvt-fieldset">
@@ -35,96 +110,29 @@
                     <ul class="rvt-list-plain">
                         <li>
                             <div class="rvt-radio">
-                                <input type="radio" name="menuChoice" id="radio-1-1" value="import" aria-describedby="option-message">
-                                <label for="radio-1-1">Import content from another Canvas course</label>
-                            </div>
-                            <div class="rvt-disclosure rvt-m-bottom-sm rvt-m-left-lg" data-rvt-disclosure="disclosure-import">
-                                <button type="button" class="rvt-disclosure__toggle" data-rvt-disclosure-toggle aria-expanded="false">Learn more about course imports</button>
-                                <div class="rvt-disclosure__content" data-rvt-disclosure-target hidden>
-                                    <div class="rvt-prose rvt-flow">
-                                        <h3>Import content from another Canvas course</h3>
-                                        <p>
-                                            The import option is great if you want to re-use instructional materials stored in another
-                                            course in Canvas. You can import content from:
-                                        <ul class="rvt-list">
-                                            <li>Any of your own courses, including previous offerings or a master version of the current course</li>
-                                            <li>A previous offering or master version of the current course developed by someone else (provided you’ve been given access to your colleague’s course).</li>
-                                        </ul>
-                                        </p>
-                                        <p>
-                                            After you select the course you want to import, you’ll be asked whether you want to bring in
-                                            all content and settings or select specific items to import. Additionally, you’ll be given
-                                            an opportunity to control how items with due dates are treated.
-                                        </p>
-                                    </div>
-                                </div>
+                                <input type="radio" name="menuChoice" id="radio-1-1" aria-describedby="option-message"
+                                       th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.MAIN_OPTION).IMPORT.name()}">
+                                <label for="radio-1-1">Import content from another Canvas course into this course</label>
                             </div>
                         </li>
                         <!--                                <li>-->
                         <!--                                    <div class="rvt-radio">-->
-                        <!--                                        <input type="radio" name="menuChoice" id="radio-1-2" value="theme" aria-describedby="option-message">-->
+                        <!--                                        <input type="radio" name="menuChoice" id="radio-1-2" value="theme" aria-describedby="option-message" th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).MAIN_OPTION.THEME.name()}">-->
                         <!--                                        <label for="radio-1-2">Select the theme (page design), banner image, and colors for this course</label>-->
                         <!--                                    </div>-->
                         <!--                                </li>-->
                         <li>
                             <div class="rvt-radio">
-                                <input type="radio" name="menuChoice" id="radio-1-3" value="template" aria-describedby="option-message">
-                                <label for="radio-1-3">Apply a template to this course</label>
-                            </div>
-                            <div class="rvt-disclosure rvt-m-bottom-sm rvt-m-left-lg" data-rvt-disclosure="disclosure-template">
-                                <button type="button" class="rvt-disclosure__toggle" data-rvt-disclosure-toggle aria-expanded="false">Learn more about course templates</button>
-                                <div class="rvt-disclosure__content" data-rvt-disclosure-target hidden>
-                                    <div class="rvt-prose rvt-flow">
-                                        <h3>Apply a template to this course</h3>
-                                        <p>
-                                            This option is if you want to create course content based on professionally-designed template elements.
-                                        </p>
-                                        <p>
-                                            <span class="rvt-text-bold"> Note:</span> This option is most useful for creating new course content.
-                                            If you want to apply a template to existing course materials, contact your
-                                            <a href="https://kb.iu.edu/d/aitz" target="_blank">campus teaching and learning center <rvt-icon name="link-external"></rvt-icon></a> for assistance.
-                                        </p>
-                                        <p>
-                                            A template is a collection of content, settings, and design and/or branding elements that can
-                                            be imported into a Canvas course. Created using pedagogical best practices, templates often
-                                            include a home page and sample syllabus, as well as sample assignments, discussion forums,
-                                            pages, and modules that can be duplicated and customized as needed. Text prompts may be provided
-                                            to guide you through the process of creating your course content.
-                                        </p>
-                                        <p>
-                                            Should you proceed with this wizard option, you’ll be presented with the list of templates that
-                                            are available to you. The IU Course template, developed by UITS eLearning Design and Services, is
-                                            available to all instructors. If your campus, school, or department has published templates, they
-                                            will be included in the list as well. Once you’ve made a selection and completed the wizard, the
-                                            selected template will be imported into your course. Look for instructions on what to do next on the
-                                            course home page or an unpublished module or page for instructors.
-                                        </p>
-                                    </div>
-                                </div>
+                                <input type="radio" name="menuChoice" id="radio-1-3" aria-describedby="option-message"
+                                       th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.MAIN_OPTION).TEMPLATE.name()}">
+                                <label for="radio-1-3">Import the customizable IU Course Template or another template into this course</label>
                             </div>
                         </li>
                         <li>
                             <div class="rvt-radio">
-                                <input type="radio" name="menuChoice" id="radio-1-4" value="homepage" aria-describedby="option-message">
-                                <label for="radio-1-4">Add a professionally-designed, customizable IU Home Page to this course</label>
-                            </div>
-                            <div class="rvt-disclosure rvt-m-bottom-sm rvt-m-left-lg" data-rvt-disclosure="disclosure-homepage">
-                                <button type="button" class="rvt-disclosure__toggle" data-rvt-disclosure-toggle aria-expanded="false">Learn more about the IU Home Page</button>
-                                <div class="rvt-disclosure__content" data-rvt-disclosure-target hidden>
-                                    <div class="rvt-prose rvt-flow">
-                                        <h3>Import content from another Canvas course</h3>
-                                        <p>This option is if you want to use the IU Home Page as the foundation for your course home page.</p>
-                                        <p>
-                                            The home page is the first page your students will see when they access your course. It sets
-                                            the tone for your course and ideally should be welcoming, engaging, and informative.
-                                            Developed by UITS eLearning Design and Services, the IU Home Page is an attractive and
-                                            accessible Canvas page with content that you can customize or replace with your own text.
-                                            Boldface text in brackets in the home page are instructions for you, not your students.
-                                            Be sure to delete all instructions (as well as the “Under Construction” banner) before
-                                            publishing your course.
-                                        </p>
-                                    </div>
-                                </div>
+                                <input type="radio" name="menuChoice" id="radio-1-4" aria-describedby="option-message"
+                                       th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.MAIN_OPTION).HOMEPAGE.name()}">
+                                <label for="radio-1-4">Add a professionally-designed, customizable home page (the IU Home Page) to this course</label>
                             </div>
                         </li>
                     </ul>
@@ -141,8 +149,8 @@
                     </div>
                 </fieldset>
                 <div class="rvt-button-group [ rvt-m-top-md ]">
-                    <button class="rvt-button rvt-button--secondary">Exit</button>
-                    <button class="rvt-button" onclick="return doSubmit();">Continue</button>
+                    <button class="rvt-button rvt-button--secondary" onclick="return doExit();" data-rvt-modal-trigger="modalExit">Exit</button>
+                    <button class="rvt-button" onclick="return doSubmit();">Next</button>
                 </div>
             </form>
         </div>

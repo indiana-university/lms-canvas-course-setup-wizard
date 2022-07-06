@@ -35,7 +35,8 @@
           <ul class="rvt-list-plain">
             <li>
               <div class="rvt-radio">
-                <input type="radio" name="dateOption" id="radio-1-1" value="adjust" aria-describedby="option-message">
+                <input type="radio" name="dateOption" id="radio-1-1" aria-describedby="option-message"
+                       th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.DATE_OPTION).ADJUST.name()}">
                 <label for="radio-1-1">Adjust the dates for the new term</label>
               </div>
               <div class="rvt-disclosure rvt-m-bottom-sm rvt-m-left-lg" data-rvt-disclosure="disclosure-adjusting-dates">
@@ -57,7 +58,8 @@
             </li>
             <li>
               <div class="rvt-radio">
-                <input type="radio" name="dateOption" id="radio-1-2" value="remove" aria-describedby="option-message">
+                <input type="radio" name="dateOption" id="radio-1-2" aria-describedby="option-message"
+                       th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.DATE_OPTION).REMOVE.name()}">
                 <label for="radio-1-2">Remove all dates</label>
               </div>
               <div class="rvt-disclosure rvt-m-bottom-sm rvt-m-left-lg" data-rvt-disclosure="disclosure-removing-dates">
@@ -81,7 +83,8 @@
             </li>
             <li>
               <div class="rvt-radio">
-                <input type="radio" name="dateOption" id="radio-1-3" value="no-change" aria-describedby="option-message">
+                <input type="radio" name="dateOption" id="radio-1-3" aria-describedby="option-message"
+                       th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.DATE_OPTION).NOCHANGE.name()}">
                 <label for="radio-1-3">Leave dates as is; do not make any changes</label>
               </div>
             </li>
