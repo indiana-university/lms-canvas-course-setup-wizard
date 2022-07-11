@@ -26,33 +26,15 @@
             <dd th:each="theValue : ${mapEntry.value}" th:text="${theValue}">value</dd>
           </th:block>
         </dl>
-        <p>
-          After you <span class="rvt-text-bold">Submit</span> this form, you will be redirected from this
-          wizard to the Import Content page in your course. A progress bar will appear while the import is
-          being processed. Once the import is complete, you can begin to update the imported content as needed.
-        </p>
-        <p>
-          <span class="rvt-text-bold">Note:</span> The home page from the imported course will become the
-          new home page in the current course. No home page adjustments should be needed.
-        </p>
         <input type="hidden" name="currentPage" value="6">
-        <div th:insert="import/wizardSteps.html :: buttons(isSubmit=true)"></div>
+        <div th:insert="import/wizardSteps.html :: buttons"></div>
       </form>
     </div>
   </div>
 </div>
 
 <th:block layout:fragment="script">
-  <script th:inline="javascript">
-  /*<![CDATA[*/
-    const courseId = /*[[${courseId}]]*/
-    const selectedCourseId = /*[[${selectedCourseId}]]*/
-    const customId = /*[[${customId}]]*/
-    const csrfHeaderName = /*[[${_csrf.headerName}]]*/
-    const csrfValue = /*[[${_csrf.token}]]*/
-    /*]]>*/
-  </script>
-  <script type="text/javascript" th:src="@{/app/jsreact/lms-lti-coursesetupwizard/lms-lti-coursesetupwizard.js}"></script>
+
 </th:block>
 </body>
 </html>

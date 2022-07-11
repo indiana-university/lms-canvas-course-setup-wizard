@@ -7,6 +7,7 @@ import edu.iu.uits.lms.common.server.ServerInfo;
 import edu.iu.uits.lms.common.server.ServerUtils;
 import edu.iu.uits.lms.common.session.EnableCourseSessionService;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
+import edu.iu.uits.lms.iuonly.config.EnableIuOnlyClient;
 import edu.iu.uits.lms.lti.config.EnableGlobalErrorHandler;
 import edu.iu.uits.lms.lti.config.EnableLtiClient;
 import edu.iu.uits.lms.redis.config.EnableRedisConfiguration;
@@ -25,6 +26,7 @@ import java.util.Date;
 @EnableLtiClient(toolKeys = {"lms_coursesetupwizard"})
 @EnableGlobalErrorHandler
 @EnableCanvasClient
+@EnableIuOnlyClient
 @EnableCookieFilter(ignoredRequestPatterns = "/rest/**")
 @EnableCourseSessionService(sessionKey = "csw_course_session")
 @EnableConfigurationProperties(GitRepositoryState.class)

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Course Setup Wizard</title>
+</head>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+<!--    <div th:insert="import/wizardSteps.html :: steps(currentStep=2)"></div>-->
+
+    <div class="rvt-row rvt-p-top-md">
+        <div class="rvt-cols-8-md rvt-flow rvt-prose">
+            <form id="wizard-form" th:action="@{|/app/template/${courseId}/review|}" method="post" enctype="multipart/form-data">
+                <fieldset class="rvt-fieldset">
+                    <legend class="rvt-legend [ rvt-ts-20 rvt-p-bottom-xs ]">
+                        <h2>Import a template</h2>
+                    </legend>
+                    <table class="rvt-table-compact">
+                        <caption class="rvt-sr-only">Table of templates to choose</caption>
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th scope="col" id="template-name">Template name</th>
+                            <th scope="col" id="sponsor-name">Sponsor</th>
+                            <th scope="col" id="preview-link">Preview link</th>
+                            <th scope="col" id="description">Description</th>
+                        </tr>
+                        </thead>
+                        <tbody th:each="mapEntry : ${templatesForCourse}">
+                        <tr><td scope="rowgroup" colspan="5" th:text="${mapEntry.key}">node name</td></tr>
+                        <tr th:each="template : ${mapEntry.value}">
+                            <td><input type="radio" name="selectedTemplate" th:id="|radio-template-${template.id}|"
+                                       th:attr="aria-describedby=|template-${template.id}-name|"
+                                       th:value="${template.id}"></td>
+                            <td th:id="|template-${template.id}-name|" th:text="${template.displayName}"></td>
+                            <td th:text="${template.sponsor}"></td>
+                            <td>
+                                <a th:unless="${#strings.isEmpty(template.canvasCommonsUrl)}" th:href="${template.canvasCommonsUrl}"
+                                   th:text="${template.canvasCommonsUrl}" target="_blank">preview link</a>
+                            </td>
+                            <td th:text="${template.description}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div th:insert="fragments.html :: selectAlert"></div>
+                    <input type="hidden" name="currentPage" value="2">
+                    <div th:insert="import/wizardSteps.html :: buttons(nextOnclick='return doSubmit();')"></div>
+                </fieldset>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+    function doSubmit() {
+        var checkedRadio = document.querySelector('input[name="selectedTemplate"]:checked');
+        if (checkedRadio == null) {
+            var allRadio = document.getElementsByName("selectedTemplate");
+            allRadio.forEach(btn => {
+                btn.setAttribute("aria-invalid", "true");
+            })
+            alertMessage = document.getElementById('select-alert');
+            alertMessage.classList.remove("rvt-display-none");
+            allRadio[0].focus();
+            return false;
+        }
+    }
+    </script>
+</th:block>
+</body>
+</html>

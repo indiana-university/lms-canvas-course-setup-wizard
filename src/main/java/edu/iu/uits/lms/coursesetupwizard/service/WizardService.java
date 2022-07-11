@@ -4,6 +4,7 @@ import edu.iu.uits.lms.canvas.helpers.ContentMigrationHelper;
 import edu.iu.uits.lms.canvas.model.ContentMigration;
 import edu.iu.uits.lms.canvas.model.ContentMigrationCreateWrapper;
 import edu.iu.uits.lms.canvas.model.Course;
+import edu.iu.uits.lms.canvas.services.AccountService;
 import edu.iu.uits.lms.canvas.services.ContentMigrationService;
 import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.coursesetupwizard.Constants;
@@ -14,6 +15,10 @@ import edu.iu.uits.lms.coursesetupwizard.model.WizardCourseStatus;
 import edu.iu.uits.lms.coursesetupwizard.model.WizardUserCourse;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
+import edu.iu.uits.lms.iuonly.model.HierarchyResource;
+import edu.iu.uits.lms.iuonly.model.coursetemplating.CourseTemplatesWrapper;
+import edu.iu.uits.lms.iuonly.services.HierarchyResourceException;
+import edu.iu.uits.lms.iuonly.services.HierarchyResourceService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -23,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,6 +50,12 @@ public class WizardService {
 
    @Autowired
    private WizardCourseStatusRepository wizardCourseStatusRepository;
+
+   @Autowired
+   private AccountService accountService;
+
+   @Autowired
+   private HierarchyResourceService hierarchyResourceService;
 
    public PopupStatus getPopupDismissedStatus(String courseId, String userId) {
       List<WizardUserCourse> records = wizardUserCourseRepository.findByUsernameAndCourseIdOrGlobal(userId, courseId);
@@ -104,20 +116,24 @@ public class WizardService {
          //shift dates or not
          dateShifts.setShiftDates(Constants.DATE_OPTION.ADJUST.name().equalsIgnoreCase(importModel.getDateOption()));
 
-         //date shifting
-         ImportModel.ClassDates classDates = importModel.getClassDates();
-         if (classDates != null) {
-            dateShifts.setOldStartDate(StringUtils.trimToNull(classDates.getOrigFirst()));
-            dateShifts.setOldEndDate(StringUtils.trimToNull(classDates.getOrigLast()));
-            dateShifts.setNewStartDate(StringUtils.trimToNull(classDates.getThisFirst()));
-            dateShifts.setNewEndDate(StringUtils.trimToNull(classDates.getThisLast()));
-         }
+         //Only set the stuff if we are adjusting.
+         // This handles the case where user went through the wizard, but went back and chose other options that were different before submitting
+         if (Constants.DATE_OPTION.ADJUST.name().equalsIgnoreCase(importModel.getDateOption())) {
+            //date shifting
+            ImportModel.ClassDates classDates = importModel.getClassDates();
+            if (classDates != null) {
+               dateShifts.setOldStartDate(StringUtils.trimToNull(classDates.getOrigFirst()));
+               dateShifts.setOldEndDate(StringUtils.trimToNull(classDates.getOrigLast()));
+               dateShifts.setNewStartDate(StringUtils.trimToNull(classDates.getCurrentFirst()));
+               dateShifts.setNewEndDate(StringUtils.trimToNull(classDates.getCurrentLast()));
+            }
 
-         //day substitutions
-         ImportModel.DayChanges dayChanges = importModel.getDayChanges();
-         if (dayChanges != null) {
-            Map<String, String> daySubs = dayChanges.getValuesForMigration();
-            dateShifts.setDaySubstitutions(daySubs);
+            //day substitutions
+            ImportModel.DayChanges dayChanges = importModel.getDayChanges();
+            if (dayChanges != null) {
+               Map<String, String> daySubs = dayChanges.getValuesForMigration();
+               dateShifts.setDaySubstitutions(daySubs);
+            }
          }
       }
 
@@ -144,6 +160,23 @@ public class WizardService {
    public boolean alreadyCompletedForCourse(String courseId) {
       WizardCourseStatus wcs = wizardCourseStatusRepository.findByCourseId(courseId);
       return wcs != null;
+   }
+
+   public Map<String, List<HierarchyResource>> getTemplatesForCourse(String courseId) {
+      Map<String, List<HierarchyResource>> nodeMap = new HashMap<>();
+      CourseTemplatesWrapper wrapper = null;
+      try {
+         wrapper = hierarchyResourceService.getAvailableTemplatesForCanvasCourse(courseId);
+      } catch (HierarchyResourceException e) {
+         log.error("error getting templates for course", e);
+      }
+
+      if (wrapper != null) {
+         List<HierarchyResource> resources = wrapper.getTemplates();
+         nodeMap = resources.stream()
+               .collect(Collectors.groupingBy(HierarchyResource::getNode));
+      }
+      return nodeMap;
    }
 
 }

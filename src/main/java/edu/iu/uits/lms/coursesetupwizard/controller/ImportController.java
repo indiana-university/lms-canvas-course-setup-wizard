@@ -45,7 +45,7 @@ public class ImportController extends WizardController {
 
    private static final String[] PAGES = {"/app/{0}/index", "/app/import/{0}/selectCourse",
          "/app/import/{0}/selectContent", "/app/import/{0}/adjustDates", "/app/import/{0}/classDates",
-         "/app/import/{0}/dayMapping", "/app/import/{0}/review"};
+         "/app/import/{0}/dayMapping", "/app/import/{0}/review", "/app/import/{0}/submit"};
 
    /**
     * Gets called before EVERY controller method
@@ -209,6 +209,26 @@ public class ImportController extends WizardController {
       return new ModelAndView("import/review");
    }
 
+   @GetMapping("/{courseId}/submit")
+   @Secured({LTIConstants.INSTRUCTOR_AUTHORITY})
+   public ModelAndView submit(@PathVariable("courseId") String courseId, Model model, HttpSession httpSession) {
+      log.debug("in /submit");
+      OidcAuthenticationToken token = getValidatedToken(courseId);
+      OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
+
+      ImportModel importModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_IMPORT_MODEL, ImportModel.class);
+      if (importModel != null) {
+         model.addAttribute("selectedCourseLabel", importModel.getSelectedCourseLabel());
+
+         MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
+         //Content selection
+         Constants.CONTENT_OPTION contentOption = Constants.CONTENT_OPTION.valueOf(importModel.getImportContentOption());
+         model.addAttribute("selectedContentOption", contentOption.name());
+      }
+      return new ModelAndView("import/submit");
+
+   }
+
    @PostMapping("/{courseId}/navigate")
    @Secured({LTIConstants.INSTRUCTOR_AUTHORITY})
    public ModelAndView navigate(@PathVariable("courseId") String courseId, Model model, @ModelAttribute ImportModel importModel,
@@ -247,7 +267,7 @@ public class ImportController extends WizardController {
                      break;
                   case REMOVE:
                   case NOCHANGE:
-                     pageIndex = PAGES.length - 1;
+                     pageIndex = PAGES.length - 2;
                      //Clear out the values if we don't need them (in case we already set them, then went back and changed the option)
                      sessionImportModel.setClassDates(null);
                      sessionImportModel.setDayChanges(null);

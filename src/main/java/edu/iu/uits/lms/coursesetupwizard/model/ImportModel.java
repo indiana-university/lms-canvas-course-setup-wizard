@@ -26,21 +26,21 @@ public class ImportModel implements Serializable {
    public static class ClassDates implements Serializable {
       private String origFirst;
       private String origLast;
-      private String thisFirst;
-      private String thisLast;
+      private String currentFirst;
+      private String currentLast;
 
       public MultiValueMap<String, String> getReviewableValues() {
          MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
-         multiValueMap.add("First day of class", MessageFormat.format("Original course: {0}", formatDateForReview(getOrigFirst())));
-         multiValueMap.add("First day of class", MessageFormat.format("This course: {0}", formatDateForReview(getThisFirst())));
-         multiValueMap.add("Last day of class", MessageFormat.format("Original course: {0}", formatDateForReview(getOrigLast())));
-         multiValueMap.add("Last day of class", MessageFormat.format("This course: {0}", formatDateForReview(getThisLast())));
+         multiValueMap.add("Original course", MessageFormat.format("First day of class: {0}", formatDateForReview(getOrigFirst())));
+         multiValueMap.add("Original course", MessageFormat.format("Last day of class: {0}", formatDateForReview(getOrigLast())));
+         multiValueMap.add("Current course", MessageFormat.format("First day of class: {0}", formatDateForReview(getCurrentFirst())));
+         multiValueMap.add("Current course", MessageFormat.format("Last day of class: {0}", formatDateForReview(getCurrentLast())));
 
          return multiValueMap;
       }
 
       private String formatDateForReview(String date) {
-         return "".equalsIgnoreCase(date) || date == null ? "N/A" : date;
+         return "".equalsIgnoreCase(date) || date == null ? "Nothing entered" : date;
       }
    }
 

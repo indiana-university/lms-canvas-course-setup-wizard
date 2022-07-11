@@ -23,15 +23,17 @@
             <dt>Import from</dt>
             <dd th:text="${selectedCourseLabel}">Course Label</dd>
           </dl>
+          <p>You have opted to adjust dates during the import.</p>
           <p>
-            Canvas will use the dates you provide to distribute event and due dates across the term for the current course.
+            Use the form below to specify how dates should be adjusted. Canvas will use the dates
+            you provide to distribute event and due dates across the term for the current course.
           </p>
           <p>
-            Recommendations:
-          <ul class="rvt-list">
-            <li><span class="rvt-text-bold">Same term lengths:</span> (e.g. both courses are 16 week, 8 week, etc.), enter the first day of class for both classes and leave the last day of class empty for both. Use the actual start date for both classes, not the term start date.</li>
-            <li><span class="rvt-text-bold">Different term lengths:</span> Enter first and last day dates for both courses, using the actual first and last date of class, not the term start and end dates.</li>
-          </ul>
+            For best results:
+            <ul class="rvt-list">
+              <li>If the original and current courses have the same term length (e.g. 16 week, 8 week, etc.), enter the first day of class for both classes and leave the last day of class empty for both. Use the actual start date for both classes, not the term start date.</li>
+              <li>If the original course and current course have different term lengths, enter first and last day dates for both courses, using the actual first and last date of class, not the term start and end dates.</li>
+            </ul>
           </p>
           <table class="rvt-table-plain">
             <caption class="rvt-sr-only">Table of inputs for start and end dates</caption>
@@ -51,11 +53,11 @@
                          aria-labelledby="original-course last-class" th:value="${selectedClassDates?.origLast}"/></td>
             </tr>
             <tr>
-              <th scope="row" id="this-course">This course</th>
-              <td><input type="date" id="this-first" name="classDates.thisFirst" class="rvt-text-input"
-                         aria-labelledby="this-course first-class" th:value="${selectedClassDates?.thisFirst}"/></td>
-              <td><input type="date" id="this-last" name="classDates.thisLast" class="rvt-text-input"
-                         aria-labelledby="this-course last-class" th:value="${selectedClassDates?.thisLast}"/></td>
+              <th scope="row" id="current-course">Current course</th>
+              <td><input type="date" id="current-first" name="classDates.currentFirst" class="rvt-text-input"
+                         aria-labelledby="current-course first-class" th:value="${selectedClassDates?.currentFirst}"/></td>
+              <td><input type="date" id="current-last" name="classDates.currentLast" class="rvt-text-input"
+                         aria-labelledby="current-course last-class" th:value="${selectedClassDates?.currentLast}"/></td>
             </tr>
             </tbody>
           </table>
