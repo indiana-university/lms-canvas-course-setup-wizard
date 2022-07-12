@@ -224,6 +224,10 @@ public class ImportController extends WizardController {
          //Content selection
          Constants.CONTENT_OPTION contentOption = Constants.CONTENT_OPTION.valueOf(importModel.getImportContentOption());
          model.addAttribute("selectedContentOption", contentOption.name());
+
+         //Date option selection
+         Constants.DATE_OPTION dateOption = Constants.DATE_OPTION.valueOf(importModel.getDateOption());
+         model.addAttribute("selectedDateOption", dateOption.name());
       }
       return new ModelAndView("import/submit");
 

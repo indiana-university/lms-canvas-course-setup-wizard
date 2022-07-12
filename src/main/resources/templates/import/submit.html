@@ -44,7 +44,7 @@
           <span class="rvt-text-bold">Note:</span> The home page from the imported course will become the
           new home page in the current course. No home page adjustments should be needed.
         </p>
-        <p>
+        <p th:if="${selectedDateOption == T(edu.iu.uits.lms.coursesetupwizard.Constants.DATE_OPTION).REMOVE.name() or selectedDateOption == T(edu.iu.uits.lms.coursesetupwizard.Constants.DATE_OPTION).NOCHANGE.name()}">
           <span class="rvt-text-bold">Tip:</span> For a fast and easy way to review and update
           assignment dates, visit <a href="https://community.canvaslms.com/t5/Instructor-Guide/How-do-I-bulk-update-due-dates-and-availability-dates-as-an/ta-p/1195" target="_blank">How do I bulk update due dates and availability dates as an instructor? <rvt-icon name="link-external"></rvt-icon></a>
         </p>
