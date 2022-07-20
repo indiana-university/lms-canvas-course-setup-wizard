@@ -24,13 +24,13 @@
             <h2 class="header-flow-override rvt-p-top-lg">Learn more about the options</h2>
             <div class="rvt-accordion rvt-m-bottom-lg" data-rvt-accordion="course-import-accordion">
                 <h3 class="rvt-accordion__summary">
-                    <button class="rvt-accordion__toggle rvt-p-tb-sm"
+                    <button class="rvt-accordion__toggle rvt-p-tb-xs"
                             id="course-import-accordion-1-label"
                             data-rvt-accordion-trigger="course-import-accordion-1"
                             aria-controls="course-import-accordion-1">
                         <span class="rvt-accordion__toggle-text rvt-ts-20">Course imports</span>
                         <div class="rvt-accordion__toggle-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
                                 <g fill="currentColor">
                                     <path class="rvt-accordion__icon-bar" d="M8,15a1,1,0,0,1-1-1V2A1,1,0,0,1,9,2V14A1,1,0,0,1,8,15Z" />
                                     <path d="M14,9H2A1,1,0,0,1,2,7H14a1,1,0,0,1,0,2Z" />
@@ -68,7 +68,7 @@
                             aria-controls="course-templates-accordion-2">
                         <span class="rvt-accordion__toggle-text rvt-ts-20">Course templates</span>
                         <div class="rvt-accordion__toggle-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
                                 <g fill="currentColor">
                                     <path class="rvt-accordion__icon-bar" d="M8,15a1,1,0,0,1-1-1V2A1,1,0,0,1,9,2V14A1,1,0,0,1,8,15Z" />
                                     <path d="M14,9H2A1,1,0,0,1,2,7H14a1,1,0,0,1,0,2Z" />
@@ -118,7 +118,7 @@
                             aria-controls="home-page-accordion-3">
                         <span class="rvt-accordion__toggle-text rvt-ts-20">IU Home Pages</span>
                         <div class="rvt-accordion__toggle-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
                                 <g fill="currentColor">
                                     <path class="rvt-accordion__icon-bar" d="M8,15a1,1,0,0,1-1-1V2A1,1,0,0,1,9,2V14A1,1,0,0,1,8,15Z" />
                                     <path d="M14,9H2A1,1,0,0,1,2,7H14a1,1,0,0,1,0,2Z" />
@@ -152,7 +152,7 @@
             <form id="wizard-form-main" th:action="@{|/app/${courseId}/menu|}" method="post" enctype="multipart/form-data">
                 <fieldset class="rvt-fieldset rvt-p-bottom-xs">
                     <legend class="rvt-legend [ rvt-ts-20 rvt-p-bottom-xs ]">
-                        <h2>What do you want to do?</h2>
+                        <h2>What do you want to do? <span class="rvt-sr-only">Required</span></h2>
                     </legend>
                     <ul class="rvt-list-plain">
                         <li>
