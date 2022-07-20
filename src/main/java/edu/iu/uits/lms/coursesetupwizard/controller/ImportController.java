@@ -295,6 +295,9 @@ public class ImportController extends WizardController {
             if (importModel.getDayChanges() != null) {
                sessionImportModel.setDayChanges(importModel.getDayChanges());
             }
+
+            //Re-save the session model
+            courseSessionService.addAttributeToSession(httpSession, courseId, KEY_IMPORT_MODEL, sessionImportModel);
             break;
          case ACTION_SUBMIT:
             wizardService.doCourseImport(sessionImportModel, oidcTokenUtils.getUserLoginId());
