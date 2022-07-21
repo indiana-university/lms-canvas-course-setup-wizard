@@ -26,14 +26,14 @@
           <ul class="rvt-list-plain">
             <li>
               <div class="rvt-radio">
-                <input type="radio" name="importContentOption" id="radio-1-1"
+                <input type="radio" name="importContentOption" id="radio-1-1" aria-describedby="option-message"
                        th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).ALL.name()}">
                 <label for="radio-1-1">Import the entire course as is (all content and settings)</label>
               </div>
             </li>
             <li>
               <div class="rvt-radio">
-                <input type="radio" name="importContentOption" id="radio-1-2"
+                <input type="radio" name="importContentOption" id="radio-1-2" aria-describedby="option-message"
                        th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).SELECT.name()}">
                 <label for="radio-1-2">
                   Select specific content to import (after you submit the wizard, you’ll be prompted to select the tools and items you wish to import)
