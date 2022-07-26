@@ -16,10 +16,10 @@
     <div class="rvt-cols-8-md rvt-flow rvt-prose">
       <form id="wizard-form-review" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
         <h2>Review and submit</h2>
-        <dl>
-          <dt>Import from</dt>
-          <dd th:text="${selectedCourseLabel}">Course Label</dd>
-        </dl>
+        <p>
+          <span class="rvt-text-bold">Import from</span><br />
+          <span th:text="${selectedCourseLabel}">Course Label</span>
+        </p>
         <dl>
           <th:block th:each="mapEntry : ${reviewValues}">
             <dt th:text="${mapEntry.key}">key</dt>

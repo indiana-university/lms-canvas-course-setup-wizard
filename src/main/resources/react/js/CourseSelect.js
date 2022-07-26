@@ -32,13 +32,14 @@ class CourseSelect extends React.Component {
           // nice with any other styles and it looks dumb.  So, just using the component's defaults.
           // Also             value={selectedOption}
           <>
-              <label className="rvt-label" id="course-select-label" htmlFor="course-select-input">Import from course</label>
+              <label className="rvt-label rvt-ts-18" id="course-select-label" htmlFor="course-select-input">Import from course <span class="rvt-sr-only">(Required)</span></label>
               <Select
                 defaultValue={this.findSelectedOption(courses, this.props.selectedCourseId)}
                 options={courses}
                 aria-labelledby="course-select-label"
                 inputId="course-select-input"
                 name="selectedCourseId"
+                placeholder="Select a Course"
               />
           </>
         );
