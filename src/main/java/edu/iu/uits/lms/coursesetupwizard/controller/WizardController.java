@@ -86,7 +86,7 @@ public class WizardController extends OidcTokenAwareController {
             case TEMPLATE:
                 return new ModelAndView("redirect:/app/template/" + courseId + "/choose");
             case HOMEPAGE:
-                return new ModelAndView("index");
+                return new ModelAndView("redirect:/app/homepage/" + courseId + "/homePage");
             default:
                 return new ModelAndView("index");
         }
