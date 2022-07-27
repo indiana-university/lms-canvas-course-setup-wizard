@@ -13,4 +13,6 @@ public class ToolConfig {
 
    private String version;
    private String env;
+   private String templateHostingUrl;
+   private String hierarchyRootNodeName;
 }

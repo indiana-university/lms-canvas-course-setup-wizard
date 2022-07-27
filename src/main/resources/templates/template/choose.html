@@ -70,7 +70,9 @@
                                             <p th:text="${template.description}"></p>
                                             <div>
                                                 <button class="rvt-button rvt-button--secondary" name="action"
-                                                        th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_NEXT}">
+                                                        th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_NEXT}"
+                                                        th:data-templateid="${template.id}" th:data-templatename="|${mapEntry.key}: ${template.displayName}|"
+                                                        onclick="doSubmit(this);">
                                                     Select and continue
                                                     <span class="rvt-sr-only" th:text="|with the ${template.displayName} template|">with the xyz template</span>
                                                 </button>
@@ -82,6 +84,8 @@
                         </div>
                     </div>
                     <input type="hidden" name="currentPage" value="1">
+                    <input type="hidden" id="selectedTemplateId" name="selectedTemplateId">
+                    <input type="hidden" id="selectedTemplateName" name="selectedTemplateName">
                     <div class="[ rvt-m-top-xl ]">
                         <button class="rvt-button rvt-button--secondary" name="action"
                                 th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">Restart Wizard</button>
@@ -94,7 +98,16 @@
 </div>
 
 <th:block layout:fragment="script">
-
+    <script th:inline="javascript">
+    function doSubmit(elem) {
+        console.log("template id (pre): " + document.getElementById("selectedTemplateId").value);
+        document.getElementById("selectedTemplateId").value = elem.dataset.templateid;
+        document.getElementById("selectedTemplateName").value = elem.dataset.templatename;
+        console.log("template id: " + document.getElementById("selectedTemplateId").value);
+        console.log("template name: " + document.getElementById("selectedTemplateName").value);
+        elem.form.submit();
+    }
+    </script>
 </th:block>
 </body>
 </html>

@@ -31,7 +31,7 @@ import static edu.iu.uits.lms.coursesetupwizard.Constants.KEY_IMPORT_MODEL;
 public class WizardController extends OidcTokenAwareController {
 
     @Autowired
-    private ToolConfig toolConfig = null;
+    protected ToolConfig toolConfig = null;
 
     @Autowired
     protected WizardService wizardService = null;

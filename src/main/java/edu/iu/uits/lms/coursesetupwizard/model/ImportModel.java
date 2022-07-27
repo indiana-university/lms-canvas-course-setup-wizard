@@ -21,6 +21,8 @@ public class ImportModel implements Serializable {
    private String dateOption;
    private ClassDates classDates;
    private DayChanges dayChanges;
+   private String selectedTemplateId;
+   private String selectedTemplateName;
 
    @Data
    public static class ClassDates implements Serializable {

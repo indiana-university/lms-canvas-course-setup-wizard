@@ -1,12 +1,10 @@
 package edu.iu.uits.lms.coursesetupwizard.controller;
 
-import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.model.ImportModel;
 import edu.iu.uits.lms.iuonly.model.HierarchyResource;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.service.OidcTokenUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.EnumUtils;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
 import javax.servlet.http.HttpSession;
@@ -55,13 +54,14 @@ public class TemplateController extends WizardController {
    @GetMapping("/{courseId}/review")
    @Secured({LTIConstants.INSTRUCTOR_AUTHORITY})
    public ModelAndView review(@PathVariable("courseId") String courseId, Model model, HttpSession httpSession) {
-      log.debug("in /choose");
+      log.debug("in /review");
       OidcAuthenticationToken token = getValidatedToken(courseId);
       OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
 
-//      Map<String, List<HierarchyResource>> templatesForCourse = wizardService.getTemplatesForCourse(courseId);
-
-//      model.addAttribute("templatesForCourse", templatesForCourse);
+      ImportModel importModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_IMPORT_MODEL, ImportModel.class);
+      if (importModel != null) {
+         model.addAttribute("selectedTemplateName", importModel.getSelectedTemplateName());
+      }
 
       return new ModelAndView("template/review");
    }
@@ -74,12 +74,9 @@ public class TemplateController extends WizardController {
       OidcAuthenticationToken token = getValidatedToken(courseId);
       OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
 
-//      ImportModel sessionImportModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_IMPORT_MODEL, ImportModel.class);
+      ImportModel sessionImportModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_IMPORT_MODEL, ImportModel.class);
 
       int pageIndex = 0;
-//
-//      Constants.DATE_OPTION dateOption = EnumUtils.getEnum(Constants.DATE_OPTION.class, importModel.getDateOption());
-//      Constants.DATE_OPTION sessionDateOption = EnumUtils.getEnum(Constants.DATE_OPTION.class, sessionImportModel.getDateOption());
 
       switch (action) {
          case ACTION_HOME:
@@ -92,30 +89,25 @@ public class TemplateController extends WizardController {
          case ACTION_NEXT:
             pageIndex = currentPage + 1;
 
-            //Course selection page
-//            if (importModel.getSelectedCourseId() != null) {
-//               sessionImportModel.setSelectedCourseId(importModel.getSelectedCourseId());
-//               sessionImportModel.setSelectedCourseLabel(lookupCourseLabel(courseId, importModel.getSelectedCourseId(), oidcTokenUtils.getUserLoginId()));
-//            }
-//            //Content selection page
-//            if (importModel.getImportContentOption() != null) {
-//               sessionImportModel.setImportContentOption(importModel.getImportContentOption());
-//            }
-//            if (importModel.getClassDates() != null) {
-//               sessionImportModel.setClassDates(importModel.getClassDates());
-//            }
-//            if (importModel.getDayChanges() != null) {
-//               sessionImportModel.setDayChanges(importModel.getDayChanges());
-//            }
+            //Template selection page
+            if (importModel.getSelectedTemplateId() != null) {
+               sessionImportModel.setSelectedTemplateId(importModel.getSelectedTemplateId());
+               sessionImportModel.setSelectedTemplateName(importModel.getSelectedTemplateName());
+            }
 
             //Re-save the session model
-//            courseSessionService.addAttributeToSession(httpSession, courseId, KEY_IMPORT_MODEL, sessionImportModel);
+            courseSessionService.addAttributeToSession(httpSession, courseId, KEY_IMPORT_MODEL, sessionImportModel);
             break;
-//         case ACTION_SUBMIT:
-//            wizardService.doCourseImport(sessionImportModel, oidcTokenUtils.getUserLoginId());
-//            model.addAttribute("redirectUrl", getCanvasContentMigrationsToolUrl(courseId));
-//            // redirect to the Canvas tool
-//            return new ModelAndView(redirectToCanvas());
+         case ACTION_SUBMIT:
+            String templateHostingUrl = toolConfig.getTemplateHostingUrl();
+            // Use the current application as the template host if no other has been configured.
+            if (templateHostingUrl == null) {
+               templateHostingUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+            }
+            wizardService.doApplyTemplate(sessionImportModel, oidcTokenUtils.getUserLoginId(), templateHostingUrl);
+            model.addAttribute("redirectUrl", getCanvasContentMigrationsToolUrl(courseId));
+            // redirect to the Canvas tool
+            return new ModelAndView(redirectToCanvas());
       }
       String url = MessageFormat.format(PAGES[pageIndex], courseId);
       return new ModelAndView("redirect:" + url);
