@@ -15,13 +15,15 @@
   <div class="rvt-row rvt-p-top-md">
     <div class="rvt-cols-8-md rvt-flow rvt-prose">
       <form id="wizard-form-content" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
-        <h2 class="rvt-ts-23 rvt-p-bottom-sm">Select content</h2>
+        <h2>Select content</h2>
+
+        <h3 class="rvt-ts-18 rvt-p-tb-sm">
+          Import from<br /><span class="rvt-text-regular">[[${selectedCourseLabel}]]</span>
+        </h3>
 
         <fieldset class="rvt-fieldset">
-          <legend class="rvt-p-bottom-xs">
-              <span class="rvt-text-bold">Import from </span><br />
-              <span th:text="${selectedCourseLabel}"></span>
-              <span class="rvt-sr-only sr-spacing"> Choose how you would like to import content (Required)</span>
+          <legend>
+              <span class="rvt-sr-only">Choose how you would like to import your content. (Required)</span>
           </legend>
           <ul class="rvt-list-plain">
             <li>
