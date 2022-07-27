@@ -8,12 +8,12 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
 import javax.servlet.http.HttpSession;
@@ -39,7 +39,7 @@ public class HomePageController extends WizardController {
 
     @PostMapping("/{courseId}/navigate")
     @Secured({LTIConstants.INSTRUCTOR_AUTHORITY})
-    public ModelAndView navigate(@PathVariable("courseId") String courseId, Model model, @ModelAttribute ImportModel importModel,
+    public ModelAndView navigate(@PathVariable("courseId") String courseId, Model model,
                                  @RequestParam(name = "action") String action, HttpSession httpSession) {
         OidcAuthenticationToken token = getValidatedToken(courseId);
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
@@ -53,7 +53,17 @@ public class HomePageController extends WizardController {
                 url = "/app/" + courseId + "/index";
                 break;
             case ACTION_SUBMIT:
+                ImportModel sessionImportModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_IMPORT_MODEL, ImportModel.class);
                 // do submit stuff
+                String templateHostingUrl = toolConfig.getTemplateHostingUrl();
+                // Use the current application as the template host if no other has been configured.
+                if (templateHostingUrl == null) {
+                    templateHostingUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+                }
+                wizardService.doSetHomepage(sessionImportModel, oidcTokenUtils.getUserLoginId(), templateHostingUrl);
+                model.addAttribute("redirectUrl", getCanvasContentMigrationsToolUrl(courseId));
+                // redirect to the Canvas tool
+                return new ModelAndView(redirectToCanvas());
         }
 
         return new ModelAndView("redirect:" + url);

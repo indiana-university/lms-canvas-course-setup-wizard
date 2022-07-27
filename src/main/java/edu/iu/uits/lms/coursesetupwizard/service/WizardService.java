@@ -181,7 +181,6 @@ public class WizardService {
 
          settings.setFileUrl(fileUrl);
 
-
          ContentMigration cm = contentMigrationService.initiateContentMigration(courseId, null, wrapper);
          log.info("{}", cm);
 
@@ -192,6 +191,46 @@ public class WizardService {
          wizardCourseStatus.setCompletedBy(userLoginId);
          wizardCourseStatus.setMainOption(mainOption);
          wizardCourseStatus.setSelectedTemplateId(importModel.getSelectedTemplateId());
+         wizardCourseStatus.setContentMigrationId(cm.getId());
+         wizardCourseStatusRepository.save(wizardCourseStatus);
+      } catch (HierarchyResourceException e) {
+         throw new RuntimeException(e);
+      }
+   }
+
+   public void doSetHomepage(ImportModel importModel, String userLoginId, String appBaseUrl) {
+      String courseId = importModel.getCourseId();
+
+      //Update course front page
+      courseService.updateCourseFrontPage(courseId, "modules");
+
+      //Get the specific template
+      String homepageTemplateId = toolConfig.getHomepageTemplateId();
+
+      try {
+         HierarchyResource templateForCourse = hierarchyResourceService.getTemplate(Long.parseLong(homepageTemplateId));
+         StoredFile storedFile = templateForCourse.getStoredFile();
+
+         //Url for the file download.  Should come from iu-custom, but might be self-hosted, or from some other app (api-portal, etc)
+         String fileUrl = MessageFormat.format("{0}/rest/iu/file/download/{1}/{2}", appBaseUrl, storedFile.getId(), storedFile.getDisplayName());
+
+         ContentMigrationCreateWrapper wrapper = new ContentMigrationCreateWrapper();
+         ContentMigrationCreateWrapper.Settings settings = new ContentMigrationCreateWrapper.Settings();
+         wrapper.setMigrationType(ContentMigrationHelper.MIGRATION_TYPE_CC);
+         wrapper.setSettings(settings);
+
+         settings.setFileUrl(fileUrl);
+
+         ContentMigration cm = contentMigrationService.initiateContentMigration(courseId, null, wrapper);
+         log.info("{}", cm);
+
+         Constants.MAIN_OPTION mainOption = Constants.MAIN_OPTION.valueOf(importModel.getMenuChoice());
+
+         WizardCourseStatus wizardCourseStatus = new WizardCourseStatus();
+         wizardCourseStatus.setCourseId(courseId);
+         wizardCourseStatus.setCompletedBy(userLoginId);
+         wizardCourseStatus.setMainOption(mainOption);
+         wizardCourseStatus.setSelectedTemplateId(homepageTemplateId);
          wizardCourseStatus.setContentMigrationId(cm.getId());
          wizardCourseStatusRepository.save(wizardCourseStatus);
       } catch (HierarchyResourceException e) {
