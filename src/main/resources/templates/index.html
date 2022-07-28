@@ -152,7 +152,7 @@
             <form id="wizard-form-main" th:action="@{|/app/${courseId}/menu|}" method="post" enctype="multipart/form-data">
                 <fieldset class="rvt-fieldset rvt-p-bottom-xs">
                     <legend class="rvt-legend [ rvt-ts-20 rvt-p-bottom-xs ]">
-                        <h2>What do you want to do? <span class="rvt-sr-only">Required</span></h2>
+                        <h2>What do you want to do? <span class="rvt-sr-only sr-spacing"> (Required)</span></h2>
                     </legend>
                     <ul class="rvt-list-plain">
                         <li>
@@ -186,8 +186,8 @@
                     <div th:insert="fragments.html :: selectAlert"></div>
                 </fieldset>
                 <div class="rvt-button-group [ rvt-m-top-md ]">
-                    <button class="rvt-button rvt-button--secondary" onclick="return doExit();" data-rvt-modal-trigger="modalExit">Exit</button>
-                    <button class="rvt-button" onclick="return doSubmit();">Next</button>
+                    <button class="rvt-button rvt-button--secondary" onclick="return doExit();" data-rvt-modal-trigger="modalExit">Exit <span class="rvt-sr-only">the Wizard</span></button>
+                    <button class="rvt-button" onclick="return doSubmit();">Next <span class="rvt-sr-only">Step</span></button>
                 </div>
             </form>
         </div>

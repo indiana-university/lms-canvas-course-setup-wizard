@@ -21,6 +21,23 @@
     padding-right: 1.0em;
 }
 
+/**
+* Set the placeholder text in the react-select to the minimum
+* contrast required to pass accessibility
+*/
+#react-select-2-placeholder {
+	 color: #767676;
+	 opacity: 1;
+}
+
+/**
+ *  to preserve spacing when adding sr-only text
+*/
+.sr-spacing {
+    white-space:pre;
+}
+
+
 /* Intial Loading screen */
 #load {
     position: absolute;
