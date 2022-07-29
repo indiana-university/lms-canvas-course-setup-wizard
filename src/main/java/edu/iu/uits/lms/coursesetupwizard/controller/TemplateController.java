@@ -1,6 +1,7 @@
 package edu.iu.uits.lms.coursesetupwizard.controller;
 
 import edu.iu.uits.lms.coursesetupwizard.model.ImportModel;
+import edu.iu.uits.lms.coursesetupwizard.service.WizardServiceException;
 import edu.iu.uits.lms.iuonly.model.HierarchyResource;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.service.OidcTokenUtils;
@@ -104,10 +105,15 @@ public class TemplateController extends WizardController {
             if (templateHostingUrl == null) {
                templateHostingUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
             }
-            wizardService.doApplyTemplate(sessionImportModel, oidcTokenUtils.getUserLoginId(), templateHostingUrl);
-            model.addAttribute("redirectUrl", getCanvasContentMigrationsToolUrl(courseId));
-            // redirect to the Canvas tool
-            return new ModelAndView(redirectToCanvas());
+            try {
+               wizardService.doApplyTemplate(sessionImportModel, oidcTokenUtils.getUserLoginId(), templateHostingUrl);
+               model.addAttribute("redirectUrl", getCanvasContentMigrationsToolUrl(courseId));
+               // redirect to the Canvas tool
+               return new ModelAndView(redirectToCanvas());
+            } catch (WizardServiceException e) {
+               model.addAttribute("submitError", e.getMessage());
+               return review(courseId, model, httpSession);
+            }
       }
       String url = MessageFormat.format(PAGES[pageIndex], courseId);
       return new ModelAndView("redirect:" + url);

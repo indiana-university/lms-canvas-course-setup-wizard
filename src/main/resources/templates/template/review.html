@@ -12,6 +12,7 @@
 
     <div class="rvt-row rvt-p-top-md">
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
+            <div th:if="${submitError}" th:insert="fragments.html :: submitError"></div>
             <form id="wizard-form-review" th:action="@{|/app/template/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
                 <h2>Review and submit</h2>
                 <div class="rvt-alert rvt-alert--info rvt-m-top-md">

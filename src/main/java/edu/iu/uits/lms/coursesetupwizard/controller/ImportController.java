@@ -3,6 +3,7 @@ package edu.iu.uits.lms.coursesetupwizard.controller;
 import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.model.ImportModel;
 import edu.iu.uits.lms.coursesetupwizard.model.SelectableCourse;
+import edu.iu.uits.lms.coursesetupwizard.service.WizardServiceException;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.service.OidcTokenUtils;
 import lombok.AllArgsConstructor;
@@ -300,10 +301,15 @@ public class ImportController extends WizardController {
             courseSessionService.addAttributeToSession(httpSession, courseId, KEY_IMPORT_MODEL, sessionImportModel);
             break;
          case ACTION_SUBMIT:
-            wizardService.doCourseImport(sessionImportModel, oidcTokenUtils.getUserLoginId());
-            model.addAttribute("redirectUrl", getCanvasContentMigrationsToolUrl(courseId));
-            // redirect to the Canvas tool
-            return new ModelAndView(redirectToCanvas());
+            try {
+               wizardService.doCourseImport(sessionImportModel, oidcTokenUtils.getUserLoginId());
+               model.addAttribute("redirectUrl", getCanvasContentMigrationsToolUrl(courseId));
+               // redirect to the Canvas tool
+               return new ModelAndView(redirectToCanvas());
+            } catch (WizardServiceException e) {
+               model.addAttribute("submitError", e.getMessage());
+               return review(courseId, model, httpSession);
+            }
       }
       String url = MessageFormat.format(PAGES[pageIndex], courseId);
       return new ModelAndView("redirect:" + url);

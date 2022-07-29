@@ -12,6 +12,7 @@
 
     <div class="rvt-row rvt-p-top-md">
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
+            <div th:if="${submitError}" th:insert="fragments.html :: submitError"></div>
             <form id="wizard-form-homepage" th:action="@{|/app/homepage/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
                 <h2>Add a customizable home page</h2>
                 <p>
