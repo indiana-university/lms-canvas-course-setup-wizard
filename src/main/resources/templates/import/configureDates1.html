@@ -17,9 +17,7 @@
       <form id="wizard-form-dates1" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
         <h2>Adjust dates</h2>
 
-        <h3 class="rvt-ts-18 rvt-p-top-sm">
-          Import from<br /><span class="rvt-text-regular">[[${selectedCourseLabel}]]</span>
-        </h3>
+        <div th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
 
         <p>
           As part of a course import, you can adjust the due dates associated with course events

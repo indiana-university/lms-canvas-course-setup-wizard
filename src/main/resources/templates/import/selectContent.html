@@ -17,9 +17,7 @@
       <form id="wizard-form-content" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
         <h2>Select content</h2>
 
-        <h3 class="rvt-ts-18 rvt-p-tb-sm">
-          Import from<br /><span class="rvt-text-regular">[[${selectedCourseLabel}]]</span>
-        </h3>
+        <div class="rvt-p-bottom-xs" th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
 
         <fieldset class="rvt-fieldset">
           <legend>

@@ -18,9 +18,7 @@
 
         <h2>Adjust dates</h2>
 
-        <h3 class="rvt-ts-18 rvt-p-top-sm">
-          Import from<br /><span class="rvt-text-regular">[[${selectedCourseLabel}]]</span>
-        </h3>
+        <div th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
 
         <p>
           As part of the date adjustment process, you can change the days of the week on which

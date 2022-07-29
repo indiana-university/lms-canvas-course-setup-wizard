@@ -17,9 +17,7 @@
       <form id="wizard-form-submit" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
         <h2>Review and submit</h2>
 
-        <h3 class="rvt-ts-18 rvt-p-top-sm">
-          Import from<br /><span class="rvt-text-regular">[[${selectedCourseLabel}]]</span>
-        </h3>
+        <div class="th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
 
         <th:block th:if="${selectedContentOption == T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).ALL.name()}">
           <p>
