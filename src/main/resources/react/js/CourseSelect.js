@@ -39,7 +39,7 @@ class CourseSelect extends React.Component {
                 aria-labelledby="course-select-label"
                 inputId="course-select-input"
                 name="selectedCourseId"
-                placeholder="Select a Course"
+                placeholder="Select a course"
               />
           </>
         );
