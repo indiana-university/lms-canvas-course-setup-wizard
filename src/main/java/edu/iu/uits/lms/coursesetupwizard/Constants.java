@@ -11,6 +11,8 @@ public class Constants {
     public static final String EHCACHE_PROVIDER_TYPE = "org.ehcache.jsr107.EhcacheCachingProvider";
 
     public static final String INSTRUCTOR_COURSES_CACHE_NAME = "InstructorCourses";
+    public static final String COURSE_TEMPLATES_CACHE_NAME = "CourseTemplates";
+
 
     public static final String KEY_IMPORT_MODEL = "importModel";
     public static final String ACTION_BACK = "back";

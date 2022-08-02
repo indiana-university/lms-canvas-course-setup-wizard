@@ -16,6 +16,7 @@ import javax.cache.expiry.Duration;
 import javax.cache.spi.CachingProvider;
 import java.util.concurrent.TimeUnit;
 
+import static edu.iu.uits.lms.coursesetupwizard.Constants.COURSE_TEMPLATES_CACHE_NAME;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.EHCACHE_PROVIDER_TYPE;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.INSTRUCTOR_COURSES_CACHE_NAME;
 
@@ -74,6 +75,7 @@ public class EhCacheConfig {
       final javax.cache.CacheManager cacheManager = provider.getCacheManager();
 
       createCacheIfMissing(cacheManager, INSTRUCTOR_COURSES_CACHE_NAME, mutableLongConfiguration);
+      createCacheIfMissing(cacheManager, COURSE_TEMPLATES_CACHE_NAME, mutableLongConfiguration);
 
       return new JCacheCacheManager(cacheManager);
    }

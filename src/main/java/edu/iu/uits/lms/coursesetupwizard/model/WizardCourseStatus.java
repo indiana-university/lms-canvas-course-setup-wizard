@@ -53,6 +53,9 @@ public class WizardCourseStatus {
    @Column(name = "DATE_ADJUSTMENT_OPTION")
    private Constants.DATE_OPTION dateAdjustmentOption;
 
+   @Column(name = "SELECTED_TEMPLATE_ID")
+   private String selectedTemplateId;
+
    @Column(name = "CONTENT_MIGRATION_ID")
    private String contentMigrationId;
 

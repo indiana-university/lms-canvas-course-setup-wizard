@@ -14,6 +14,7 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 
 import java.time.Duration;
 
+import static edu.iu.uits.lms.coursesetupwizard.Constants.COURSE_TEMPLATES_CACHE_NAME;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.INSTRUCTOR_COURSES_CACHE_NAME;
 
 @Profile("redis-cache")
@@ -34,7 +35,7 @@ public class RedisCacheConfig {
         return RedisCacheConfiguration.defaultCacheConfig()
               .entryTtl(Duration.ofSeconds(ttl))
               .disableCachingNullValues()
-              .prefixCacheNameWith(toolConfig.getEnv() + "-gct");
+              .prefixCacheNameWith(toolConfig.getEnv() + "-csw");
     }
 
     @Bean(name = "CourseSetupWizardCacheManager")
@@ -45,6 +46,7 @@ public class RedisCacheConfig {
 
         return RedisCacheManager.builder(redisConnectionFactory)
               .withCacheConfiguration(INSTRUCTOR_COURSES_CACHE_NAME, cswCacheConfiguration())
+              .withCacheConfiguration(COURSE_TEMPLATES_CACHE_NAME, cswCacheConfiguration())
               .build();
     }
 }

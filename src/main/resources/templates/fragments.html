@@ -46,6 +46,13 @@
     </div>
 </div>
 
+<div th:fragment="submitError">
+    <div id="submit-alert" class="rvt-alert rvt-alert--danger [ rvt-m-top-md ]" role="alert" aria-labelledby="error-alert-title" data-rvt-alert="error">
+        <div class="rvt-alert__title" id="error-alert-title">Submission Error</div>
+        <p class="rvt-alert__message">There was an error with your submission. Please try again.  If the problem persists, contact the support center.</p>
+    </div>
+</div>
+
 <div th:fragment="importFromCourse (courseName)">
     <h3 class="rvt-ts-18 rvt-p-top-sm">
         <span class="rvt-display-block rvt-p-bottom-xs">Import from</span>

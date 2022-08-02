@@ -36,6 +36,7 @@ spring:
 course-setup-wizard:
   version: @app.version@
   env: ${app.env}
+  hierarchyRootNodeName: Indiana University
 
 server:
   error:

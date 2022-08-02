@@ -31,7 +31,7 @@ import static edu.iu.uits.lms.coursesetupwizard.Constants.KEY_IMPORT_MODEL;
 public class WizardController extends OidcTokenAwareController {
 
     @Autowired
-    private ToolConfig toolConfig = null;
+    protected ToolConfig toolConfig = null;
 
     @Autowired
     protected WizardService wizardService = null;
@@ -86,7 +86,7 @@ public class WizardController extends OidcTokenAwareController {
             case TEMPLATE:
                 return new ModelAndView("redirect:/app/template/" + courseId + "/choose");
             case HOMEPAGE:
-                return new ModelAndView("index");
+                return new ModelAndView("redirect:/app/homepage/" + courseId + "/homePage");
             default:
                 return new ModelAndView("index");
         }
