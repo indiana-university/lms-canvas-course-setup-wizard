@@ -100,11 +100,8 @@
 <th:block layout:fragment="script">
     <script th:inline="javascript">
     function doSubmit(elem) {
-        console.log("template id (pre): " + document.getElementById("selectedTemplateId").value);
         document.getElementById("selectedTemplateId").value = elem.dataset.templateid;
         document.getElementById("selectedTemplateName").value = elem.dataset.templatename;
-        console.log("template id: " + document.getElementById("selectedTemplateId").value);
-        console.log("template name: " + document.getElementById("selectedTemplateName").value);
         elem.form.submit();
     }
     </script>

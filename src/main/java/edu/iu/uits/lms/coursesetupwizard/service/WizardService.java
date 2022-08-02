@@ -96,7 +96,7 @@ public class WizardService {
             .collect(Collectors.toList());
    }
 
-   public void doCourseImport(ImportModel importModel, String userLoginId) {
+   public void doCourseImport(ImportModel importModel, String userLoginId) throws WizardServiceException {
       String courseId = importModel.getCourseId();
       String sourceCourseId = importModel.getSelectedCourseId();
 
@@ -149,26 +149,35 @@ public class WizardService {
       ContentMigration cm = contentMigrationService.initiateContentMigration(courseId, null, wrapper);
       log.info("{}", cm);
 
-      Constants.MAIN_OPTION mainOption = Constants.MAIN_OPTION.valueOf(importModel.getMenuChoice());
-      Constants.CONTENT_OPTION contentOption = EnumUtils.getEnum(Constants.CONTENT_OPTION.class, importModel.getImportContentOption());
-      Constants.DATE_OPTION dateOption = EnumUtils.getEnum(Constants.DATE_OPTION.class, importModel.getDateOption());
+      if (cm != null) {
+         Constants.MAIN_OPTION mainOption = Constants.MAIN_OPTION.valueOf(importModel.getMenuChoice());
+         Constants.CONTENT_OPTION contentOption = EnumUtils.getEnum(Constants.CONTENT_OPTION.class, importModel.getImportContentOption());
+         Constants.DATE_OPTION dateOption = EnumUtils.getEnum(Constants.DATE_OPTION.class, importModel.getDateOption());
 
-      WizardCourseStatus wizardCourseStatus = new WizardCourseStatus();
-      wizardCourseStatus.setCourseId(courseId);
-      wizardCourseStatus.setCompletedBy(userLoginId);
-      wizardCourseStatus.setContentOption(contentOption);
-      wizardCourseStatus.setDateAdjustmentOption(dateOption);
-      wizardCourseStatus.setMainOption(mainOption);
-      wizardCourseStatus.setContentMigrationId(cm.getId());
-      wizardCourseStatusRepository.save(wizardCourseStatus);
-
+         WizardCourseStatus wizardCourseStatus = new WizardCourseStatus();
+         wizardCourseStatus.setCourseId(courseId);
+         wizardCourseStatus.setCompletedBy(userLoginId);
+         wizardCourseStatus.setContentOption(contentOption);
+         wizardCourseStatus.setDateAdjustmentOption(dateOption);
+         wizardCourseStatus.setMainOption(mainOption);
+         wizardCourseStatus.setContentMigrationId(cm.getId());
+         wizardCourseStatusRepository.save(wizardCourseStatus);
+      } else {
+         throw new WizardServiceException("Unable to perform course import");
+      }
    }
 
-   public void doApplyTemplate(ImportModel importModel, String userLoginId, String appBaseUrl) {
+   public void doApplyTemplate(ImportModel importModel, String userLoginId, String appBaseUrl) throws WizardServiceException {
       String courseId = importModel.getCourseId();
 
+      HierarchyResource templateForCourse = null;
       try {
-         HierarchyResource templateForCourse = hierarchyResourceService.getTemplate(Long.parseLong(importModel.getSelectedTemplateId()));
+         templateForCourse = hierarchyResourceService.getTemplate(Long.parseLong(importModel.getSelectedTemplateId()));
+      } catch (HierarchyResourceException e) {
+         throw new WizardServiceException("Unable to get template");
+      }
+
+      if (templateForCourse != null) {
          StoredFile storedFile = templateForCourse.getStoredFile();
 
          //Url for the file download.  Should come from iu-custom, but might be self-hosted, or from some other app (api-portal, etc)
@@ -184,21 +193,23 @@ public class WizardService {
          ContentMigration cm = contentMigrationService.initiateContentMigration(courseId, null, wrapper);
          log.info("{}", cm);
 
-         Constants.MAIN_OPTION mainOption = Constants.MAIN_OPTION.valueOf(importModel.getMenuChoice());
+         if (cm != null) {
+            Constants.MAIN_OPTION mainOption = Constants.MAIN_OPTION.valueOf(importModel.getMenuChoice());
 
-         WizardCourseStatus wizardCourseStatus = new WizardCourseStatus();
-         wizardCourseStatus.setCourseId(courseId);
-         wizardCourseStatus.setCompletedBy(userLoginId);
-         wizardCourseStatus.setMainOption(mainOption);
-         wizardCourseStatus.setSelectedTemplateId(importModel.getSelectedTemplateId());
-         wizardCourseStatus.setContentMigrationId(cm.getId());
-         wizardCourseStatusRepository.save(wizardCourseStatus);
-      } catch (HierarchyResourceException e) {
-         throw new RuntimeException(e);
+            WizardCourseStatus wizardCourseStatus = new WizardCourseStatus();
+            wizardCourseStatus.setCourseId(courseId);
+            wizardCourseStatus.setCompletedBy(userLoginId);
+            wizardCourseStatus.setMainOption(mainOption);
+            wizardCourseStatus.setSelectedTemplateId(importModel.getSelectedTemplateId());
+            wizardCourseStatus.setContentMigrationId(cm.getId());
+            wizardCourseStatusRepository.save(wizardCourseStatus);
+         } else {
+            throw new WizardServiceException("Unable to apply template to course");
+         }
       }
    }
 
-   public void doSetHomepage(ImportModel importModel, String userLoginId, String appBaseUrl) {
+   public void doSetHomepage(ImportModel importModel, String userLoginId, String appBaseUrl) throws WizardServiceException {
       String courseId = importModel.getCourseId();
 
       //Update course front page
@@ -207,8 +218,14 @@ public class WizardService {
       //Get the specific template
       String homepageTemplateId = toolConfig.getHomepageTemplateId();
 
+      HierarchyResource templateForCourse = null;
       try {
-         HierarchyResource templateForCourse = hierarchyResourceService.getTemplate(Long.parseLong(homepageTemplateId));
+         templateForCourse = hierarchyResourceService.getTemplate(Long.parseLong(homepageTemplateId));
+      } catch (HierarchyResourceException e) {
+         throw new WizardServiceException("Unable to get template");
+      }
+
+      if (templateForCourse != null) {
          StoredFile storedFile = templateForCourse.getStoredFile();
 
          //Url for the file download.  Should come from iu-custom, but might be self-hosted, or from some other app (api-portal, etc)
@@ -224,17 +241,19 @@ public class WizardService {
          ContentMigration cm = contentMigrationService.initiateContentMigration(courseId, null, wrapper);
          log.info("{}", cm);
 
-         Constants.MAIN_OPTION mainOption = Constants.MAIN_OPTION.valueOf(importModel.getMenuChoice());
+         if (cm != null) {
+            Constants.MAIN_OPTION mainOption = Constants.MAIN_OPTION.valueOf(importModel.getMenuChoice());
 
-         WizardCourseStatus wizardCourseStatus = new WizardCourseStatus();
-         wizardCourseStatus.setCourseId(courseId);
-         wizardCourseStatus.setCompletedBy(userLoginId);
-         wizardCourseStatus.setMainOption(mainOption);
-         wizardCourseStatus.setSelectedTemplateId(homepageTemplateId);
-         wizardCourseStatus.setContentMigrationId(cm.getId());
-         wizardCourseStatusRepository.save(wizardCourseStatus);
-      } catch (HierarchyResourceException e) {
-         throw new RuntimeException(e);
+            WizardCourseStatus wizardCourseStatus = new WizardCourseStatus();
+            wizardCourseStatus.setCourseId(courseId);
+            wizardCourseStatus.setCompletedBy(userLoginId);
+            wizardCourseStatus.setMainOption(mainOption);
+            wizardCourseStatus.setSelectedTemplateId(homepageTemplateId);
+            wizardCourseStatus.setContentMigrationId(cm.getId());
+            wizardCourseStatusRepository.save(wizardCourseStatus);
+         } else {
+            throw new WizardServiceException("Unable to set course homepage");
+         }
       }
    }
 

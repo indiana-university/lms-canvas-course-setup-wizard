@@ -1,6 +1,7 @@
 package edu.iu.uits.lms.coursesetupwizard.controller;
 
 import edu.iu.uits.lms.coursesetupwizard.model.ImportModel;
+import edu.iu.uits.lms.coursesetupwizard.service.WizardServiceException;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.service.OidcTokenUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -60,10 +61,15 @@ public class HomePageController extends WizardController {
                 if (templateHostingUrl == null) {
                     templateHostingUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
                 }
-                wizardService.doSetHomepage(sessionImportModel, oidcTokenUtils.getUserLoginId(), templateHostingUrl);
-                model.addAttribute("redirectUrl", getCanvasContentMigrationsToolUrl(courseId));
-                // redirect to the Canvas tool
-                return new ModelAndView(redirectToCanvas());
+                try {
+                    wizardService.doSetHomepage(sessionImportModel, oidcTokenUtils.getUserLoginId(), templateHostingUrl);
+                    model.addAttribute("redirectUrl", getCanvasContentMigrationsToolUrl(courseId));
+                    // redirect to the Canvas tool
+                    return new ModelAndView(redirectToCanvas());
+                } catch (WizardServiceException e) {
+                    model.addAttribute("submitError", e.getMessage());
+                    return homepage(courseId, model, httpSession);
+                }
         }
 
         return new ModelAndView("redirect:" + url);
