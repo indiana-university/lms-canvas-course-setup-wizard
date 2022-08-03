@@ -16,10 +16,9 @@
     <div class="rvt-cols-8-md rvt-flow rvt-prose">
       <form id="wizard-form-submit" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
         <h2>Review and submit</h2>
-        <dl>
-          <dt>Import from</dt>
-          <dd th:text="${selectedCourseLabel}">Course Label</dd>
-        </dl>
+
+        <div class="th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
+
         <th:block th:if="${selectedContentOption == T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).ALL.name()}">
           <p>
             After you <span class="rvt-text-bold">Submit</span> this form, you will be redirected from this

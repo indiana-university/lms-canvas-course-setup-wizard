@@ -15,54 +15,51 @@
   <div class="rvt-row rvt-p-top-md">
     <div class="rvt-cols-8-md rvt-flow rvt-prose">
       <form id="wizard-form-dates3" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
-        <fieldset class="rvt-fieldset">
-          <legend class="rvt-legend [ rvt-ts-20 rvt-p-bottom-xs ]">
-            <h2>Adjust dates</h2>
-          </legend>
-          <dl>
-            <dt>Import from</dt>
-            <dd th:text="${selectedCourseLabel}">Course Label</dd>
-          </dl>
-          <p>
-            As part of the date adjustment process, you can change the days of the week on which
-            assignments are due. For example, you can opt to move Monday due dates in the imported
-            course to Tuesdays in the upcoming course.
-          </p>
-          <p>
-            Use the form below to shift due dates from the day of week specified in the original
-            imported course (left column) to a different day in the new course (right column).
-          </p>
-          <table class="rvt-table-plain table-width-override">
-            <caption class="rvt-sr-only">Table of inputs for day of the week adjustments</caption>
-            <thead>
-            <tr>
-              <th scope="col" id="original-day">Original day of the week</th>
-              <th scope="col" id="new-day">New day of the week</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="item,itemStat : ${ {'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'} }">
-              <th scope="row" th:id="${#strings.toLowerCase(item)}" th:text="${item}">Day</th>
-              <td>
-                <select th:id="|${#strings.toLowerCase(item)}-input|" th:name="|dayChanges.${#strings.toLowerCase(item)}ChangeTo|"
-                        class="rvt-select" th:aria-labelledby="|new-day ${#strings.toLowerCase(item)}|"
-                        th:with="selectedDay=${selectedDayChanges[#strings.toLowerCase(item)]}">
-                  <option th:selected="${selectedDay == null}" value="nochange">No change</option>
-                  <option th:selected="${selectedDay == '0'}" value="0">Sunday</option>
-                  <option th:selected="${selectedDay == '1'}" value="1">Monday</option>
-                  <option th:selected="${selectedDay == '2'}" value="2">Tuesday</option>
-                  <option th:selected="${selectedDay == '3'}" value="3">Wednesday</option>
-                  <option th:selected="${selectedDay == '4'}" value="4">Thursday</option>
-                  <option th:selected="${selectedDay == '5'}" value="5">Friday</option>
-                  <option th:selected="${selectedDay == '6'}" value="6">Saturday</option>
-                </select>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-          <input type="hidden" name="currentPage" value="5">
-          <div th:insert="import/wizardSteps.html :: buttons"></div>
-        </fieldset>
+
+        <h2>Adjust dates</h2>
+
+        <div th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
+
+        <p>
+          As part of the date adjustment process, you can change the days of the week on which
+          assignments are due. For example, you can opt to move Monday due dates in the imported
+          course to Tuesdays in the upcoming course.
+        </p>
+        <p>
+          Use the form below to shift due dates from the day of week specified in the original
+          imported course (left column) to a different day in the new course (right column).
+        </p>
+        <table class="rvt-table-plain table-width-override">
+          <caption class="rvt-sr-only">Table of inputs for day of the week adjustments</caption>
+          <thead>
+          <tr>
+            <th scope="col" id="original-day">Original day of the week</th>
+            <th scope="col" id="new-day">New day of the week</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="item,itemStat : ${ {'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'} }">
+            <th scope="row" th:id="${#strings.toLowerCase(item)}" th:text="${item}">Day</th>
+            <td>
+              <select th:id="|${#strings.toLowerCase(item)}-input|" th:name="|dayChanges.${#strings.toLowerCase(item)}ChangeTo|"
+                      class="rvt-select" th:aria-labelledby="|${#strings.toLowerCase(item)} new-day |"
+                      th:with="selectedDay=${selectedDayChanges[#strings.toLowerCase(item)]}">
+                <option th:selected="${selectedDay == null}" value="nochange">No change</option>
+                <option th:selected="${selectedDay == '0'}" value="0">Sunday</option>
+                <option th:selected="${selectedDay == '1'}" value="1">Monday</option>
+                <option th:selected="${selectedDay == '2'}" value="2">Tuesday</option>
+                <option th:selected="${selectedDay == '3'}" value="3">Wednesday</option>
+                <option th:selected="${selectedDay == '4'}" value="4">Thursday</option>
+                <option th:selected="${selectedDay == '5'}" value="5">Friday</option>
+                <option th:selected="${selectedDay == '6'}" value="6">Saturday</option>
+              </select>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+        <input type="hidden" name="currentPage" value="5">
+        <div th:insert="import/wizardSteps.html :: buttons"></div>
+
       </form>
     </div>
   </div>

@@ -15,25 +15,25 @@
   <div class="rvt-row rvt-p-top-md">
     <div class="rvt-cols-8-md rvt-flow rvt-prose">
       <form id="wizard-form-content" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+        <h2>Select content</h2>
+
+        <div class="rvt-p-bottom-xs" th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
+
         <fieldset class="rvt-fieldset">
-          <legend class="rvt-legend [ rvt-ts-20 rvt-p-bottom-xs ]">
-            <h2>Select content</h2>
+          <legend>
+              <span class="rvt-sr-only">Choose how you would like to import your content. Required</span>
           </legend>
-          <dl>
-            <dt>Import from</dt>
-            <dd th:text="${selectedCourseLabel}">Course Label</dd>
-          </dl>
           <ul class="rvt-list-plain">
             <li>
               <div class="rvt-radio">
-                <input type="radio" name="importContentOption" id="radio-1-1" aria-describedby="option-message"
+                <input type="radio" name="importContentOption" id="radio-1-1"
                        th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).ALL.name()}">
                 <label for="radio-1-1">Import the entire course as is (all content and settings)</label>
               </div>
             </li>
             <li>
               <div class="rvt-radio">
-                <input type="radio" name="importContentOption" id="radio-1-2" aria-describedby="option-message"
+                <input type="radio" name="importContentOption" id="radio-1-2"
                        th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).SELECT.name()}">
                 <label for="radio-1-2">
                   Select specific content to import (after you submit the wizard, you’ll be prompted to select the tools and items you wish to import)
@@ -43,8 +43,10 @@
           </ul>
           <div th:insert="fragments.html :: selectAlert"></div>
           <input type="hidden" name="currentPage" value="2">
-          <div th:insert="import/wizardSteps.html :: buttons(nextOnclick='return doSubmit();')"></div>
         </fieldset>
+
+        <div th:insert="import/wizardSteps.html :: buttons(nextOnclick='return doSubmit();')"></div>
+
       </form>
     </div>
   </div>
@@ -58,7 +60,7 @@
         if (checkedRadio == null) {
             var allRadio = document.getElementsByName("importContentOption");
             allRadio.forEach(btn => {
-                btn.setAttribute("aria-invalid", "true");
+                btn.setAttribute("aria-describedby", "option-message");
             })
             alertMessage = document.getElementById('select-alert');
             alertMessage.classList.remove("rvt-display-none");
