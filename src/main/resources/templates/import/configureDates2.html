@@ -15,55 +15,67 @@
   <div class="rvt-row rvt-p-top-md">
     <div class="rvt-cols-8-md rvt-flow rvt-prose">
       <form id="wizard-form-dates2" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
-        <fieldset class="rvt-fieldset">
-          <legend class="rvt-legend [ rvt-ts-20 rvt-p-bottom-xs ]">
-            <h2>Adjust dates</h2>
-          </legend>
-          <dl>
-            <dt>Import from</dt>
-            <dd th:text="${selectedCourseLabel}">Course Label</dd>
-          </dl>
-          <p>You have opted to adjust dates during the import.</p>
-          <p>
-            Use the form below to specify how dates should be adjusted. Canvas will use the dates
-            you provide to distribute event and due dates across the term for the current course.
-          </p>
-          <p>
-            For best results:
-            <ul class="rvt-list">
-              <li>If the original and current courses have the same term length (e.g. 16 week, 8 week, etc.), enter the first day of class for both classes and leave the last day of class empty for both. Use the actual start date for both classes, not the term start date.</li>
-              <li>If the original course and current course have different term lengths, enter first and last day dates for both courses, using the actual first and last date of class, not the term start and end dates.</li>
-            </ul>
-          </p>
-          <table class="rvt-table-plain">
-            <caption class="rvt-sr-only">Table of inputs for start and end dates</caption>
-            <thead>
-            <tr>
-              <th></th>
-              <th scope="col" id="first-class">First day of class</th>
-              <th scope="col" id="last-class">Last day of class</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <th scope="row" id="original-course">Original course</th>
-              <td><input type="date" id="original-first" name="classDates.origFirst" class="rvt-text-input"
-                         aria-labelledby="original-course first-class" th:value="${selectedClassDates?.origFirst}"/></td>
-              <td><input type="date" id="original-last" name="classDates.origLast" class="rvt-text-input"
-                         aria-labelledby="original-course last-class" th:value="${selectedClassDates?.origLast}"/></td>
-            </tr>
-            <tr>
-              <th scope="row" id="current-course">Current course</th>
-              <td><input type="date" id="current-first" name="classDates.currentFirst" class="rvt-text-input"
-                         aria-labelledby="current-course first-class" th:value="${selectedClassDates?.currentFirst}"/></td>
-              <td><input type="date" id="current-last" name="classDates.currentLast" class="rvt-text-input"
-                         aria-labelledby="current-course last-class" th:value="${selectedClassDates?.currentLast}"/></td>
-            </tr>
-            </tbody>
-          </table>
-          <input type="hidden" name="currentPage" value="4">
-          <div th:insert="import/wizardSteps.html :: buttons"></div>
-        </fieldset>
+
+        <h2>Adjust dates</h2>
+
+        <div th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
+
+        <p>You have opted to adjust dates during the import.</p>
+        <p>
+          Use the form below to specify how dates should be adjusted. Canvas will use the dates
+          you provide to distribute event and due dates across the term for the current course.
+        </p>
+        <p>
+          For best results:
+          <ul class="rvt-list">
+            <li>If the original and current courses have the same term length (e.g. 16 week, 8 week, etc.), enter the first day of class for both classes and leave the last day of class empty for both. Use the actual start date for both classes, not the term start date.</li>
+            <li>If the original course and current course have different term lengths, enter first and last day dates for both courses, using the actual first and last date of class, not the term start and end dates.</li>
+          </ul>
+        </p>
+        <table class="rvt-table-plain">
+          <caption class="rvt-sr-only">Table of inputs for start and end dates</caption>
+          <thead>
+          <tr>
+            <td></td>
+            <th scope="col" id="first-class">First day of class</th>
+            <th scope="col" id="last-class">Last day of class</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <th scope="row" id="original-course">Original course</th>
+            <td>
+              <label for="original-first" class="rvt-sr-only">Enter the first day of class in the original course</label>
+              <input type="date" id="original-first" name="classDates.origFirst" class="rvt-text-input"
+                       th:value="${selectedClassDates?.origFirst}" aria-describedby="date-format"/>
+            </td>
+            <td>
+              <label for="original-last" class="rvt-sr-only">Enter the last day of class in the original course</label>
+              <input type="date" id="original-last" name="classDates.origLast" class="rvt-text-input"
+                       th:value="${selectedClassDates?.origLast}" aria-describedby="date-format"/></td>
+          </tr>
+          <tr>
+            <th scope="row" id="current-course">Current course</th>
+            <td>
+              <label for="current-first" class="rvt-sr-only">Enter the first day of class in the current course</label>
+              <input type="date" id="current-first" name="classDates.currentFirst" class="rvt-text-input"
+                       th:value="${selectedClassDates?.currentFirst}" aria-describedby="date-format"/>
+            </td>
+            <td>
+              <label for="current-last" class="rvt-sr-only">Enter the last day of class in the current course</label>
+              <input type="date" id="current-last" name="classDates.currentLast" class="rvt-text-input"
+                       th:value="${selectedClassDates?.currentLast}" aria-describedby="date-format"/>
+
+            </td>
+          </tr>
+          </tbody>
+        </table>
+
+        <span hidden id="date-format">MM/DD/YYYY format</span>
+
+        <input type="hidden" name="currentPage" value="4">
+        <div th:insert="import/wizardSteps.html :: buttons"></div>
+
       </form>
     </div>
   </div>
