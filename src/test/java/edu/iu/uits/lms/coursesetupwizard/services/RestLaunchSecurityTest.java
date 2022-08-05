@@ -24,7 +24,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collection;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(properties = {"oauth.tokenprovider.url=http://foo"})
@@ -49,7 +51,7 @@ public class RestLaunchSecurityTest {
    public void restNoAuthnLaunch() throws Exception {
       //This is a secured endpoint and should not allow access without authn
       SecurityContextHolder.getContext().setAuthentication(null);
-      mvc.perform(get("/rest/popup/1234/user1/status")
+      mvc.perform(get("/rest/coursestatus/all")
                   .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
                   .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isUnauthorized());
@@ -64,7 +66,7 @@ public class RestLaunchSecurityTest {
       JwtAuthenticationToken token = new JwtAuthenticationToken(jwt, authorities);
 
       //This is a secured endpoint and should not allow access without authn
-      mvc.perform(get("/rest/popup/1234/user1/status")
+      mvc.perform(get("/rest/coursestatus/all")
                   .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
                   .contentType(MediaType.APPLICATION_JSON)
                   .with(authentication(token)))
@@ -79,11 +81,31 @@ public class RestLaunchSecurityTest {
       JwtAuthenticationToken token = new JwtAuthenticationToken(jwt, authorities);
 
       //This is a secured endpoint and should not not allow access without authn
-      mvc.perform(get("/rest/popup/1234/user1/status")
+      mvc.perform(get("/rest/coursestatus/all")
                   .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
                   .contentType(MediaType.APPLICATION_JSON)
                   .with(authentication(token)))
             .andExpect(status().isForbidden());
+   }
+
+   @Test
+   public void restNoAuthnOpenEndpoint() throws Exception {
+      //This is an unsecured endpoint and should allow access without authn
+      SecurityContextHolder.getContext().setAuthentication(null);
+      mvc.perform(get("/rest/popup/1234/asdf/status")
+                  .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
+                  .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
+   }
+
+   @Test
+   public void restNoAuthnOpenEndpointPost() throws Exception {
+      //This is an unsecured endpoint and should allow access without authn
+      SecurityContextHolder.getContext().setAuthentication(null);
+      mvc.perform(post("/rest/popup/1234/asdf/dismiss").with(csrf())
+                  .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
+                  .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk());
    }
 
 }

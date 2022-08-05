@@ -4,6 +4,8 @@ import edu.iu.uits.lms.coursesetupwizard.model.PopupStatus;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +22,10 @@ public class PopupRestController {
    WizardService wizardService = null;
 
    @GetMapping("/{courseId}/{userId}/status")
-   public PopupStatus popupStatus(@PathVariable String courseId, @PathVariable String userId) {
-      return wizardService.getPopupDismissedStatus(courseId, userId);
+   public ResponseEntity<PopupStatus> popupStatus(@PathVariable String courseId, @PathVariable String userId, CsrfToken token) {
+      return ResponseEntity.ok()
+            .header(token.getHeaderName(), token.getToken())
+            .body(wizardService.getPopupDismissedStatus(courseId, userId));
    }
 
    @PostMapping("/{courseId}/{userId}/dismiss")
