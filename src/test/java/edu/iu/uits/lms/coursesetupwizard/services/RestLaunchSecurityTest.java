@@ -108,4 +108,14 @@ public class RestLaunchSecurityTest {
             .andExpect(status().isOk());
    }
 
+   @Test
+   public void restNoAuthnOpenEndpointMissingCsrfPost() throws Exception {
+      //This is an unsecured endpoint and should allow access without authn
+      SecurityContextHolder.getContext().setAuthentication(null);
+      mvc.perform(post("/rest/popup/1234/asdf/dismiss")
+                  .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
+                  .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isForbidden());
+   }
+
 }
