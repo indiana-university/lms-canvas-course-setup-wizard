@@ -50,16 +50,16 @@
                 in the sidebar.
             </p>
         </div>
-        <div class="rvt-dialog__controls">
-            <form id="wizard-form-actions" th:action="@{|/app/${courseId}/exit|}" method="post" enctype="multipart/form-data">
+        <form id="wizard-form-actions" th:action="@{|/app/${courseId}/exit|}" method="post" enctype="multipart/form-data">
+            <div class="rvt-dialog__controls">
                 <button class="rvt-button" role="button">
                     <span>Yes, exit</span>
                 </button>
-                <button type="button" class="rvt-button" data-rvt-dialog-close="dialogExit" role="button">
+                <button type="button" class="rvt-button rvt-button--secondary" data-rvt-dialog-close="dialogExit" role="button">
                     <span>No, return to wizard</span>
                 </button>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
 
@@ -86,8 +86,8 @@
 
 <div th:fragment="importFromCourse (courseName)">
     <h3 class="rvt-ts-18 rvt-p-top-sm">
-        <span class="rvt-display-block rvt-p-bottom-xs">Import from</span>
-        <span class="rvt-text-regular" th:text="${courseName}"></span>
+        <span class="rvt-display-block rvt-p-bottom-xs">Import from:</span>
+        <span th:text="${courseName}"></span>
     </h3>
 </div>
 
