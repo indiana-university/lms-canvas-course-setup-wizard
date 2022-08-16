@@ -1,3 +1,5 @@
+package edu.iu.uits.lms.coursesetupwizard.config;
+
 /*-
  * #%L
  * course-setup-wizard
@@ -30,57 +32,43 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-.table-width-override {
-    width: auto !important;
+
+import edu.iu.uits.lms.canvas.helpers.CanvasConstants;
+import edu.iu.uits.lms.lti.LTIConstants;
+import edu.iu.uits.lms.lti.repository.DefaultInstructorRoleRepository;
+import edu.iu.uits.lms.lti.service.LmsDefaultGrantedAuthoritiesMapper;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.Arrays;
+import java.util.List;
+
+@Slf4j
+public class CustomRoleMapper extends LmsDefaultGrantedAuthoritiesMapper {
+
+    public CustomRoleMapper(DefaultInstructorRoleRepository defaultInstructorRoleRepository) {
+        super(defaultInstructorRoleRepository);
+    }
+
+    @Override
+    protected String returnEquivalentAuthority(String[] userRoles, List<String> instructorRoles) {
+        List<String> userRoleList = Arrays.asList(userRoles);
+
+        // let TAs use the tool
+        if (userRoleList.contains(CanvasConstants.TA_ROLE)) {
+            return LTIConstants.INSTRUCTOR_AUTHORITY;
+        }
+
+        // let Designers use the tool
+        if (userRoleList.contains(CanvasConstants.DESIGNER_ROLE)) {
+            return LTIConstants.INSTRUCTOR_AUTHORITY;
+        }
+
+        for (String instructorRole : instructorRoles) {
+            if (userRoleList.contains(instructorRole)) {
+                return LTIConstants.INSTRUCTOR_AUTHORITY;
+            }
+        }
+
+        return LTIConstants.STUDENT_AUTHORITY;
+    }
 }
-
-.header-flow-override {
-    margin-top: 0rem !important;
-}
-
-/* Loading icon and text while saving */
-
-.loading-inline-text {
-    font-style: italic;
-    padding-left: 0.4em;
-}
-
-.loading-inline {
-    opacity: 0.8;
-}
-
-.rvt-dialog__controls .loading-inline {
-    padding-right: 1.0em;
-}
-
-/**
-* Set the placeholder text in the react-select to the minimum
-* contrast required to pass accessibility
-*/
-#react-select-2-placeholder {
-	 color: #767676;
-	 opacity: 1;
-}
-
-/**
- *  to preserve spacing when adding sr-only text
-*/
-.sr-spacing {
-    white-space:pre;
-}
-
-
-/* Intial Loading screen */
-#load {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto;
-    width: 25%;
-    height: 25%;
-    white-space: nowrap;
-}
-/* End of loading screen stuff */
-
