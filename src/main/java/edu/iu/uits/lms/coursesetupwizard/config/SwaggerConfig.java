@@ -33,7 +33,9 @@ package edu.iu.uits.lms.coursesetupwizard.config;
  * #L%
  */
 
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.OAuthFlow;
 import io.swagger.v3.oas.annotations.security.OAuthFlows;
 import io.swagger.v3.oas.annotations.security.OAuthScope;
@@ -45,7 +47,7 @@ import org.springframework.context.annotation.Profile;
 
 @Profile("swagger")
 @Configuration
-//@OpenAPIDefinition(info = @Info(title = "Course Setup Wizard REST Endpoints", version = "${course-setup-wizard.version}"))
+@OpenAPIDefinition(info = @Info(title = "Course Setup Wizard REST Endpoints", version = "${course-setup-wizard.version}"))
 @SecurityScheme(name = "security_auth_coursesetupwizard", type = SecuritySchemeType.OAUTH2,
       flows = @OAuthFlows(authorizationCode = @OAuthFlow(
             authorizationUrl = "${springdoc.oAuthFlow.authorizationUrl}",
