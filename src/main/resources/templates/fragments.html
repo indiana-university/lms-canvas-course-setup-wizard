@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<!--
+  #%L
+  course-setup-wizard
+  %%
+  Copyright (C) 2022 Indiana University
+  %%
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice, this
+     list of conditions and the following disclaimer.
+  
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+  3. Neither the name of the Indiana University nor the names of its contributors
+     may be used to endorse or promote products derived from this software without
+     specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+  #L%
+  -->
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<div th:fragment="exitDialog">
+    <div class="rvt-dialog" id="dialogExit" role="dialog" tabindex="-1" hidden aria-labelledby="dialog-exit-title" data-rvt-dialog="dialogExit" data-rvt-dialog-modal data-rvt-dialog-darken-page>
+        <header class="rvt-dialog__header">
+            <h1 class="rvt-dialog__title" id="dialog-exit-title">Exit the Wizard</h1>
+        </header>
+        <div class="rvt-dialog__body">
+            <p>
+                If you exit the wizard, you will return to the course's home page. This wizard will continue to be
+                available until you or another instructor in the course completes the wizard or publishes the
+                course. You can restart the wizard via the wizard pop-up on the course home page (if you haven’t
+                permanently dismissed it) or by going to the course Settings page and clicking Course Setup Wizard
+                in the sidebar.
+            </p>
+        </div>
+        <form id="wizard-form-actions" th:action="@{|/app/${courseId}/exit|}" method="post" enctype="multipart/form-data">
+            <div class="rvt-dialog__controls">
+                <button class="rvt-button" role="button">
+                    <span>Yes, exit</span>
+                </button>
+                <button type="button" class="rvt-button rvt-button--secondary" data-rvt-dialog-close="dialogExit" role="button">
+                    <span>No, return to wizard</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:fragment="selectAlert">
+    <div id="select-alert" class="rvt-inline-alert rvt-inline-alert--standalone rvt-inline-alert--danger rvt-display-none">
+          <span class="rvt-inline-alert__icon">
+              <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                  <g fill="currentColor">
+                      <path d="M8,0a8,8,0,1,0,8,8A8,8,0,0,0,8,0ZM8,14a6,6,0,1,1,6-6A6,6,0,0,1,8,14Z" />
+                      <path d="M10.83,5.17a1,1,0,0,0-1.41,0L8,6.59,6.59,5.17A1,1,0,0,0,5.17,6.59L6.59,8,5.17,9.41a1,1,0,1,0,1.41,1.41L8,9.41l1.41,1.41a1,1,0,0,0,1.41-1.41L9.41,8l1.41-1.41A1,1,0,0,0,10.83,5.17Z" />
+                  </g>
+              </svg>
+          </span>
+        <span class="rvt-inline-alert__message" id="option-message">Select an option before continuing.</span>
+    </div>
+</div>
+
+<div th:fragment="submitError">
+    <div id="submit-alert" class="rvt-alert rvt-alert--danger [ rvt-m-top-md ]" role="alert" aria-labelledby="error-alert-title" data-rvt-alert="error">
+        <div class="rvt-alert__title" id="error-alert-title">Submission Error</div>
+        <p class="rvt-alert__message">There was an error with your submission. Please try again.  If the problem persists, contact the support center.</p>
+    </div>
+</div>
+
+<div th:fragment="importFromCourse (courseName)">
+    <h3 class="rvt-ts-18 rvt-p-top-sm">
+        <span class="rvt-display-block rvt-p-bottom-xs">Import from:</span>
+        <span th:text="${courseName}"></span>
+    </h3>
+</div>
+
+</body>
+
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<!--
+  #%L
+  course-setup-wizard
+  %%
+  Copyright (C) 2022 Indiana University
+  %%
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice, this
+     list of conditions and the following disclaimer.
+  
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+  3. Neither the name of the Indiana University nor the names of its contributors
+     may be used to endorse or promote products derived from this software without
+     specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+  #L%
+  -->
+
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Course Setup Wizard</title>
+</head>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+    <div class="rvt-row rvt-p-top-sm">
+        <div class="rvt-cols-8-md rvt-flow rvt-prose">
+            <form id="wizard-form-template-selection" th:action="@{|/app/template/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+                <h2>Import a template</h2>
+
+                <p>
+                    A template is a Canvas course that serves as a model for other courses. Templates can consist of
+                    any combination of settings, instructional content, and branding elements. The templates
+                    available to you are listed below in an accordion, organized by the sponsoring unit (university,
+                    campus, school, or department).
+                </p>
+                <p>
+                    Expand the sections of the accordion to browse the templates. Use the
+                    <span class="rvt-text-bold">Select and continue</span> button on the template you want to use.
+                    If you are unsure about which template to choose, read the description and/or visit the
+                    <span class="rvt-text-bold">Preview</span> link to open the template in a new tab.
+                </p>
+                <h3 class="header-flow-override rvt-p-tb-sm">Templates</h3>
+                <div class="rvt-accordion rvt-m-bottom-lg" data-rvt-accordion="course-template-accordion">
+                    <div th:each="mapEntry : ${templatesForCourse}">
+                        <h4 class="rvt-accordion__summary">
+                            <button class="rvt-accordion__toggle rvt-p-tb-xs"
+                                    th:id="|${#strings.replace(mapEntry.key,' ','-')}-label|"
+                                    th:data-rvt-accordion-trigger="|${#strings.replace(mapEntry.key,' ','-')}-account|"
+                                    th:aria-controls="|${#strings.replace(mapEntry.key,' ','-')}-account|"
+                                    onclick="return false;">
+                                <span class="rvt-accordion__toggle-text rvt-ts-20" th:text="${mapEntry.key}">account name</span>
+                                <span class="rvt-sr-only sr-spacing"> available templates</span>
+                                <div class="rvt-accordion__toggle-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                                        <g fill="currentColor">
+                                            <path class="rvt-accordion__icon-bar" d="M8,15a1,1,0,0,1-1-1V2A1,1,0,0,1,9,2V14A1,1,0,0,1,8,15Z" />
+                                            <path d="M14,9H2A1,1,0,0,1,2,7H14a1,1,0,0,1,0,2Z" />
+                                        </g>
+                                    </svg>
+                                </div>
+                            </button>
+                        </h4>
+                        <div class="rvt-accordion__panel" th:id="|${#strings.replace(mapEntry.key,' ','-')}-account|"
+                             th:aria-labelledby="|${#strings.replace(mapEntry.key,' ','-')}-label|"
+                             th:data-rvt-accordion-panel="|${#strings.replace(mapEntry.key,' ','-')}-account|"
+                             th:data-rvt-accordion-panel-init="${templatesForCourse.size() == 1} ? true"
+                             role="region">
+                            <div class="rvt-prose rvt-flow">
+                                <div class="rvt-card rvt-card--raised rvt-m-bottom-lg" th:each="template : ${mapEntry.value}">
+                                    <div class="rvt-m-all-sm [ rvt-flow ]">
+                                        <h4 class="rvt-ts-18" th:text="${template.displayName}"></h4>
+                                        <p th:unless="${#strings.isEmpty(template.sponsor)}" th:text="|Sponsor: ${template.sponsor}|"></p>
+
+                                        <p th:unless="${#strings.isEmpty(template.canvasCommonsUrl)}">
+                                            <a  th:href="${template.canvasCommonsUrl}" target="_blank">
+                                                <span th:text="|Preview: ${template.displayName}|">Preview template</span>
+                                                <rvt-icon name="link-external"></rvt-icon>
+                                                <span class="rvt-sr-only">Opens in new window</span>
+                                            </a>
+                                        </p>
+
+                                        <p th:text="${template.description}"></p>
+                                        <div>
+                                            <button class="rvt-button rvt-button--secondary" name="action"
+                                                    th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_NEXT}"
+                                                    th:data-templateid="${template.id}" th:data-templatename="|${mapEntry.key}: ${template.displayName}|"
+                                                    onclick="doSubmit(this);">
+                                                Select and continue
+                                                <span class="rvt-sr-only" th:text="|with the ${template.displayName} template|">with the xyz template</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" name="currentPage" value="1">
+                <input type="hidden" id="selectedTemplateId" name="selectedTemplateId">
+                <input type="hidden" id="selectedTemplateName" name="selectedTemplateName">
+                <div class="[ rvt-m-top-xl ]">
+                    <button class="rvt-button rvt-button--secondary" name="action"
+                            th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">Restart Wizard</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+    function doSubmit(elem) {
+        document.getElementById("selectedTemplateId").value = elem.dataset.templateid;
+        document.getElementById("selectedTemplateName").value = elem.dataset.templatename;
+        elem.form.submit();
+    }
+    </script>
+</th:block>
+</body>
+</html>

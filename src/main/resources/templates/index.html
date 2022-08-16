@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<!--
+  #%L
+  course-setup-wizard
+  %%
+  Copyright (C) 2022 Indiana University
+  %%
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice, this
+     list of conditions and the following disclaimer.
+  
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+  3. Neither the name of the Indiana University nor the names of its contributors
+     may be used to endorse or promote products derived from this software without
+     specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+  #L%
+  -->
+
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Course Setup Wizard</title>
+</head>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+    <div class="rvt-row rvt-p-top-sm">
+        <div class="rvt-cols-8-md rvt-flow rvt-prose">
+            <h2>About the Course Setup Wizard</h2>
+            <p>
+                The Course Setup Wizard can help you with common tasks like importing content from another course,
+                applying a template, or adding the IU Home Page to your course.
+            </p>
+            <p>
+                <span class="rvt-text-bold">Note:</span> The Course Setup Wizard can only be run once per
+                course, so choose the option that will save you the most time and effort.
+            </p>
+            <h2 class="header-flow-override rvt-p-top-lg">Learn more about the options</h2>
+            <div class="rvt-accordion rvt-m-bottom-lg" data-rvt-accordion="course-import-accordion">
+                <h3 class="rvt-accordion__summary">
+                    <button class="rvt-accordion__toggle rvt-p-tb-xs"
+                            id="course-import-accordion-1-label"
+                            data-rvt-accordion-trigger="course-import-accordion-1"
+                            aria-controls="course-import-accordion-1">
+                        <span class="rvt-accordion__toggle-text rvt-ts-20">Course imports</span>
+                        <div class="rvt-accordion__toggle-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                                <g fill="currentColor">
+                                    <path class="rvt-accordion__icon-bar" d="M8,15a1,1,0,0,1-1-1V2A1,1,0,0,1,9,2V14A1,1,0,0,1,8,15Z" />
+                                    <path d="M14,9H2A1,1,0,0,1,2,7H14a1,1,0,0,1,0,2Z" />
+                                </g>
+                            </svg>
+                        </div>
+                    </button>
+                </h3>
+                <div class="rvt-accordion__panel" id="course-import-accordion-1"
+                     aria-labelledby="course-import-accordion-1-label"
+                     data-rvt-accordion-panel="course-import-accordion-1"
+                     role="region">
+                    <p class="rvt-m-all-remove">
+                    <div class="rvt-prose rvt-flow">
+                        <p>
+                            Choose this option if you want to re-use instructional materials stored in
+                            another course in Canvas. You can import content from:
+                        </p>
+                        <ul class="rvt-list">
+                            <li>Any of your own courses, including previous offerings or a master version of the current course</li>
+                            <li>A previous offering or master version of the current course developed by someone else (provided you’ve been given access to your colleague’s course)</li>
+                        </ul>
+                        <p>
+                            After you select the course you want to import, you’ll be asked whether you want
+                            to bring in all content and settings or select specific items to import.
+                            Additionally, you’ll be given an opportunity to control how items with due dates
+                            are treated.
+                        </p>
+                    </div>
+                    </p>
+                </div>
+                <h3 class="rvt-accordion__summary">
+                    <button class="rvt-accordion__toggle rvt-p-tb-xs" id="course-templates-accordion-2-label"
+                            data-rvt-accordion-trigger="course-templates-accordion-2"
+                            aria-controls="course-templates-accordion-2">
+                        <span class="rvt-accordion__toggle-text rvt-ts-20">Course templates</span>
+                        <div class="rvt-accordion__toggle-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                                <g fill="currentColor">
+                                    <path class="rvt-accordion__icon-bar" d="M8,15a1,1,0,0,1-1-1V2A1,1,0,0,1,9,2V14A1,1,0,0,1,8,15Z" />
+                                    <path d="M14,9H2A1,1,0,0,1,2,7H14a1,1,0,0,1,0,2Z" />
+                                </g>
+                            </svg>
+                        </div>
+                    </button>
+                </h3>
+                <div class="rvt-accordion__panel" id="course-templates-accordion-2"
+                     aria-labelledby="course-templates-accordion-2-label"
+                     data-rvt-accordion-panel="course-templates-accordion-2"
+                     role="region">
+                    <p class="rvt-m-all-remove">
+                    <div class="rvt-prose rvt-flow">
+                        <p>
+                            Choose this option if you want to create course content based on
+                            professionally-designed template elements.
+                        </p>
+                        <p>
+                            <span class="rvt-text-bold">Note:</span> This option is most useful for creating new
+                            course content. If you want to apply a template to existing course materials,
+                            <a href="https://kb.iu.edu/d/aitz" target="_blank">contact your campus teaching and learning center for assistance.
+                                <span class="rvt-sr-only">Opens in new window</span><rvt-icon name="link-external"></rvt-icon>
+                            </a>
+                        </p>
+                        <p>
+                            A template is a collection of content, settings, and design and/or branding elements
+                            that can be imported into a Canvas course. Created using pedagogical best practices,
+                            templates often include a home page and sample syllabus, as well as sample
+                            assignments, discussion forums, pages, and modules that can be duplicated and
+                            customized as needed. Text prompts may be provided to guide you through the process
+                            of creating your course content.
+                        </p>
+                        <p>
+                            Should you choose this wizard option, you’ll be presented with the list of templates
+                            that are available to you. The IU Course template, developed by UITS eLearning
+                            Design and Services, is available to all instructors. If your campus, school, or
+                            department has published templates, they will be included in the list as well. Once
+                            you’ve made a selection and completed the wizard, the selected template will be
+                            imported into your course. Look for instructions on what to do next on the course
+                            home page or an unpublished module or page for instructors.
+                        </p>
+                    </div>
+                    </p>
+                </div>
+                <h3 class="rvt-accordion__summary">
+                    <button class="rvt-accordion__toggle rvt-p-tb-xs" id="home-page-accordion-3-label"
+                            data-rvt-accordion-trigger="home-page-accordion-3"
+                            aria-controls="home-page-accordion-3">
+                        <span class="rvt-accordion__toggle-text rvt-ts-20">IU Home Pages</span>
+                        <div class="rvt-accordion__toggle-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                                <g fill="currentColor">
+                                    <path class="rvt-accordion__icon-bar" d="M8,15a1,1,0,0,1-1-1V2A1,1,0,0,1,9,2V14A1,1,0,0,1,8,15Z" />
+                                    <path d="M14,9H2A1,1,0,0,1,2,7H14a1,1,0,0,1,0,2Z" />
+                                </g>
+                            </svg>
+                        </div>
+                    </button>
+                </h3>
+                <div class="rvt-accordion__panel" id="home-page-accordion-3" aria-labelledby="home-page-accordion-3-label"
+                     data-rvt-accordion-panel="home-page-accordion-3"
+                     role="region">
+                    <p class="rvt-m-all-remove">
+                    <div class="rvt-prose rvt-flow">
+                        <p>
+                            Choose this option if you want to use the IU Home Page as the foundation for your
+                            course home page.
+                        </p>
+                        <p>
+                            The home page is the first page your students will see when they access your course.
+                            It sets the tone for your course and ideally should be welcoming, engaging, and
+                            informative. Developed by UITS eLearning Design and Services, the IU Home Page is an
+                            attractive and accessible Canvas page with content that you can customize or replace
+                            with your own text. Boldface text in brackets in the home page are instructions for
+                            you, not your students. Be sure to delete all instructions (as well as the “Under
+                            Construction” banner) before publishing your course.
+                        </p>
+                    </div>
+                    </p>
+                </div>
+            </div>
+            <form id="wizard-form-main" th:action="@{|/app/${courseId}/menu|}" method="post" enctype="multipart/form-data">
+                <fieldset class="rvt-fieldset rvt-p-bottom-xs">
+                    <legend class="rvt-legend [ rvt-ts-20 rvt-p-bottom-xs ]">
+                        <h2>What do you want to do? <span class="rvt-sr-only"> Required</span></h2>
+                    </legend>
+                    <ul class="rvt-list-plain">
+                        <li>
+                            <div class="rvt-radio">
+                                <input type="radio" name="menuChoice" id="radio-1-1"
+                                       th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.MAIN_OPTION).IMPORT.name()}">
+                                <label for="radio-1-1">Import content from another Canvas course into this course</label>
+                            </div>
+                        </li>
+                        <!--                                <li>-->
+                        <!--                                    <div class="rvt-radio">-->
+                        <!--                                        <input type="radio" name="menuChoice" id="radio-1-2" value="theme" th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).MAIN_OPTION.THEME.name()}">-->
+                        <!--                                        <label for="radio-1-2">Select the theme (page design), banner image, and colors for this course</label>-->
+                        <!--                                    </div>-->
+                        <!--                                </li>-->
+                        <li>
+                            <div class="rvt-radio">
+                                <input type="radio" name="menuChoice" id="radio-1-3"
+                                       th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.MAIN_OPTION).TEMPLATE.name()}">
+                                <label for="radio-1-3">Import the customizable IU Course Template or another template into this course</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="rvt-radio">
+                                <input type="radio" name="menuChoice" id="radio-1-4"
+                                       th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.MAIN_OPTION).HOMEPAGE.name()}">
+                                <label for="radio-1-4">Add a professionally-designed, customizable home page (the IU Home Page) to this course</label>
+                            </div>
+                        </li>
+                    </ul>
+                    <div th:insert="fragments.html :: selectAlert"></div>
+                </fieldset>
+                <div class="rvt-button-group [ rvt-m-top-md ]">
+                    <button class="rvt-button rvt-button--secondary" onclick="return doExit();" data-rvt-dialog-trigger="dialogExit">Exit <span class="rvt-sr-only">the Wizard</span></button>
+                    <button class="rvt-button" onclick="return doSubmit();">Next <span class="rvt-sr-only">Step</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+    function doSubmit() {
+        var checkedRadio = document.querySelector('input[name="menuChoice"]:checked');
+        if (checkedRadio == null) {
+            var allRadio = document.getElementsByName("menuChoice");
+            allRadio.forEach(btn => {
+                btn.setAttribute("aria-describedby", "option-message");
+            })
+            alertMessage = document.getElementById('select-alert');
+            alertMessage.classList.remove("rvt-display-none");
+            allRadio[0].focus();
+            return false;
+        }
+    }
+    </script>
+</th:block>
+</body>
+</html>

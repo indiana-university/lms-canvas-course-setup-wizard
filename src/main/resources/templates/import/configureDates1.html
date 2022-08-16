@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<!--
+  #%L
+  course-setup-wizard
+  %%
+  Copyright (C) 2022 Indiana University
+  %%
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice, this
+     list of conditions and the following disclaimer.
+  
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+  3. Neither the name of the Indiana University nor the names of its contributors
+     may be used to endorse or promote products derived from this software without
+     specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+  #L%
+  -->
+
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+  <title>Course Setup Wizard</title>
+</head>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+  <div th:insert="import/wizardSteps.html :: steps(currentStep=3)"></div>
+
+  <div class="rvt-row rvt-p-top-md">
+    <div class="rvt-cols-8-md rvt-flow rvt-prose">
+      <form id="wizard-form-dates1" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+        <h2>Adjust dates</h2>
+
+        <div th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
+
+        <p>
+          As part of a course import, you can adjust the due dates associated with course events
+          and assignments to fit within the start and end dates of the upcoming course. If the
+          imported course and the current course are the same duration (e.g., 8 weeks, 16 weeks, etc),
+          each due date will be moved to the same relative day and time in the term.
+        </p>
+
+        <h2 class="header-flow-override">About the options</h2>
+        <p>
+          <div class="rvt-disclosure rvt-m-bottom-sm" data-rvt-disclosure="disclosure-date-options">
+            <button type="button" aria-controls="learn-more-content" class="rvt-disclosure__toggle" data-rvt-disclosure-toggle aria-expanded="false">Learn more about date options</button>
+            <div id="learn-more-content" class="rvt-disclosure__content" data-rvt-disclosure-target hidden>
+              <div class="rvt-prose rvt-flow">
+                <h3 class="rvt-ts-18">Adjust the dates for the new term</h3>
+                <p>
+                  When adjusting dates, you will be asked to provide the start and end dates
+                  for the course you are importing and the current course. Canvas will use
+                  this information to distribute events and assignments with due dates as
+                  evenly as possible across the current course and keep them due on the same
+                  day of the week as the original course. You'll also be given the option to
+                  make day substitutions to adjust for changing class schedules, such as
+                  moving all assignments with Monday due dates to Tuesdays.
+                </p>
+                <h3 class="rvt-ts-18">Remove all dates</h3>
+                <p>
+                  The following tools will have dates removed during the import process:
+                <ul class="rvt-list">
+                  <li>Assignments (due, availability, and peer-review dates)</li>
+                  <li>Announcements (delayed post dates)</li>
+                  <li>Quizzes (due, availability, and show correct answers dates)</li>
+                  <li>Calendar events (start and end dates)</li>
+                  <li>Modules (unlock dates)</li>
+                  <li>Files (availability dates)</li>
+                </ul>
+                </p>
+                <h3 class="rvt-ts-18">Leave dates as is; do not make any changes</h3>
+                <p>
+                  Using this option, no date adjustments will happen at all after the
+                  import process is completed.
+                </p>
+              </div>
+            </div>
+          </div>
+        </p>
+
+        <fieldset class="rvt-fieldset">
+          <legend class="rvt-ts-23 rvt-p-bottom-xs">
+            What do you want to do with the event and assignment due dates during the import?
+            <span class="rvt-sr-only"> Required</span>
+          </legend>
+          <ul class="rvt-list-plain">
+            <li>
+              <div class="rvt-radio">
+                <input type="radio" name="dateOption" id="radio-1-1"
+                       th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.DATE_OPTION).ADJUST.name()}">
+                <label for="radio-1-1">Adjust the dates for the new term</label>
+              </div>
+            </li>
+            <li>
+              <div class="rvt-radio">
+                <input type="radio" name="dateOption" id="radio-1-2"
+                       th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.DATE_OPTION).REMOVE.name()}">
+                <label for="radio-1-2">Remove all dates</label>
+              </div>
+            </li>
+            <li>
+              <div class="rvt-radio">
+                <input type="radio" name="dateOption" id="radio-1-3"
+                       th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.DATE_OPTION).NOCHANGE.name()}">
+                <label for="radio-1-3">Leave dates as is; do not make any changes</label>
+              </div>
+            </li>
+          </ul>
+
+          <div th:insert="fragments.html :: selectAlert"></div>
+          <input type="hidden" name="currentPage" value="3">
+        </fieldset>
+
+        <div th:insert="import/wizardSteps.html :: buttons(nextOnclick='return doSubmit();')"></div>
+
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<th:block layout:fragment="script">
+  <script th:inline="javascript">
+    function doSubmit() {
+        var checkedRadio = document.querySelector('input[name="dateOption"]:checked');
+        if (checkedRadio == null) {
+            var allRadio = document.getElementsByName("dateOption");
+            allRadio.forEach(btn => {
+                btn.setAttribute("aria-describedby", "option-message");
+            })
+            alertMessage = document.getElementById('select-alert');
+            alertMessage.classList.remove("rvt-display-none");
+            allRadio[0].focus();
+            return false;
+        }
+    }
+    </script>
+</th:block>
+</body>
+</html>
