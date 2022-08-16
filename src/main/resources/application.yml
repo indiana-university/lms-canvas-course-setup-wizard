@@ -55,6 +55,10 @@ management:
   endpoint.info.enabled: true
   endpoints.web.exposure.include: health,info
   health.redis.enabled: false
+
+springdoc:
+  api-docs.enabled: false
+  swagger-ui.enabled: false
 ---
 
 spring:
@@ -86,9 +90,18 @@ spring:
 spring:
   config:
     activate.on-profile: swagger
-    import: classpath:lti-api-config.properties
 springdoc:
+  api-docs:
+    enabled: true
+    path: /api/v3/api-docs
+  cache.disabled: true
+  packagesToScan: edu.iu.uits.lms.coursesetupwizard.controller.rest
   swagger-ui:
+    enabled: false
+    disable-swagger-default-url: true
+    path: /api/swagger-ui.html
+    # Setting supportedSubmitMethods to an empty list is what turns off the "try it out" button
+    #    supportedSubmitMethods:
     oauth:
       clientId: ${oauth.tokenprovider.clientId}
   oAuthFlow:

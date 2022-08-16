@@ -35,6 +35,8 @@ package edu.iu.uits.lms.coursesetupwizard.controller.rest;
 
 import edu.iu.uits.lms.coursesetupwizard.model.WizardCourseStatus;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -52,6 +54,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/rest/coursestatus")
+@Tag(name = "WizardCourseStatusRestController", description = "Interact with the WizardCourseStatus repository with CRUD operations")
 @Slf4j
 public class WizardCourseStatusRestController {
 
@@ -59,21 +62,25 @@ public class WizardCourseStatusRestController {
    private WizardCourseStatusRepository wizardCourseStatusRepository = null;
 
    @GetMapping("/{id}")
+   @Operation(summary = "Get a WizardCourseStatus by id")
    public WizardCourseStatus get(@PathVariable Long id) {
       return wizardCourseStatusRepository.findById(id).orElse(null);
    }
 
    @GetMapping("/course/{courseId}")
+   @Operation(summary = "Get a WizardCourseStatus by courseId")
    public WizardCourseStatus getByCourse(@PathVariable String courseId) {
       return wizardCourseStatusRepository.findByCourseId(courseId);
    }
 
    @GetMapping("/all")
+   @Operation(summary = "Get a all WizardCourseStatus objects")
    public List<WizardCourseStatus> getAll() {
       return (List<WizardCourseStatus>)wizardCourseStatusRepository.findAll();
    }
 
    @PutMapping("/{id}")
+   @Operation(summary = "Update a WizardCourseStatus by id")
    public WizardCourseStatus update(@PathVariable Long id, @RequestBody WizardCourseStatus wizardCourseStatus) {
       WizardCourseStatus updatedWizardCourseStatus = wizardCourseStatusRepository.findById(id).orElse(null);
 
@@ -100,6 +107,7 @@ public class WizardCourseStatusRestController {
    }
 
    @PostMapping("/")
+   @Operation(summary = "Create a new WizardCourseStatus")
    public WizardCourseStatus create(@RequestBody WizardCourseStatus wizardCourseStatus) {
       WizardCourseStatus newWizardCourseStatus = WizardCourseStatus.builder()
             .courseId(wizardCourseStatus.getCourseId())
@@ -112,12 +120,14 @@ public class WizardCourseStatusRestController {
    }
 
    @DeleteMapping("/{id}")
+   @Operation(summary = "Delete a WizardCourseStatus by id")
    public String delete(@PathVariable Long id) {
       wizardCourseStatusRepository.deleteById(id);
       return "Delete success.";
    }
 
    @DeleteMapping("/course/{courseId}")
+   @Operation(summary = "Delete a WizardCourseStatus by courseId")
    public ResponseEntity<HttpStatus> deleteByCourse(@PathVariable String courseId) {
       try {
          WizardCourseStatus courseStatus = wizardCourseStatusRepository.findByCourseId(courseId);

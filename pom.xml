@@ -74,15 +74,16 @@
         <jdk.source>11</jdk.source>
         <jdk.target>11</jdk.target>
         <jquery.version>3.5.1</jquery.version>
-        <lms-canvas-services.version>5.0.8</lms-canvas-services.version>
-        <lms-canvas-iu-custom-services.version>5.0.8</lms-canvas-iu-custom-services.version>
-        <lms-canvas-common-configuration.version>5.0.3</lms-canvas-common-configuration.version>
-        <lms-canvas-lti-framework.version>5.1.9</lms-canvas-lti-framework.version>
+        <lms-canvas-services.version>5.0.9</lms-canvas-services.version>
+        <lms-canvas-iu-custom-services.version>5.0.9</lms-canvas-iu-custom-services.version>
+        <lms-canvas-common-configuration.version>5.0.4</lms-canvas-common-configuration.version>
+        <lms-canvas-lti-framework.version>5.1.10</lms-canvas-lti-framework.version>
         <lms-canvas-rivet.version>5.2.0.0-beta.4</lms-canvas-rivet.version>
         <lms-canvas-redis-config.version>5.0.7</lms-canvas-redis-config.version>
         <nimbus-jose-jwt.version>9.10.1</nimbus-jose-jwt.version>
         <nodejs.version>v14.15.5</nodejs.version>
         <npm.version>6.14.11</npm.version>
+        <springdoc-openapi-ui.version>1.6.9</springdoc-openapi-ui.version>
         <spring-cloud-starter-vault-config.version>3.0.5</spring-cloud-starter-vault-config.version>
         <spring-security-bom.version>5.5.2</spring-security-bom.version>
         <webjars-locator.version>0.42</webjars-locator.version>
@@ -217,6 +218,11 @@
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
 
         <!-- Tool specific dependencies -->
         <dependency>
@@ -233,6 +239,11 @@
             <groupId>org.webjars</groupId>
             <artifactId>jquery</artifactId>
             <version>${jquery.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>${springdoc-openapi-ui.version}</version>
         </dependency>
     </dependencies>
 

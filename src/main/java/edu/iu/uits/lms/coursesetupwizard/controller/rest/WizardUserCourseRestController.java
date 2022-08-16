@@ -35,6 +35,8 @@ package edu.iu.uits.lms.coursesetupwizard.controller.rest;
 
 import edu.iu.uits.lms.coursesetupwizard.model.WizardUserCourse;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -50,6 +52,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/rest/wuc")
+@Tag(name = "WizardUserCourseRestController", description = "Interact with the WizardUserCourse repository with CRUD operations")
 @Slf4j
 public class WizardUserCourseRestController {
 
@@ -57,21 +60,25 @@ public class WizardUserCourseRestController {
    private WizardUserCourseRepository wizardUserCourseRepository = null;
 
    @GetMapping("/{id}")
+   @Operation(summary = "Get a WizardUserCourse by id")
    public WizardUserCourse get(@PathVariable Long id) {
       return wizardUserCourseRepository.findById(id).orElse(null);
    }
 
    @GetMapping("/username/{username}")
+   @Operation(summary = "Get all WizardUserCourse objects for a username")
    public List<WizardUserCourse> getByUsername(@PathVariable String username) {
       return wizardUserCourseRepository.findByUsername(username);
    }
 
    @GetMapping("/all")
+   @Operation(summary = "Get all WizardUserCourse objects")
    public List<WizardUserCourse> getAll() {
       return (List<WizardUserCourse>)wizardUserCourseRepository.findAll();
    }
 
    @PutMapping("/{id}")
+   @Operation(summary = "Update a WizardUserCourse by id")
    public WizardUserCourse update(@PathVariable Long id, @RequestBody WizardUserCourse wizardUserCourse) {
       WizardUserCourse updatedWizardUserCourse = wizardUserCourseRepository.findById(id).orElse(null);
 
@@ -89,6 +96,7 @@ public class WizardUserCourseRestController {
    }
 
    @PostMapping("/")
+   @Operation(summary = "Create a new WizardUserCourse")
    public WizardUserCourse create(@RequestBody WizardUserCourse wizardUserCourse) {
       WizardUserCourse newWizardUserCourse = WizardUserCourse.builder()
             .courseId(wizardUserCourse.getCourseId())
@@ -98,6 +106,7 @@ public class WizardUserCourseRestController {
    }
 
    @DeleteMapping("/{id}")
+   @Operation(summary = "Delete a WizardUserCourse by id")
    public String delete(@PathVariable Long id) {
       wizardUserCourseRepository.deleteById(id);
       return "Delete success.";
