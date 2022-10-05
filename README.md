@@ -18,6 +18,15 @@ Insert a record into the `LTI_13_AUTHZ` table with your tool's registration_id (
 and secret from Canvas's Developer Key.  An `env` designator is also required here, and allows a database to support
 multiple environments simultaneously (dev and reg, for example).
 
+### Extra SQL required
+You'll need to run some extra SQL, in addition to the above, since JPA annotations don't have a way to represent an index we need:
+
+```
+create unique index on lms_hierarchy_resource (homepagetemplate) where homepagetemplate = true
+```
+
+This allows for one and only one "homepage" template to be defined for the table.
+
 ## Test a local launch
 Startup the application with the `LTI_CLIENTREGISTRATION_DEFAULTCLIENT` value set to `saltire`.
 Use an LTI tool consumer launcher, like https://saltire.lti.app/platform.

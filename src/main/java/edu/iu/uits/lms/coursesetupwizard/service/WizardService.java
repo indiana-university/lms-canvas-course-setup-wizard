@@ -248,12 +248,9 @@ public class WizardService {
       //Update course front page
       courseService.updateCourseFrontPage(courseId, "modules");
 
-      //Get the specific template
-      String homepageTemplateId = toolConfig.getHomepageTemplateId();
-
       HierarchyResource templateForCourse = null;
       try {
-         templateForCourse = hierarchyResourceService.getTemplate(Long.parseLong(homepageTemplateId));
+         templateForCourse = hierarchyResourceService.getHomePageTemplate();
       } catch (HierarchyResourceException e) {
          throw new WizardServiceException("Unable to get template");
       }
@@ -281,7 +278,7 @@ public class WizardService {
             wizardCourseStatus.setCourseId(courseId);
             wizardCourseStatus.setCompletedBy(userLoginId);
             wizardCourseStatus.setMainOption(mainOption);
-            wizardCourseStatus.setSelectedTemplateId(homepageTemplateId);
+            wizardCourseStatus.setSelectedTemplateId(templateForCourse.getId().toString());
             wizardCourseStatus.setContentMigrationId(cm.getId());
             wizardCourseStatusRepository.save(wizardCourseStatus);
          } else {

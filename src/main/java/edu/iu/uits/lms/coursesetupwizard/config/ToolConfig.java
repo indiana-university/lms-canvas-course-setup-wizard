@@ -48,5 +48,4 @@ public class ToolConfig {
    private String env;
    private String templateHostingUrl;
    private String hierarchyRootNodeName;
-   private String homepageTemplateId;
 }
