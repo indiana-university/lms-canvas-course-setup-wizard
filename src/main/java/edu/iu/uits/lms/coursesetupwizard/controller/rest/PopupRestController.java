@@ -34,6 +34,7 @@ package edu.iu.uits.lms.coursesetupwizard.controller.rest;
  */
 
 import edu.iu.uits.lms.coursesetupwizard.model.PopupStatus;
+import edu.iu.uits.lms.coursesetupwizard.model.WrappedPopupStatus;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -60,10 +61,10 @@ public class PopupRestController {
 
    @GetMapping("/{courseId}/{userId}/status")
    @Operation(summary = "Get the popup status for the given course and user")
-   public ResponseEntity<PopupStatus> popupStatus(@PathVariable String courseId, @PathVariable String userId, @Parameter(hidden = true) CsrfToken token) {
+   public ResponseEntity<WrappedPopupStatus> popupStatus(@PathVariable String courseId, @PathVariable String userId, @Parameter(hidden = true) CsrfToken token) {
       return ResponseEntity.ok()
             .header(token.getHeaderName(), token.getToken())
-            .body(wizardService.getPopupDismissedStatus(courseId, userId));
+            .body(new WrappedPopupStatus(wizardService.getPopupDismissedStatus(courseId, userId), token.getToken()));
    }
 
    @PostMapping("/{courseId}/{userId}/dismiss")

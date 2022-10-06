@@ -36,9 +36,11 @@ package edu.iu.uits.lms.coursesetupwizard.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
 @AllArgsConstructor
-public class PopupStatus {
+public class PopupStatus implements Serializable {
    private String courseId;
    private String userId;
    private boolean dismissed;

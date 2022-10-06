@@ -1,4 +1,4 @@
-package edu.iu.uits.lms.coursesetupwizard.services;
+package edu.iu.uits.lms.coursesetupwizard.model;
 
 /*-
  * #%L
@@ -33,11 +33,16 @@ package edu.iu.uits.lms.coursesetupwizard.services;
  * #L%
  */
 
-import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
-import edu.iu.uits.lms.iuonly.AbstractIuCustomRestDisabledLaunchSecurityTest;
-import org.springframework.context.annotation.Import;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Import({ToolConfig.class})
-public class IuCustomRestDisabledLaunchSecurityTest extends AbstractIuCustomRestDisabledLaunchSecurityTest {
+import java.io.Serializable;
+
+@Data
+@AllArgsConstructor
+public class WrappedPopupStatus implements Serializable {
+
+   private PopupStatus popupStatus;
+   private String csrfToken;
 
 }
