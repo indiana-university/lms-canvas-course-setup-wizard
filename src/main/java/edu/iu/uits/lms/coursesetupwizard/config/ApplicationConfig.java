@@ -86,6 +86,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
    public void addInterceptors(InterceptorRegistry registry) {
       List<HttpMethod> allowedMethodList = new ArrayList<>();
       allowedMethodList.add(HttpMethod.GET);
+      allowedMethodList.add(HttpMethod.POST);
 
       Map<String, String> allowHeadersMap = new HashMap<>();
       allowHeadersMap.put(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "X-CSRF-TOKEN");
