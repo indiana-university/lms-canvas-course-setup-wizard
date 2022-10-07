@@ -38,6 +38,7 @@ import edu.iu.uits.lms.common.session.DualSessionIdResolver;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.session.web.http.HttpSessionIdResolver;
@@ -47,7 +48,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @EnableWebMvc
@@ -84,11 +87,14 @@ public class ApplicationConfig implements WebMvcConfigurer {
       List<HttpMethod> allowedMethodList = new ArrayList<>();
       allowedMethodList.add(HttpMethod.GET);
 
+      Map<String, String> allowHeadersMap = new HashMap<>();
+      allowHeadersMap.put(HttpHeaders.ACCESS_CONTROL_ALLOW_HEADERS, "X-CSRF-TOKEN");
+
       try {
          registry.addInterceptor(new LmsCorsInterceptor("/rest/popup/",
                  "*",
                  allowedMethodList,
-                 null));
+               allowHeadersMap));
       } catch (Exception e) {
          log.error(e.toString());
       }
