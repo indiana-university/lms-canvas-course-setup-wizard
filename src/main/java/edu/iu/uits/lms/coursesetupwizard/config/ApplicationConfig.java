@@ -89,7 +89,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
          registry.addInterceptor(new LmsCorsInterceptor("/rest/popup/",
                  "*",
                  allowedMethodList,
-               null));
+                 null));
       } catch (Exception e) {
          log.error(e.toString());
       }
