@@ -57,7 +57,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collection;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -113,7 +112,7 @@ public class RestLaunchSecurityTest {
       Collection<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("SCOPE_read", "ROLE_NONE_YA");
       JwtAuthenticationToken token = new JwtAuthenticationToken(jwt, authorities);
 
-      //This is a secured endpoint and should not not allow access without authn
+      //This is a secured endpoint and should not allow access without authn
       mvc.perform(get("/rest/coursestatus/all")
                   .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
                   .contentType(MediaType.APPLICATION_JSON)
@@ -133,22 +132,12 @@ public class RestLaunchSecurityTest {
 
    @Test
    public void restNoAuthnOpenEndpointPost() throws Exception {
-      //This is an unsecured endpoint and should allow access without authn, but still needs csrf
-      SecurityContextHolder.getContext().setAuthentication(null);
-      mvc.perform(post("/rest/popup/1234/asdf/dismiss").with(csrf())
-                  .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
-                  .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
-   }
-
-   @Test
-   public void restNoAuthnOpenEndpointMissingCsrfPost() throws Exception {
-      //This is an unsecured endpoint and should allow access without authn, but still needs csrf
+      //This is an unsecured endpoint and should allow access without authn
       SecurityContextHolder.getContext().setAuthentication(null);
       mvc.perform(post("/rest/popup/1234/asdf/dismiss")
                   .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
                   .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isForbidden());
+            .andExpect(status().isOk());
    }
 
 }

@@ -63,8 +63,7 @@ public class SecurityConfig {
                     .and()
                     .authorizeRequests()
                     .antMatchers("/api/**").permitAll()
-                    .antMatchers("/rest/popup/**")
-                    .permitAll()
+                    .antMatchers("/rest/popup/**").permitAll()
 //                    .access("hasAuthority('SCOPE_lms:edsdev') or (hasAuthority('SCOPE_lms:rest') and hasAuthority('ROLE_LMS_REST_ADMINS'))")
                     .antMatchers("/rest/**").access("hasAuthority('SCOPE_lms:rest') and hasAuthority('ROLE_LMS_REST_ADMINS')")
                     .and()
@@ -72,6 +71,9 @@ public class SecurityConfig {
                     .and()
                     .oauth2ResourceServer()
                     .jwt().jwtAuthenticationConverter(new CustomJwtAuthenticationConverter());
+
+            //Disable csrf for the popup endpoints
+            http.csrf().ignoringAntMatchers("/rest/popup/**");
         }
     }
 

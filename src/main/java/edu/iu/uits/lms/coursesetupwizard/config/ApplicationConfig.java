@@ -83,6 +83,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
    public void addInterceptors(InterceptorRegistry registry) {
       List<HttpMethod> allowedMethodList = new ArrayList<>();
       allowedMethodList.add(HttpMethod.GET);
+      allowedMethodList.add(HttpMethod.POST);
 
       try {
          registry.addInterceptor(new LmsCorsInterceptor("/rest/popup/",

@@ -33,21 +33,34 @@ package edu.iu.uits.lms.coursesetupwizard.services;
  * #L%
  */
 
+import edu.iu.uits.lms.canvas.services.AccountService;
+import edu.iu.uits.lms.canvas.services.ContentMigrationService;
 import edu.iu.uits.lms.canvas.services.CourseService;
+import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
+import edu.iu.uits.lms.coursesetupwizard.model.PopupStatus;
+import edu.iu.uits.lms.coursesetupwizard.model.WizardCourseStatus;
+import edu.iu.uits.lms.coursesetupwizard.model.WizardUserCourse;
+import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
+import edu.iu.uits.lms.iuonly.services.HierarchyResourceService;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 @ContextConfiguration(classes={WizardService.class})
 @SpringBootTest
-@Disabled
 @Slf4j
 public class WizardServiceTest {
 
@@ -55,38 +68,69 @@ public class WizardServiceTest {
    private WizardService wizardService;
 
    @MockBean
+   private ToolConfig toolConfig;
+
+   @MockBean
    private CourseService courseService;
 
-//   @Test
-//   void testMerging() throws Exception {
-//      ImportModel mod1 = new ImportModel();
-//      mod1.setAction("foo");
-//      mod1.setCourseId("12345");
-//      mod1.setSelectedCourseId("qwerty");
-//
-//      ImportModel mod2 = new ImportModel();
-//      mod2.setCurrentPage(4);
-//      ImportModel.ClassDates dates = new ImportModel.ClassDates();
-//      dates.setOrigLast("1/2/34");
-//      mod2.setClassDates(dates);
-//      mod2.setSelectedCourseId("asdf");
-//
-//      ImportModel mergedMod = wizardService.mergeObjects(mod1, mod2);
-//
-//      Assertions.assertEquals("foo", mergedMod.getAction());
-//      Assertions.assertEquals("12345", mergedMod.getCourseId());
-//      Assertions.assertEquals(4, mergedMod.getCurrentPage());
-//      Assertions.assertEquals(dates, mergedMod.getClassDates());
-//      Assertions.assertEquals("qwerty", mergedMod.getSelectedCourseId());
-//   }
+   @MockBean
+   private WizardUserCourseRepository wizardUserCourseRepository;
+
+   @MockBean
+   private WizardCourseStatusRepository wizardCourseStatusRepository;
+
+   @MockBean
+   private ContentMigrationService contentMigrationService;
+
+   @MockBean
+   private AccountService accountService;
+
+   @MockBean
+   private HierarchyResourceService hierarchyResourceService;
 
    @Test
-   void testMaps() {
-      MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
-      multiValueMap.add("A", "foo");
-      multiValueMap.add("A", "bar");
-      multiValueMap.add("B", "qwerty");
+   void testPopupShown() {
+      when(wizardUserCourseRepository.findByUsernameAndCourseIdOrGlobal(anyString(), anyString())).thenReturn(Collections.EMPTY_LIST);
+      when(wizardCourseStatusRepository.findByCourseId(anyString())).thenReturn(null);
 
-      log.info("{}", multiValueMap);
+      PopupStatus status = wizardService.getPopupDismissedStatus("foo", "bar");
+      Assertions.assertTrue(status.isShowPopup());
+   }
+
+   @Test
+   void testPopupNotShownBecauseComplete() {
+      when(wizardUserCourseRepository.findByUsernameAndCourseIdOrGlobal(anyString(), anyString())).thenReturn(Collections.EMPTY_LIST);
+
+      WizardCourseStatus wcs = new WizardCourseStatus();
+      when(wizardCourseStatusRepository.findByCourseId(anyString())).thenReturn(wcs);
+
+      PopupStatus status = wizardService.getPopupDismissedStatus("foo", "bar");
+      Assertions.assertFalse(status.isShowPopup());
+   }
+
+   @Test
+   void testPopupNotShownBecauseDismissed() {
+      List<WizardUserCourse> list = new ArrayList<>();
+      list.add(new WizardUserCourse());
+
+      when(wizardUserCourseRepository.findByUsernameAndCourseIdOrGlobal(anyString(), anyString())).thenReturn(list);
+      when(wizardCourseStatusRepository.findByCourseId(anyString())).thenReturn(null);
+
+      PopupStatus status = wizardService.getPopupDismissedStatus("foo", "bar");
+      Assertions.assertFalse(status.isShowPopup());
+   }
+
+   @Test
+   void testPopupNotShownBecauseEither() {
+      List<WizardUserCourse> list = new ArrayList<>();
+      list.add(new WizardUserCourse());
+
+      when(wizardUserCourseRepository.findByUsernameAndCourseIdOrGlobal(anyString(), anyString())).thenReturn(list);
+
+      WizardCourseStatus wcs = new WizardCourseStatus();
+      when(wizardCourseStatusRepository.findByCourseId(anyString())).thenReturn(wcs);
+
+      PopupStatus status = wizardService.getPopupDismissedStatus("foo", "bar");
+      Assertions.assertFalse(status.isShowPopup());
    }
 }
