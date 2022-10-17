@@ -142,6 +142,12 @@ public class ImportController extends WizardController {
          // and redirect to selectCourse again
          if (importModel.getSelectedCourseLabel() == null) {
             model.addAttribute("noImportSelected", true);
+
+            // Look up courses in here instead of a browser call
+            // Unlikely this would have anything if we're in this block of code, but look anyway
+            List<SelectableCourse> coursesList = wizardService.getSelectableCourses(oidcTokenUtils.getUserLoginId(), courseId);
+            model.addAttribute("courses", coursesList);
+            
             return new ModelAndView("import/selectCourse");
          } else {
             model.addAttribute("selectedCourseLabel", importModel.getSelectedCourseLabel());
