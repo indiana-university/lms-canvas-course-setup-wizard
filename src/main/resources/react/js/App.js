@@ -51,35 +51,16 @@ class App extends React.Component {
 //            return request
 //        })
 
-        this.state = {
-            courses: []
-        }
-
-    }
-
-    /**
-     * Call off to the REST endpoints to load data
-     */
-    componentDidMount() {
-        var self = this;
-        axios.all([getCourses()])
-            .then(axios.spread(function (courses) {
-                self.setState({
-                    courses: courses.data
-                });
-            }))
-            .catch(error => {
-                alert(error);
-            });
     }
 
     /**
      * Render
      */
     render() {
+        var courseForDropdown = window.config.courses;
 
         return (
-            <CourseSelect courses={this.state.courses} selectedCourseId={selectedCourseId} />
+            <CourseSelect courses={courseForDropdown} selectedCourseId={selectedCourseId} />
         );
     }
 

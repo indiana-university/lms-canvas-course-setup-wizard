@@ -84,6 +84,17 @@
     </div>
 </div>
 
+<div th:fragment="noImportSelected">
+    <div id="no-import-alert" class="rvt-alert rvt-alert--danger [ rvt-m-top-md ]" role="alert" aria-labelledby="no-import-alert-title" data-rvt-alert="error">
+        <div class="rvt-alert__title" id="no-import-alert-title">Import Error</div>
+        <p class="rvt-alert__message">
+            To use the import content option in the wizard, you must be enrolled in a course as a Teacher, TA, or
+            Designer. Click Restart Wizard to choose a different option in the wizard or run the wizard once you have
+            been added to at least one course.
+        </p>
+    </div>
+</div>
+
 <div th:fragment="importFromCourse (courseName)">
     <h3 class="rvt-ts-18 rvt-p-top-sm">
         <span class="rvt-display-block rvt-p-bottom-xs">Import from:</span>

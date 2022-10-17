@@ -111,7 +111,7 @@ public class ImportController extends WizardController {
    public ModelAndView selectCourse(@PathVariable("courseId") String courseId, Model model, HttpSession httpSession) {
       log.debug("in /selectCourse");
       OidcAuthenticationToken token = getValidatedToken(courseId);
-//      OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
+      OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
 
       //For session tracking
       model.addAttribute("customId", httpSession.getId());
@@ -121,6 +121,10 @@ public class ImportController extends WizardController {
          String selectedCourseId = importModel.getSelectedCourseId();
          model.addAttribute("selectedCourseId", selectedCourseId);
       }
+
+      // Look up courses in here instead of a browser call
+      List<SelectableCourse> coursesList = wizardService.getSelectableCourses(oidcTokenUtils.getUserLoginId(), courseId);
+      model.addAttribute("courses", coursesList);
 
       return new ModelAndView("import/selectCourse");
    }
@@ -134,7 +138,14 @@ public class ImportController extends WizardController {
 
       ImportModel importModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_IMPORT_MODEL, ImportModel.class);
       if (importModel != null) {
-         model.addAttribute("selectedCourseLabel", importModel.getSelectedCourseLabel());
+         // in case the user gets past the select content screen without selecting a course, add this attribute
+         // and redirect to selectCourse again
+         if (importModel.getSelectedCourseLabel() == null) {
+            model.addAttribute("noImportSelected", true);
+            return new ModelAndView("import/selectCourse");
+         } else {
+            model.addAttribute("selectedCourseLabel", importModel.getSelectedCourseLabel());
+         }
       }
 
       return new ModelAndView("import/selectContent");
