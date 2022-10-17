@@ -147,7 +147,7 @@ public class ImportController extends WizardController {
             // Unlikely this would have anything if we're in this block of code, but look anyway
             List<SelectableCourse> coursesList = wizardService.getSelectableCourses(oidcTokenUtils.getUserLoginId(), courseId);
             model.addAttribute("courses", coursesList);
-            
+
             return new ModelAndView("import/selectCourse");
          } else {
             model.addAttribute("selectedCourseLabel", importModel.getSelectedCourseLabel());
