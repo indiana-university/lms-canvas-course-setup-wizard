@@ -76,7 +76,13 @@ class CourseSelect extends React.Component {
           </>
         );
     } else {
-        return null;
+        return (
+            <span>
+                You are not listed as a Teacher, TA, or Designer in any other courses. If you would like to import
+                content from a colleague's course, please work with them or your department administrator to add you to
+                the course in one of these roles.
+            </span>
+        );
     }
   }
 }

@@ -222,7 +222,12 @@
                 </fieldset>
                 <div class="rvt-button-group [ rvt-m-top-md ]">
                     <button class="rvt-button rvt-button--secondary" onclick="return doExit();" data-rvt-dialog-trigger="dialogExit">Exit <span class="rvt-sr-only">the Wizard</span></button>
-                    <button class="rvt-button" onclick="return doSubmit();">Next <span class="rvt-sr-only">Step</span></button>
+                    <button class="rvt-button" onclick="return doSubmit(this);">
+                        <span class="rvt-button__content">
+                            Next <span class="rvt-sr-only">Step</span>
+                        </span>
+                        <div class="rvt-loader rvt-loader--xs rvt-display-none" aria-label="Next page loading"></div>
+                    </button>
                 </div>
             </form>
         </div>
@@ -232,7 +237,7 @@
 
 <th:block layout:fragment="script">
     <script th:inline="javascript">
-    function doSubmit() {
+    function doSubmit(button, formSubmit = true) {
         var checkedRadio = document.querySelector('input[name="menuChoice"]:checked');
         if (checkedRadio == null) {
             var allRadio = document.getElementsByName("menuChoice");
@@ -243,6 +248,23 @@
             alertMessage.classList.remove("rvt-display-none");
             allRadio[0].focus();
             return false;
+        }
+
+        button.setAttribute("aria-busy", true);
+
+        // this will disable the accordions, too, but probably fine
+        var buttonsToDisable = document.getElementsByTagName('button');
+
+        for(var i = 0; i < buttonsToDisable.length; i++) {
+            buttonsToDisable[i].disabled = true;
+        }
+
+        button.classList.add("rvt-button--loading");
+        button.getElementsByTagName('div')[0].classList.remove("rvt-display-none");
+
+        if (formSubmit) {
+            // FF doesn't need this, but Chrome and Edge do
+            button.form.submit();
         }
     }
     </script>

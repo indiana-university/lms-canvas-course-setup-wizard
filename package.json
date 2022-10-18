@@ -17,7 +17,6 @@
     "webpack-cli": "4.9.2"
   },
   "dependencies": {
-    "axios": "^0.27.2",
     "classnames": "2.3.1",
     "core-js": "^3.22.5",
     "react": "18.1.0",
