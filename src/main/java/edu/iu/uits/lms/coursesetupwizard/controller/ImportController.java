@@ -113,9 +113,6 @@ public class ImportController extends WizardController {
       OidcAuthenticationToken token = getValidatedToken(courseId);
       OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
 
-      //For session tracking
-      model.addAttribute("customId", httpSession.getId());
-
       ImportModel importModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_IMPORT_MODEL, ImportModel.class);
       if (importModel != null) {
          String selectedCourseId = importModel.getSelectedCourseId();
