@@ -57,7 +57,7 @@ import java.util.Date;
 @Slf4j
 @EnableRedisConfiguration
 @EnableLtiClient(toolKeys = {"lms_coursesetupwizard"})
-@EnableGlobalErrorHandler
+@EnableGlobalErrorHandler(accessDeniedViewName="accessDenied", rivetVersion="rivet2")
 @EnableCanvasClient
 @EnableIuOnlyClient
 @EnableCookieFilter(ignoredRequestPatterns = "/rest/**")

@@ -102,7 +102,7 @@ public class AppLaunchSecurityTest {
                       .contentType(MediaType.APPLICATION_JSON))
               .andExpect(status().isInternalServerError())
               .andExpect(MockMvcResultMatchers.model().attributeExists("error"))
-              .andExpect(MockMvcResultMatchers.view().name ("error"));
+              .andExpect(MockMvcResultMatchers.view().name ("error-rivet2"));
    }
 
    @Test
