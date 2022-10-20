@@ -100,7 +100,7 @@ public class WizardService {
    public PopupStatus getPopupDismissedStatus(String courseId, String userId) {
       List<WizardUserCourse> records = wizardUserCourseRepository.findByUsernameAndCourseIdOrGlobal(userId, courseId);
       boolean alreadyCompleted = alreadyCompletedForCourse(courseId);
-      return new PopupStatus(courseId, userId, (!CollectionUtils.isEmpty(records) && !alreadyCompleted));
+      return new PopupStatus(courseId, userId, (CollectionUtils.isEmpty(records) && !alreadyCompleted));
    }
 
    public PopupStatus dismissPopup(String courseId, String userId, boolean global) {
@@ -112,7 +112,7 @@ public class WizardService {
       }
       wizardUserCourseRepository.save(record);
 
-      return new PopupStatus(courseId, userId, true);
+      return new PopupStatus(courseId, userId, false);
    }
 
    @Cacheable(value = INSTRUCTOR_COURSES_CACHE_NAME, cacheManager = "CourseSetupWizardCacheManager")

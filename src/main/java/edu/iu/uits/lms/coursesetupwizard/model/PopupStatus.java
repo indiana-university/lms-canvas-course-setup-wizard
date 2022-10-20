@@ -43,6 +43,6 @@ import java.io.Serializable;
 public class PopupStatus implements Serializable {
    private String courseId;
    private String userId;
-   private boolean dismissed;
+   private boolean showPopup;
 
 }
