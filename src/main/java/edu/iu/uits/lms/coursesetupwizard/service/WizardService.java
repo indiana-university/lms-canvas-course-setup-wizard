@@ -128,23 +128,11 @@ public class WizardService {
             .thenComparing(Course::getName));
 
       List<String> wantedEnrollments = Arrays.asList("teacher", "ta", "designer");
-      List<Course> coursesToRemove = new ArrayList<>();
-
-      for (Course c : courses) {
-         boolean removeCourse = true;
-         // since this is a list, there COULD be multiple enrollments, but not likely
-         for (Enrollment e : c.getEnrollments()) {
-            if (wantedEnrollments.contains(e.getType())) {
-               removeCourse = false;
-               break;
-            }
-         }
-         if (removeCourse) {
-            coursesToRemove.add(c);
-         }
-      }
-
-      courses.removeAll(coursesToRemove);
+      
+      // filter it to keep courses where the user is enrolled as an enrollment type in wantedEnrollments
+      courses.stream()
+              .filter(c->c.getEnrollments().stream().anyMatch(enr -> wantedEnrollments.contains(enr.getType())))
+              .collect(Collectors.toList());
 
       //Filter out current course
       return courses.stream()
