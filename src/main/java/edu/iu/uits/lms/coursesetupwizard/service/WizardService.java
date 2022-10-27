@@ -129,14 +129,11 @@ public class WizardService {
 
       List<String> wantedEnrollments = Arrays.asList("teacher", "ta", "designer");
       
+      // Filter out current course, then
       // filter it to keep courses where the user is enrolled as an enrollment type in wantedEnrollments
-      courses.stream()
-              .filter(c->c.getEnrollments().stream().anyMatch(enr -> wantedEnrollments.contains(enr.getType())))
-              .collect(Collectors.toList());
-
-      //Filter out current course
       return courses.stream()
             .filter(c -> !currentCourseId.equals(c.getId()))
+            .filter(c->c.getEnrollments().stream().anyMatch(enr -> wantedEnrollments.contains(enr.getType())))
             .map(SelectableCourse::new)
             .collect(Collectors.toList());
    }
