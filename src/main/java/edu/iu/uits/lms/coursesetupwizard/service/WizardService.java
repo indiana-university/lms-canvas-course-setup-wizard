@@ -37,6 +37,7 @@ import edu.iu.uits.lms.canvas.helpers.ContentMigrationHelper;
 import edu.iu.uits.lms.canvas.model.ContentMigration;
 import edu.iu.uits.lms.canvas.model.ContentMigrationCreateWrapper;
 import edu.iu.uits.lms.canvas.model.Course;
+import edu.iu.uits.lms.canvas.model.Enrollment;
 import edu.iu.uits.lms.canvas.services.AccountService;
 import edu.iu.uits.lms.canvas.services.ContentMigrationService;
 import edu.iu.uits.lms.canvas.services.CourseService;
@@ -63,6 +64,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -117,14 +120,20 @@ public class WizardService {
 
    @Cacheable(value = INSTRUCTOR_COURSES_CACHE_NAME, cacheManager = "CourseSetupWizardCacheManager")
    public List<SelectableCourse> getSelectableCourses(String networkId, String currentCourseId) {
-      List<Course> courses = courseService.getCoursesTaughtBy(networkId, true, false, true);
+      List<String> states = Arrays.asList("available", "unpublished", "completed");
+
+      List<Course> courses = courseService.getCoursesForUser(networkId, false, true, true, states);
       courses.sort(Comparator.comparing((Course c) -> c.getTerm().getStartAt(), Comparator.nullsFirst(Comparator.reverseOrder()))
             .thenComparing(Course::getSisCourseId, Comparator.nullsLast(Comparator.naturalOrder()))
             .thenComparing(Course::getName));
 
-      //Filter out current course
+      List<String> wantedEnrollments = Arrays.asList("teacher", "ta", "designer");
+      
+      // Filter out current course, then
+      // filter it to keep courses where the user is enrolled as an enrollment type in wantedEnrollments
       return courses.stream()
             .filter(c -> !currentCourseId.equals(c.getId()))
+            .filter(c->c.getEnrollments().stream().anyMatch(enr -> wantedEnrollments.contains(enr.getType())))
             .map(SelectableCourse::new)
             .collect(Collectors.toList());
    }
