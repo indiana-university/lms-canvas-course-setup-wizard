@@ -221,13 +221,14 @@
                     <div th:insert="fragments.html :: selectAlert"></div>
                 </fieldset>
                 <div class="rvt-button-group [ rvt-m-top-md ]">
-                    <button class="rvt-button rvt-button--secondary" onclick="return doExit();" data-rvt-dialog-trigger="dialogExit">Exit <span class="rvt-sr-only">the Wizard</span></button>
+                    <button class="rvt-button rvt-button--secondary" onclick="return doExit();" data-rvt-dialog-trigger="dialogExit">Exit</button>
                     <button class="rvt-button" onclick="return doSubmit(this);">
                         <span class="rvt-button__content">
-                            Next <span class="rvt-sr-only">Step</span>
+                            Next
                         </span>
-                        <div class="rvt-loader rvt-loader--xs rvt-display-none" aria-label="Next page loading"></div>
+                        <div class="rvt-loader rvt-loader--xs rvt-display-none" data-loader-text="Next page is loading."></div>
                     </button>
+                    <p aria-live="polite"><span class="rvt-sr-only" id="spinner-sr-text"></span></p>
                 </div>
             </form>
         </div>
@@ -261,6 +262,14 @@
 
         button.classList.add("rvt-button--loading");
         button.getElementsByTagName('div')[0].classList.remove("rvt-display-none");
+
+        // Set screenreader-only text to notify there is some loading action happening
+        var loader = document.getElementsByClassName('rvt-loader')[0];
+        var srText = loader.dataset.loaderText;
+
+        var spinner = document.getElementById('spinner-sr-text');
+        spinner.innerHTML=srText;
+
 
         if (formSubmit) {
             // FF doesn't need this, but Chrome and Edge do

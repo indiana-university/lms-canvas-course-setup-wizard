@@ -60,9 +60,9 @@
 <div th:fragment="buttons">
     <div class="rvt-button-group [ rvt-m-top-xl ]">
         <button class="rvt-button rvt-button--secondary" name="action"
-                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_BACK}">Back <span class="rvt-sr-only"> to Previous Step</span></button>
+                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_BACK}">Back</button>
         <button th:unless="${isSubmit}" class="rvt-button" name="action" th:attr="onclick=${nextOnclick != null} ? |${nextOnclick}|"
-                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_NEXT}">Next <span class="rvt-sr-only">Step</span></button>
+                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_NEXT}">Next</button>
         <button th:if="${isSubmit}" class="rvt-button" name="action"
                 th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_SUBMIT}">Submit</button>
     </div>
