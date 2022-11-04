@@ -206,6 +206,9 @@ public class WizardService {
          wizardCourseStatus.setMainOption(mainOption);
          wizardCourseStatus.setContentMigrationId(cm.getId());
          wizardCourseStatusRepository.save(wizardCourseStatus);
+
+         //Do full audit
+         templateAuditService.audit(courseId, sourceCourseId, "WIZARD_COURSE_IMPORT", userLoginId);
       } else {
          throw new WizardServiceException("Unable to perform course import");
       }
