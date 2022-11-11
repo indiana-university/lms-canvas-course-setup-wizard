@@ -44,6 +44,7 @@ import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
 import edu.iu.uits.lms.iuonly.services.HierarchyResourceService;
+import edu.iu.uits.lms.iuonly.services.TemplateAuditService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -87,6 +88,9 @@ public class WizardServiceTest {
 
    @MockBean
    private HierarchyResourceService hierarchyResourceService;
+
+   @MockBean
+   private TemplateAuditService templateAuditService;
 
    @Test
    void testPopupShown() {

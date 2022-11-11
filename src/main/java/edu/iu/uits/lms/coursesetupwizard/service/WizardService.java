@@ -37,7 +37,6 @@ import edu.iu.uits.lms.canvas.helpers.ContentMigrationHelper;
 import edu.iu.uits.lms.canvas.model.ContentMigration;
 import edu.iu.uits.lms.canvas.model.ContentMigrationCreateWrapper;
 import edu.iu.uits.lms.canvas.model.Course;
-import edu.iu.uits.lms.canvas.model.Enrollment;
 import edu.iu.uits.lms.canvas.services.AccountService;
 import edu.iu.uits.lms.canvas.services.ContentMigrationService;
 import edu.iu.uits.lms.canvas.services.CourseService;
@@ -55,6 +54,7 @@ import edu.iu.uits.lms.iuonly.model.StoredFile;
 import edu.iu.uits.lms.iuonly.model.coursetemplating.CourseTemplatesWrapper;
 import edu.iu.uits.lms.iuonly.services.HierarchyResourceException;
 import edu.iu.uits.lms.iuonly.services.HierarchyResourceService;
+import edu.iu.uits.lms.iuonly.services.TemplateAuditService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -64,7 +64,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -96,6 +95,9 @@ public class WizardService {
 
    @Autowired
    private HierarchyResourceService hierarchyResourceService;
+
+   @Autowired
+   private TemplateAuditService templateAuditService;
 
    @Autowired
    private ToolConfig toolConfig;
@@ -204,6 +206,9 @@ public class WizardService {
          wizardCourseStatus.setMainOption(mainOption);
          wizardCourseStatus.setContentMigrationId(cm.getId());
          wizardCourseStatusRepository.save(wizardCourseStatus);
+
+         //Do full audit
+         templateAuditService.audit(courseId, sourceCourseId, "WIZARD_COURSE_IMPORT", userLoginId);
       } else {
          throw new WizardServiceException("Unable to perform course import");
       }
@@ -245,6 +250,9 @@ public class WizardService {
             wizardCourseStatus.setSelectedTemplateId(importModel.getSelectedTemplateId());
             wizardCourseStatus.setContentMigrationId(cm.getId());
             wizardCourseStatusRepository.save(wizardCourseStatus);
+
+            //Do full audit
+            templateAuditService.audit(courseId, templateForCourse, "WIZARD_TEMPLATE", userLoginId);
          } else {
             throw new WizardServiceException("Unable to apply template to course");
          }
@@ -290,6 +298,9 @@ public class WizardService {
             wizardCourseStatus.setSelectedTemplateId(templateForCourse.getId().toString());
             wizardCourseStatus.setContentMigrationId(cm.getId());
             wizardCourseStatusRepository.save(wizardCourseStatus);
+
+            //Do full audit
+            templateAuditService.audit(courseId, templateForCourse, "WIZARD_HOMEPAGE", userLoginId);
          } else {
             throw new WizardServiceException("Unable to set course homepage");
          }

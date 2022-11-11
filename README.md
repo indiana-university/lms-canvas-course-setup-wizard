@@ -41,6 +41,7 @@ In the `Message` section, set the following:
 canvas_course_id=123456
 canvas_user_login_id=johnsmith
 canvas_membership_roles=Instructor
+instructure_membership_roles=http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor
 ```
 
 </td></tr>
@@ -52,7 +53,7 @@ From the `Security Model` section, set the following:
 <table>
 <tr><th>Property</th><th>Value</th></tr>
 <tr><td>LTI version</td><td>1.3.0</td></tr>
-<tr><td>Message URL</td><td>http://localhost:8080/app/launch</td></tr>
+<tr><td>Message URL</td><td>http://localhost:8080/app/loading</td></tr>
 <tr><td>Client ID</td><td>dev (or whatever is appropriate based on the record inserted in the database table from above)</td></tr>
 <tr><td>Initiate login URL</td><td>http://localhost:8080/lti/login_initiation/lms_coursesetupwizard</td></tr>
 <tr><td>Redirection URI(s)</td><td>http://localhost:8080/lti/login</td></tr>
