@@ -33,7 +33,6 @@ package edu.iu.uits.lms.coursesetupwizard.config;
  * #L%
  */
 
-import edu.iu.uits.lms.canvas.helpers.EnrollmentHelper;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.repository.DefaultInstructorRoleRepository;
 import edu.iu.uits.lms.lti.service.LmsDefaultGrantedAuthoritiesMapper;
@@ -60,12 +59,12 @@ public class CustomRoleMapper extends LmsDefaultGrantedAuthoritiesMapper {
         }
 
         // let TAs use the tool
-        if (userRoleList.contains(EnrollmentHelper.TYPE_TA)) {
+        if (userRoleList.contains(LTIConstants.CANVAS_TA_ROLE)) {
             return LTIConstants.INSTRUCTOR_AUTHORITY;
         }
 
         // let Designers use the tool
-        if (userRoleList.contains(EnrollmentHelper.TYPE_DESIGNER)) {
+        if (userRoleList.contains(LTIConstants.CANVAS_DESIGNER_ROLE)) {
             return LTIConstants.INSTRUCTOR_AUTHORITY;
         }
 
