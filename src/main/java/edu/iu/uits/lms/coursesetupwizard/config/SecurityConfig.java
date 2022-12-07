@@ -88,10 +88,10 @@ public class SecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
             http
                   .requestMatchers()
-                  .antMatchers(WELL_KNOWN_ALL, "/app/**", "/tool/**")
+                  .antMatchers(WELL_KNOWN_ALL, "/error", "/app/**", "/tool/**")
                   .and()
                   .authorizeRequests()
-                  .antMatchers(WELL_KNOWN_ALL).permitAll()
+                  .antMatchers(WELL_KNOWN_ALL, "/error").permitAll()
                   .antMatchers("/app/**", "/tool/**").hasRole(LTIConstants.INSTRUCTOR_ROLE);
 
             //Setup the LTI handshake
