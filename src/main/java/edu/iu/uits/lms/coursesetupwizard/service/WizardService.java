@@ -125,17 +125,17 @@ public class WizardService {
       List<String> states = Arrays.asList("available", "unpublished", "completed");
 
       List<Course> courses = courseService.getCoursesForUser(networkId, false, true, true, states);
-      courses.sort(Comparator.comparing((Course c) -> c.getTerm().getStartAt(), Comparator.nullsFirst(Comparator.reverseOrder()))
-            .thenComparing(Course::getSisCourseId, Comparator.nullsLast(Comparator.naturalOrder()))
-            .thenComparing(Course::getName));
-
       List<String> wantedEnrollments = Arrays.asList("teacher", "ta", "designer");
-      
+
       // Filter out current course, then
       // filter it to keep courses where the user is enrolled as an enrollment type in wantedEnrollments
       return courses.stream()
             .filter(c -> !currentCourseId.equals(c.getId()))
+            .filter(c -> !c.isAccessRestrictedByDate())
             .filter(c->c.getEnrollments().stream().anyMatch(enr -> wantedEnrollments.contains(enr.getType())))
+            .sorted(Comparator.comparing((Course c) -> c.getTerm() == null ? null : c.getTerm().getStartAt(), Comparator.nullsFirst(Comparator.reverseOrder()))
+              .thenComparing(Course::getSisCourseId, Comparator.nullsLast(Comparator.naturalOrder()))
+              .thenComparing(Course::getName))
             .map(SelectableCourse::new)
             .collect(Collectors.toList());
    }
