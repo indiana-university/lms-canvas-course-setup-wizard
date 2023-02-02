@@ -217,6 +217,9 @@ public class WizardService {
    public void doApplyTemplate(ImportModel importModel, String userLoginId, String appBaseUrl) throws WizardServiceException {
       String courseId = importModel.getCourseId();
 
+      //Update course front page
+      courseService.updateCourseFrontPage(courseId, "modules");
+
       HierarchyResource templateForCourse = null;
       try {
          templateForCourse = hierarchyResourceService.getTemplate(Long.parseLong(importModel.getSelectedTemplateId()));
