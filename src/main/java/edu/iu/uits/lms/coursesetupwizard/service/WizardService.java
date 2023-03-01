@@ -327,8 +327,10 @@ public class WizardService {
 
       if (wrapper != null) {
          List<HierarchyResource> resources = wrapper.getTemplates();
+
          nodeMap = resources.stream()
                .filter(t-> !(t.isDefaultTemplate() && toolConfig.getHierarchyRootNodeName().equals(t.getNode())))
+               .sorted(Comparator.comparing(HierarchyResource::getDisplayName))
                .collect(Collectors.groupingBy(HierarchyResource::getNode));
       }
       return nodeMap;

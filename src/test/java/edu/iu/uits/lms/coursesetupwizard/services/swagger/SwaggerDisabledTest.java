@@ -35,13 +35,17 @@ package edu.iu.uits.lms.coursesetupwizard.services.swagger;
 
 import edu.iu.uits.lms.coursesetupwizard.WebApplication;
 import edu.iu.uits.lms.coursesetupwizard.config.SecurityConfig;
+import edu.iu.uits.lms.iuonly.services.SisServiceImpl;
 import edu.iu.uits.lms.lti.swagger.AbstractSwaggerDisabledTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 
 @SpringBootTest(classes = {WebApplication.class, SecurityConfig.class})
 public class SwaggerDisabledTest extends AbstractSwaggerDisabledTest {
+   @MockBean
+   private SisServiceImpl sisService;
 
    @Override
    protected List<String> getEmbeddedSwaggerToolPaths() {
