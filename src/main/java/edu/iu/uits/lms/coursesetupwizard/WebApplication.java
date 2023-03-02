@@ -72,7 +72,6 @@ public class WebApplication {
     private final static int STEP_CAPACITY = 2048;
 
     public static void main(String[] args) {
-//        SpringApplication.run(WebApplication.class, args);
         SpringApplication app = new SpringApplication(WebApplication.class);
         BufferingApplicationStartup startup = new BufferingApplicationStartup(STEP_CAPACITY);
         startup.addFilter(startupStep -> startupStep.getName().matches("spring.boot.application.ready"));

@@ -37,6 +37,7 @@ import edu.iu.uits.lms.coursesetupwizard.WebApplication;
 import edu.iu.uits.lms.coursesetupwizard.config.SecurityConfig;
 import edu.iu.uits.lms.iuonly.services.SisServiceImpl;
 import edu.iu.uits.lms.lti.swagger.AbstractSwaggerEmbeddedToolTest;
+import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
@@ -50,6 +51,9 @@ import static edu.iu.uits.lms.iuonly.IuCustomConstants.IUCUSTOMREST_PROFILE;
 public class SwaggerEmbeddedToolTest extends AbstractSwaggerEmbeddedToolTest {
    @MockBean
    private SisServiceImpl sisService;
+
+   @MockBean
+   private BufferingApplicationStartup bufferingApplicationStartup;
 
    @Override
    protected List<String> getEmbeddedSwaggerToolPaths() {
