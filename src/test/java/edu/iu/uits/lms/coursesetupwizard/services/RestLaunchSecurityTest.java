@@ -80,9 +80,6 @@ public class RestLaunchSecurityTest {
    @MockBean
    private WizardUserCourseRepository wizardUserCourseRepository;
 
-   @MockBean
-   private SisServiceImpl sisService;
-
    @Test
    public void restNoAuthnLaunch() throws Exception {
       //This is a secured endpoint and should not allow access without authn
