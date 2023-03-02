@@ -33,6 +33,7 @@ package edu.iu.uits.lms.coursesetupwizard.config;
  * #L%
  */
 
+import edu.iu.uits.lms.common.it12logging.RestSecurityLoggingConfig;
 import edu.iu.uits.lms.common.oauth.CustomJwtAuthenticationConverter;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.repository.DefaultInstructorRoleRepository;
@@ -72,6 +73,8 @@ public class SecurityConfig {
                     .oauth2ResourceServer()
                     .jwt().jwtAuthenticationConverter(new CustomJwtAuthenticationConverter());
 
+            http.apply(new RestSecurityLoggingConfig());
+
             //Disable csrf for the popup endpoints
             http.csrf().ignoringAntMatchers("/rest/popup/**");
         }
@@ -110,7 +113,7 @@ public class SecurityConfig {
         @Override
         public void configure(WebSecurity web) throws Exception {
             // ignore everything except paths specified
-            web.ignoring().antMatchers("/app/jsrivet/**", "/app/jsreact/**", "/app/webjars/**", "/actuator/**",
+            web.ignoring().antMatchers("/app/jsrivet/**", "/app/jsreact/**", "/app/webjars/**",
                   "/app/css/**", "/app/js/**", "/app/images/**", "/favicon.ico");
         }
 

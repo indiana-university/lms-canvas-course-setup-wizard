@@ -75,7 +75,7 @@ public class WizardController extends OidcTokenAwareController {
     @Autowired
     protected CourseSessionService courseSessionService;
 
-    @RequestMapping("/loading")
+    @RequestMapping({"/launch", "/loading"})
     public String loading(Model model) {
         OidcAuthenticationToken token = getTokenWithoutContext();
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);

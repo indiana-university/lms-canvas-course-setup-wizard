@@ -2,7 +2,7 @@
   "title": "Course Setup Wizard",
   "description": "Course Setup Wizard",
   "oidc_initiation_url": "http://localhost:8080/lti/login_initiation/lms_coursesetupwizard",
-  "target_link_uri": "http://localhost:8080/app/loading",
+  "target_link_uri": "http://localhost:8080/app/launch",
   "extensions": [
     {
       "domain": "localhost",
