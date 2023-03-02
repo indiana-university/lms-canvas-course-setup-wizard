@@ -35,7 +35,6 @@ package edu.iu.uits.lms.coursesetupwizard.services.swagger;
 
 import edu.iu.uits.lms.coursesetupwizard.WebApplication;
 import edu.iu.uits.lms.coursesetupwizard.config.SecurityConfig;
-import edu.iu.uits.lms.iuonly.services.SisServiceImpl;
 import edu.iu.uits.lms.lti.swagger.AbstractSwaggerEmbeddedToolTest;
 import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,9 +48,6 @@ import static edu.iu.uits.lms.iuonly.IuCustomConstants.IUCUSTOMREST_PROFILE;
 @SpringBootTest(classes = {WebApplication.class, SecurityConfig.class})
 @ActiveProfiles({IUCUSTOMREST_PROFILE})
 public class SwaggerEmbeddedToolTest extends AbstractSwaggerEmbeddedToolTest {
-   @MockBean
-   private SisServiceImpl sisService;
-
    @MockBean
    private BufferingApplicationStartup bufferingApplicationStartup;
 

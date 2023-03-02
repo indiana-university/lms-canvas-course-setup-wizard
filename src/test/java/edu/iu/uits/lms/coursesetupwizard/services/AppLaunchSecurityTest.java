@@ -76,9 +76,6 @@ public class AppLaunchSecurityTest {
    @MockBean
    private WizardUserCourseRepository wizardUserCourseRepository;
 
-   @MockBean
-   private SisServiceImpl sisService;
-
    @BeforeEach
    public void setup() {
 //      Model status = new Model(true, true, "1234");
