@@ -37,12 +37,17 @@
 <body>
 
 <div th:fragment="exitDialog">
-    <div class="rvt-dialog" id="dialogExit" role="dialog" tabindex="-1" hidden aria-labelledby="dialog-exit-title" data-rvt-dialog="dialogExit" data-rvt-dialog-modal data-rvt-dialog-darken-page>
+    <div class="rvt-dialog" id="dialogExit" role="dialog" tabindex="-1" hidden aria-labelledby="dialog-exit-title"
+         aria-describedby="dialog-description"
+         data-rvt-dialog="dialogExit"
+         data-rvt-dialog-modal
+         data-rvt-dialog-darken-page
+         data-rvt-dialog-disable-page-interaction>
         <header class="rvt-dialog__header">
             <h1 class="rvt-dialog__title" id="dialog-exit-title">Exit the Wizard</h1>
         </header>
         <div class="rvt-dialog__body">
-            <p>
+            <p id="dialog-description">
                 If you exit the wizard, you will return to the course's home page. This wizard will continue to be
                 available until you or another instructor in the course completes the wizard or publishes the
                 course. You can restart the wizard via the wizard pop-up on the course home page (if you haven’t
