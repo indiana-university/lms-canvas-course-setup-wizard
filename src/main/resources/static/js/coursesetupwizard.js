@@ -33,4 +33,8 @@
 
 jQuery(document).ready(function($) {
 
+    $("#exit-wizard").click(function(event) {
+        $("#dialog-exit-title").focus();
+      });
+
 });
