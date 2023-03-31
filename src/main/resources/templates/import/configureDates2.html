@@ -79,24 +79,24 @@
             <th scope="row" id="original-course">Original course</th>
             <td>
               <label for="original-first" class="rvt-sr-only">Enter the first day of class in the original course</label>
-              <input type="date" id="original-first" name="classDates.origFirst" class="rvt-text-input"
+              <input type="date" id="original-first" name="classDates.origFirst" class="rvt-text-input" max="9999-12-31"
                        th:value="${selectedClassDates?.origFirst}" aria-describedby="date-format"/>
             </td>
             <td>
               <label for="original-last" class="rvt-sr-only">Enter the last day of class in the original course</label>
-              <input type="date" id="original-last" name="classDates.origLast" class="rvt-text-input"
+              <input type="date" id="original-last" name="classDates.origLast" class="rvt-text-input" max="9999-12-31"
                        th:value="${selectedClassDates?.origLast}" aria-describedby="date-format"/></td>
           </tr>
           <tr>
             <th scope="row" id="current-course">Current course</th>
             <td>
               <label for="current-first" class="rvt-sr-only">Enter the first day of class in the current course</label>
-              <input type="date" id="current-first" name="classDates.currentFirst" class="rvt-text-input"
+              <input type="date" id="current-first" name="classDates.currentFirst" class="rvt-text-input" max="9999-12-31"
                        th:value="${selectedClassDates?.currentFirst}" aria-describedby="date-format"/>
             </td>
             <td>
               <label for="current-last" class="rvt-sr-only">Enter the last day of class in the current course</label>
-              <input type="date" id="current-last" name="classDates.currentLast" class="rvt-text-input"
+              <input type="date" id="current-last" name="classDates.currentLast" class="rvt-text-input" max="9999-12-31"
                        th:value="${selectedClassDates?.currentLast}" aria-describedby="date-format"/>
 
             </td>

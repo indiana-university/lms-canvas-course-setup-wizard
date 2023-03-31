@@ -39,9 +39,12 @@ import org.springframework.util.MultiValueMap;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Data
@@ -75,7 +78,15 @@ public class ImportModel implements Serializable {
       }
 
       private String formatDateForReview(String date) {
-         return "".equalsIgnoreCase(date) || date == null ? "Nothing entered" : date;
+         String formattedDate = "Nothing entered";
+         if (date != null && !"".equals(date)) {
+            // change from yyyy-MM-dd to MM/dd/yyyy format
+            LocalDate myLocalDate = LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE);
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.US);
+            formattedDate =  myLocalDate.format(dtf);
+         }
+
+         return formattedDate;
       }
    }
 
