@@ -82,7 +82,7 @@ public class ImportModel implements Serializable {
          if (date != null && !"".equals(date)) {
             // change from yyyy-MM-dd to MM/dd/yyyy format
             LocalDate myLocalDate = LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE);
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.US);
+            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.getDefault());
             formattedDate =  myLocalDate.format(dtf);
          }
 
