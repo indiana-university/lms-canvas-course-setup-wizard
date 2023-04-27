@@ -6,18 +6,18 @@
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * 3. Neither the name of the Indiana University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software without
  *    specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -30,60 +30,71 @@
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
-import React from 'react';
-import Select from 'react-select';
+import React, {useState} from 'react';
+import {useTreeData} from 'react-stately';
+import {ComboBox, lightTheme, Item, Provider} from '@adobe/react-spectrum';
 
-class CourseSelect extends React.Component {
+function CourseSelect(props) {
+    let options = props.courses;
 
-  constructor(props) {
-    super(props);
-  }
+    let list = useTreeData({
+      initialItems: options
+    });
 
-  findSelectedOption = (courses, selCourseId) => {
-    //const selCourseId = this.props.selectedCourseId
-    //const courses = this.props.courses
-    console.log(`selected id:`, selCourseId)
-    if (selCourseId != null) {
-        const option = courses.filter((c) => {
-            if (c.value === selCourseId) {
-                return c
-            }
-        });
-        console.log(`Default option:`, option)
-        return option
-    }
-    return null
-  };
+    let [fieldState, setFieldState] = React.useState({
+      selectedKey: props.selectedCourseId ?? '',
+      inputValue: list.getItem(props.selectedCourseId)?.value.name ?? ''
+    });
 
-  render() {
-    const courses = this.props.courses;
+    let onSelectionChange = (key) => {
+      setFieldState({
+        inputValue: list.getItem(key)?.value.name ?? '',
+        selectedKey: key
+      });
 
-    if (courses.length > 0) {
-        return (
-          // There "should" be an attribute in the component below for className="rvt-select", but rivet really doesn't play
-          // nice with any other styles and it looks dumb.  So, just using the component's defaults.
-          // Also             value={selectedOption}
-          <>
-              <label className="rvt-label rvt-ts-18" id="course-select-label" htmlFor="course-select-input">Import from course <span className="rvt-sr-only sr-spacing"> Required</span></label>
-              <Select
-                defaultValue={this.findSelectedOption(courses, this.props.selectedCourseId)}
-                options={courses}
-                aria-labelledby="course-select-label"
-                inputId="course-select-input"
-                name="selectedCourseId"
-                placeholder="Select a course"
-              />
-          </>
-        );
-    } else {
-        return (
-            <span>
-                You are not listed as a Teacher, TA, or Designer in any other courses. If you would like to import
-                content from a colleague's course, please work with them or your department administrator to add you to
-                the course in one of these roles.
-            </span>
-        );
-    }
+      document.getElementById('selectedCourseId').value = key;
+    };
+
+    let onInputChange = (value) => {
+      setFieldState((prevState) => ({
+        inputValue: value,
+        selectedKey: value === '' ? null : prevState.selectedKey
+      }));
+    };
+
+  if (options.length > 0) {
+      return (
+        <>
+           <Provider theme={lightTheme}>
+             <ComboBox
+                 label="Import from course"
+                 defaultItems={list.items}
+                 selectedKey={fieldState.selectedKey}
+                 inputValue={fieldState.inputValue}
+                 onSelectionChange={onSelectionChange}
+                 onInputChange={onInputChange}
+                 isRequired
+                 necessityIndicator="label"
+                 width="100%"
+                 name="courseSelectInput"
+                 direction="bottom"
+                 shouldFocusWrap
+             >
+                 {(item) => <Item>{item.value.name}</Item>}
+             </ComboBox>
+           </Provider>
+           <input type="hidden" id="selectedCourseId" name="selectedCourseId" />
+         </>
+
+       );
+  } else {
+      return (
+          <span>
+              You are not listed as a Teacher, TA, or Designer in any other courses. If you would like to import
+              content from a colleague's course, please work with them or your department administrator to add you to
+              the course in one of these roles.
+          </span>
+      );
   }
 }
 

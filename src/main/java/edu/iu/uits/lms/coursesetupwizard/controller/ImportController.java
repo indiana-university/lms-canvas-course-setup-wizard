@@ -366,7 +366,7 @@ public class ImportController extends WizardController {
       List<SelectableCourse> selectableCourses = wizardService.getSelectableCourses(userLoginId, currentCourseId);
 
       Map<String, String> courseMap = selectableCourses.stream()
-            .collect(Collectors.toMap(SelectableCourse::getValue, SelectableCourse::getLabel, (a, b) -> b));
+            .collect(Collectors.toMap(SelectableCourse::getId, SelectableCourse::getName, (a, b) -> b));
 
       return courseMap.get(selectedCourseId);
    }

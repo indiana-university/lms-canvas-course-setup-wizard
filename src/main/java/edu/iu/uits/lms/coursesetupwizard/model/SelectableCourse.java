@@ -42,15 +42,15 @@ import java.text.MessageFormat;
 @Data
 public class SelectableCourse implements Serializable {
 
-   private String label;
-   private String value;
+   private String name;
+   private String id;
 
    public SelectableCourse (Course course) {
-      this.value = course.getId();
-      this.label = course.getName();
+      this.id = course.getId();
+      this.name = course.getName();
 
       if (course.getSisCourseId() != null) {
-         this.label = MessageFormat.format("{0} ({1})", course.getName(), course.getSisCourseId());
+         this.name = MessageFormat.format("{0} ({1})", course.getName(), course.getSisCourseId());
       }
    }
 }
