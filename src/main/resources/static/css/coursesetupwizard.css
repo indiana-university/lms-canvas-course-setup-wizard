@@ -69,23 +69,6 @@
     white-space:pre;
 }
 
-/**
-* Override the combobox default styles
-*/
-#react_select_container label {
-    font-size: 1.125rem;
-    padding-bottom: 0.5em;
-    color: #243142;
-}
-
-#react_select_container input {
-    padding: 0.5em;
-}
-
-#react_select_container input, #react_select_container button {
-    min-height: 38px;
-    font-size: 1rem;
-}
 
 /* Intial Loading screen */
 #load {
@@ -100,11 +83,4 @@
     white-space: nowrap;
 }
 /* End of loading screen stuff */
-
-/**
-*  The step indicator has a high z-index that is making it appear on top of the Import From Course menu
-*/
-.rvt-steps__indicator {
-    z-index: auto;
-}
 
