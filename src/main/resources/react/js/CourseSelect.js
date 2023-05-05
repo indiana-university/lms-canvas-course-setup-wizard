@@ -73,7 +73,7 @@ function ComboBox(props) {
     <div>
       <label className="rvt-label rvt-display-block rvt-ts-18" {...labelProps}>{props.label}</label>
       <div
-      style={{ position: "relative",}}
+      style={{ position: "relative" }}
       className="rvt-display-inline-block rvt-width-4-xl">
         <div className="rvt-input-group">
             <input
@@ -87,9 +87,7 @@ function ComboBox(props) {
                   ref={triggerRef}
                   className="rvt-button"
                 >
-                    <svg aria-hidden="true" className="" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" focusable="false">
-                          <path fill="currentColor" d="M8,12.46a2,2,0,0,1-1.52-.7L1.24,5.65a1,1,0,1,1,1.52-1.3L8,10.46l5.24-6.11a1,1,0,0,1,1.52,1.3L9.52,11.76A2,2,0,0,1,8,12.46Z"></path>
-                    </svg>
+                    <rvt-icon name="chevron-down"></rvt-icon>
                 </button>
             </div>
         </div>
