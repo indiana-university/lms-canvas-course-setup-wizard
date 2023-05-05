@@ -161,6 +161,23 @@ public class CorsTest {
    }
 
    @Test
+   public void restCheckCors2NoOrigin() throws Exception {
+      Jwt jwt = TestUtils.createJwtToken("asdf");
+
+      Collection<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("SCOPE_lms:rest", "ROLE_LMS_REST_ADMINS");
+      JwtAuthenticationToken token = new JwtAuthenticationToken(jwt, authorities);
+
+      mvc.perform(get("/rest/coursestatus/{id}", WCS_ID)
+                  .header(HttpHeaders.USER_AGENT, CommonTestUtils.defaultUseragent())
+                  .contentType(MediaType.APPLICATION_JSON)
+                  .with(authentication(token)))
+            .andExpect(status().isOk())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.completedBy").value(USER_ID_TST))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.courseId").value(COURSE_ID_TST))
+            .andExpect(MockMvcResultMatchers.header().doesNotExist(HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN));
+   }
+
+   @Test
    public void restCheckCors2Options() throws Exception {
       Jwt jwt = TestUtils.createJwtToken("asdf");
 
