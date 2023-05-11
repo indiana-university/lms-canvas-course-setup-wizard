@@ -37,7 +37,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
-  <title>Course Setup Wizard</title>
+  <title>Course Setup Wizard - Adjust dates</title>
 </head>
 
 <body class="rvt-layout">
@@ -47,9 +47,8 @@
 
   <div class="rvt-row rvt-p-top-md">
     <div class="rvt-cols-8-md rvt-flow rvt-prose">
+      <h2 id="page-title">Adjust dates</h2>
       <form id="wizard-form-dates2" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
-
-        <h2>Adjust dates</h2>
 
         <div th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
 
