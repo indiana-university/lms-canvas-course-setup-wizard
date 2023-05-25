@@ -1,8 +1,7 @@
 /*
- *   This content is licensed according to the W3C Software License at
- *   https://www.w3.org/Consortium/Legal/2015/copyright-software-and-document
+ *   This software or document includes material copied from or derived from https://www.w3.org/WAI/ARIA/apg/patterns/dialog-modal/examples/datepicker-dialog/.
+ *   Copyright © 2023 World Wide Web Consortium. https://www.w3.org/Consortium/Legal/2023/doc-license"
  *
- *   File:   DatePickerDialog.js
  */
 
 'use strict';
