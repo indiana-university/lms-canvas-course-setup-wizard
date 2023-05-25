@@ -34,7 +34,6 @@ package edu.iu.uits.lms.coursesetupwizard.model;
  */
 
 import lombok.Data;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -70,6 +69,7 @@ public class ImportModel implements Serializable {
       private String origLast;
       private String currentFirst;
       private String currentLast;
+
       public static final String DATE_FORMAT = "M/d/uuuu";
 
       public MultiValueMap<String, String> getReviewableValues() {
