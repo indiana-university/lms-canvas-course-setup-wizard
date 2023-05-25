@@ -64,10 +64,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.text.MessageFormat;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -173,10 +176,10 @@ public class WizardService {
             //date shifting
             ImportModel.ClassDates classDates = importModel.getClassDates();
             if (classDates != null) {
-               dateShifts.setOldStartDate(StringUtils.trimToNull(classDates.getOrigFirst()));
-               dateShifts.setOldEndDate(StringUtils.trimToNull(classDates.getOrigLast()));
-               dateShifts.setNewStartDate(StringUtils.trimToNull(classDates.getCurrentFirst()));
-               dateShifts.setNewEndDate(StringUtils.trimToNull(classDates.getCurrentLast()));
+               dateShifts.setOldStartDate(formatDateForSubmit(classDates.getOrigFirst()));
+               dateShifts.setOldEndDate(formatDateForSubmit(classDates.getOrigLast()));
+               dateShifts.setNewStartDate(formatDateForSubmit(classDates.getCurrentFirst()));
+               dateShifts.setNewEndDate(formatDateForSubmit(classDates.getCurrentLast()));
             }
 
             //day substitutions
@@ -334,6 +337,19 @@ public class WizardService {
                .collect(Collectors.groupingBy(HierarchyResource::getNode));
       }
       return nodeMap;
+   }
+
+   private String formatDateForSubmit(String date) {
+      String canvasDate = StringUtils.trimToNull(date);
+      if (canvasDate != null && !"".equals(canvasDate)) {
+         // change to expected Canvas format
+         DateTimeFormatter dtf = DateTimeFormatter.ofPattern(ImportModel.ClassDates.DATE_FORMAT, Locale.getDefault());
+         LocalDate myLocalDate = LocalDate.parse(canvasDate, dtf);
+
+         canvasDate =  myLocalDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
+      }
+
+      return canvasDate;
    }
 
 }

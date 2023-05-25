@@ -65,44 +65,19 @@
             <li>If the original course and current course have different term lengths, enter first and last day dates for both courses, using the actual first and last date of class, not the term start and end dates.</li>
           </ul>
         </p>
-        <table class="rvt-table-plain">
-          <caption class="rvt-sr-only">Table of inputs for start and end dates</caption>
-          <thead>
-          <tr>
-            <td></td>
-            <th scope="col" id="first-class">First day of class</th>
-            <th scope="col" id="last-class">Last day of class</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <th scope="row" id="original-course">Original course</th>
-            <td>
-              <label for="original-first" class="rvt-sr-only">Enter the first day of class in the original course</label>
-              <input type="date" id="original-first" name="classDates.origFirst" class="rvt-text-input" max="9999-12-31"
-                       th:value="${selectedClassDates?.origFirst}" aria-describedby="date-format"/>
-            </td>
-            <td>
-              <label for="original-last" class="rvt-sr-only">Enter the last day of class in the original course</label>
-              <input type="date" id="original-last" name="classDates.origLast" class="rvt-text-input" max="9999-12-31"
-                       th:value="${selectedClassDates?.origLast}" aria-describedby="date-format"/></td>
-          </tr>
-          <tr>
-            <th scope="row" id="current-course">Current course</th>
-            <td>
-              <label for="current-first" class="rvt-sr-only">Enter the first day of class in the current course</label>
-              <input type="date" id="current-first" name="classDates.currentFirst" class="rvt-text-input" max="9999-12-31"
-                       th:value="${selectedClassDates?.currentFirst}" aria-describedby="date-format"/>
-            </td>
-            <td>
-              <label for="current-last" class="rvt-sr-only">Enter the last day of class in the current course</label>
-              <input type="date" id="current-last" name="classDates.currentLast" class="rvt-text-input" max="9999-12-31"
-                       th:value="${selectedClassDates?.currentLast}" aria-describedby="date-format"/>
 
-            </td>
-          </tr>
-          </tbody>
-        </table>
+        <div class="rvt-container-xl">
+            <div class="rvt-row rvt-p-top-sm">
+                <div class="rvt-cols-6-md" th:insert="datepicker.html :: datePicker(${selectedClassDates?.origFirst}, 'original-first','orig-legend','classDates.origFirst', 'Original first day of class', ${origStartError})"></div>
+                <div class="rvt-cols-6-md" th:insert="datepicker.html :: datePicker(${selectedClassDates?.origLast}, 'original-last','orig-legend','classDates.origLast', 'Original last day of class', ${origLastError})"></div>
+            </div>
+
+
+            <div class="rvt-row rvt-p-top-md">
+                <div class="rvt-cols-6-md" th:insert="datepicker.html :: datePicker(${selectedClassDates?.currentFirst}, 'current-first','date-format','classDates.currentFirst', 'Current first day of class', ${currentStartError})"></div>
+                <div class="rvt-cols-6-md" th:insert="datepicker.html :: datePicker(${selectedClassDates?.currentLast}, 'current-last','date-format','classDates.currentLast', 'Current last day of class', ${currentLastError})"></div>
+            </div>
+        </div>
 
         <span hidden id="date-format">MM/DD/YYYY format</span>
 

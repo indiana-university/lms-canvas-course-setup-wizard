@@ -37,4 +37,5 @@ jQuery(document).ready(function($) {
         $("#dialog-exit-title").focus();
       });
 
+    $("input[aria-invalid='true']" ).first().focus();
 });

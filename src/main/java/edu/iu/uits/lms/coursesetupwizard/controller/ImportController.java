@@ -60,6 +60,10 @@ import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenti
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.text.MessageFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -196,6 +200,33 @@ public class ImportController extends WizardController {
       Map<String, String> selectedDayChanges = new HashMap<>();
 
       if (importModel != null) {
+         // validate the dates
+         ImportModel.ClassDates classDates = importModel.getClassDates();
+         boolean isError = false;
+         if (!isValid(classDates.getCurrentFirst(), ImportModel.ClassDates.DATE_FORMAT)) {
+            isError = true;
+            model.addAttribute("currentStartError", true);
+         }
+
+         if (!isValid(classDates.getCurrentLast(), ImportModel.ClassDates.DATE_FORMAT)) {
+            isError = true;
+            model.addAttribute("currentLastError", true);
+         }
+
+         if (!isValid(classDates.getOrigFirst(), ImportModel.ClassDates.DATE_FORMAT)) {
+            isError = true;
+            model.addAttribute("origStartError", true);
+         }
+
+         if (!isValid(classDates.getOrigLast(), ImportModel.ClassDates.DATE_FORMAT)) {
+            isError = true;
+            model.addAttribute("origLastError", true);
+         }
+
+         if (isError) {
+            return classDates(courseId, model, httpSession);
+         }
+
          model.addAttribute("selectedCourseLabel", importModel.getSelectedCourseLabel());
 
          ImportModel.DayChanges dc = importModel.getDayChanges();
@@ -376,6 +407,35 @@ public class ImportController extends WizardController {
    public static class ImportStep implements Serializable {
       private String name;
       private String link;
+   }
+
+   /**
+    *
+    * @param date
+    * @param dateFormat
+    * @return true if the given date string is a valid date
+    */
+   public boolean isValid(String date, String dateFormat) {
+      boolean valid = false;
+
+      // empty dates are allowed
+      if (date == null || date.isEmpty()) {
+         valid = true;
+      } else {
+         try {
+            // ResolverStyle.STRICT for 30, 31 days checking, and also leap year.
+            LocalDate.parse(date,
+                    DateTimeFormatter.ofPattern(dateFormat)
+                            .withResolverStyle(ResolverStyle.STRICT)
+            );
+            valid = true;
+
+         } catch (DateTimeParseException e) {
+            valid = false;
+         }
+      }
+
+      return valid;
    }
 
 }
