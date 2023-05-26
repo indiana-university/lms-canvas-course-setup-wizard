@@ -38,4 +38,9 @@ jQuery(document).ready(function($) {
       });
 
     $("input[aria-invalid='true']" ).first().focus();
+
+    // trim extra spaces in the date inputs. Voice control sometimes adds a leading space to the date
+    $('input.date-input').blur(function() {
+        $(this).val($(this).val().trim());
+    });
 });
