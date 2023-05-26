@@ -46,7 +46,7 @@ Copyright © 2023 World Wide Web Consortium. https://www.w3.org/Consortium/Legal
             <label th:for="${datepickerId}" th:text="${label}" class="rvt-label rvt-ts-16 rvt-text-bold">Date</label>
             <div class="rvt-input-group rvt-width-md">
                 <input type="text" placeholder="mm/dd/yyyy" th:id="${datepickerId}" th:name="${name}" th:value="${value}" class="date-input rvt-text-input rvt-input-group__input"
-                       th:attr="aria-describedby=${error != null} ? |${datepickerId}-invalid| : descriptionId, aria-invalid=${error != null} ? 'true'"
+                       th:attr="aria-describedby=${error != null} ? |${datepickerId}-invalid| : ${descriptionId}, aria-invalid=${error != null} ? 'true'"
                        th:classappend="${error != null} ? 'rvt-validation-danger'">
                 <div class="rvt-input-group__append">
                     <button type="button" class="rvt-button date-button" th:attr="aria-label=|Choose Date for ${label}|"

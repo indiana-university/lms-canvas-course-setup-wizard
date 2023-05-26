@@ -68,8 +68,8 @@
 
         <div class="rvt-container-xl">
             <div class="rvt-row rvt-p-top-sm">
-                <div class="rvt-cols-6-md" th:insert="datepicker.html :: datePicker(${selectedClassDates?.origFirst}, 'original-first','orig-legend','classDates.origFirst', 'Original first day of class', ${origStartError})"></div>
-                <div class="rvt-cols-6-md" th:insert="datepicker.html :: datePicker(${selectedClassDates?.origLast}, 'original-last','orig-legend','classDates.origLast', 'Original last day of class', ${origLastError})"></div>
+                <div class="rvt-cols-6-md" th:insert="datepicker.html :: datePicker(${selectedClassDates?.origFirst}, 'original-first','date-format','classDates.origFirst', 'Original first day of class', ${origStartError})"></div>
+                <div class="rvt-cols-6-md" th:insert="datepicker.html :: datePicker(${selectedClassDates?.origLast}, 'original-last','date-format','classDates.origLast', 'Original last day of class', ${origLastError})"></div>
             </div>
 
 
