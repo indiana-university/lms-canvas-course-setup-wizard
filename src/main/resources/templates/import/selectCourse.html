@@ -50,7 +50,6 @@
       <div th:if="${noImportSelected}" th:insert="fragments.html :: noImportSelected"></div>
       <h2 id="page-title" class="rvt-ts-23 rvt-p-bottom-xs">Select course</h2>
       <form id="wizard-form-course" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
-        <h2 class="rvt-ts-23 rvt-p-bottom-xs">Select course</h2>
         <fieldset class="rvt-fieldset">
           <legend class="rvt-legend [ rvt-ts-20 rvt-p-bottom-sm ]">
             Import content from another course into this course.
