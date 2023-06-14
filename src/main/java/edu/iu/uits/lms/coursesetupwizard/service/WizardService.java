@@ -124,7 +124,7 @@ public class WizardService {
    public List<SelectableCourse> getSelectableCourses(String networkId, String currentCourseId) {
       List<String> states = Arrays.asList("available", "unpublished", "completed");
 
-      List<Course> courses = courseService.getCoursesForUser(networkId, false, true, true, states);
+      List<Course> courses = courseService.getCoursesForUser(networkId, false, true, false, states);
       List<String> wantedEnrollments = Arrays.asList("teacher", "ta", "designer");
 
       // Filter out current course, then
