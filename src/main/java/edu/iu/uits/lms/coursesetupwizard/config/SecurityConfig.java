@@ -60,7 +60,9 @@ public class SecurityConfig {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
-            http.requestMatchers().antMatchers("/api/**", "/rest/**")
+            http
+                  .cors().and()
+                    .requestMatchers().antMatchers("/api/**", "/rest/**")
                     .and()
                     .authorizeRequests()
                     .antMatchers("/api/**").permitAll()
