@@ -43,10 +43,12 @@ import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.coursesetupwizard.model.ImportModel;
+import edu.iu.uits.lms.coursesetupwizard.model.PopupDismissalDate;
 import edu.iu.uits.lms.coursesetupwizard.model.PopupStatus;
 import edu.iu.uits.lms.coursesetupwizard.model.SelectableCourse;
 import edu.iu.uits.lms.coursesetupwizard.model.WizardCourseStatus;
 import edu.iu.uits.lms.coursesetupwizard.model.WizardUserCourse;
+import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
 import edu.iu.uits.lms.iuonly.model.HierarchyResource;
@@ -66,6 +68,7 @@ import org.springframework.util.CollectionUtils;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,24 +103,31 @@ public class WizardService {
    private TemplateAuditService templateAuditService;
 
    @Autowired
+   private PopupDismissalDateRepository popupDismissalDateRepository;
+
+   @Autowired
    private ToolConfig toolConfig;
 
    public PopupStatus getPopupDismissedStatus(String courseId, String userId) {
       List<WizardUserCourse> records = wizardUserCourseRepository.findByUsernameAndCourseIdOrGlobal(userId, courseId);
       boolean alreadyCompleted = alreadyCompletedForCourse(courseId);
-      return new PopupStatus(courseId, userId, (CollectionUtils.isEmpty(records) && !alreadyCompleted));
+      PopupDismissalDate pdd = popupDismissalDateRepository.getNextDismissalDate();
+      Date dismissalDate = pdd != null ? pdd.getDismissUntil() : null;
+      return new PopupStatus(courseId, userId, PopupDateUtil.date2Display(dismissalDate), (CollectionUtils.isEmpty(records) && !alreadyCompleted));
    }
 
-   public PopupStatus dismissPopup(String courseId, String userId, boolean global) {
-      String coureIdToCheck = global ? WizardUserCourse.GLOBAL : courseId;
+   public PopupStatus dismissPopup(String courseId, String userId, boolean global, Date dismissUntil) {
+      String coureIdToCheck = global && dismissUntil != null ? WizardUserCourse.GLOBAL : courseId;
       WizardUserCourse record = wizardUserCourseRepository.findByUsernameAndCourseId(userId, coureIdToCheck);
 
       if (record == null) {
          record = WizardUserCourse.builder().username(userId).courseId(coureIdToCheck).build();
+      } else {
+         record.setDismissedUntil(dismissUntil);
       }
       wizardUserCourseRepository.save(record);
 
-      return new PopupStatus(courseId, userId, false);
+      return new PopupStatus(courseId, userId, PopupDateUtil.date2Display(dismissUntil), false);
    }
 
    @Cacheable(value = INSTRUCTOR_COURSES_CACHE_NAME, cacheManager = "CourseSetupWizardCacheManager")
