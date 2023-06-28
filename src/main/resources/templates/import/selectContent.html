@@ -62,6 +62,11 @@
                 <input type="radio" name="importContentOption" id="radio-1-1"
                        th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).ALL.name()}">
                 <label for="radio-1-1">Import the entire course as is (all content and settings)</label>
+                <fieldset th:if="${isBpCourse}" id="bp-settings" class="rvt-fieldset">
+                  <input type="checkbox" name="importBpSettingsContentOption" id="radio-1-1-bps">
+                  <label for="radio-1-1-bps">Import Blueprint Course settings</label>
+                </fieldset>
+
               </div>
             </li>
             <li>
@@ -88,6 +93,24 @@
 
 <th:block layout:fragment="script">
   <script th:inline="javascript">
+  jQuery(document).ready(function($) {
+      var importAllContentRadio        = $('#radio-1-1');
+      var importSelectiveContentRadio  = $('#radio-1-2');
+      var importBpSettingsCheckbox     = $('#radio-1-1-bps');
+
+      importBpSettingsCheckbox.click(function() {
+        if ($(this).is(':checked')) {
+            importAllContentRadio.prop("checked", true);
+        }
+      });
+
+      importSelectiveContentRadio.click(function() {
+        if ($(this).is(':checked')) {
+            importBpSettingsCheckbox.prop("checked", false);
+        }
+      });
+  });
+
     function doSubmit() {
         var checkedRadio = document.querySelector('input[name="importContentOption"]:checked');
         if (checkedRadio == null) {
@@ -101,7 +124,7 @@
             return false;
         }
     }
-    </script>
+  </script>
 </th:block>
 </body>
 </html>

@@ -148,6 +148,7 @@ public class ImportController extends WizardController {
             return new ModelAndView("import/selectCourse");
          } else {
             model.addAttribute("selectedCourseLabel", importModel.getSelectedCourseLabel());
+            model.addAttribute("isBpCourse", wizardService.isBlueprintCourse(importModel.getSelectedCourseId()));
          }
       }
 
@@ -233,6 +234,10 @@ public class ImportController extends WizardController {
             multiValueMap.add("Content selection", "Import the entire course, all content, and settings");
          } else if(Constants.CONTENT_OPTION.SELECT.equals(contentOption)) {
             multiValueMap.add("Content selection", "Select specific content");
+         }
+
+         if (importModel.getImportBpSettingsContentOption() != null && importModel.getImportBpSettingsContentOption()) {
+            multiValueMap.add("Blueprint selection", "Import Blueprint Course settings");
          }
 
          Constants.DATE_OPTION dateOption = Constants.DATE_OPTION.valueOf(importModel.getDateOption());
@@ -336,6 +341,9 @@ public class ImportController extends WizardController {
             //Content selection page
             if (importModel.getImportContentOption() != null) {
                sessionImportModel.setImportContentOption(importModel.getImportContentOption());
+            }
+            if (importModel.getImportBpSettingsContentOption() != null) {
+               sessionImportModel.setImportBpSettingsContentOption(importModel.getImportBpSettingsContentOption());
             }
             if (importModel.getClassDates() != null) {
                sessionImportModel.setClassDates(importModel.getClassDates());
