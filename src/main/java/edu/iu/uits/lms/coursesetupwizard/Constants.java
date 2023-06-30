@@ -73,6 +73,7 @@ public class Constants {
     @Getter
     public enum CONTENT_OPTION {
         ALL,
+        ALL_WITH_BLUEPRINT_SETTINGS,
         SELECT
     }
 

@@ -148,7 +148,7 @@ public class ImportController extends WizardController {
             return new ModelAndView("import/selectCourse");
          } else {
             model.addAttribute("selectedCourseLabel", importModel.getSelectedCourseLabel());
-            model.addAttribute("isBpCourse", wizardService.isBlueprintCourse(importModel.getSelectedCourseId()));
+            model.addAttribute("isBlueprintFromCourse", wizardService.isBlueprintCourse(importModel.getSelectedCourseId()));
          }
       }
 
@@ -232,12 +232,10 @@ public class ImportController extends WizardController {
          Constants.CONTENT_OPTION contentOption = Constants.CONTENT_OPTION.valueOf(importModel.getImportContentOption());
          if (Constants.CONTENT_OPTION.ALL.equals(contentOption)) {
             multiValueMap.add("Content selection", "Import the entire course, all content, and settings");
+         } else if(Constants.CONTENT_OPTION.ALL_WITH_BLUEPRINT_SETTINGS.equals(contentOption)) {
+            multiValueMap.add("Content selection", "Import the entire course as is (all content and settings) with Blueprint Course settings");
          } else if(Constants.CONTENT_OPTION.SELECT.equals(contentOption)) {
             multiValueMap.add("Content selection", "Select specific content");
-         }
-
-         if (importModel.getImportBpSettingsContentOption() != null && importModel.getImportBpSettingsContentOption()) {
-            multiValueMap.add("Blueprint selection", "Import Blueprint Course settings");
          }
 
          Constants.DATE_OPTION dateOption = Constants.DATE_OPTION.valueOf(importModel.getDateOption());
@@ -341,9 +339,6 @@ public class ImportController extends WizardController {
             //Content selection page
             if (importModel.getImportContentOption() != null) {
                sessionImportModel.setImportContentOption(importModel.getImportContentOption());
-            }
-            if (importModel.getImportBpSettingsContentOption() != null) {
-               sessionImportModel.setImportBpSettingsContentOption(importModel.getImportBpSettingsContentOption());
             }
             if (importModel.getClassDates() != null) {
                sessionImportModel.setClassDates(importModel.getClassDates());

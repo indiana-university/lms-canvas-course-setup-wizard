@@ -158,8 +158,6 @@ public class WizardService {
       String courseId = importModel.getCourseId();
       String sourceCourseId = importModel.getSelectedCourseId();
 
-      log.info("Importing with BP settings = " + importModel.getImportBpSettingsContentOption());
-
       //Update course front page
       courseService.updateCourseFrontPage(courseId, "modules");
 
@@ -169,7 +167,11 @@ public class WizardService {
       wrapper.setMigrationType(ContentMigrationHelper.MIGRATION_TYPE_COURSE_COPY);
       wrapper.setSettings(settings);
       settings.setSourceCourseId(sourceCourseId);
-      settings.setImportBlueprintSettings(importModel.getImportBpSettingsContentOption());
+
+      if (Constants.CONTENT_OPTION.ALL_WITH_BLUEPRINT_SETTINGS.equals(Constants.CONTENT_OPTION.valueOf(importModel.getImportContentOption()))) {
+         log.info("Import Blueprint settings = true");
+         settings.setImportBlueprintSettings(true);
+      }
 
       //selective importing
       wrapper.setSelectiveImport(Constants.CONTENT_OPTION.SELECT.name().equalsIgnoreCase(importModel.getImportContentOption()));

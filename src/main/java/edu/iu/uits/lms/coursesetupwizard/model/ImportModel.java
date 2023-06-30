@@ -54,7 +54,6 @@ public class ImportModel implements Serializable {
    private String selectedCourseId;
    private String selectedCourseLabel;
    private String importContentOption;
-   private Boolean importBpSettingsContentOption;
    private String dateOption;
    private ClassDates classDates;
    private DayChanges dayChanges;
