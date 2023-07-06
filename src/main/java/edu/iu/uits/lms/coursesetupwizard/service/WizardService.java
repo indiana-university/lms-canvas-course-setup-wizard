@@ -168,7 +168,7 @@ public class WizardService {
       wrapper.setSettings(settings);
       settings.setSourceCourseId(sourceCourseId);
 
-      if (Constants.CONTENT_OPTION.ALL_WITH_BLUEPRINT_SETTINGS.equals(Constants.CONTENT_OPTION.valueOf(importModel.getImportContentOption()))) {
+      if (Constants.CONTENT_OPTION.ALL_WITH_BLUEPRINT_SETTINGS.name().equalsIgnoreCase(importModel.getImportContentOption())) {
          log.info("Import Blueprint settings = true");
          settings.setImportBlueprintSettings(true);
       }
