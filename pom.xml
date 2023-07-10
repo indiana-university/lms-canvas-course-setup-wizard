@@ -321,6 +321,7 @@
                     <excludes>
                         <exclude>**/env.properties</exclude>
                         <exclude>**/messages.properties</exclude>
+                        <exclude>**/application-csw.properties</exclude>
                     </excludes>
                 </configuration>
             </plugin>
