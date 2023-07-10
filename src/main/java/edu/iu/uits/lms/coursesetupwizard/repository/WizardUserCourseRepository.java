@@ -44,7 +44,7 @@ import java.util.List;
 @Component
 public interface WizardUserCourseRepository extends PagingAndSortingRepository<WizardUserCourse, Long> {
 
-   @Query("SELECT wuc FROM WizardUserCourse wuc WHERE wuc.username = :username and ((wuc.courseId = 'GLOBAL' and sysdate <= wuc.dismissedUntil) or wuc.courseId = :courseId)")
+   @Query("SELECT wuc FROM WizardUserCourse wuc WHERE wuc.username = :username and ((wuc.courseId = 'GLOBAL' and CURRENT_TIMESTAMP <= wuc.dismissedUntil) or wuc.courseId = :courseId)")
    List<WizardUserCourse> findByUsernameAndCourseIdOrGlobal(@Param("username") String username, @Param("courseId") String courseId);
 
    @Query("SELECT wuc FROM WizardUserCourse wuc WHERE wuc.username = :username and wuc.courseId = :courseId")

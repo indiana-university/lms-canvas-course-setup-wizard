@@ -48,8 +48,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
-
 @RestController
 @RequestMapping("/rest/popup")
 @Tag(name = "PopupRestController", description = "Interact with the popup details")
@@ -71,7 +69,7 @@ public class PopupRestController {
    @Operation(summary = "Dismiss a popup for the given course and user, optionally dismissing globally for ALL courses")
    public PopupStatus popupDismiss(@PathVariable String courseId, @PathVariable String userId,
                                    @RequestParam(defaultValue = "false", required = false) boolean global,
-                                   @RequestParam(required = false) Date dismissUntil) {
+                                   @RequestParam(required = false) String dismissUntil) {
       return wizardService.dismissPopup(courseId, userId, global, dismissUntil);
    }
 }

@@ -72,6 +72,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static edu.iu.uits.lms.coursesetupwizard.Constants.COURSE_TEMPLATES_CACHE_NAME;
@@ -116,18 +117,28 @@ public class WizardService {
       return new PopupStatus(courseId, userId, PopupDateUtil.date2Display(dismissalDate), (CollectionUtils.isEmpty(records) && !alreadyCompleted));
    }
 
-   public PopupStatus dismissPopup(String courseId, String userId, boolean global, Date dismissUntil) {
-      String coureIdToCheck = global && dismissUntil != null ? WizardUserCourse.GLOBAL : courseId;
-      WizardUserCourse record = wizardUserCourseRepository.findByUsernameAndCourseId(userId, coureIdToCheck);
+   public PopupStatus dismissPopup(String courseId, String userId, boolean global, String dismissUntil) {
+      String courseIdToCheck = global && dismissUntil != null ? WizardUserCourse.GLOBAL : courseId;
+      WizardUserCourse record = wizardUserCourseRepository.findByUsernameAndCourseId(userId, courseIdToCheck);
 
       if (record == null) {
-         record = WizardUserCourse.builder().username(userId).courseId(coureIdToCheck).build();
-      } else {
-         record.setDismissedUntil(dismissUntil);
+         record = WizardUserCourse.builder().username(userId).courseId(courseIdToCheck).build();
+      }
+
+      if (WizardUserCourse.GLOBAL.equals(courseIdToCheck)) {
+         // Validate the date
+         List<PopupDismissalDate> allDates = (List<PopupDismissalDate>)popupDismissalDateRepository.findAll();
+         Optional<PopupDismissalDate> validatedDate = allDates.stream().filter(d -> dismissUntil.equals(PopupDateUtil.date2Display(d.getDismissUntil()))).findAny();
+         if (validatedDate.isPresent()) {
+            record.setDismissedUntil(validatedDate.get().getDismissUntil());
+         } else {
+            // If for some reason, no date is available, just use "now"
+            record.setDismissedUntil(new Date());
+         }
       }
       wizardUserCourseRepository.save(record);
 
-      return new PopupStatus(courseId, userId, PopupDateUtil.date2Display(dismissUntil), false);
+      return getPopupDismissedStatus(courseId, userId);
    }
 
    @Cacheable(value = INSTRUCTOR_COURSES_CACHE_NAME, cacheManager = "CourseSetupWizardCacheManager")
