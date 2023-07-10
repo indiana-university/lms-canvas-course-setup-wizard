@@ -34,13 +34,20 @@ package edu.iu.uits.lms.coursesetupwizard.service;
  */
 
 import edu.iu.uits.lms.canvas.helpers.CanvasDateFormatUtil;
-import edu.iu.uits.lms.common.date.DateFormatUtil;
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.ZoneId;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Date utility class for the popup dismissal dates
  */
+@Slf4j
 public class PopupDateUtil {
 
    /**
@@ -63,7 +70,7 @@ public class PopupDateUtil {
       if (dateInput == null) {
          throw new IllegalArgumentException("Please provide a date");
       }
-      Date convertedDate = DateFormatUtil.string2Date(dateInput, INPUT_DATE_FORMAT);
+      Date convertedDate = string2Date(dateInput, INPUT_DATE_FORMAT);
       Date now = new Date();
       if (convertedDate == null) {
          throw new IllegalArgumentException("Please provide a date in the format: " + INPUT_DATE_FORMAT);
@@ -82,6 +89,25 @@ public class PopupDateUtil {
     */
    public static String date2Display(Date date) {
       return CanvasDateFormatUtil.formatDateForDisplay(date, null, DISPLAY_FORMAT);
+   }
+
+   /**
+    * Turn a string into a Date
+    * @param dateString Input date string
+    * @param formatString Format of the input date string
+    * @return Date representation of the input string
+    */
+   private static Date string2Date(String dateString, @NonNull String formatString) {
+      if (dateString != null) {
+         DateFormat format = new SimpleDateFormat(formatString);
+         format.setTimeZone(TimeZone.getTimeZone(ZoneId.of("America/Indianapolis")));
+         try {
+            return format.parse(dateString);
+         } catch (ParseException pe) {
+            log.error("Error parsing date string", pe);
+         }
+      }
+      return null;
    }
 
 }
