@@ -38,6 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -45,34 +46,36 @@ import java.util.TimeZone;
 @Slf4j
 public class PopupDateUtilTest {
 
+   private static final String TIMEZONE = "America/Indianapolis";
+
    @Test
    void testMissingInputDate() {
       IllegalArgumentException t = Assertions.assertThrows(IllegalArgumentException.class, () ->
-            PopupDateUtil.validateDate(null));
+            PopupDateUtil.validateDate(null, TIMEZONE));
       Assertions.assertEquals("Please provide a date", t.getMessage());
    }
 
    @Test
    void testBadInputDateFormat() {
       IllegalArgumentException t = Assertions.assertThrows(IllegalArgumentException.class, () ->
-            PopupDateUtil.validateDate(""));
+            PopupDateUtil.validateDate("", TIMEZONE));
       Assertions.assertEquals("Please provide a date in the format: yyyy/MM/dd", t.getMessage());
 
       t = Assertions.assertThrows(IllegalArgumentException.class, () ->
-            PopupDateUtil.validateDate("asdf"));
+            PopupDateUtil.validateDate("asdf", TIMEZONE));
       Assertions.assertEquals("Please provide a date in the format: yyyy/MM/dd", t.getMessage());
    }
 
    @Test
    void testInputDateHasPassed() {
       IllegalArgumentException t = Assertions.assertThrows(IllegalArgumentException.class, () ->
-            PopupDateUtil.validateDate("1999/01/01"));
+            PopupDateUtil.validateDate("1999/01/01", TIMEZONE));
       Assertions.assertEquals("Please provide a date in the future", t.getMessage());
    }
 
    @Test
    void testGoodInputDate() {
-      Date d = PopupDateUtil.validateDate("2222/01/03");
+      Date d = PopupDateUtil.validateDate("2222/01/03", TIMEZONE);
       Assertions.assertNotNull(d);
 
       Calendar cal = Calendar.getInstance();
@@ -92,6 +95,7 @@ public class PopupDateUtilTest {
       Assertions.assertEquals("", d);
 
       Calendar cal = Calendar.getInstance();
+      cal.setTimeZone(TimeZone.getTimeZone(ZoneId.of(TIMEZONE)));
       cal.set(2023, Calendar.JUNE, 22, 0, 0, 0);
       d = PopupDateUtil.date2Display(cal.getTime());
       Assertions.assertEquals("June 22, 2023", d);

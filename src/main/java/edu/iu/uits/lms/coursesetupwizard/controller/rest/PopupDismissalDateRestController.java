@@ -33,6 +33,7 @@ package edu.iu.uits.lms.coursesetupwizard.controller.rest;
  * #L%
  */
 
+import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.coursesetupwizard.model.PopupDismissalDate;
 import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
 import edu.iu.uits.lms.coursesetupwizard.service.PopupDateUtil;
@@ -61,6 +62,9 @@ public class PopupDismissalDateRestController {
    @Autowired
    private PopupDismissalDateRepository popupDismissalDateRepository = null;
 
+   @Autowired
+   private ToolConfig toolConfig;
+
    @GetMapping("/{id}")
    @Operation(summary = "Get a PopupDismissalDate by id")
    public PopupDismissalDate get(@PathVariable Long id) {
@@ -80,7 +84,7 @@ public class PopupDismissalDateRestController {
 
       if (updatedPopupDismissalDate != null) {
          try {
-            updatedPopupDismissalDate.setDismissUntil(PopupDateUtil.validateDate(popupDismissalDate));
+            updatedPopupDismissalDate.setDismissUntil(PopupDateUtil.validateDate(popupDismissalDate, toolConfig.getTimezone()));
 
             return ResponseEntity.ok(popupDismissalDateRepository.save(updatedPopupDismissalDate));
          } catch (IllegalArgumentException e) {
@@ -96,7 +100,7 @@ public class PopupDismissalDateRestController {
    public ResponseEntity<?> create(@RequestParam(name = "popupDismissalDate") String popupDismissalDate) {
       try {
          PopupDismissalDate newPopupDismissalDate = PopupDismissalDate.builder()
-               .dismissUntil(PopupDateUtil.validateDate(popupDismissalDate))
+               .dismissUntil(PopupDateUtil.validateDate(popupDismissalDate, toolConfig.getTimezone()))
                .build();
          return ResponseEntity.ok(popupDismissalDateRepository.save(newPopupDismissalDate));
       } catch (IllegalArgumentException e) {

@@ -66,11 +66,11 @@ public class PopupDateUtil {
     * @return A valid java.util.Date object
     * @throws IllegalArgumentException Throws exception if input date is missing, in the wrong format, or in the past
     */
-   public static Date validateDate(String dateInput) throws IllegalArgumentException {
+   public static Date validateDate(String dateInput, String timezone) throws IllegalArgumentException {
       if (dateInput == null) {
          throw new IllegalArgumentException("Please provide a date");
       }
-      Date convertedDate = string2Date(dateInput, INPUT_DATE_FORMAT);
+      Date convertedDate = string2Date(dateInput, INPUT_DATE_FORMAT, timezone);
       Date now = new Date();
       if (convertedDate == null) {
          throw new IllegalArgumentException("Please provide a date in the format: " + INPUT_DATE_FORMAT);
@@ -95,12 +95,13 @@ public class PopupDateUtil {
     * Turn a string into a Date
     * @param dateString Input date string
     * @param formatString Format of the input date string
+    * @param timezone Timezone used in the SimpleDateFormat
     * @return Date representation of the input string
     */
-   private static Date string2Date(String dateString, @NonNull String formatString) {
+   private static Date string2Date(String dateString, @NonNull String formatString, String timezone) {
       if (dateString != null) {
          DateFormat format = new SimpleDateFormat(formatString);
-         format.setTimeZone(TimeZone.getTimeZone(ZoneId.of("America/Indianapolis")));
+         format.setTimeZone(TimeZone.getTimeZone(ZoneId.of(timezone)));
          try {
             return format.parse(dateString);
          } catch (ParseException pe) {
