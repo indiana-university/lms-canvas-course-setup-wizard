@@ -84,7 +84,7 @@ public class PopupDismissalDateTest {
    private static final String USER3 = "user3";
    private static final String COURSE1 = "course1";
    private static final String COURSE2 = "course2";
-   private static String NOTES = "foobar notes!<string>BOLD</strong>";
+   private static String NOTES = "foobar notes!<strong>BOLD</strong>";
 
    private static Date lastWeek;
    private static Date nextWeek;
