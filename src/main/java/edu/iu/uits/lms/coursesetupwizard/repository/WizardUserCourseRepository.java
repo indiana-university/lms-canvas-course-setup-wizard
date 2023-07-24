@@ -51,4 +51,7 @@ public interface WizardUserCourseRepository extends PagingAndSortingRepository<W
    WizardUserCourse findByUsernameAndCourseId(@Param("username") String username, @Param("courseId") String courseId);
 
    List<WizardUserCourse> findByUsername(String username);
+
+   @Query("SELECT wuc FROM WizardUserCourse wuc WHERE wuc.courseId = 'GLOBAL' and CURRENT_TIMESTAMP <= wuc.dismissedUntil")
+   List<WizardUserCourse> findFutureDismissals();
 }

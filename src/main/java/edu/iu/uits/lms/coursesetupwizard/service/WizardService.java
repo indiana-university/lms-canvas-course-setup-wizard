@@ -72,7 +72,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static edu.iu.uits.lms.coursesetupwizard.Constants.COURSE_TEMPLATES_CACHE_NAME;
@@ -113,12 +112,12 @@ public class WizardService {
       List<WizardUserCourse> records = wizardUserCourseRepository.findByUsernameAndCourseIdOrGlobal(userId, courseId);
       boolean alreadyCompleted = alreadyCompletedForCourse(courseId);
       PopupDismissalDate pdd = popupDismissalDateRepository.getNextDismissalDate();
-      Date dismissalDate = pdd != null ? pdd.getDismissUntil() : null;
-      return new PopupStatus(courseId, userId, PopupDateUtil.date2Display(dismissalDate), (CollectionUtils.isEmpty(records) && !alreadyCompleted));
+      String notes = pdd != null ? pdd.getNotes() : null;
+      return new PopupStatus(courseId, userId, (CollectionUtils.isEmpty(records) && !alreadyCompleted), notes);
    }
 
-   public PopupStatus dismissPopup(String courseId, String userId, boolean global, String dismissUntil) {
-      String courseIdToCheck = global && dismissUntil != null ? WizardUserCourse.GLOBAL : courseId;
+   public PopupStatus dismissPopup(String courseId, String userId, boolean global) {
+      String courseIdToCheck = global ? WizardUserCourse.GLOBAL : courseId;
       WizardUserCourse record = wizardUserCourseRepository.findByUsernameAndCourseId(userId, courseIdToCheck);
 
       if (record == null) {
@@ -126,15 +125,10 @@ public class WizardService {
       }
 
       if (WizardUserCourse.GLOBAL.equals(courseIdToCheck)) {
-         // Validate the date
-         List<PopupDismissalDate> allDates = (List<PopupDismissalDate>)popupDismissalDateRepository.findAll();
-         Optional<PopupDismissalDate> validatedDate = allDates.stream().filter(d -> dismissUntil.equals(PopupDateUtil.date2Display(d.getDismissUntil()))).findAny();
-         if (validatedDate.isPresent()) {
-            record.setDismissedUntil(validatedDate.get().getDismissUntil());
-         } else {
-            // If for some reason, no date is available, just use "now"
-            record.setDismissedUntil(new Date());
-         }
+         PopupDismissalDate pdd = popupDismissalDateRepository.getNextDismissalDate();
+         // If for some reason, no date is available, just use "now"
+         Date dismissalDate = pdd != null ? pdd.getDismissUntil() : new Date();
+         record.setDismissedUntil(dismissalDate);
       }
       wizardUserCourseRepository.save(record);
 
@@ -355,6 +349,32 @@ public class WizardService {
                .collect(Collectors.groupingBy(HierarchyResource::getNode));
       }
       return nodeMap;
+   }
+
+   /**
+    * Adjust all future dismissals of a WizardUserCourse to be the given date
+    * @param dismissalDate New dismissal date.  Could be in the past or future.
+    * @return List of newly persisted WizardUserCourse records
+    * @throws IllegalArgumentException If dismissalDate is null
+    */
+   public List<WizardUserCourse> adjustDates(PopupDismissalDate dismissalDate) throws IllegalArgumentException {
+      if (dismissalDate == null) {
+         throw new IllegalArgumentException("No dismissal date found. Please ensure one has been created via the /rest/popupDates endpoint, or directly in the DB before trying again.");
+      }
+
+      // Get the next available dismissal date
+      Date newDismissUntil = dismissalDate.getDismissUntil();
+
+      // Get all records with a future dismissal date
+      List<WizardUserCourse> recs = wizardUserCourseRepository.findFutureDismissals();
+
+      // Set a new date
+      List<WizardUserCourse> updates = recs.stream()
+            .peek(rec -> rec.setDismissedUntil(newDismissUntil))
+            .collect(Collectors.toList());
+
+      // Persist
+      return (List<WizardUserCourse>) wizardUserCourseRepository.saveAll(updates);
    }
 
 }

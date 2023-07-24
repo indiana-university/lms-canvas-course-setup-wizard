@@ -33,7 +33,6 @@ package edu.iu.uits.lms.coursesetupwizard.service;
  * #L%
  */
 
-import edu.iu.uits.lms.canvas.helpers.CanvasDateFormatUtil;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -56,11 +55,6 @@ public class PopupDateUtil {
    public static final String INPUT_DATE_FORMAT = "yyyy/MM/dd";
 
    /**
-    * Date format used for display purposes.  Will result in "June 22, 2023"
-    */
-   public static final String DISPLAY_FORMAT = "MMMM d, yyyy";
-
-   /**
     * Validate a string date representation before turning it into a java.util.Date
     * @param dateInput String date.  Hopefully in the form of "yyyy/MM/dd"
     * @return A valid java.util.Date object
@@ -80,15 +74,6 @@ public class PopupDateUtil {
       }
 
       return convertedDate;
-   }
-
-   /**
-    * Convert the date into a display value, in the format of MMMM d, yyyy (i.e. "June 22, 2023")
-    * @param date Date value
-    * @return Display value
-    */
-   public static String date2Display(Date date) {
-      return CanvasDateFormatUtil.formatDateForDisplay(date, null, DISPLAY_FORMAT);
    }
 
    /**

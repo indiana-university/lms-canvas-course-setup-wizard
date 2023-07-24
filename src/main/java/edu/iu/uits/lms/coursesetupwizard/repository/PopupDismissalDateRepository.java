@@ -46,6 +46,9 @@ public interface PopupDismissalDateRepository extends PagingAndSortingRepository
    @Query(value = "SELECT pdd FROM PopupDismissalDate pdd WHERE pdd.dismissUntil > CURRENT_TIMESTAMP AND ROWNUM = 1 ORDER BY pdd.dismissUntil")
    PopupDismissalDate getNextDismissalDate();
 
+   @Query(value = "SELECT pdd FROM PopupDismissalDate pdd WHERE pdd.dismissUntil < CURRENT_TIMESTAMP AND ROWNUM = 1 ORDER BY pdd.dismissUntil DESC")
+   PopupDismissalDate getPreviousDismissalDate();
+
    @Modifying
    @Query("DELETE FROM PopupDismissalDate pdd where pdd.dismissUntil < CURRENT_TIMESTAMP")
    @Transactional("cswTransactionMgr")

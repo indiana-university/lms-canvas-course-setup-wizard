@@ -68,8 +68,7 @@ public class PopupRestController {
    @PostMapping("/{courseId}/{userId}/dismiss")
    @Operation(summary = "Dismiss a popup for the given course and user, optionally dismissing globally for ALL courses")
    public PopupStatus popupDismiss(@PathVariable String courseId, @PathVariable String userId,
-                                   @RequestParam(defaultValue = "false", required = false) boolean global,
-                                   @RequestParam(required = false) String dismissUntil) {
-      return wizardService.dismissPopup(courseId, userId, global, dismissUntil);
+                                   @RequestParam(defaultValue = "false", required = false) boolean global) {
+      return wizardService.dismissPopup(courseId, userId, global);
    }
 }

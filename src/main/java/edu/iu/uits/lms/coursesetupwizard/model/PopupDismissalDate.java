@@ -44,6 +44,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.util.Date;
@@ -64,5 +65,9 @@ public class PopupDismissalDate {
    @JsonFormat(pattern = DateFormatUtil.JSON_DATE_FORMAT)
    @Column(name = "DISMISS_UNTIL")
    private Date dismissUntil;
+
+   @Lob
+   @Column(name = "NOTES", columnDefinition = "TEXT")
+   private String notes;
 
 }

@@ -39,6 +39,7 @@ import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository
 import edu.iu.uits.lms.coursesetupwizard.service.PopupDateUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -47,10 +48,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.Serializable;
 import java.util.List;
 
 @RestController
@@ -79,13 +81,17 @@ public class PopupDismissalDateRestController {
 
    @PutMapping("/{id}")
    @Operation(summary = "Update a PopupDismissalDate by id")
-   public ResponseEntity<?> update(@PathVariable Long id, @RequestParam(name = "popupDismissalDate") String popupDismissalDate) {
+   public ResponseEntity<?> update(@PathVariable Long id, @RequestBody InputDismissalData inputDismissalData) {
       PopupDismissalDate updatedPopupDismissalDate = popupDismissalDateRepository.findById(id).orElse(null);
 
       if (updatedPopupDismissalDate != null) {
          try {
-            updatedPopupDismissalDate.setDismissUntil(PopupDateUtil.validateDate(popupDismissalDate, toolConfig.getTimezone()));
-
+            if (inputDismissalData.getDismissalDate() != null) {
+               updatedPopupDismissalDate.setDismissUntil(PopupDateUtil.validateDate(inputDismissalData.getDismissalDate(), toolConfig.getTimezone()));
+            }
+            if (inputDismissalData.getNotes() != null) {
+               updatedPopupDismissalDate.setNotes(inputDismissalData.getNotes());
+            }
             return ResponseEntity.ok(popupDismissalDateRepository.save(updatedPopupDismissalDate));
          } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -97,10 +103,11 @@ public class PopupDismissalDateRestController {
 
    @PostMapping("/")
    @Operation(summary = "Create a new PopupDismissalDate")
-   public ResponseEntity<?> create(@RequestParam(name = "popupDismissalDate") String popupDismissalDate) {
+   public ResponseEntity<?> create(@RequestBody InputDismissalData inputDismissalData) {
       try {
          PopupDismissalDate newPopupDismissalDate = PopupDismissalDate.builder()
-               .dismissUntil(PopupDateUtil.validateDate(popupDismissalDate, toolConfig.getTimezone()))
+               .dismissUntil(PopupDateUtil.validateDate(inputDismissalData.getDismissalDate(), toolConfig.getTimezone()))
+               .notes(inputDismissalData.getNotes())
                .build();
          return ResponseEntity.ok(popupDismissalDateRepository.save(newPopupDismissalDate));
       } catch (IllegalArgumentException e) {
@@ -120,5 +127,11 @@ public class PopupDismissalDateRestController {
    public ResponseEntity<String> deleteOld() {
       int recs = popupDismissalDateRepository.removePastDates();
       return ResponseEntity.ok("Deleted " + recs + " records.");
+   }
+
+   @Data
+   static class InputDismissalData implements Serializable {
+      private String dismissalDate;
+      private String notes;
    }
 }

@@ -38,10 +38,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 
 @Slf4j
 public class PopupDateUtilTest {
@@ -84,30 +82,5 @@ public class PopupDateUtilTest {
       Assertions.assertEquals(2222, cal.get(Calendar.YEAR));
       Assertions.assertEquals(Calendar.JANUARY, cal.get(Calendar.MONTH));
       Assertions.assertEquals(3, cal.get(Calendar.DATE));
-
-      String dateString = PopupDateUtil.date2Display(d);
-      Assertions.assertEquals("January 3, 2222", dateString);
-   }
-
-   @Test
-   void testDisplayDate() {
-      String d = PopupDateUtil.date2Display(null);
-      Assertions.assertEquals("", d);
-
-      Calendar cal = Calendar.getInstance();
-      cal.setTimeZone(TimeZone.getTimeZone(ZoneId.of(TIMEZONE)));
-      cal.set(2023, Calendar.JUNE, 22, 0, 0, 0);
-      d = PopupDateUtil.date2Display(cal.getTime());
-      Assertions.assertEquals("June 22, 2023", d);
-
-      cal.set(2023, Calendar.JUNE, 23, 23, 59, 59);
-      d = PopupDateUtil.date2Display(cal.getTime());
-      Assertions.assertEquals("June 23, 2023", d);
-
-      cal.set(2023, Calendar.JUNE, 23, 0, 0, 0);
-      cal.setTimeZone(TimeZone.getTimeZone("GMT"));
-      d = PopupDateUtil.date2Display(cal.getTime());
-      Assertions.assertEquals("June 22, 2023", d);
-
    }
 }

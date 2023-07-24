@@ -98,7 +98,7 @@ public class CorsTest {
 
    @BeforeEach
    public void setup() {
-      PopupStatus status = new PopupStatus(COURSE_ID_TST, USER_ID_TST, null, true);
+      PopupStatus status = new PopupStatus(COURSE_ID_TST, USER_ID_TST, true, null);
       when(wizardService.getPopupDismissedStatus(COURSE_ID_TST, USER_ID_TST)).thenReturn(status);
 
       WizardCourseStatus wcs = new WizardCourseStatus(WCS_ID, COURSE_ID_TST, USER_ID_TST,
