@@ -40,6 +40,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,6 +61,7 @@ public class PopupRestController {
 
    @GetMapping("/{courseId}/{userId}/status")
    @Operation(summary = "Get the popup status for the given course and user")
+   @Transactional(transactionManager = "cswTransactionMgr")
    public ResponseEntity<PopupStatus> popupStatus(@PathVariable String courseId, @PathVariable String userId) {
       return ResponseEntity.ok()
             .body(wizardService.getPopupDismissedStatus(courseId, userId));
@@ -67,6 +69,7 @@ public class PopupRestController {
 
    @PostMapping("/{courseId}/{userId}/dismiss")
    @Operation(summary = "Dismiss a popup for the given course and user, optionally dismissing globally for ALL courses")
+   @Transactional(transactionManager = "cswTransactionMgr")
    public PopupStatus popupDismiss(@PathVariable String courseId, @PathVariable String userId,
                                    @RequestParam(defaultValue = "false", required = false) boolean global) {
       return wizardService.dismissPopup(courseId, userId, global);
