@@ -92,6 +92,9 @@ public class PopupDismissalDateRestController {
             if (inputDismissalData.getNotes() != null) {
                updatedPopupDismissalDate.setNotes(inputDismissalData.getNotes());
             }
+            if (inputDismissalData.isClearNotes()) {
+               updatedPopupDismissalDate.setNotes(null);
+            }
             return ResponseEntity.ok(popupDismissalDateRepository.save(updatedPopupDismissalDate));
          } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -133,5 +136,6 @@ public class PopupDismissalDateRestController {
    static class InputDismissalData implements Serializable {
       private String dismissalDate;
       private String notes;
+      private boolean clearNotes;
    }
 }
