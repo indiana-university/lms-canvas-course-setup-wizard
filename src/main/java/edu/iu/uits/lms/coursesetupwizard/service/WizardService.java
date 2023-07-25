@@ -63,6 +63,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.text.MessageFormat;
@@ -108,6 +109,7 @@ public class WizardService {
    @Autowired
    private ToolConfig toolConfig;
 
+   @Transactional(transactionManager = "cswTransactionMgr")
    public PopupStatus getPopupDismissedStatus(String courseId, String userId) {
       List<WizardUserCourse> records = wizardUserCourseRepository.findByUsernameAndCourseIdOrGlobal(userId, courseId);
       boolean alreadyCompleted = alreadyCompletedForCourse(courseId);
@@ -116,6 +118,7 @@ public class WizardService {
       return new PopupStatus(courseId, userId, (CollectionUtils.isEmpty(records) && !alreadyCompleted), notes);
    }
 
+   @Transactional(transactionManager = "cswTransactionMgr")
    public PopupStatus dismissPopup(String courseId, String userId, boolean global) {
       String courseIdToCheck = global ? WizardUserCourse.GLOBAL : courseId;
       WizardUserCourse record = wizardUserCourseRepository.findByUsernameAndCourseId(userId, courseIdToCheck);
