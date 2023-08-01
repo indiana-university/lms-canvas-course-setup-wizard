@@ -231,9 +231,9 @@ public class ImportController extends WizardController {
          //Content selection
          Constants.CONTENT_OPTION contentOption = Constants.CONTENT_OPTION.valueOf(importModel.getImportContentOption());
          if (Constants.CONTENT_OPTION.ALL.equals(contentOption)) {
-            multiValueMap.add("Content selection", "Import the entire course, all content, and settings");
+            multiValueMap.add("Content selection", "Import course content only");
          } else if(Constants.CONTENT_OPTION.ALL_WITH_BLUEPRINT_SETTINGS.equals(contentOption)) {
-            multiValueMap.add("Content selection", "Import the entire course as is (all content and settings) with Blueprint Course settings");
+            multiValueMap.add("Content selection", "Import course content with Blueprint Course settings");
          } else if(Constants.CONTENT_OPTION.SELECT.equals(contentOption)) {
             multiValueMap.add("Content selection", "Select specific content");
          }
