@@ -1,10 +1,10 @@
-package edu.iu.uits.lms.coursesetupwizard.config;
+package edu.iu.uits.lms.coursesetupwizard.repository;
 
 /*-
  * #%L
  * course-setup-wizard
  * %%
- * Copyright (C) 2022 Indiana University
+ * Copyright (C) 2022 - 2023 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -33,20 +33,25 @@ package edu.iu.uits.lms.coursesetupwizard.config;
  * #L%
  */
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import edu.iu.uits.lms.coursesetupwizard.model.PopupDismissalDate;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-@Configuration
-@ConfigurationProperties(prefix = "course-setup-wizard")
-@Getter
-@Setter
-public class ToolConfig {
+@Component
+public interface PopupDismissalDateRepository extends PagingAndSortingRepository<PopupDismissalDate, Long> {
 
-   private String version;
-   private String env;
-   private String templateHostingUrl;
-   private String hierarchyRootNodeName;
-   private String timezone;
+   @Query(value = "SELECT pdd FROM PopupDismissalDate pdd WHERE pdd.dismissUntil > CURRENT_TIMESTAMP AND ROWNUM = 1 ORDER BY pdd.dismissUntil")
+   PopupDismissalDate getNextDismissalDate();
+
+   @Query(value = "SELECT pdd FROM PopupDismissalDate pdd WHERE pdd.dismissUntil < CURRENT_TIMESTAMP AND ROWNUM = 1 ORDER BY pdd.dismissUntil DESC")
+   PopupDismissalDate getPreviousDismissalDate();
+
+   @Modifying
+   @Query("DELETE FROM PopupDismissalDate pdd where pdd.dismissUntil < CURRENT_TIMESTAMP")
+   @Transactional("cswTransactionMgr")
+   int removePastDates();
+
 }
