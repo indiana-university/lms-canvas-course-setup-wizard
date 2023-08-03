@@ -43,10 +43,12 @@ import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.coursesetupwizard.model.ImportModel;
+import edu.iu.uits.lms.coursesetupwizard.model.PopupDismissalDate;
 import edu.iu.uits.lms.coursesetupwizard.model.PopupStatus;
 import edu.iu.uits.lms.coursesetupwizard.model.SelectableCourse;
 import edu.iu.uits.lms.coursesetupwizard.model.WizardCourseStatus;
 import edu.iu.uits.lms.coursesetupwizard.model.WizardUserCourse;
+import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
 import edu.iu.uits.lms.iuonly.model.HierarchyResource;
@@ -61,11 +63,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,24 +104,38 @@ public class WizardService {
    private TemplateAuditService templateAuditService;
 
    @Autowired
+   private PopupDismissalDateRepository popupDismissalDateRepository;
+
+   @Autowired
    private ToolConfig toolConfig;
 
+   @Transactional(transactionManager = "cswTransactionMgr")
    public PopupStatus getPopupDismissedStatus(String courseId, String userId) {
       List<WizardUserCourse> records = wizardUserCourseRepository.findByUsernameAndCourseIdOrGlobal(userId, courseId);
       boolean alreadyCompleted = alreadyCompletedForCourse(courseId);
-      return new PopupStatus(courseId, userId, (CollectionUtils.isEmpty(records) && !alreadyCompleted));
+      PopupDismissalDate pdd = popupDismissalDateRepository.getNextDismissalDate();
+      String notes = pdd != null ? pdd.getNotes() : null;
+      return new PopupStatus(courseId, userId, (CollectionUtils.isEmpty(records) && !alreadyCompleted), notes);
    }
 
+   @Transactional(transactionManager = "cswTransactionMgr")
    public PopupStatus dismissPopup(String courseId, String userId, boolean global) {
-      String coureIdToCheck = global ? WizardUserCourse.GLOBAL : courseId;
-      WizardUserCourse record = wizardUserCourseRepository.findByUsernameAndCourseId(userId, coureIdToCheck);
+      String courseIdToCheck = global ? WizardUserCourse.GLOBAL : courseId;
+      WizardUserCourse record = wizardUserCourseRepository.findByUsernameAndCourseId(userId, courseIdToCheck);
 
       if (record == null) {
-         record = WizardUserCourse.builder().username(userId).courseId(coureIdToCheck).build();
+         record = WizardUserCourse.builder().username(userId).courseId(courseIdToCheck).build();
+      }
+
+      if (WizardUserCourse.GLOBAL.equals(courseIdToCheck)) {
+         PopupDismissalDate pdd = popupDismissalDateRepository.getNextDismissalDate();
+         // If for some reason, no date is available, just use "now"
+         Date dismissalDate = pdd != null ? pdd.getDismissUntil() : new Date();
+         record.setDismissedUntil(dismissalDate);
       }
       wizardUserCourseRepository.save(record);
 
-      return new PopupStatus(courseId, userId, false);
+      return getPopupDismissedStatus(courseId, userId);
    }
 
    @Cacheable(value = INSTRUCTOR_COURSES_CACHE_NAME, cacheManager = "CourseSetupWizardCacheManager")
@@ -334,6 +352,32 @@ public class WizardService {
                .collect(Collectors.groupingBy(HierarchyResource::getNode));
       }
       return nodeMap;
+   }
+
+   /**
+    * Adjust all future dismissals of a WizardUserCourse to be the given date
+    * @param dismissalDate New dismissal date.  Could be in the past or future.
+    * @return List of newly persisted WizardUserCourse records
+    * @throws IllegalArgumentException If dismissalDate is null
+    */
+   public List<WizardUserCourse> adjustDates(PopupDismissalDate dismissalDate) throws IllegalArgumentException {
+      if (dismissalDate == null) {
+         throw new IllegalArgumentException("No dismissal date found. Please ensure one has been created via the /rest/popupDates endpoint, or directly in the DB before trying again.");
+      }
+
+      // Get the next available dismissal date
+      Date newDismissUntil = dismissalDate.getDismissUntil();
+
+      // Get all records with a future dismissal date
+      List<WizardUserCourse> recs = wizardUserCourseRepository.findFutureDismissals();
+
+      // Set a new date
+      List<WizardUserCourse> updates = recs.stream()
+            .peek(rec -> rec.setDismissedUntil(newDismissUntil))
+            .collect(Collectors.toList());
+
+      // Persist
+      return (List<WizardUserCourse>) wizardUserCourseRepository.saveAll(updates);
    }
 
 }

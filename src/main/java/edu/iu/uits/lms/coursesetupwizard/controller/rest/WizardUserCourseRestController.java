@@ -33,12 +33,16 @@ package edu.iu.uits.lms.coursesetupwizard.controller.rest;
  * #L%
  */
 
+import edu.iu.uits.lms.coursesetupwizard.model.PopupDismissalDate;
 import edu.iu.uits.lms.coursesetupwizard.model.WizardUserCourse;
+import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
+import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -58,6 +62,12 @@ public class WizardUserCourseRestController {
 
    @Autowired
    private WizardUserCourseRepository wizardUserCourseRepository = null;
+
+   @Autowired
+   private PopupDismissalDateRepository popupDismissalDateRepository = null;
+
+   @Autowired
+   private WizardService wizardService = null;
 
    @GetMapping("/{id}")
    @Operation(summary = "Get a WizardUserCourse by id")
@@ -89,6 +99,9 @@ public class WizardUserCourseRestController {
          if (wizardUserCourse.getUsername() != null) {
             updatedWizardUserCourse.setUsername(wizardUserCourse.getUsername());
          }
+         if (wizardUserCourse.getDismissedUntil() != null) {
+            updatedWizardUserCourse.setDismissedUntil(wizardUserCourse.getDismissedUntil());
+         }
 
          return wizardUserCourseRepository.save(updatedWizardUserCourse);
       }
@@ -110,6 +123,30 @@ public class WizardUserCourseRestController {
    public String delete(@PathVariable Long id) {
       wizardUserCourseRepository.deleteById(id);
       return "Delete success.";
+   }
+
+   @PostMapping("/adjustToFuture")
+   @Operation(summary = "Adjust all future global dismissals to be the next upcoming date")
+   public ResponseEntity<?> adjustDatesToFuture() {
+      PopupDismissalDate dismissalDate = popupDismissalDateRepository.getNextDismissalDate();
+      try {
+         List<WizardUserCourse> wizardUserCourses = wizardService.adjustDates(dismissalDate);
+         return ResponseEntity.ok(wizardUserCourses);
+      } catch (IllegalArgumentException e) {
+         return ResponseEntity.badRequest().body(e.getMessage());
+      }
+   }
+
+   @PostMapping("/adjustToPast")
+   @Operation(summary = "Adjust all future global dismissals to be the most recent past date")
+   public ResponseEntity<?> adjustDatesToPast() {
+      PopupDismissalDate dismissalDate = popupDismissalDateRepository.getPreviousDismissalDate();
+      try {
+         List<WizardUserCourse> wizardUserCourses = wizardService.adjustDates(dismissalDate);
+         return ResponseEntity.ok(wizardUserCourses);
+      } catch (IllegalArgumentException e) {
+         return ResponseEntity.badRequest().body(e.getMessage());
+      }
    }
 
 }

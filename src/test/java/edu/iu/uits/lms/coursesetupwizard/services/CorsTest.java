@@ -38,6 +38,7 @@ import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.coursesetupwizard.model.PopupStatus;
 import edu.iu.uits.lms.coursesetupwizard.model.WizardCourseStatus;
+import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
@@ -88,13 +89,16 @@ public class CorsTest {
    @MockBean
    private WizardUserCourseRepository wizardUserCourseRepository = null;
 
+   @MockBean
+   private PopupDismissalDateRepository popupDismissalDateRepository = null;
+
    public static String COURSE_ID_TST = "1234";
    public static String USER_ID_TST = "qwerty";
    public static long WCS_ID = 1L;
 
    @BeforeEach
    public void setup() {
-      PopupStatus status = new PopupStatus(COURSE_ID_TST, USER_ID_TST, true);
+      PopupStatus status = new PopupStatus(COURSE_ID_TST, USER_ID_TST, true, null);
       when(wizardService.getPopupDismissedStatus(COURSE_ID_TST, USER_ID_TST)).thenReturn(status);
 
       WizardCourseStatus wcs = new WizardCourseStatus(WCS_ID, COURSE_ID_TST, USER_ID_TST,

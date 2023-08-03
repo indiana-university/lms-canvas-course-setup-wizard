@@ -40,6 +40,7 @@ import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.coursesetupwizard.model.PopupStatus;
 import edu.iu.uits.lms.coursesetupwizard.model.WizardCourseStatus;
 import edu.iu.uits.lms.coursesetupwizard.model.WizardUserCourse;
+import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
@@ -79,6 +80,9 @@ public class WizardServiceTest {
 
    @MockBean
    private WizardCourseStatusRepository wizardCourseStatusRepository;
+
+   @MockBean
+   private PopupDismissalDateRepository popupDismissalDateRepository = null;
 
    @MockBean
    private ContentMigrationService contentMigrationService;
