@@ -33,7 +33,6 @@ package edu.iu.uits.lms.coursesetupwizard.controller.rest;
  * #L%
  */
 
-import edu.iu.uits.lms.coursesetupwizard.model.PopupDismissalDate;
 import edu.iu.uits.lms.coursesetupwizard.model.WizardUserCourse;
 import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
@@ -128,9 +127,8 @@ public class WizardUserCourseRestController {
    @PostMapping("/adjustToFuture")
    @Operation(summary = "Adjust all future global dismissals to be the next upcoming date")
    public ResponseEntity<?> adjustDatesToFuture() {
-      PopupDismissalDate dismissalDate = popupDismissalDateRepository.getNextDismissalDate();
       try {
-         List<WizardUserCourse> wizardUserCourses = wizardService.adjustDates(dismissalDate);
+         List<WizardUserCourse> wizardUserCourses = wizardService.adjustDatesToFuture();
          return ResponseEntity.ok(wizardUserCourses);
       } catch (IllegalArgumentException e) {
          return ResponseEntity.badRequest().body(e.getMessage());
@@ -140,9 +138,8 @@ public class WizardUserCourseRestController {
    @PostMapping("/adjustToPast")
    @Operation(summary = "Adjust all future global dismissals to be the most recent past date")
    public ResponseEntity<?> adjustDatesToPast() {
-      PopupDismissalDate dismissalDate = popupDismissalDateRepository.getPreviousDismissalDate();
       try {
-         List<WizardUserCourse> wizardUserCourses = wizardService.adjustDates(dismissalDate);
+         List<WizardUserCourse> wizardUserCourses = wizardService.adjustDatesToPast();
          return ResponseEntity.ok(wizardUserCourses);
       } catch (IllegalArgumentException e) {
          return ResponseEntity.badRequest().body(e.getMessage());

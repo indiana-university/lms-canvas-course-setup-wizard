@@ -374,12 +374,34 @@ public class WizardService {
    }
 
    /**
+    * Adjust all future dismissals of a WizardUserCourse to be the next future date
+    * @return List of newly persisted WizardUserCourse records
+    * @throws IllegalArgumentException If no future dismissal date is found
+    */
+   @Transactional(transactionManager = "cswTransactionMgr")
+   public List<WizardUserCourse> adjustDatesToFuture() throws IllegalArgumentException {
+      PopupDismissalDate dismissalDate = popupDismissalDateRepository.getNextDismissalDate();
+      return adjustDates(dismissalDate);
+   }
+
+   /**
+    * Adjust all future dismissals of a WizardUserCourse to be the most recent past date
+    * @return List of newly persisted WizardUserCourse records
+    * @throws IllegalArgumentException If no previous dismissal date is found
+    */
+   @Transactional(transactionManager = "cswTransactionMgr")
+   public List<WizardUserCourse> adjustDatesToPast() throws IllegalArgumentException {
+      PopupDismissalDate dismissalDate = popupDismissalDateRepository.getPreviousDismissalDate();
+      return adjustDates(dismissalDate);
+   }
+
+   /**
     * Adjust all future dismissals of a WizardUserCourse to be the given date
     * @param dismissalDate New dismissal date.  Could be in the past or future.
     * @return List of newly persisted WizardUserCourse records
     * @throws IllegalArgumentException If dismissalDate is null
     */
-   public List<WizardUserCourse> adjustDates(PopupDismissalDate dismissalDate) throws IllegalArgumentException {
+   private List<WizardUserCourse> adjustDates(PopupDismissalDate dismissalDate) throws IllegalArgumentException {
       if (dismissalDate == null) {
          throw new IllegalArgumentException("No dismissal date found. Please ensure one has been created via the /rest/popupDates endpoint, or directly in the DB before trying again.");
       }
