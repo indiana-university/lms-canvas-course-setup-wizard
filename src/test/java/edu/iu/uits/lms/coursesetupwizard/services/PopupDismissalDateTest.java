@@ -204,22 +204,27 @@ public class PopupDismissalDateTest {
    }
 
    @Test
-   void testAdjustDates() {
+   void testAdjustDatesWhenNoDates() {
+      popupDismissalDateRepository.deleteAll();
       IllegalArgumentException t = Assertions.assertThrows(IllegalArgumentException.class, () ->
-            wizardService.adjustDates(null));
+              wizardService.adjustDatesToPast());
       Assertions.assertEquals("No dismissal date found. Please ensure one has been created via the /rest/popupDates endpoint, or directly in the DB before trying again.", t.getMessage());
+   }
 
+   @Test
+   void testAdjustDates() {
       wizardUserCourseRepository.save(WizardUserCourse.builder().courseId(WizardUserCourse.GLOBAL).username(USER1).dismissedUntil(nextWeek).build());
 
-      PopupDismissalDate dismissalDate = popupDismissalDateRepository.getNextDismissalDate();
-      List<WizardUserCourse> adjustedDates = wizardService.adjustDates(dismissalDate);
-      Assertions.assertEquals(1, adjustedDates.size());
-      Assertions.assertEquals(dismissalDate.getDismissUntil(), adjustedDates.get(0).getDismissedUntil());
+      Date now = new Date();
 
-      dismissalDate = popupDismissalDateRepository.getPreviousDismissalDate();
-      adjustedDates = wizardService.adjustDates(dismissalDate);
+      List<WizardUserCourse> adjustedDates = wizardService.adjustDatesToFuture();
       Assertions.assertEquals(1, adjustedDates.size());
-      Assertions.assertEquals(dismissalDate.getDismissUntil(), adjustedDates.get(0).getDismissedUntil());
+
+      Assertions.assertTrue(adjustedDates.get(0).getDismissedUntil().after(now));
+
+      adjustedDates = wizardService.adjustDatesToPast();
+      Assertions.assertEquals(1, adjustedDates.size());
+      Assertions.assertTrue(adjustedDates.get(0).getDismissedUntil().before(now));
 
    }
 
