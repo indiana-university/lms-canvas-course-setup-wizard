@@ -204,7 +204,7 @@ public class PopupDismissalDateTest {
    }
 
    @Test
-   void testAdjustDatesWithNull() {
+   void testAdjustDatesWhenNoDates() {
       popupDismissalDateRepository.deleteAll();
       IllegalArgumentException t = Assertions.assertThrows(IllegalArgumentException.class, () ->
               wizardService.adjustDatesToPast());
