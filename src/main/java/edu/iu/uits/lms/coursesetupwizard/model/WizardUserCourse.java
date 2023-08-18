@@ -83,8 +83,8 @@ public class WizardUserCourse {
    private Date modifiedOn;
 
    @JsonFormat(pattern = DateFormatUtil.JSON_DATE_FORMAT)
-   @Column(name = "DISMISSED_UNTIL")
-   private Date dismissedUntil;
+   @Column(name = "DISMISSED_ON")
+   private Date dismissedOn;
 
    @PreUpdate
    @PrePersist

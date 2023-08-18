@@ -59,7 +59,6 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 @DataJpaTest
 @Import({ToolConfig.class, PostgresDBConfig.class})
@@ -80,25 +79,27 @@ public class PopupDismissalDateTest {
    private JwtDecoder jwtDecoder;
 
    private static final String USER1 = "user1";
-   private static final String USER2 = "user2";
-   private static final String USER3 = "user3";
    private static final String COURSE1 = "course1";
    private static final String COURSE2 = "course2";
-   private static String NOTES = "foobar notes!<strong>BOLD</strong>";
+   private static String NOTES1 = "foobar notes!<strong>BOLD</strong>";
+   private static String NOTES2 = "notes2wow";
+   private static String NOTES3 = "notes_notes_notes";
 
    private static Date lastWeek;
+   private static Date yesterday;
    private static Date nextWeek;
 
    @BeforeEach
    public void setUp() throws Exception {
       LocalDate now = LocalDate.now();
       LocalDate lastWeekLD = now.minusDays(7);
+      LocalDate yesterdayLD = now.minusDays(1);
       LocalDate nextWeekLD = now.plusDays(7);
       lastWeek = makeDate(lastWeekLD.getDayOfMonth(), lastWeekLD.getMonth(), lastWeekLD.getYear());
+      yesterday = makeDate(yesterdayLD.getDayOfMonth(), yesterdayLD.getMonth(), yesterdayLD.getYear());
       nextWeek = makeDate(nextWeekLD.getDayOfMonth(), nextWeekLD.getMonth(), nextWeekLD.getYear());
 
-      this.popupDismissalDateRepository.save(PopupDismissalDate.builder().dismissUntil(lastWeek).build());
-      this.popupDismissalDateRepository.save(PopupDismissalDate.builder().dismissUntil(nextWeek).notes(NOTES).build());
+      this.popupDismissalDateRepository.save(PopupDismissalDate.builder().showOn(lastWeek).notes(NOTES1).build());
    }
 
    @AfterEach
@@ -117,115 +118,102 @@ public class PopupDismissalDateTest {
       Assertions.assertTrue(status.isShowPopup());
       Assertions.assertNull(status.getNotes());
 
-      // Try to dismiss, but without a date available
+      // Try to dismiss, but without a date available, no popup or notes
       status = wizardService.dismissPopup(COURSE2, USER1, true);
-      Assertions.assertTrue(status.isShowPopup());
+      Assertions.assertFalse(status.isShowPopup());
       Assertions.assertNull(status.getNotes());
-
    }
 
    @Test
-   void user1Checks() {
+   void userCourseDismissalChecks() {
       // pre dismissal, should have popups for both courses
       PopupStatus status = wizardService.getPopupDismissedStatus(COURSE1, USER1);
       Assertions.assertTrue(status.isShowPopup());
-      Assertions.assertEquals(NOTES, status.getNotes());
+      Assertions.assertEquals(NOTES1, status.getNotes());
 
       status = wizardService.getPopupDismissedStatus(COURSE2, USER1);
       Assertions.assertTrue(status.isShowPopup());
-      Assertions.assertEquals(NOTES, status.getNotes());
+      Assertions.assertEquals(NOTES1, status.getNotes());
 
       // Dismiss for course 1
       status = wizardService.dismissPopup(COURSE1, USER1, false);
       Assertions.assertFalse(status.isShowPopup());
-      Assertions.assertEquals(NOTES, status.getNotes());
+      Assertions.assertEquals(NOTES1, status.getNotes());
 
       // User1 has dismissed for course1, no popup
       status = wizardService.getPopupDismissedStatus(COURSE1, USER1);
       Assertions.assertFalse(status.isShowPopup());
-      Assertions.assertEquals(NOTES, status.getNotes());
+      Assertions.assertEquals(NOTES1, status.getNotes());
 
       // User1 has not dismissed for course2, so popup will appear
       status = wizardService.getPopupDismissedStatus(COURSE2, USER1);
       Assertions.assertTrue(status.isShowPopup());
-      Assertions.assertEquals(NOTES, status.getNotes());
+      Assertions.assertEquals(NOTES1, status.getNotes());
    }
 
    @Test
-   void user2Checks() {
+   void userOldDismissalNewDateChecks() {
       // pre dismissal, should have popups for both courses
-      PopupStatus status = wizardService.getPopupDismissedStatus(COURSE1, USER2);
+      PopupStatus status = wizardService.getPopupDismissedStatus(COURSE1, USER1);
       Assertions.assertTrue(status.isShowPopup());
-      Assertions.assertEquals(NOTES, status.getNotes());
+      Assertions.assertEquals(NOTES1, status.getNotes());
 
-      status = wizardService.getPopupDismissedStatus(COURSE2, USER2);
+      status = wizardService.getPopupDismissedStatus(COURSE2, USER1);
       Assertions.assertTrue(status.isShowPopup());
-      Assertions.assertEquals(NOTES, status.getNotes());
+      Assertions.assertEquals(NOTES1, status.getNotes());
 
-      // User2 has dismissed globally, until "last week".
-      wizardUserCourseRepository.save(WizardUserCourse.builder().courseId(WizardUserCourse.GLOBAL).username(USER2).dismissedUntil(lastWeek).build());
+      // User has dismissed globally "last week".
+      wizardUserCourseRepository.save(WizardUserCourse.builder().courseId(WizardUserCourse.GLOBAL).username(USER1).dismissedOn(lastWeek).build());
 
-      // User2 globally dismissed until last week, so popup should be back
-      status = wizardService.getPopupDismissedStatus(COURSE1, USER2);
+      // User globally dismissed last week, so popup is gone
+      status = wizardService.getPopupDismissedStatus(COURSE1, USER1);
+      Assertions.assertFalse(status.isShowPopup());
+      Assertions.assertEquals(NOTES1, status.getNotes());
+
+      // User globally dismissed last week, so popup is gone
+      status = wizardService.getPopupDismissedStatus(COURSE2, USER1);
+      Assertions.assertFalse(status.isShowPopup());
+      Assertions.assertEquals(NOTES1, status.getNotes());
+
+      // Add new date since dismissal
+      popupDismissalDateRepository.save(PopupDismissalDate.builder().showOn(yesterday).notes(NOTES2).build());
+
+      // User globally dismissed last week, new date since, popup is back
+      status = wizardService.getPopupDismissedStatus(COURSE1, USER1);
       Assertions.assertTrue(status.isShowPopup());
-      Assertions.assertEquals(NOTES, status.getNotes());
+      Assertions.assertEquals(NOTES2, status.getNotes());
 
-      // User2 globally dismissed until last week, so popup should be back
-      status = wizardService.getPopupDismissedStatus(COURSE2, USER2);
+      // User globally dismissed last week, so popup is gone
+      status = wizardService.getPopupDismissedStatus(COURSE2, USER1);
       Assertions.assertTrue(status.isShowPopup());
-      Assertions.assertEquals(NOTES, status.getNotes());
+      Assertions.assertEquals(NOTES2, status.getNotes());
    }
 
    @Test
-   void user3Checks() {
-      // pre dismissal, should have popups for both courses
-      PopupStatus status = wizardService.getPopupDismissedStatus(COURSE1, USER3);
-      Assertions.assertTrue(status.isShowPopup());
-      Assertions.assertEquals(NOTES, status.getNotes());
-
-      status = wizardService.getPopupDismissedStatus(COURSE2, USER3);
-      Assertions.assertTrue(status.isShowPopup());
-      Assertions.assertEquals(NOTES, status.getNotes());
-
-      // User3 has dismissed globally, until "next week".
-      status = wizardService.dismissPopup(COURSE1, USER3, true);
-      Assertions.assertFalse(status.isShowPopup());
-      Assertions.assertEquals(NOTES, status.getNotes());
-
-      // User3 globally dismissed until next week, so no popup
-      status = wizardService.getPopupDismissedStatus(COURSE1, USER3);
-      Assertions.assertFalse(status.isShowPopup());
-      Assertions.assertEquals(NOTES, status.getNotes());
-
-      // User3 globally dismissed until next week, so no popup
-      status = wizardService.getPopupDismissedStatus(COURSE2, USER3);
-      Assertions.assertFalse(status.isShowPopup());
-      Assertions.assertEquals(NOTES, status.getNotes());
-   }
-
-   @Test
-   void testAdjustDatesWhenNoDates() {
+   void userDismissalWithFutureDate() {
+      // Clear all dates
       popupDismissalDateRepository.deleteAll();
-      IllegalArgumentException t = Assertions.assertThrows(IllegalArgumentException.class, () ->
-              wizardService.adjustDatesToPast());
-      Assertions.assertEquals("No dismissal date found. Please ensure one has been created via the /rest/popupDates endpoint, or directly in the DB before trying again.", t.getMessage());
-   }
 
-   @Test
-   void testAdjustDates() {
-      wizardUserCourseRepository.save(WizardUserCourse.builder().courseId(WizardUserCourse.GLOBAL).username(USER1).dismissedUntil(nextWeek).build());
+      // pre dismissal, should have popups for both courses, but no notes
+      PopupStatus status = wizardService.getPopupDismissedStatus(COURSE1, USER1);
+      Assertions.assertTrue(status.isShowPopup());
+      Assertions.assertNull(status.getNotes());
 
-      Date now = new Date();
+      status = wizardService.getPopupDismissedStatus(COURSE2, USER1);
+      Assertions.assertTrue(status.isShowPopup());
+      Assertions.assertNull(status.getNotes());
 
-      List<WizardUserCourse> adjustedDates = wizardService.adjustDatesToFuture();
-      Assertions.assertEquals(1, adjustedDates.size());
+      //Add future date
+      popupDismissalDateRepository.save(PopupDismissalDate.builder().showOn(nextWeek).notes(NOTES3).build());
 
-      Assertions.assertTrue(adjustedDates.get(0).getDismissedUntil().after(now));
+      // Still no popups for both courses, and no notes
+      status = wizardService.getPopupDismissedStatus(COURSE1, USER1);
+      Assertions.assertTrue(status.isShowPopup());
+      Assertions.assertNull(status.getNotes());
 
-      adjustedDates = wizardService.adjustDatesToPast();
-      Assertions.assertEquals(1, adjustedDates.size());
-      Assertions.assertTrue(adjustedDates.get(0).getDismissedUntil().before(now));
-
+      status = wizardService.getPopupDismissedStatus(COURSE2, USER1);
+      Assertions.assertTrue(status.isShowPopup());
+      Assertions.assertNull(status.getNotes());
    }
 
    /**

@@ -54,10 +54,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -98,7 +94,7 @@ public class WizardServiceTest {
 
    @Test
    void testPopupShown() {
-      when(wizardUserCourseRepository.findByUsernameAndCourseIdOrGlobal(anyString(), anyString())).thenReturn(Collections.EMPTY_LIST);
+      when(wizardUserCourseRepository.findByUsernameAndCourseId(anyString(), anyString())).thenReturn(null);
       when(wizardCourseStatusRepository.findByCourseId(anyString())).thenReturn(null);
 
       PopupStatus status = wizardService.getPopupDismissedStatus("foo", "bar");
@@ -107,7 +103,7 @@ public class WizardServiceTest {
 
    @Test
    void testPopupNotShownBecauseComplete() {
-      when(wizardUserCourseRepository.findByUsernameAndCourseIdOrGlobal(anyString(), anyString())).thenReturn(Collections.EMPTY_LIST);
+      when(wizardUserCourseRepository.findByUsernameAndCourseId(anyString(), anyString())).thenReturn(null);
 
       WizardCourseStatus wcs = new WizardCourseStatus();
       when(wizardCourseStatusRepository.findByCourseId(anyString())).thenReturn(wcs);
@@ -118,10 +114,9 @@ public class WizardServiceTest {
 
    @Test
    void testPopupNotShownBecauseDismissed() {
-      List<WizardUserCourse> list = new ArrayList<>();
-      list.add(new WizardUserCourse());
+      WizardUserCourse wcu = new WizardUserCourse();
 
-      when(wizardUserCourseRepository.findByUsernameAndCourseIdOrGlobal(anyString(), anyString())).thenReturn(list);
+      when(wizardUserCourseRepository.findByUsernameAndCourseId(anyString(), anyString())).thenReturn(wcu);
       when(wizardCourseStatusRepository.findByCourseId(anyString())).thenReturn(null);
 
       PopupStatus status = wizardService.getPopupDismissedStatus("foo", "bar");
@@ -130,10 +125,9 @@ public class WizardServiceTest {
 
    @Test
    void testPopupNotShownBecauseEither() {
-      List<WizardUserCourse> list = new ArrayList<>();
-      list.add(new WizardUserCourse());
+      WizardUserCourse wcu = new WizardUserCourse();
 
-      when(wizardUserCourseRepository.findByUsernameAndCourseIdOrGlobal(anyString(), anyString())).thenReturn(list);
+      when(wizardUserCourseRepository.findByUsernameAndCourseId(anyString(), anyString())).thenReturn(wcu);
 
       WizardCourseStatus wcs = new WizardCourseStatus();
       when(wizardCourseStatusRepository.findByCourseId(anyString())).thenReturn(wcs);
