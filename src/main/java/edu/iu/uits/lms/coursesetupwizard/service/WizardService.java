@@ -113,12 +113,11 @@ public class WizardService {
       WizardUserCourse courseRecord = wizardUserCourseRepository.findByUsernameAndCourseId(userId, courseId);
       WizardUserCourse globalRecord = wizardUserCourseRepository.findByUsernameAndCourseId(userId, WizardUserCourse.GLOBAL);
       boolean alreadyCompleted = alreadyCompletedForCourse(courseId);
-
       PopupDismissalDate pdd = getPreviousDismissalDate();
 
-//      boolean hasAnyDismissals = courseRecord != null || globalRecord != null;
       boolean noDismissals = courseRecord == null && globalRecord == null;
       boolean expiredDismissal = globalRecord != null && pdd != null && globalRecord.getDismissedOn().before(pdd.getShowOn()) && pdd.getShowOn().before(new Date());
+
       /*
       Popup shows if:
       - There are no dismissals at all (course or global)
@@ -126,7 +125,6 @@ public class WizardService {
       - No pdd date
       - There is a global dismissal, but it happened before a previous pdd date
        */
-
       boolean showPopup = (noDismissals || expiredDismissal) && !alreadyCompleted;
 
       String notes = pdd != null ? pdd.getNotes() : null;
