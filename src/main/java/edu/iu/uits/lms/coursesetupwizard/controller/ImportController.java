@@ -148,7 +148,10 @@ public class ImportController extends WizardController {
             return new ModelAndView("import/selectCourse");
          } else {
             model.addAttribute("selectedCourseLabel", importModel.getSelectedCourseLabel());
-            model.addAttribute("isBlueprintFromCourse", wizardService.isBlueprintCourse(importModel.getSelectedCourseId()));
+
+            if (wizardService.isEligibleBlueprintSettingsDestination(courseId)) {
+               model.addAttribute("isBlueprintFromCourse", wizardService.isBlueprintCourse(importModel.getSelectedCourseId()));
+            }
          }
       }
 

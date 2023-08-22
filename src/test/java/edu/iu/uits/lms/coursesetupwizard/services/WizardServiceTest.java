@@ -33,7 +33,12 @@ package edu.iu.uits.lms.coursesetupwizard.services;
  * #L%
  */
 
+import edu.iu.uits.lms.canvas.model.BlueprintAssociatedCourse;
+import edu.iu.uits.lms.canvas.model.BlueprintSubscription;
+import edu.iu.uits.lms.canvas.model.Course;
+import edu.iu.uits.lms.canvas.model.User;
 import edu.iu.uits.lms.canvas.services.AccountService;
+import edu.iu.uits.lms.canvas.services.BlueprintService;
 import edu.iu.uits.lms.canvas.services.ContentMigrationService;
 import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
@@ -58,6 +63,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -74,6 +80,9 @@ public class WizardServiceTest {
 
    @MockBean
    private CourseService courseService;
+
+   @MockBean
+   private BlueprintService blueprintService;
 
    @MockBean
    private WizardUserCourseRepository wizardUserCourseRepository;
@@ -95,6 +104,77 @@ public class WizardServiceTest {
 
    @MockBean
    private TemplateAuditService templateAuditService;
+
+   @Test
+   void testFailureWithNullCourseId_CourseIdEligibleBlueprintSettingsDestination() {
+      boolean result = wizardService.isEligibleBlueprintSettingsDestination(null);
+
+      Assertions.assertFalse(result);
+   }
+
+   @Test
+   void testSuccess_CourseIdEligibleBlueprintSettingsDestination() {
+      final String courseId = "12345";
+
+      Course course = new Course();
+      course.setId(courseId);
+
+      when(courseService.getCourse(courseId)).thenReturn(course);
+
+      boolean result = wizardService.isEligibleBlueprintSettingsDestination(courseId);
+
+      Assertions.assertTrue(result);
+   }
+
+   @Test
+   void testFailureWithEnrollments_CourseIdEligibleBlueprintSettingsDestination() {
+      final String courseId = "12345";
+
+      Course course = new Course();
+      course.setId(courseId);
+
+      when(courseService.getCourse(courseId)).thenReturn(course);
+      when(courseService.getUsersForCourseByType(any(), any(), any()))
+              .thenReturn(List.of(new User()));
+
+      boolean result = wizardService.isEligibleBlueprintSettingsDestination(courseId);
+
+      Assertions.assertFalse(result);
+   }
+
+   @Test
+   void testFailureDestinationIsAlreadyAssociatedWithBlueprint_CourseIdEligibleBlueprintSettingsDestination() {
+      final String courseId = "12345";
+
+      Course course = new Course();
+      course.setId(courseId);
+
+      BlueprintSubscription blueprintSubscription = new BlueprintSubscription();
+      blueprintSubscription.setId("1");
+      blueprintSubscription.setBlueprintCourse(new BlueprintAssociatedCourse());
+
+      when(courseService.getCourse(courseId)).thenReturn(course);
+      when(blueprintService.getSubscriptions(courseId)).thenReturn(List.of(blueprintSubscription));
+
+      boolean result = wizardService.isEligibleBlueprintSettingsDestination(courseId);
+
+      Assertions.assertFalse(result);
+   }
+
+   @Test
+   void testFailureWithSisCourse_CourseIdEligibleBlueprintSettingsDestination() {
+      final String courseId = "12345";
+
+      Course course = new Course();
+      course.setId(courseId);
+      course.setSisCourseId("abcd");
+
+      when(courseService.getCourse(courseId)).thenReturn(course);
+
+      boolean result = wizardService.isEligibleBlueprintSettingsDestination(courseId);
+
+      Assertions.assertFalse(result);
+   }
 
    @Test
    void testPopupShown() {

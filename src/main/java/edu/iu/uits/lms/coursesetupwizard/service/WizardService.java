@@ -34,10 +34,17 @@ package edu.iu.uits.lms.coursesetupwizard.service;
  */
 
 import edu.iu.uits.lms.canvas.helpers.ContentMigrationHelper;
+import edu.iu.uits.lms.canvas.helpers.EnrollmentHelper;
+import edu.iu.uits.lms.canvas.model.BlueprintAssociatedCourse;
+import edu.iu.uits.lms.canvas.model.BlueprintMigration;
+import edu.iu.uits.lms.canvas.model.BlueprintSubscription;
 import edu.iu.uits.lms.canvas.model.ContentMigration;
 import edu.iu.uits.lms.canvas.model.ContentMigrationCreateWrapper;
 import edu.iu.uits.lms.canvas.model.Course;
+import edu.iu.uits.lms.canvas.model.Enrollment;
+import edu.iu.uits.lms.canvas.model.User;
 import edu.iu.uits.lms.canvas.services.AccountService;
+import edu.iu.uits.lms.canvas.services.BlueprintService;
 import edu.iu.uits.lms.canvas.services.ContentMigrationService;
 import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.coursesetupwizard.Constants;
@@ -96,6 +103,9 @@ public class WizardService {
 
    @Autowired
    private AccountService accountService;
+
+   @Autowired
+   private BlueprintService blueprintService;
 
    @Autowired
    private HierarchyResourceService hierarchyResourceService;
@@ -170,6 +180,67 @@ public class WizardService {
       }
 
       return isBpCourse;
+   }
+
+   /**
+    * Returns whether this courseId is eligible to have Blueprint settings copied
+    * in to.
+    * @param courseId
+    * @return
+    */
+   public boolean isEligibleBlueprintSettingsDestination(String courseId) {
+      if (courseId == null || courseId.isEmpty()) {
+         return false;
+      }
+
+      Course course = courseService.getCourse(courseId);
+
+      if (course == null) {
+         return false;
+      }
+
+      List<BlueprintSubscription> blueprintCourseSubscriptions = blueprintService.getSubscriptions(courseId)
+              .stream()
+              .filter(bps -> bps.getBlueprintCourse() != null)
+              .sorted(Comparator.comparing(BlueprintSubscription::getId))
+              .toList();
+
+      final String logFormat = "\"%s (id = %s)\"";
+
+      if (! blueprintCourseSubscriptions.isEmpty()) {
+         BlueprintAssociatedCourse blueprintAssociatedCourse = blueprintCourseSubscriptions.get(0).getBlueprintCourse();
+         log.debug("Course {} is ineligible for blueprint settings copy into it because it is already associated with blueprint course {}",
+                 String.format(logFormat, course.getName(), courseId ),
+                 String.format(logFormat, blueprintAssociatedCourse.getName(), blueprintAssociatedCourse.getId()));
+         return false;
+      }
+
+      String sisCourseId = course.getSisCourseId();
+
+      if (sisCourseId != null && ! sisCourseId.isEmpty()) {
+         log.debug("Course {} is ineligible for blueprint settings copy into it because it is an SIS course",
+                 String.format(logFormat, course.getName(), courseId ));
+         return false;
+      }
+
+      List<User> ineligibleEnrollmentsUsers = courseService.getUsersForCourseByType(courseId,
+              List.of(EnrollmentHelper.TYPE_STUDENT, EnrollmentHelper.TYPE_OBSERVER),
+              List.of(EnrollmentHelper.STATE.active.name(),
+                      EnrollmentHelper.STATE.completed.name(),
+                      EnrollmentHelper.STATE.creation_pending.name(),
+                      EnrollmentHelper.STATE.current_and_concluded.name(),
+                      EnrollmentHelper.STATE.current_and_future.name(),
+                      EnrollmentHelper.STATE.current_and_invited.name(),
+                      EnrollmentHelper.STATE.invited.name()
+              ));
+
+      if (ineligibleEnrollmentsUsers != null && ! ineligibleEnrollmentsUsers.isEmpty()) {
+         log.debug("Course {} is ineligible for blueprint settings copy into it because it has students or observers enrolled in it",
+                 String.format(logFormat, course.getName(), courseId ));
+         return false;
+      }
+
+       return true;
    }
 
    public void doCourseImport(ImportModel importModel, String userLoginId) throws WizardServiceException {
