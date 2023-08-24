@@ -75,7 +75,7 @@
         <jdk.target>17</jdk.target>
         <jquery.version>3.7.0</jquery.version>
         <lms-canvas-rivet.version>5.2.5.1</lms-canvas-rivet.version>
-        <lms-embedded-services.version>5.2.12</lms-embedded-services.version>
+        <lms-embedded-services.version>5.2.15</lms-embedded-services.version>
         <lms-team-spring-boot-it12>4.8</lms-team-spring-boot-it12>
         <nimbus-jose-jwt.version>9.10.1</nimbus-jose-jwt.version>
         <nodejs.version>v14.15.5</nodejs.version>
