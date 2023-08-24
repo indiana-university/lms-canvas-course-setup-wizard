@@ -199,27 +199,27 @@ public class WizardService {
          return false;
       }
 
+      String sisCourseId = course.getSisCourseId();
+
+      final String logFormat = "\"%s (id = %s)\"";
+
+      if (sisCourseId != null && ! sisCourseId.isEmpty()) {
+         log.debug("Course {} is ineligible for blueprint settings copy into it because it is an SIS course",
+                 String.format(logFormat, course.getName(), courseId ));
+         return false;
+      }
+
       List<BlueprintSubscription> blueprintCourseSubscriptions = blueprintService.getSubscriptions(courseId)
               .stream()
               .filter(bps -> bps.getBlueprintCourse() != null)
               .sorted(Comparator.comparing(BlueprintSubscription::getId))
               .toList();
 
-      final String logFormat = "\"%s (id = %s)\"";
-
       if (! blueprintCourseSubscriptions.isEmpty()) {
          BlueprintAssociatedCourse blueprintAssociatedCourse = blueprintCourseSubscriptions.get(0).getBlueprintCourse();
          log.debug("Course {} is ineligible for blueprint settings copy into it because it is already associated with blueprint course {}",
                  String.format(logFormat, course.getName(), courseId ),
                  String.format(logFormat, blueprintAssociatedCourse.getName(), blueprintAssociatedCourse.getId()));
-         return false;
-      }
-
-      String sisCourseId = course.getSisCourseId();
-
-      if (sisCourseId != null && ! sisCourseId.isEmpty()) {
-         log.debug("Course {} is ineligible for blueprint settings copy into it because it is an SIS course",
-                 String.format(logFormat, course.getName(), courseId ));
          return false;
       }
 
