@@ -41,7 +41,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -98,8 +97,8 @@ public class WizardUserCourseRestController {
          if (wizardUserCourse.getUsername() != null) {
             updatedWizardUserCourse.setUsername(wizardUserCourse.getUsername());
          }
-         if (wizardUserCourse.getDismissedUntil() != null) {
-            updatedWizardUserCourse.setDismissedUntil(wizardUserCourse.getDismissedUntil());
+         if (wizardUserCourse.getDismissedOn() != null) {
+            updatedWizardUserCourse.setDismissedOn(wizardUserCourse.getDismissedOn());
          }
 
          return wizardUserCourseRepository.save(updatedWizardUserCourse);
@@ -113,6 +112,7 @@ public class WizardUserCourseRestController {
       WizardUserCourse newWizardUserCourse = WizardUserCourse.builder()
             .courseId(wizardUserCourse.getCourseId())
             .username(wizardUserCourse.getUsername())
+            .dismissedOn(wizardUserCourse.getDismissedOn())
             .build();
       return wizardUserCourseRepository.save(newWizardUserCourse);
    }
@@ -122,28 +122,6 @@ public class WizardUserCourseRestController {
    public String delete(@PathVariable Long id) {
       wizardUserCourseRepository.deleteById(id);
       return "Delete success.";
-   }
-
-   @PostMapping("/adjustToFuture")
-   @Operation(summary = "Adjust all future global dismissals to be the next upcoming date")
-   public ResponseEntity<?> adjustDatesToFuture() {
-      try {
-         List<WizardUserCourse> wizardUserCourses = wizardService.adjustDatesToFuture();
-         return ResponseEntity.ok(wizardUserCourses);
-      } catch (IllegalArgumentException e) {
-         return ResponseEntity.badRequest().body(e.getMessage());
-      }
-   }
-
-   @PostMapping("/adjustToPast")
-   @Operation(summary = "Adjust all future global dismissals to be the most recent past date")
-   public ResponseEntity<?> adjustDatesToPast() {
-      try {
-         List<WizardUserCourse> wizardUserCourses = wizardService.adjustDatesToPast();
-         return ResponseEntity.ok(wizardUserCourses);
-      } catch (IllegalArgumentException e) {
-         return ResponseEntity.badRequest().body(e.getMessage());
-      }
    }
 
 }

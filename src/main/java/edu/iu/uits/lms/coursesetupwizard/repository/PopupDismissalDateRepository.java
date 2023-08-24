@@ -34,24 +34,16 @@ package edu.iu.uits.lms.coursesetupwizard.repository;
  */
 
 import edu.iu.uits.lms.coursesetupwizard.model.PopupDismissalDate;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Component
 public interface PopupDismissalDateRepository extends PagingAndSortingRepository<PopupDismissalDate, Long> {
 
-   @Query(value = "SELECT pdd FROM PopupDismissalDate pdd WHERE pdd.dismissUntil > CURRENT_TIMESTAMP AND ROWNUM = 1 ORDER BY pdd.dismissUntil")
-   PopupDismissalDate getNextDismissalDate();
-
-   @Query(value = "SELECT pdd FROM PopupDismissalDate pdd WHERE pdd.dismissUntil < CURRENT_TIMESTAMP AND ROWNUM = 1 ORDER BY pdd.dismissUntil DESC")
-   PopupDismissalDate getPreviousDismissalDate();
-
-   @Modifying
-   @Query("DELETE FROM PopupDismissalDate pdd where pdd.dismissUntil < CURRENT_TIMESTAMP")
-   @Transactional("cswTransactionMgr")
-   int removePastDates();
+   @Query(value = "SELECT pdd FROM PopupDismissalDate pdd WHERE pdd.showOn < CURRENT_TIMESTAMP ORDER BY pdd.showOn DESC")
+   List<PopupDismissalDate> getPreviousDismissalDates();
 
 }

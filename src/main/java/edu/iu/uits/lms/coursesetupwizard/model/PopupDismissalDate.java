@@ -63,8 +63,8 @@ public class PopupDismissalDate {
    private Long id;
 
    @JsonFormat(pattern = DateFormatUtil.JSON_DATE_FORMAT)
-   @Column(name = "DISMISS_UNTIL")
-   private Date dismissUntil;
+   @Column(name = "SHOW_ON")
+   private Date showOn;
 
    @Lob
    @Column(name = "NOTES", columnDefinition = "TEXT")

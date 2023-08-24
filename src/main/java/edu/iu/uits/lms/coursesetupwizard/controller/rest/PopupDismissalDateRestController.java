@@ -86,8 +86,8 @@ public class PopupDismissalDateRestController {
 
       if (updatedPopupDismissalDate != null) {
          try {
-            if (inputDismissalData.getDismissalDate() != null) {
-               updatedPopupDismissalDate.setDismissUntil(PopupDateUtil.validateDate(inputDismissalData.getDismissalDate(), toolConfig.getTimezone()));
+            if (inputDismissalData.getShowOn() != null) {
+               updatedPopupDismissalDate.setShowOn(PopupDateUtil.validateDate(inputDismissalData.getShowOn(), toolConfig.getTimezone()));
             }
             if (inputDismissalData.getNotes() != null) {
                updatedPopupDismissalDate.setNotes(inputDismissalData.getNotes());
@@ -109,7 +109,7 @@ public class PopupDismissalDateRestController {
    public ResponseEntity<?> create(@RequestBody InputDismissalData inputDismissalData) {
       try {
          PopupDismissalDate newPopupDismissalDate = PopupDismissalDate.builder()
-               .dismissUntil(PopupDateUtil.validateDate(inputDismissalData.getDismissalDate(), toolConfig.getTimezone()))
+               .showOn(PopupDateUtil.validateDate(inputDismissalData.getShowOn(), toolConfig.getTimezone()))
                .notes(inputDismissalData.getNotes())
                .build();
          return ResponseEntity.ok(popupDismissalDateRepository.save(newPopupDismissalDate));
@@ -125,16 +125,9 @@ public class PopupDismissalDateRestController {
       return "Delete success.";
    }
 
-   @DeleteMapping("/old")
-   @Operation(summary = "Delete any PopupDismissalDate records that are in the past")
-   public ResponseEntity<String> deleteOld() {
-      int recs = popupDismissalDateRepository.removePastDates();
-      return ResponseEntity.ok("Deleted " + recs + " records.");
-   }
-
    @Data
    static class InputDismissalData implements Serializable {
-      private String dismissalDate;
+      private String showOn;
       private String notes;
       private boolean clearNotes;
    }
