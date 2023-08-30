@@ -37,4 +37,6 @@ jQuery(document).ready(function($) {
         $("#dialog-exit-title").focus();
       });
 
+     $('#csw-header').focus();
+
 });

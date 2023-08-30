@@ -37,7 +37,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
 <head>
-    <title>Course Setup Wizard</title>
+    <title>Course Setup Wizard - Import a template</title>
 </head>
 
 <body class="rvt-layout">
@@ -45,9 +45,8 @@
 
     <div class="rvt-row rvt-p-top-sm">
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
+            <h2 id="page-title">Import a template</h2>
             <form id="wizard-form-template-selection" th:action="@{|/app/template/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
-                <h2>Import a template</h2>
-
                 <p>
                     A template is a Canvas course that serves as a model for other courses. Templates can consist of
                     any combination of settings, instructional content, and branding elements. The templates
