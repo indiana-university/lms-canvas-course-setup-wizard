@@ -34,19 +34,28 @@ package edu.iu.uits.lms.coursesetupwizard.service;
  */
 
 import edu.iu.uits.lms.canvas.helpers.ContentMigrationHelper;
+import edu.iu.uits.lms.canvas.helpers.EnrollmentHelper;
+import edu.iu.uits.lms.canvas.model.BlueprintAssociatedCourse;
+import edu.iu.uits.lms.canvas.model.BlueprintMigration;
+import edu.iu.uits.lms.canvas.model.BlueprintSubscription;
 import edu.iu.uits.lms.canvas.model.ContentMigration;
 import edu.iu.uits.lms.canvas.model.ContentMigrationCreateWrapper;
 import edu.iu.uits.lms.canvas.model.Course;
+import edu.iu.uits.lms.canvas.model.Enrollment;
+import edu.iu.uits.lms.canvas.model.User;
 import edu.iu.uits.lms.canvas.services.AccountService;
+import edu.iu.uits.lms.canvas.services.BlueprintService;
 import edu.iu.uits.lms.canvas.services.ContentMigrationService;
 import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.coursesetupwizard.model.ImportModel;
+import edu.iu.uits.lms.coursesetupwizard.model.PopupDismissalDate;
 import edu.iu.uits.lms.coursesetupwizard.model.PopupStatus;
 import edu.iu.uits.lms.coursesetupwizard.model.SelectableCourse;
 import edu.iu.uits.lms.coursesetupwizard.model.WizardCourseStatus;
 import edu.iu.uits.lms.coursesetupwizard.model.WizardUserCourse;
+import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
 import edu.iu.uits.lms.iuonly.model.HierarchyResource;
@@ -61,13 +70,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.MessageFormat;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -97,37 +107,65 @@ public class WizardService {
    private AccountService accountService;
 
    @Autowired
+   private BlueprintService blueprintService;
+
+   @Autowired
    private HierarchyResourceService hierarchyResourceService;
 
    @Autowired
    private TemplateAuditService templateAuditService;
 
    @Autowired
+   private PopupDismissalDateRepository popupDismissalDateRepository;
+
+   @Autowired
    private ToolConfig toolConfig;
 
+   @Transactional(transactionManager = "cswTransactionMgr")
    public PopupStatus getPopupDismissedStatus(String courseId, String userId) {
-      List<WizardUserCourse> records = wizardUserCourseRepository.findByUsernameAndCourseIdOrGlobal(userId, courseId);
+      WizardUserCourse courseRecord = wizardUserCourseRepository.findByUsernameAndCourseId(userId, courseId);
+      WizardUserCourse globalRecord = wizardUserCourseRepository.findByUsernameAndCourseId(userId, WizardUserCourse.GLOBAL);
       boolean alreadyCompleted = alreadyCompletedForCourse(courseId);
-      return new PopupStatus(courseId, userId, (CollectionUtils.isEmpty(records) && !alreadyCompleted));
+      PopupDismissalDate pdd = getPreviousDismissalDate();
+
+      boolean noDismissals = courseRecord == null && globalRecord == null;
+      boolean expiredDismissal = globalRecord != null && pdd != null && globalRecord.getDismissedOn().before(pdd.getShowOn()) && pdd.getShowOn().before(new Date());
+
+      /*
+      Popup shows if:
+      - There are no dismissals at all (course or global)
+      - Wizard has not already been completed for this course
+      - No pdd date
+      - There is a global dismissal, but it happened before a previous pdd date
+       */
+      boolean showPopup = (noDismissals || expiredDismissal) && !alreadyCompleted;
+
+      String notes = pdd != null ? pdd.getNotes() : null;
+      return new PopupStatus(courseId, userId, showPopup, notes);
    }
 
+   @Transactional(transactionManager = "cswTransactionMgr")
    public PopupStatus dismissPopup(String courseId, String userId, boolean global) {
-      String coureIdToCheck = global ? WizardUserCourse.GLOBAL : courseId;
-      WizardUserCourse record = wizardUserCourseRepository.findByUsernameAndCourseId(userId, coureIdToCheck);
+      String courseIdToCheck = global ? WizardUserCourse.GLOBAL : courseId;
+      WizardUserCourse record = wizardUserCourseRepository.findByUsernameAndCourseId(userId, courseIdToCheck);
 
       if (record == null) {
-         record = WizardUserCourse.builder().username(userId).courseId(coureIdToCheck).build();
+         record = WizardUserCourse.builder().username(userId).courseId(courseIdToCheck).build();
+      }
+
+      if (WizardUserCourse.GLOBAL.equals(courseIdToCheck)) {
+         record.setDismissedOn(new Date());
       }
       wizardUserCourseRepository.save(record);
 
-      return new PopupStatus(courseId, userId, false);
+      return getPopupDismissedStatus(courseId, userId);
    }
 
    @Cacheable(value = INSTRUCTOR_COURSES_CACHE_NAME, cacheManager = "CourseSetupWizardCacheManager")
    public List<SelectableCourse> getSelectableCourses(String networkId, String currentCourseId) {
       List<String> states = Arrays.asList("available", "unpublished", "completed");
 
-      List<Course> courses = courseService.getCoursesForUser(networkId, false, true, true, states);
+      List<Course> courses = courseService.getCoursesForUser(networkId, false, true, false, states);
       List<String> wantedEnrollments = Arrays.asList("teacher", "ta", "designer");
 
       // Filter out current course, then
@@ -143,6 +181,81 @@ public class WizardService {
             .collect(Collectors.toList());
    }
 
+   public boolean isBlueprintCourse(String courseId) {
+      boolean isBpCourse = false;
+
+      if (courseId != null) {
+         Course course = courseService.getCourse(courseId);
+
+         if (course != null) {
+            isBpCourse = course.isBlueprint();
+         }
+      }
+
+      return isBpCourse;
+   }
+
+   /**
+    * Returns whether this courseId is eligible to have Blueprint settings copied
+    * in to.
+    * @param courseId
+    * @return
+    */
+   public boolean isEligibleBlueprintSettingsDestination(String courseId) {
+      if (courseId == null || courseId.isEmpty()) {
+         return false;
+      }
+
+      Course course = courseService.getCourse(courseId);
+
+      if (course == null) {
+         return false;
+      }
+
+      String sisCourseId = course.getSisCourseId();
+
+      final String logFormat = "\"%s (id = %s)\"";
+
+      if (sisCourseId != null && ! sisCourseId.isEmpty()) {
+         log.debug("Course {} is ineligible for blueprint settings copy into it because it is an SIS course",
+                 String.format(logFormat, course.getName(), courseId ));
+         return false;
+      }
+
+      List<BlueprintSubscription> blueprintCourseSubscriptions = blueprintService.getSubscriptions(courseId)
+              .stream()
+              .filter(bps -> bps.getBlueprintCourse() != null)
+              .sorted(Comparator.comparing(BlueprintSubscription::getId))
+              .toList();
+
+      if (! blueprintCourseSubscriptions.isEmpty()) {
+         BlueprintAssociatedCourse blueprintAssociatedCourse = blueprintCourseSubscriptions.get(0).getBlueprintCourse();
+         log.debug("Course {} is ineligible for blueprint settings copy into it because it is already associated with blueprint course {}",
+                 String.format(logFormat, course.getName(), courseId ),
+                 String.format(logFormat, blueprintAssociatedCourse.getName(), blueprintAssociatedCourse.getId()));
+         return false;
+      }
+
+      List<User> ineligibleEnrollmentsUsers = courseService.getUsersForCourseByType(courseId,
+              List.of(EnrollmentHelper.TYPE_STUDENT, EnrollmentHelper.TYPE_OBSERVER),
+              List.of(EnrollmentHelper.STATE.active.name(),
+                      EnrollmentHelper.STATE.completed.name(),
+                      EnrollmentHelper.STATE.creation_pending.name(),
+                      EnrollmentHelper.STATE.current_and_concluded.name(),
+                      EnrollmentHelper.STATE.current_and_future.name(),
+                      EnrollmentHelper.STATE.current_and_invited.name(),
+                      EnrollmentHelper.STATE.invited.name()
+              ));
+
+      if (ineligibleEnrollmentsUsers != null && ! ineligibleEnrollmentsUsers.isEmpty()) {
+         log.debug("Course {} is ineligible for blueprint settings copy into it because it has students or observers enrolled in it",
+                 String.format(logFormat, course.getName(), courseId ));
+         return false;
+      }
+
+       return true;
+   }
+
    public void doCourseImport(ImportModel importModel, String userLoginId) throws WizardServiceException {
       String courseId = importModel.getCourseId();
       String sourceCourseId = importModel.getSelectedCourseId();
@@ -156,6 +269,11 @@ public class WizardService {
       wrapper.setMigrationType(ContentMigrationHelper.MIGRATION_TYPE_COURSE_COPY);
       wrapper.setSettings(settings);
       settings.setSourceCourseId(sourceCourseId);
+
+      if (Constants.CONTENT_OPTION.ALL_WITH_BLUEPRINT_SETTINGS.name().equalsIgnoreCase(importModel.getImportContentOption())) {
+         log.info("Import Blueprint settings = true");
+         settings.setImportBlueprintSettings(true);
+      }
 
       //selective importing
       wrapper.setSelectiveImport(Constants.CONTENT_OPTION.SELECT.name().equalsIgnoreCase(importModel.getImportContentOption()));
@@ -339,6 +457,7 @@ public class WizardService {
       return nodeMap;
    }
 
+
    private String formatDateForSubmit(String date) {
       String canvasDate = StringUtils.trimToNull(date);
       if (canvasDate != null && !"".equals(canvasDate)) {
@@ -346,10 +465,25 @@ public class WizardService {
          DateTimeFormatter dtf = DateTimeFormatter.ofPattern(ImportModel.ClassDates.DATE_FORMAT, Locale.getDefault());
          LocalDate myLocalDate = LocalDate.parse(canvasDate, dtf);
 
-         canvasDate =  myLocalDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
+         canvasDate = myLocalDate.format(DateTimeFormatter.ISO_LOCAL_DATE);
       }
 
       return canvasDate;
+   }
+
+   /**
+    * Get the most recent, previous PopupDismissalDate.
+    * @return PopupDismissalDate
+    */
+   private PopupDismissalDate getPreviousDismissalDate() {
+      List<PopupDismissalDate> dates = popupDismissalDateRepository.getPreviousDismissalDates();
+      if (dates != null && !dates.isEmpty()) {
+         // Should already be ordered, but just in case!
+         dates.sort(Comparator.comparing(PopupDismissalDate::getShowOn).reversed());
+         return dates.get(0);
+      }
+      return null;
+
    }
 
 }

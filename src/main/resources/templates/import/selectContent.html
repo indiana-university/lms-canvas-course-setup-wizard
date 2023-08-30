@@ -59,16 +59,23 @@
           <ul class="rvt-list-plain">
             <li>
               <div class="rvt-radio">
-                <input type="radio" name="importContentOption" id="radio-1-1"
+                <input type="radio" name="importContentOption" id="radio-content-all"
                        th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).ALL.name()}">
-                <label for="radio-1-1">Import the entire course as is (all content and settings)</label>
+                <label for="radio-content-all">Import course content only</label>
+              </div>
+            </li>
+            <li th:if="${isBlueprintFromCourse}">
+              <div class="rvt-radio">
+                <input type="radio" name="importContentOption" id="radio-content-all-with-blueprint-settings"
+                       th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).ALL_WITH_BLUEPRINT_SETTINGS.name()}">
+                <label for="radio-content-all-with-blueprint-settings">Import course content with Blueprint Course settings</label>
               </div>
             </li>
             <li>
               <div class="rvt-radio">
-                <input type="radio" name="importContentOption" id="radio-1-2"
+                <input type="radio" name="importContentOption" id="radio-content-select"
                        th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).SELECT.name()}">
-                <label for="radio-1-2">
+                <label for="radio-content-select">
                   Select specific content to import (after you submit the wizard, you’ll be prompted to select the tools and items you wish to import)
                 </label>
               </div>
@@ -101,7 +108,7 @@
             return false;
         }
     }
-    </script>
+  </script>
 </th:block>
 </body>
 </html>

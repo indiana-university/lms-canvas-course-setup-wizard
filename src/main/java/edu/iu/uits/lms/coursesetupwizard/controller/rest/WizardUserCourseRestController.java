@@ -34,7 +34,9 @@ package edu.iu.uits.lms.coursesetupwizard.controller.rest;
  */
 
 import edu.iu.uits.lms.coursesetupwizard.model.WizardUserCourse;
+import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
+import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +60,12 @@ public class WizardUserCourseRestController {
 
    @Autowired
    private WizardUserCourseRepository wizardUserCourseRepository = null;
+
+   @Autowired
+   private PopupDismissalDateRepository popupDismissalDateRepository = null;
+
+   @Autowired
+   private WizardService wizardService = null;
 
    @GetMapping("/{id}")
    @Operation(summary = "Get a WizardUserCourse by id")
@@ -89,6 +97,9 @@ public class WizardUserCourseRestController {
          if (wizardUserCourse.getUsername() != null) {
             updatedWizardUserCourse.setUsername(wizardUserCourse.getUsername());
          }
+         if (wizardUserCourse.getDismissedOn() != null) {
+            updatedWizardUserCourse.setDismissedOn(wizardUserCourse.getDismissedOn());
+         }
 
          return wizardUserCourseRepository.save(updatedWizardUserCourse);
       }
@@ -101,6 +112,7 @@ public class WizardUserCourseRestController {
       WizardUserCourse newWizardUserCourse = WizardUserCourse.builder()
             .courseId(wizardUserCourse.getCourseId())
             .username(wizardUserCourse.getUsername())
+            .dismissedOn(wizardUserCourse.getDismissedOn())
             .build();
       return wizardUserCourseRepository.save(newWizardUserCourse);
    }
