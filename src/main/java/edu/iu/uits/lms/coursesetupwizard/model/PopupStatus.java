@@ -44,5 +44,6 @@ public class PopupStatus implements Serializable {
    private String courseId;
    private String userId;
    private boolean showPopup;
+   private String notes;
 
 }

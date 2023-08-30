@@ -1,10 +1,10 @@
-package edu.iu.uits.lms.coursesetupwizard.config;
+package edu.iu.uits.lms.coursesetupwizard.model;
 
 /*-
  * #%L
  * course-setup-wizard
  * %%
- * Copyright (C) 2022 Indiana University
+ * Copyright (C) 2022 - 2023 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -33,20 +33,41 @@ package edu.iu.uits.lms.coursesetupwizard.config;
  * #L%
  */
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import edu.iu.uits.lms.common.date.DateFormatUtil;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Configuration
-@ConfigurationProperties(prefix = "course-setup-wizard")
-@Getter
-@Setter
-public class ToolConfig {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import java.util.Date;
 
-   private String version;
-   private String env;
-   private String templateHostingUrl;
-   private String hierarchyRootNodeName;
-   private String timezone;
+@Entity
+@Table(name = "WIZARD_POPUP_DISMISSAL_DATES")
+@SequenceGenerator(name = "WIZARD_POPUP_DISMISSAL_DATES_ID_SEQ", sequenceName = "WIZARD_POPUP_DISMISSAL_DATES_ID_SEQ", allocationSize = 1)
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+public class PopupDismissalDate {
+
+   @Id
+   @GeneratedValue(generator = "WIZARD_POPUP_DISMISSAL_DATES_ID_SEQ")
+   private Long id;
+
+   @JsonFormat(pattern = DateFormatUtil.JSON_DATE_FORMAT)
+   @Column(name = "SHOW_ON")
+   private Date showOn;
+
+   @Lob
+   @Column(name = "NOTES", columnDefinition = "TEXT")
+   private String notes;
+
 }

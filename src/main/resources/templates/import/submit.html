@@ -52,7 +52,8 @@
 
         <div th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
 
-        <th:block th:if="${selectedContentOption == T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).ALL.name()}">
+        <th:block th:if="${selectedContentOption == T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).ALL.name() ||
+                           selectedContentOption == T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).ALL_WITH_BLUEPRINT_SETTINGS.name()}">
           <p>
             After you <span class="rvt-text-bold">Submit</span> this form, you will be redirected from this
             wizard to the Import Content page in your course. A progress bar will appear while the import is

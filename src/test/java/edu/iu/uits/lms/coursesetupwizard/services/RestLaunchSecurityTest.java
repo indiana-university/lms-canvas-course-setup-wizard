@@ -34,10 +34,10 @@ package edu.iu.uits.lms.coursesetupwizard.services;
  */
 
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
+import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
-import edu.iu.uits.lms.iuonly.services.SisServiceImpl;
 import edu.iu.uits.lms.lti.config.TestUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -79,6 +79,9 @@ public class RestLaunchSecurityTest {
 
    @MockBean
    private WizardUserCourseRepository wizardUserCourseRepository;
+
+   @MockBean
+   private PopupDismissalDateRepository popupDismissalDateRepository = null;
 
    @Test
    public void restNoAuthnLaunch() throws Exception {

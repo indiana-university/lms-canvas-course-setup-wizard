@@ -82,6 +82,10 @@ public class WizardUserCourse {
    @Column(name = "MODIFIED")
    private Date modifiedOn;
 
+   @JsonFormat(pattern = DateFormatUtil.JSON_DATE_FORMAT)
+   @Column(name = "DISMISSED_ON")
+   private Date dismissedOn;
+
    @PreUpdate
    @PrePersist
    public void updateTimeStamps() {
