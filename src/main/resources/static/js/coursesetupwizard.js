@@ -37,10 +37,17 @@ jQuery(document).ready(function($) {
         $("#dialog-exit-title").focus();
       });
 
-    $("input[aria-invalid='true']" ).first().focus();
+
+    var invalidInput = $("input[aria-invalid='true']" ).first();
+    if (invalidInput) {
+        invalidInput.focus();
+    } else {
+        $('#csw-header').focus();
+    }
 
     // trim extra spaces in the date inputs. Voice control sometimes adds a leading space to the date
     $('input.date-input').blur(function() {
         $(this).val($(this).val().trim());
     });
+
 });

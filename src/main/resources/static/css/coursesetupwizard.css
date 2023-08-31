@@ -84,3 +84,6 @@
 }
 /* End of loading screen stuff */
 
+#csw-header:focus {
+    outline: none;
+}
