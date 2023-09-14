@@ -38,9 +38,9 @@ jQuery(document).ready(function($) {
       });
 
 
-    var invalidInput = $("input[aria-invalid='true']" ).first();
-    if (invalidInput) {
-        invalidInput.focus();
+    var invalidInputs = $("input[aria-invalid='true']");
+    if (invalidInputs.length > 0) {
+        invalidInputs.first().focus();
     } else {
         $('#csw-header').focus();
     }
