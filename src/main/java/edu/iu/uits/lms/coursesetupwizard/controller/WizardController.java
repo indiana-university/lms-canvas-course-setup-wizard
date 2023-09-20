@@ -96,8 +96,10 @@ public class WizardController extends OidcTokenAwareController {
         courseSessionService.removeAttributeFromSession(httpSession, courseId, KEY_IMPORT_MODEL);
 
         // Go to the regular index page if wizard hasn't been run for this course yet, otherwise, go to the page with the warning message on it
-        String viewName = wizardService.alreadyCompletedForCourse(courseId) ? "alreadyCompleted" : "index";
-        return new ModelAndView(viewName);
+//        String viewName = wizardService.alreadyCompletedForCourse(courseId) ? "alreadyCompleted" : "index";
+//        return new ModelAndView(viewName);
+        // TODO - remove this when done
+        return new ModelAndView("index");
     }
 
     @PostMapping("/{courseId}/menu")

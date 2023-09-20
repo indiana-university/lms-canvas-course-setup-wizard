@@ -162,6 +162,21 @@ public class WizardServiceTest {
    }
 
    @Test
+   void testFailureDestinationIsAlreadyABlueprint_CourseIdEligibleBlueprintSettingsDestination() {
+      final String courseId = "12345";
+
+      Course course = new Course();
+      course.setId(courseId);
+      course.setBlueprint(true);
+
+      when(courseService.getCourse(courseId)).thenReturn(course);
+
+      boolean result = wizardService.isEligibleBlueprintSettingsDestination(courseId);
+
+      Assertions.assertFalse(result);
+   }
+
+   @Test
    void testFailureWithSisCourse_CourseIdEligibleBlueprintSettingsDestination() {
       final String courseId = "12345";
 
