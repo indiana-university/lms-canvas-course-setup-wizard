@@ -209,13 +209,19 @@ public class WizardService {
          return false;
       }
 
-      String sisCourseId = course.getSisCourseId();
+      final String courseLogFormat = "\"%s (id = %s)\"";
 
-      final String logFormat = "\"%s (id = %s)\"";
+      if (course.isBlueprint()) {
+         log.debug("Course {} is ineligible for blueprint settings copy into it because it is already a blueprint course",
+                 String.format(courseLogFormat, course.getName(), courseId ));
+         return false;
+      }
+
+      String sisCourseId = course.getSisCourseId();
 
       if (sisCourseId != null && ! sisCourseId.isEmpty()) {
          log.debug("Course {} is ineligible for blueprint settings copy into it because it is an SIS course",
-                 String.format(logFormat, course.getName(), courseId ));
+                 String.format(courseLogFormat, course.getName(), courseId ));
          return false;
       }
 
@@ -228,8 +234,8 @@ public class WizardService {
       if (! blueprintCourseSubscriptions.isEmpty()) {
          BlueprintAssociatedCourse blueprintAssociatedCourse = blueprintCourseSubscriptions.get(0).getBlueprintCourse();
          log.debug("Course {} is ineligible for blueprint settings copy into it because it is already associated with blueprint course {}",
-                 String.format(logFormat, course.getName(), courseId ),
-                 String.format(logFormat, blueprintAssociatedCourse.getName(), blueprintAssociatedCourse.getId()));
+                 String.format(courseLogFormat, course.getName(), courseId ),
+                 String.format(courseLogFormat, blueprintAssociatedCourse.getName(), blueprintAssociatedCourse.getId()));
          return false;
       }
 
@@ -246,7 +252,7 @@ public class WizardService {
 
       if (ineligibleEnrollmentsUsers != null && ! ineligibleEnrollmentsUsers.isEmpty()) {
          log.debug("Course {} is ineligible for blueprint settings copy into it because it has students or observers enrolled in it",
-                 String.format(logFormat, course.getName(), courseId ));
+                 String.format(courseLogFormat, course.getName(), courseId ));
          return false;
       }
 
