@@ -183,7 +183,18 @@ public class PopupDismissalDateTest {
       Assertions.assertTrue(status.isShowPopup());
       Assertions.assertEquals(NOTES2, status.getNotes());
 
-      // User globally dismissed last week, so popup is gone
+      // User globally dismissed last week, new date since, popup is back
+      status = wizardService.getPopupDismissedStatus(COURSE2, USER1);
+      Assertions.assertTrue(status.isShowPopup());
+      Assertions.assertEquals(NOTES2, status.getNotes());
+
+      // User dismissed a specific course, popup is gone
+      wizardUserCourseRepository.save(WizardUserCourse.builder().courseId(COURSE1).username(USER1).build());
+      status = wizardService.getPopupDismissedStatus(COURSE1, USER1);
+      Assertions.assertFalse(status.isShowPopup());
+      Assertions.assertEquals(NOTES2, status.getNotes());
+
+      // User globally dismissed last week, new date since, no course specific dismissal, popup is back
       status = wizardService.getPopupDismissedStatus(COURSE2, USER1);
       Assertions.assertTrue(status.isShowPopup());
       Assertions.assertEquals(NOTES2, status.getNotes());
