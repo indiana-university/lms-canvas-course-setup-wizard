@@ -36,12 +36,10 @@ package edu.iu.uits.lms.coursesetupwizard.service;
 import edu.iu.uits.lms.canvas.helpers.ContentMigrationHelper;
 import edu.iu.uits.lms.canvas.helpers.EnrollmentHelper;
 import edu.iu.uits.lms.canvas.model.BlueprintAssociatedCourse;
-import edu.iu.uits.lms.canvas.model.BlueprintMigration;
 import edu.iu.uits.lms.canvas.model.BlueprintSubscription;
 import edu.iu.uits.lms.canvas.model.ContentMigration;
 import edu.iu.uits.lms.canvas.model.ContentMigrationCreateWrapper;
 import edu.iu.uits.lms.canvas.model.Course;
-import edu.iu.uits.lms.canvas.model.Enrollment;
 import edu.iu.uits.lms.canvas.model.User;
 import edu.iu.uits.lms.canvas.services.AccountService;
 import edu.iu.uits.lms.canvas.services.BlueprintService;
@@ -129,16 +127,18 @@ public class WizardService {
       PopupDismissalDate pdd = getPreviousDismissalDate();
 
       boolean noDismissals = courseRecord == null && globalRecord == null;
+      boolean courseDismissal = courseRecord != null;
       boolean expiredDismissal = globalRecord != null && pdd != null && globalRecord.getDismissedOn().before(pdd.getShowOn()) && pdd.getShowOn().before(new Date());
 
       /*
       Popup shows if:
       - There are no dismissals at all (course or global)
       - Wizard has not already been completed for this course
+      - No course specific dismissal
       - No pdd date
       - There is a global dismissal, but it happened before a previous pdd date
        */
-      boolean showPopup = (noDismissals || expiredDismissal) && !alreadyCompleted;
+      boolean showPopup = (noDismissals || expiredDismissal) && !courseDismissal && !alreadyCompleted;
 
       String notes = pdd != null ? pdd.getNotes() : null;
       return new PopupStatus(courseId, userId, showPopup, notes);
@@ -212,13 +212,19 @@ public class WizardService {
          return false;
       }
 
-      String sisCourseId = course.getSisCourseId();
+      final String courseLogFormat = "\"%s (id = %s)\"";
 
-      final String logFormat = "\"%s (id = %s)\"";
+      if (course.isBlueprint()) {
+         log.debug("Course {} is ineligible for blueprint settings copy into it because it is already a blueprint course",
+                 String.format(courseLogFormat, course.getName(), courseId ));
+         return false;
+      }
+
+      String sisCourseId = course.getSisCourseId();
 
       if (sisCourseId != null && ! sisCourseId.isEmpty()) {
          log.debug("Course {} is ineligible for blueprint settings copy into it because it is an SIS course",
-                 String.format(logFormat, course.getName(), courseId ));
+                 String.format(courseLogFormat, course.getName(), courseId ));
          return false;
       }
 
@@ -231,8 +237,8 @@ public class WizardService {
       if (! blueprintCourseSubscriptions.isEmpty()) {
          BlueprintAssociatedCourse blueprintAssociatedCourse = blueprintCourseSubscriptions.get(0).getBlueprintCourse();
          log.debug("Course {} is ineligible for blueprint settings copy into it because it is already associated with blueprint course {}",
-                 String.format(logFormat, course.getName(), courseId ),
-                 String.format(logFormat, blueprintAssociatedCourse.getName(), blueprintAssociatedCourse.getId()));
+                 String.format(courseLogFormat, course.getName(), courseId ),
+                 String.format(courseLogFormat, blueprintAssociatedCourse.getName(), blueprintAssociatedCourse.getId()));
          return false;
       }
 
@@ -249,7 +255,7 @@ public class WizardService {
 
       if (ineligibleEnrollmentsUsers != null && ! ineligibleEnrollmentsUsers.isEmpty()) {
          log.debug("Course {} is ineligible for blueprint settings copy into it because it has students or observers enrolled in it",
-                 String.format(logFormat, course.getName(), courseId ));
+                 String.format(courseLogFormat, course.getName(), courseId ));
          return false;
       }
 
