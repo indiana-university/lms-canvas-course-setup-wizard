@@ -40,6 +40,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 @Slf4j
 public class PopupDateUtilTest {
@@ -77,6 +78,7 @@ public class PopupDateUtilTest {
       Assertions.assertNotNull(d);
 
       Calendar cal = Calendar.getInstance();
+      cal.setTimeZone(TimeZone.getTimeZone(TIMEZONE));
       cal.setTime(d);
 
       Assertions.assertEquals(2222, cal.get(Calendar.YEAR));
