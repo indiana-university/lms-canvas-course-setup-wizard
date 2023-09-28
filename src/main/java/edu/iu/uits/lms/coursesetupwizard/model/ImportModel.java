@@ -61,11 +61,16 @@ public class ImportModel implements Serializable {
    private String selectedTemplateName;
 
    @Data
+   /**
+    * ClassDates are in DATE_FORMAT format and need to be converted to Canvas format before submission
+    */
    public static class ClassDates implements Serializable {
       private String origFirst;
       private String origLast;
       private String currentFirst;
       private String currentLast;
+
+      public static final String DATE_FORMAT = "M/d/uuuu";
 
       public MultiValueMap<String, String> getReviewableValues() {
          MultiValueMap<String, String> multiValueMap = new LinkedMultiValueMap<>();
@@ -78,16 +83,9 @@ public class ImportModel implements Serializable {
       }
 
       private String formatDateForReview(String date) {
-         String formattedDate = "Nothing entered";
-         if (date != null && !"".equals(date)) {
-            // change from yyyy-MM-dd to MM/dd/yyyy format
-            LocalDate myLocalDate = LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE);
-            DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/yyyy", Locale.getDefault());
-            formattedDate =  myLocalDate.format(dtf);
-         }
-
-         return formattedDate;
+         return date != null && !date.isBlank() ? date : "Nothing entered";
       }
+
    }
 
    @Data

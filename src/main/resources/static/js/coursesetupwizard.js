@@ -37,6 +37,17 @@ jQuery(document).ready(function($) {
         $("#dialog-exit-title").focus();
       });
 
-     $('#csw-header').focus();
+
+    var invalidInputs = $("input[aria-invalid='true']");
+    if (invalidInputs.length > 0) {
+        invalidInputs.first().focus();
+    } else {
+        $('#csw-header').focus();
+    }
+
+    // trim extra spaces in the date inputs. Voice control sometimes adds a leading space to the date
+    $('input.date-input').blur(function() {
+        $(this).val($(this).val().trim());
+    });
 
 });
