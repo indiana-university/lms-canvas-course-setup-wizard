@@ -163,10 +163,11 @@ public class WizardService {
 
    @Cacheable(value = INSTRUCTOR_COURSES_CACHE_NAME, cacheManager = "CourseSetupWizardCacheManager")
    public List<SelectableCourse> getSelectableCourses(String networkId, String currentCourseId) {
-      List<String> states = Arrays.asList("available", "unpublished", "completed");
+      List<String> courseStates = Arrays.asList("available", "unpublished", "completed");
 
-      List<Course> courses = courseService.getCoursesForUser(networkId, false, true, false, states);
+      List<Course> courses = courseService.getCoursesForUser(networkId, false, true, false, courseStates);
       List<String> wantedEnrollments = Arrays.asList("teacher", "ta", "designer");
+      List<String> wantedEnrollmentStates = Arrays.asList("active");
 
       // Filter out current course, then
       // filter it to keep courses where the user is enrolled as an enrollment type in wantedEnrollments
@@ -174,6 +175,7 @@ public class WizardService {
             .filter(c -> !currentCourseId.equals(c.getId()))
             .filter(c -> !c.isAccessRestrictedByDate())
             .filter(c->c.getEnrollments().stream().anyMatch(enr -> wantedEnrollments.contains(enr.getType())))
+            .filter(c->c.getEnrollments().stream().anyMatch(enr -> wantedEnrollmentStates.contains(enr.getEnrollmentState())))
             .sorted(Comparator.comparing((Course c) -> c.getTerm() == null ? null : c.getTerm().getStartAt(), Comparator.nullsFirst(Comparator.reverseOrder()))
               .thenComparing(Course::getSisCourseId, Comparator.nullsLast(Comparator.naturalOrder()))
               .thenComparing(Course::getName))

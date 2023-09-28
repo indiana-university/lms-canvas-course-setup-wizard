@@ -36,6 +36,7 @@ package edu.iu.uits.lms.coursesetupwizard.services;
 import edu.iu.uits.lms.canvas.model.BlueprintAssociatedCourse;
 import edu.iu.uits.lms.canvas.model.BlueprintSubscription;
 import edu.iu.uits.lms.canvas.model.Course;
+import edu.iu.uits.lms.canvas.model.Enrollment;
 import edu.iu.uits.lms.canvas.model.User;
 import edu.iu.uits.lms.canvas.services.AccountService;
 import edu.iu.uits.lms.canvas.services.BlueprintService;
@@ -43,6 +44,7 @@ import edu.iu.uits.lms.canvas.services.ContentMigrationService;
 import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.coursesetupwizard.model.PopupStatus;
+import edu.iu.uits.lms.coursesetupwizard.model.SelectableCourse;
 import edu.iu.uits.lms.coursesetupwizard.model.WizardCourseStatus;
 import edu.iu.uits.lms.coursesetupwizard.model.WizardUserCourse;
 import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
@@ -60,6 +62,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -233,5 +236,44 @@ public class WizardServiceTest {
 
       PopupStatus status = wizardService.getPopupDismissedStatus("foo", "bar");
       Assertions.assertFalse(status.isShowPopup());
+   }
+
+   @Test
+   void testUserEnrollmentStateActiveOnly_getSelectableCourses() {
+      final String networkId = "me";
+      final List<String> courseStates = Arrays.asList("available", "unpublished", "completed");
+
+      final Enrollment goodEnrollment = new Enrollment();
+      goodEnrollment.setType("teacher");
+      goodEnrollment.setEnrollmentState("active");
+
+      final Enrollment badEnrollment = new Enrollment();
+      badEnrollment.setType("teacher");
+      badEnrollment.setEnrollmentState("invited");
+
+      final String badCourseId    = "Bad CourseId";
+      final String badCourseName  = "Bad Course Name";
+      final String goodCourseId   = "Good CourseId";
+      final String goodCourseName = "Good Course Name";
+
+      final Course badCourse = new Course();
+      badCourse.setId(badCourseId);
+      badCourse.setName(badCourseName);
+      badCourse.setEnrollments(List.of(badEnrollment));
+
+      final Course goodCourse = new Course();
+      goodCourse.setId(goodCourseId);
+      goodCourse.setName(goodCourseName);
+      goodCourse.setEnrollments(List.of(goodEnrollment));
+
+      when(courseService.getCoursesForUser(networkId, false, true, false, courseStates))
+              .thenReturn(List.of(badCourse, goodCourse));
+
+      final List<SelectableCourse> badListSelectableCourses = wizardService.getSelectableCourses(networkId, "courseId");
+
+      Assertions.assertNotNull(badListSelectableCourses);
+      Assertions.assertEquals(1, badListSelectableCourses.size());
+      Assertions.assertEquals(goodCourseId, badListSelectableCourses.get(0).getValue());
+      Assertions.assertEquals(goodCourseName, badListSelectableCourses.get(0).getLabel());
    }
 }
