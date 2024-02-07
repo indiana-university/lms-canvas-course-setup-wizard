@@ -36,8 +36,11 @@ package edu.iu.uits.lms.coursesetupwizard.services;
 import edu.iu.uits.lms.common.test.CommonTestUtils;
 import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
+import edu.iu.uits.lms.coursesetupwizard.controller.rest.BannerImageJpaCustomRestController;
+import edu.iu.uits.lms.coursesetupwizard.model.BannerImageCategory;
 import edu.iu.uits.lms.coursesetupwizard.model.PopupStatus;
 import edu.iu.uits.lms.coursesetupwizard.model.WizardCourseStatus;
+import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageCategoryRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
@@ -79,6 +82,15 @@ public class CorsTest {
 
    @Autowired
    private MockMvc mvc;
+
+   @MockBean
+   private BannerImageCategory bannerImageCategory;
+
+   @MockBean
+   private BannerImageCategoryRepository bannerImageCategoryRepository;
+
+   @MockBean
+   private BannerImageJpaCustomRestController bannerImageJpaCustomRestController;
 
    @MockBean
    WizardService wizardService = null;

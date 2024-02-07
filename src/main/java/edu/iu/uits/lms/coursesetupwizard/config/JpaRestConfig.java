@@ -45,24 +45,25 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 @Configuration
 @Slf4j
-/**
- * This is needed to allow the "ids" to be served up via the
- * @RepositoryRestResource annotation (by default, it is suppressed)
- */
 public class JpaRestConfig implements RepositoryRestConfigurer {
     @Value("${lms.swagger.cors.origin}")
     private String corsSwaggerAllowedOrigin;
 
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
+        //  This is needed to allow the "ids" to be served up via the
+        //  @RepositoryRestResource annotation (by default, it is suppressed)
         config.exposeIdsFor(BannerImage.class, BannerImageCategory.class);
 
         RepositoryRestConfigurer.super.configureRepositoryRestConfiguration(config, cors);
         config.setRepositoryDetectionStrategy(RepositoryDetectionStrategy.RepositoryDetectionStrategies.ANNOTATED);
 
-        log.info("CORZ!!! - " + corsSwaggerAllowedOrigin);
-
+        // These are needed for swagger to be able to call these JPA REST endpoints via its webpage
         cors.addMapping("/rest/bannerimage/**")
+                .allowedOrigins(corsSwaggerAllowedOrigin)
+                .allowedMethods("*");
+
+        cors.addMapping("/rest/bannerimagecategory/**")
                 .allowedOrigins(corsSwaggerAllowedOrigin)
                 .allowedMethods("*");
     }

@@ -33,9 +33,11 @@ package edu.iu.uits.lms.coursesetupwizard.model;
  * #L%
  */
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -66,7 +68,9 @@ public class BannerImageCategory {
     @Column(name = "active", columnDefinition = "boolean default true")
     private boolean active = true;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "bannerImageCategories")
+    @ToString.Exclude
     private List<BannerImage> bannerImages;
 
     @Column(name = "CREATEDON")

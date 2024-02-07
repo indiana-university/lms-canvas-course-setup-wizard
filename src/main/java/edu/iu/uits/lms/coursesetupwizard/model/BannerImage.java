@@ -40,6 +40,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -80,7 +81,7 @@ public class BannerImage {
     @Column(name = "active", columnDefinition = "boolean default true")
     private boolean active = true;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "BANNER_IMAGE_X_CATEGORY", joinColumns = @JoinColumn(name = "BANNER_IMAGE_ID"),
                inverseJoinColumns = @JoinColumn(name = "BANNER_IMAGE_CATEGORY_ID"),
                indexes = {@Index(name = "IDX_BAN_IMG_X_CAT_BID", columnList = "BANNER_IMAGE_ID"),

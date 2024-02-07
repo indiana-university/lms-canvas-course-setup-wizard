@@ -49,6 +49,9 @@ import org.springframework.transaction.annotation.Transactional;
         itemResourceDescription = @Description("Banner Image"),
         collectionResourceDescription = @Description("Banner Images"))
 @Tag(name = "BannerImageRepository", description = "Interact with Banner Images CRUD operations")
+/*
+ * These REST JPA auto-defined endpoints are supplemented by some in BannerImageJpaCustomRestController
+ */
 public interface BannerImageRepository extends PagingAndSortingRepository<BannerImage, Long> {
     @Override
     @Modifying
