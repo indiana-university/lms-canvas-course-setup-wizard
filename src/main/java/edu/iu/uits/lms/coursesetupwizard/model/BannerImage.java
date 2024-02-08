@@ -47,6 +47,7 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -72,6 +73,7 @@ public class BannerImage {
     @Column(name = "ALT_TEXT")
     private String altText;
 
+//    @Lob
 //    @Column(name = "BANNER_IMAGE", nullable = false)
 //    private byte[] bannerImage;
 
