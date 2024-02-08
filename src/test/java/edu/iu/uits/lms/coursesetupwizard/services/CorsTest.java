@@ -37,7 +37,6 @@ import edu.iu.uits.lms.common.test.CommonTestUtils;
 import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.coursesetupwizard.controller.rest.BannerImageJpaCustomRestController;
-import edu.iu.uits.lms.coursesetupwizard.model.BannerImageCategory;
 import edu.iu.uits.lms.coursesetupwizard.model.PopupStatus;
 import edu.iu.uits.lms.coursesetupwizard.model.WizardCourseStatus;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageCategoryRepository;
@@ -82,9 +81,6 @@ public class CorsTest {
 
    @Autowired
    private MockMvc mvc;
-
-   @MockBean
-   private BannerImageCategory bannerImageCategory;
 
    @MockBean
    private BannerImageCategoryRepository bannerImageCategoryRepository;
