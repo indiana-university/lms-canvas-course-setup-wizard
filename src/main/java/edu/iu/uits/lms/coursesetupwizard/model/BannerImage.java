@@ -78,7 +78,7 @@ public class BannerImage {
     @Column(name = "BANNER_IMAGE_URL", nullable = false)
     private String bannerImageUrl;
 
-    @Column(name = "active", columnDefinition = "boolean default true")
+    @Column(name = "ACTIVE", columnDefinition = "boolean default true")
     private boolean active = true;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

@@ -65,7 +65,7 @@ public class BannerImageCategory {
     @Column(name = "NAME", nullable = false)
     private String name;
 
-    @Column(name = "active", columnDefinition = "boolean default true")
+    @Column(name = "ACTIVE", columnDefinition = "boolean default true")
     private boolean active = true;
 
     @JsonIgnore
