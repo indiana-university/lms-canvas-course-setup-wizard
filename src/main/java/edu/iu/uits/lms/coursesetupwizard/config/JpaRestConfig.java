@@ -35,6 +35,7 @@ package edu.iu.uits.lms.coursesetupwizard.config;
 
 import edu.iu.uits.lms.coursesetupwizard.model.BannerImage;
 import edu.iu.uits.lms.coursesetupwizard.model.BannerImageCategory;
+import edu.iu.uits.lms.coursesetupwizard.model.Theme;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -53,7 +54,7 @@ public class JpaRestConfig implements RepositoryRestConfigurer {
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
         //  This is needed to allow the "ids" to be served up via the
         //  @RepositoryRestResource annotation (by default, it is suppressed)
-        config.exposeIdsFor(BannerImage.class, BannerImageCategory.class);
+        config.exposeIdsFor(BannerImage.class, BannerImageCategory.class, Theme.class);
 
         RepositoryRestConfigurer.super.configureRepositoryRestConfiguration(config, cors);
         config.setRepositoryDetectionStrategy(RepositoryDetectionStrategy.RepositoryDetectionStrategies.ANNOTATED);
@@ -64,6 +65,10 @@ public class JpaRestConfig implements RepositoryRestConfigurer {
                 .allowedMethods("*");
 
         cors.addMapping("/rest/bannerimagecategory/**")
+                .allowedOrigins(corsSwaggerAllowedOrigin)
+                .allowedMethods("*");
+
+        cors.addMapping("/rest/theme/**")
                 .allowedOrigins(corsSwaggerAllowedOrigin)
                 .allowedMethods("*");
     }
