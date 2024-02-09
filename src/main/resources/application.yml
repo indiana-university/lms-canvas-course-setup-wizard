@@ -18,6 +18,9 @@ spring:
       jadira:
         usertype:
           autoRegisterUserTypes: true
+  data:
+    rest:
+      base-path: /rest
   datasource:
     url: ${lms.db.url}
     username: ${lms.db.user}
