@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Course Setup Wizard - Select banner</title>
+</head>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+    <div th:insert="theme/wizardSteps.html :: steps(currentStep=3)"></div>
+
+    <div class="rvt-row rvt-p-top-md">
+        <div class="rvt-cols-8-md rvt-flow rvt-prose">
+            <h2 id="page-title">Select banner</h2>
+            <form id="wizard-form-submit" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+                <p>
+                    Your course home page may include a banner image. If you do not want a banner image on your course
+                    home page, select No, then choose Next. If you wish to have a banner image, select Yes, then choose
+                    a category to view images. Select the image you want to use and then choose <span class="rvt-text-bold">Next</span>.
+                </p>
+                <p>
+                    <span class="rvt-text-bold">Note:</span> You may replace the banner image with something from Adobe
+                    Stock or another source by editing the course home page. Review the Next Steps document in this
+                    course, contact your Campus Teaching and Learning Center, or the ID Clinic for more details.
+                </p>
+                <fieldset class="rvt-fieldset">
+                    <legend>Do you want to include a banner image?</legend>
+                    <ul class="rvt-list-plain">
+                        <li>
+                            <div class="rvt-radio">
+                                <input type="radio" name="guidance-radio-group" id="guidance-radio-yes" value="Yes">
+                                <label for="guidance-radio-yes">Yes</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="rvt-radio">
+                                <input type="radio" name="guidance-radio-group" id="guidance-radio-no" value="No">
+                                <label for="guidance-radio-no">No</label>
+                            </div>
+                        </li>
+                    </ul>
+                </fieldset>
+                <!-- wrapper just to make hide/show of this content easier to control -->
+                <div id="banner-wrapper" class="rvt-display-none">
+                    <!-- likely alphabetizing this -->
+                    <label for="select-input-categories" class="rvt-label rvt-m-top-md rvt-ts-16">Image categories</label>
+                    <select id="select-input-categories" class="rvt-select rvt-m-bottom-md">
+                        <option value="option one">Communication and Journalism</option>
+                        <option value="option two">Health Professions</option>
+                        <option value="option three">Education</option>
+                        <option value="option three">Business</option>
+                        <option value="option three">Visual and Performing Arts</option>
+                        <option value="option three">Computer and Information Sciences</option>
+                        <option value="option three">Biological and Biomedical Sciences</option>
+                        <option value="option three">Social Sciences</option>
+                        <option value="option three">Public Administration and Social Services</option>
+                        <option value="option three">Languages</option>
+                    </select>
+                    <!-- radio list for banner options, dynamically rendered based on select component above -->
+                    <fieldset class="rvt-fieldset">
+                        <legend>Image options for Communication and Journalism</legend>
+                        <ul id="image-ul" class="rvt-list-plain">
+                            <li class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
+                                <div class="rvt-radio">
+                                    <input type="radio" name="banner-radio-group" id="banner-radio-1" aria-describedby="someuniqueid1">
+                                    <label for="banner-radio-1">Radio or Podcast Interview</label>
+                                    <img id="someuniqueid1" src="https://canvasassets.iu.edu/banners/radio_podcast_interview.png" class="rvt-m-top-sm"
+                                         alt="Image shows two people talking into microphones while wearing headphones" />
+                                </div>
+                            </li>
+                            <li class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
+                                <div class="rvt-radio">
+                                    <input type="radio" name="banner-radio-group" id="banner-radio-2" aria-describedby="someuniqueid2">
+                                    <label for="banner-radio-2">Typed Why, Who, What, Where, When</label>
+                                    <img id="someuniqueid2" src="https://canvasassets.iu.edu/banners/typewriter_five_ws.png" class="rvt-m-top-sm"
+                                         alt="Image shows a closeup of a typewriter with the words 'Why, Who, What, Where, When' typed on the paper" />
+                                </div>
+                            </li>
+                            <li class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
+                                <div class="rvt-radio">
+                                    <input type="radio" name="banner-radio-group" id="banner-radio-3" aria-describedby="someuniqueid3">
+                                    <label for="banner-radio-3">Print and Electronic Journalism</label>
+                                    <img id="someuniqueid3" src="https://canvasassets.iu.edu/banners/newspaper_keyboard_screen.png" class="rvt-m-top-sm"
+                                         alt="Image shows a stack of newspapers and a keyboard with an out of focus computer screen in the background" />
+                                </div>
+                            </li>
+                            <li class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
+                                <div class="rvt-radio">
+                                    <input type="radio" name="banner-radio-group" id="banner-radio-4" aria-describedby="someuniqueid4">
+                                    <label for="banner-radio-4">Empty Video Set</label>
+                                    <img id="someuniqueid4" src="https://canvasassets.iu.edu/banners/empty_news_set.png" class="rvt-m-top-sm"
+                                         alt="Image shows an empty set for televised news broadcasts" />
+                                </div>
+                            </li>
+                            <li class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
+                                <div class="rvt-radio">
+                                    <input type="radio" name="banner-radio-group" id="banner-radio-5" aria-describedby="someuniqueid5">
+                                    <label for="banner-radio-5">Embedded Combat Journalist</label>
+                                    <img id="someuniqueid5" src="https://canvasassets.iu.edu/banners/embedded_combat_journalist.png" class="rvt-m-top-sm"
+                                         alt="Image shows an embedded combat journalist wearing a bullet proof vest and taking photos, surrounded by special forces with guns" />
+                                </div>
+                            </li>
+                        </ul>
+                    </fieldset>
+                </div>
+                <input type="hidden" name="currentPage" value="4">
+                <div th:insert="theme/wizardSteps.html :: buttons(nextOnclick='return doSubmit();')"></div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+            const courseId = /*[[${courseId}]]*/
+            const selectedCourseId = /*[[${selectedCourseId}]]*/
+            var courses = /*[[${courses}]]*/;
+            window.config = {courses: courses};
+        /*]]>*/
+
+        function doSubmit() {
+            //Select control
+            var inputControl = document.querySelector('input[id="course-select-input"]');
+            //Hidden input with the actual value
+            var inputValue = document.querySelector('input[name="selectedCourseId"]');
+            if (inputValue.value == "") {
+                inputControl.setAttribute("aria-invalid", "true");
+                inputControl.setAttribute("aria-describedby", "option-message");
+                alertMessage = document.getElementById('select-alert');
+                alertMessage.classList.remove("rvt-display-none");
+                inputControl.focus();
+                return false;
+            }
+        }
+
+        $(document).ready(function() {
+            // determine if additional fields display or not
+            $('input[name=guidance-radio-group]').on('change', function() {
+                if ( this.value == 'Yes') {
+                    $("#banner-wrapper").removeClass('rvt-display-none');
+                } else {
+                    $("#banner-wrapper").addClass('rvt-display-none');
+                }
+            });
+        });
+
+    </script>
+    <script type="text/javascript" th:src="@{/app/jsreact/lms-lti-coursesetupwizard/lms-lti-coursesetupwizard.js}"></script>
+</th:block>
+</body>
+</html>

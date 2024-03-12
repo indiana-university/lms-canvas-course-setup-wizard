@@ -87,3 +87,26 @@
 #csw-header:focus {
     outline: none;
 }
+
+/* theme specific stuff */
+.radio-card--clickable {
+    position: relative;
+}
+
+.radio-card--clickable label::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.radio-card--clickable:hover {
+    background-color: #f5f5f5;
+}
+
+/* this one is just for the js */
+.radio-card--clickable--checked {
+    box-shadow: 0 0 0 0.25rem #328bb8;
+}

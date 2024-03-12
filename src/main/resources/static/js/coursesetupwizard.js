@@ -50,4 +50,11 @@ jQuery(document).ready(function($) {
         $(this).val($(this).val().trim());
     });
 
+    $(".radio-card--clickable input").change(function() {
+        $("#image-ul>li.radio-card--clickable--checked").removeClass("radio-card--clickable--checked");
+        if ($(this).is(":checked")) {
+            $(this).parent().parent().addClass("radio-card--clickable--checked");
+        }
+    });
+
 });

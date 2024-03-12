@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Course Setup Wizard - Select theme</title>
+</head>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+    <div th:insert="theme/wizardSteps.html :: steps(currentStep=2)"></div>
+
+    <div class="rvt-row rvt-p-top-md">
+        <div class="rvt-cols-8-md rvt-flow rvt-prose">
+            <h2 id="page-title">Select theme</h2>
+            <form id="wizard-form-submit" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+                <p>
+                    The theme controls the look and feel of the banner, headings, navigation menu, and
+                    formatting on each page. To apply a theme to your course, choose the desired option and select
+                    <span class="rvt-text-bold">Next</span>.
+                </p>
+                <!-- radio list for theme options -->
+                <fieldset class="rvt-fieldset">
+                    <legend>Theme options</legend>
+                    <ul id="image-ul" class="rvt-list-plain">
+                        <li class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
+                            <div class="rvt-radio">
+                                <input type="radio" name="theme-radio-group" id="theme-radio-1" aria-describedby="someuniqueid1">
+                                <label for="theme-radio-1">Basic color</label>
+                                <img id="someuniqueid1" src="https://canvasassets.iu.edu/themes/basic_color_1.jpg" class="rvt-m-top-sm"
+                                     alt="Image shows description of Basic color" />
+                            </div>
+                        </li>
+                        <li class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
+                            <div class="rvt-radio">
+                                <input type="radio" name="theme-radio-group" id="theme-radio-2" aria-describedby="someuniqueid2">
+                                <label for="theme-radio-2">Flat sections</label>
+                                <img id="someuniqueid2" src="https://canvasassets.iu.edu/themes/flat_sections_1.jpg" class="rvt-m-top-sm"
+                                     alt="Image shows how page elements will appear for this theme. Main header and navigation are in red with white font. Heading 3 will be centered, while headings 4-6 are left justified with a horizontal rule." />
+                            </div>
+                        </li>
+                        <li class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
+                            <div class="rvt-radio">
+                                <input type="radio" name="theme-radio-group" id="theme-radio-3" aria-describedby="someuniqueid3">
+                                <label for="theme-radio-3">Rounded corners</label>
+                                <img id="someuniqueid3" src="https://canvasassets.iu.edu/themes/rounded_corners_1.jpg" class="rvt-m-top-sm"
+                                     alt="Image shows a variety of page headers, page navigation, and banner image, all with rounded corners. Header 3 and navigation are red with white font." />
+                            </div>
+                        </li>
+                    </ul>
+                </fieldset>
+                <input type="hidden" name="currentPage" value="3">
+                <div th:insert="theme/wizardSteps.html :: buttons(nextOnclick='return doSubmit();')"></div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+            const courseId = /*[[${courseId}]]*/
+            const selectedCourseId = /*[[${selectedCourseId}]]*/
+            var courses = /*[[${courses}]]*/;
+            window.config = {courses: courses};
+        /*]]>*/
+
+        function doSubmit() {
+            //Select control
+            var inputControl = document.querySelector('input[id="course-select-input"]');
+            //Hidden input with the actual value
+            var inputValue = document.querySelector('input[name="selectedCourseId"]');
+            if (inputValue.value == "") {
+                inputControl.setAttribute("aria-invalid", "true");
+                inputControl.setAttribute("aria-describedby", "option-message");
+                alertMessage = document.getElementById('select-alert');
+                alertMessage.classList.remove("rvt-display-none");
+                inputControl.focus();
+                return false;
+            }
+        }
+
+    </script>
+    <script type="text/javascript" th:src="@{/app/jsreact/lms-lti-coursesetupwizard/lms-lti-coursesetupwizard.js}"></script>
+</th:block>
+</body>
+</html>
