@@ -58,7 +58,8 @@ public class Constants {
     public enum MAIN_OPTION {
         IMPORT,
         TEMPLATE,
-        HOMEPAGE
+        HOMEPAGE,
+        THEME
     }
 
     @AllArgsConstructor

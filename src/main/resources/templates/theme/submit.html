@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Course Setup Wizard - Submit</title>
+</head>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+    <div th:insert="theme/wizardSteps.html :: steps(currentStep=6)"></div>
+
+    <div class="rvt-row rvt-p-top-md">
+        <div class="rvt-cols-8-md rvt-flow rvt-prose">
+            <h2 id="page-title">Submit</h2>
+            <form id="wizard-form-submit" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+                <p>
+                    When you select <span class="rvt-text-bold">Submit</span>, you will be redirected to an instructions
+                    page in your Canvas course and the wizard will initiate the following actions:
+                </p>
+                <p>
+                    <ul class="rvt-list">
+                        <li>A course home page, syllabus, and templates for assignments, quizzes, discussions, and pages will be added to your course, all formatted with your selected theme and banner.</li>
+                        <li>The display name for all template items will begin with the word "template" enclosed in brackets. (e.g., [template] Sample Assignment]</li>
+                        <li>The CidiLabs Multi-Tool can be found on the course settings page, just below the Course Setup Wizard button. This tool can help you bulk create modules, pages, assignments, quizzes, and discussions based on the template items.</li>
+                        <li>A "Wizard Next Steps" page will be added to your Canvas course with instructions on how to change out or delete the banner image, if you chose one, and how to use the Multi-Tool.</li>
+                    </ul>
+                </p>
+                <p>
+                    It may take a few minutes to complete the above steps. Please be patient.
+                </p>
+                <input type="hidden" name="currentPage" value="7">
+                <div th:insert="theme/wizardSteps.html :: buttons(isSubmit=true)"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+            const courseId = /*[[${courseId}]]*/
+            const selectedCourseId = /*[[${selectedCourseId}]]*/
+            var courses = /*[[${courses}]]*/;
+            window.config = {courses: courses};
+        /*]]>*/
+
+        function doSubmit() {
+            //Select control
+            var inputControl = document.querySelector('input[id="course-select-input"]');
+            //Hidden input with the actual value
+            var inputValue = document.querySelector('input[name="selectedCourseId"]');
+            if (inputValue.value == "") {
+                inputControl.setAttribute("aria-invalid", "true");
+                inputControl.setAttribute("aria-describedby", "option-message");
+                alertMessage = document.getElementById('select-alert');
+                alertMessage.classList.remove("rvt-display-none");
+                inputControl.focus();
+                return false;
+            }
+        }
+
+    </script>
+    <script type="text/javascript" th:src="@{/app/jsreact/lms-lti-coursesetupwizard/lms-lti-coursesetupwizard.js}"></script>
+</th:block>
+</body>
+</html>
