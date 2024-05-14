@@ -19,8 +19,9 @@
             <form id="wizard-form-submit" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
                 <p>
                     Your course home page may include a banner image. If you do not want a banner image on your course
-                    home page, select No, then choose Next. If you wish to have a banner image, select Yes, then choose
-                    a category to view images. Select the image you want to use and then choose <span class="rvt-text-bold">Next</span>.
+                    home page, select No, then choose <span class="rvt-text-bold">Next</span>. If you do want a banner
+                    image, choose a category to browse images. Select the image you want to use and then choose
+                    <span class="rvt-text-bold">Next</span>.
                 </p>
                 <p>
                     <span class="rvt-text-bold">Note:</span> You may replace the banner image with something from Adobe
@@ -32,7 +33,7 @@
                     <ul class="rvt-list-plain">
                         <li>
                             <div class="rvt-radio">
-                                <input type="radio" name="guidance-radio-group" id="guidance-radio-yes" value="Yes">
+                                <input type="radio" name="guidance-radio-group" id="guidance-radio-yes" value="Yes" checked>
                                 <label for="guidance-radio-yes">Yes</label>
                             </div>
                         </li>
@@ -45,7 +46,7 @@
                     </ul>
                 </fieldset>
                 <!-- wrapper just to make hide/show of this content easier to control -->
-                <div id="banner-wrapper" class="rvt-display-none">
+                <div id="banner-wrapper">
                     <!-- likely alphabetizing this -->
                     <label for="select-input-categories" class="rvt-label rvt-m-top-md rvt-ts-16">Image categories</label>
                     <select id="select-input-categories" class="rvt-select rvt-m-bottom-md">
@@ -107,7 +108,7 @@
                         </ul>
                     </fieldset>
                 </div>
-                <input type="hidden" name="currentPage" value="4">
+                <input type="hidden" name="currentPage" value="3">
                 <div th:insert="theme/wizardSteps.html :: buttons(nextOnclick='return doSubmit();')"></div>
             </form>
         </div>

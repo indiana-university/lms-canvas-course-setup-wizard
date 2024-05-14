@@ -34,8 +34,8 @@ import static edu.iu.uits.lms.coursesetupwizard.Constants.KEY_IMPORT_MODEL;
 @RequestMapping("/app/theme")
 @Slf4j
 public class ThemeController extends WizardController {
-    private static final String[] PAGES = {"/app/{0}/index", "/app/theme/{0}/intro", "/app/theme/{0}/navigation",
-            "/app/theme/{0}/selectTheme", "/app/theme/{0}/selectBanner", "/app/theme/{0}/guidance",
+    private static final String[] PAGES = {"/app/{0}/index", "/app/theme/{0}/intro", "/app/theme/{0}/selectTheme",
+            "/app/theme/{0}/selectBanner", "/app/theme/{0}/navigation", "/app/theme/{0}/guidance",
             "/app/theme/{0}/review", "/app/theme/{0}/submit"};
 
     @Data
@@ -65,7 +65,8 @@ public class ThemeController extends WizardController {
         List<ThemeStep> steps = new ArrayList<>();
         steps.add(new ThemeStep("Intro", MessageFormat.format(PAGES[1], courseId)));
         steps.add(new ThemeStep("Select theme", MessageFormat.format(PAGES[2], courseId)));
-        steps.add(new ThemeStep("Select banner", MessageFormat.format(PAGES[4], courseId)));
+        steps.add(new ThemeStep("Select banner", MessageFormat.format(PAGES[3], courseId)));
+        steps.add(new ThemeStep("Include navigation", MessageFormat.format(PAGES[4], courseId)));
         steps.add(new ThemeStep("Include guidance", MessageFormat.format(PAGES[5], courseId)));
         steps.add(new ThemeStep("Review", MessageFormat.format(PAGES[6], courseId)));
         steps.add(new ThemeStep("Submit", MessageFormat.format(PAGES[7], courseId)));

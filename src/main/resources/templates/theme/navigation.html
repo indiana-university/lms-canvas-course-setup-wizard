@@ -11,14 +11,14 @@
 <body class="rvt-layout">
 <div layout:fragment="content">
 
-    <div th:insert="theme/wizardSteps.html :: steps(currentStep=2)"></div>
+    <div th:insert="theme/wizardSteps.html :: steps(currentStep=4)"></div>
 
     <div class="rvt-row rvt-p-top-md">
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
-            <h2 id="page-title">Select theme</h2>
+            <h2 id="page-title">Include navigation</h2>
             <form id="wizard-form-submit" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
                 <p>
-                    You have the option to include navigational elements with your theme selection. The navigation
+                    You have the option to include navigational elements with your course. The navigation
                     appears beneath the banner image in the example below. It has four quick links that say
                     "Start Here", "Syllabus", "Modules", and "Resources". The link names may be changed. Review the
                     Wizard Next Steps page for detailed instructions or contact your
@@ -46,7 +46,7 @@
                         </li>
                     </ul>
                 </fieldset>
-                <input type="hidden" name="currentPage" value="2">
+                <input type="hidden" name="currentPage" value="4">
                 <div th:insert="theme/wizardSteps.html :: buttons(nextOnclick='return doSubmit();')"></div>
             </form>
         </div>
