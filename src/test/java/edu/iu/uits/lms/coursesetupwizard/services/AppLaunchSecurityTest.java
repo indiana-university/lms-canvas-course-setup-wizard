@@ -34,6 +34,7 @@ package edu.iu.uits.lms.coursesetupwizard.services;
  */
 
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
+import edu.iu.uits.lms.coursesetupwizard.controller.rest.BannerImageJpaCustomRestController;
 import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
@@ -66,6 +67,9 @@ public class AppLaunchSecurityTest {
 
    @Autowired
    private MockMvc mvc;
+
+   @MockBean
+   private BannerImageJpaCustomRestController bannerImageJpaCustomRestController;
 
    @MockBean
    private WizardService wizardService;
