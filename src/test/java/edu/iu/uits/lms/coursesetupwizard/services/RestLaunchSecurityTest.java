@@ -35,7 +35,10 @@ package edu.iu.uits.lms.coursesetupwizard.services;
 
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.coursesetupwizard.controller.rest.BannerImageJpaCustomRestController;
+import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageCategoryRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.ThemeRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
@@ -86,6 +89,15 @@ public class RestLaunchSecurityTest {
 
    @MockBean
    private PopupDismissalDateRepository popupDismissalDateRepository = null;
+
+   @MockBean
+   private BannerImageCategoryRepository bannerImageCategoryRepository;
+
+   @MockBean
+   private BannerImageRepository bannerImageRepository;
+
+   @MockBean
+   private ThemeRepository themeRepository;
 
    @Test
    public void restNoAuthnLaunch() throws Exception {

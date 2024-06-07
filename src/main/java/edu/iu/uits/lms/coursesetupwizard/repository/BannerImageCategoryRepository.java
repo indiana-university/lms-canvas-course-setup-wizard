@@ -44,6 +44,8 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Component
 @RepositoryRestResource(path = "bannerimagecategory",
         itemResourceDescription = @Description("Banner Image Category"),
@@ -61,4 +63,6 @@ public interface BannerImageCategoryRepository extends PagingAndSortingRepositor
     @Query("UPDATE BannerImageCategory as bic SET bic.active = 'N' WHERE bic = :bannerImageCategory")
     @Transactional
     void delete(@Param("bannerImageCategory") BannerImageCategory bannerImageCategory);
+
+    List<BannerImageCategory> findByActiveTrueOrderByName();
 }

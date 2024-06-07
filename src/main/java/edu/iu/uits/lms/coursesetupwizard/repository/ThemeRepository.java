@@ -44,6 +44,8 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Component
 @RepositoryRestResource(path = "theme",
         itemResourceDescription = @Description("Theme"),
@@ -61,4 +63,6 @@ public interface ThemeRepository extends PagingAndSortingRepository<Theme, Long>
     @Query("UPDATE Theme as t SET t.active = 'N' WHERE t = :theme")
     @Transactional
     void delete(@Param("theme") Theme theme);
+
+    List<Theme> findByActiveTrueOrderByName();
 }

@@ -48,18 +48,24 @@ import javax.persistence.Table;
 import java.util.Date;
 
 @Entity
-@Table(name = "THEME")
-@SequenceGenerator(name = "THEME_ID_SEQ", sequenceName = "THEME_ID_SEQ", allocationSize = 1)
+@Table(name = "CSW_THEME")
+@SequenceGenerator(name = "CSW_THEME_ID_SEQ", sequenceName = "CSW_THEME_ID_SEQ", allocationSize = 1)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Theme {
     @Id
-    @GeneratedValue(generator = "THEME_ID_SEQ")
+    @GeneratedValue(generator = "CSW_THEME_ID_SEQ")
     private Long id;
 
     @Column(name = "NAME", nullable = false)
     private String name;
+
+    @Column(name = "UI_NAME", nullable = false)
+    private String uiName;
+
+    @Column(name = "ALT_TEXT", nullable = false)
+    private String altText;
 
     @Column(name = "THEME_IMAGE_URL", nullable = false)
     private String themeImageUrl;

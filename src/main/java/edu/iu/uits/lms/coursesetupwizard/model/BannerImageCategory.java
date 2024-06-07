@@ -44,6 +44,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
@@ -52,24 +53,25 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "BANNER_IMAGE_CATEGORY")
-@SequenceGenerator(name = "BANNER_IMAGE_CATEGORY_ID_SEQ", sequenceName = "BANNER_IMAGE_CATEGORY_ID_SEQ", allocationSize = 1)
+@Table(name = "CSW_BANNER_IMAGE_CATEGORY")
+@SequenceGenerator(name = "CSW_BANNER_IMAGE_CATEGORY_ID_SEQ", sequenceName = "CSW_BANNER_IMAGE_CATEGORY_ID_SEQ", allocationSize = 1)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class BannerImageCategory {
     @Id
-    @GeneratedValue(generator = "BANNER_IMAGE_CATEGORY_ID_SEQ")
+    @GeneratedValue(generator = "CSW_BANNER_IMAGE_CATEGORY_ID_SEQ")
     private Long id;
-
-    @Column(name = "NAME", nullable = false)
-    private String name;
 
     @Column(name = "ACTIVE", columnDefinition = "boolean default true")
     private boolean active = true;
 
+    @Column(name = "NAME", nullable = false)
+    private String name;
+
     @JsonIgnore
     @ManyToMany(mappedBy = "bannerImageCategories")
+    @OrderBy("name ASC")
     @ToString.Exclude
     private List<BannerImage> bannerImages;
 

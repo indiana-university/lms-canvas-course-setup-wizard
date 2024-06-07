@@ -1,11 +1,17 @@
 package edu.iu.uits.lms.coursesetupwizard.controller;
 
+import edu.iu.uits.lms.coursesetupwizard.model.BannerImageCategory;
 import edu.iu.uits.lms.coursesetupwizard.model.ImportModel;
+import edu.iu.uits.lms.coursesetupwizard.model.Theme;
+import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageCategoryRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.ThemeRepository;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.service.OidcTokenUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,6 +40,15 @@ import static edu.iu.uits.lms.coursesetupwizard.Constants.KEY_IMPORT_MODEL;
 @RequestMapping("/app/theme")
 @Slf4j
 public class ThemeController extends WizardController {
+    @Autowired
+    private BannerImageCategoryRepository bannerImageCategoryRepository;
+
+    @Autowired
+    private BannerImageRepository bannerImageRepository;
+
+    @Autowired
+    private ThemeRepository themeRepository;
+
     private static final String[] PAGES = {"/app/{0}/index", "/app/theme/{0}/intro", "/app/theme/{0}/selectTheme",
             "/app/theme/{0}/selectBanner", "/app/theme/{0}/navigation", "/app/theme/{0}/guidance",
             "/app/theme/{0}/review", "/app/theme/{0}/submit"};
@@ -100,6 +115,10 @@ public class ThemeController extends WizardController {
         OidcAuthenticationToken token = getValidatedToken(courseId);
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
 
+        List<Theme> themes =  themeRepository.findByActiveTrueOrderByName();
+
+        model.addAttribute("themes", themes);
+
         return new ModelAndView("theme/selectTheme");
     }
 
@@ -109,6 +128,10 @@ public class ThemeController extends WizardController {
         log.debug("in /selectBanner");
         OidcAuthenticationToken token = getValidatedToken(courseId);
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
+
+        List<BannerImageCategory> bannerImageCategories =  bannerImageCategoryRepository.findByActiveTrueOrderByName();
+
+        model.addAttribute("bannerImageCategories", bannerImageCategories);
 
         return new ModelAndView("theme/selectBanner");
     }

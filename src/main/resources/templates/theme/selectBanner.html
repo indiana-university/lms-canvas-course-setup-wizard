@@ -50,61 +50,24 @@
                     <!-- likely alphabetizing this -->
                     <label for="select-input-categories" class="rvt-label rvt-m-top-md rvt-ts-16">Image categories</label>
                     <select id="select-input-categories" class="rvt-select rvt-m-bottom-md">
-                        <option value="option one">Communication and Journalism</option>
-                        <option value="option two">Health Professions</option>
-                        <option value="option three">Education</option>
-                        <option value="option three">Business</option>
-                        <option value="option three">Visual and Performing Arts</option>
-                        <option value="option three">Computer and Information Sciences</option>
-                        <option value="option three">Biological and Biomedical Sciences</option>
-                        <option value="option three">Social Sciences</option>
-                        <option value="option three">Public Administration and Social Services</option>
-                        <option value="option three">Languages</option>
+                        <option th:each="bannerImageCategory : ${bannerImageCategories}" th:value="${bannerImageCategory.name}"
+                                th:text="${bannerImageCategory.name}">Category</option>
                     </select>
                     <!-- radio list for banner options, dynamically rendered based on select component above -->
                     <fieldset class="rvt-fieldset">
-                        <legend>Image options for Communication and Journalism</legend>
+                        <legend th:text="'Image options for ' + ${bannerImageCategories.get(0).name}"></legend>
                         <ul id="image-ul" class="rvt-list-plain">
-                            <li class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
-                                <div class="rvt-radio">
-                                    <input type="radio" name="banner-radio-group" id="banner-radio-1" aria-describedby="someuniqueid1">
-                                    <label for="banner-radio-1">Radio or Podcast Interview</label>
-                                    <img id="someuniqueid1" src="https://canvasassets.iu.edu/banners/radio_podcast_interview.png" class="rvt-m-top-sm"
-                                         alt="Image shows two people talking into microphones while wearing headphones" />
-                                </div>
-                            </li>
-                            <li class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
-                                <div class="rvt-radio">
-                                    <input type="radio" name="banner-radio-group" id="banner-radio-2" aria-describedby="someuniqueid2">
-                                    <label for="banner-radio-2">Typed Why, Who, What, Where, When</label>
-                                    <img id="someuniqueid2" src="https://canvasassets.iu.edu/banners/typewriter_five_ws.png" class="rvt-m-top-sm"
-                                         alt="Image shows a closeup of a typewriter with the words 'Why, Who, What, Where, When' typed on the paper" />
-                                </div>
-                            </li>
-                            <li class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
-                                <div class="rvt-radio">
-                                    <input type="radio" name="banner-radio-group" id="banner-radio-3" aria-describedby="someuniqueid3">
-                                    <label for="banner-radio-3">Print and Electronic Journalism</label>
-                                    <img id="someuniqueid3" src="https://canvasassets.iu.edu/banners/newspaper_keyboard_screen.png" class="rvt-m-top-sm"
-                                         alt="Image shows a stack of newspapers and a keyboard with an out of focus computer screen in the background" />
-                                </div>
-                            </li>
-                            <li class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
-                                <div class="rvt-radio">
-                                    <input type="radio" name="banner-radio-group" id="banner-radio-4" aria-describedby="someuniqueid4">
-                                    <label for="banner-radio-4">Empty Video Set</label>
-                                    <img id="someuniqueid4" src="https://canvasassets.iu.edu/banners/empty_news_set.png" class="rvt-m-top-sm"
-                                         alt="Image shows an empty set for televised news broadcasts" />
-                                </div>
-                            </li>
-                            <li class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
-                                <div class="rvt-radio">
-                                    <input type="radio" name="banner-radio-group" id="banner-radio-5" aria-describedby="someuniqueid5">
-                                    <label for="banner-radio-5">Embedded Combat Journalist</label>
-                                    <img id="someuniqueid5" src="https://canvasassets.iu.edu/banners/embedded_combat_journalist.png" class="rvt-m-top-sm"
-                                         alt="Image shows an embedded combat journalist wearing a bullet proof vest and taking photos, surrounded by special forces with guns" />
-                                </div>
-                            </li>
+                            <th:block th:if="${bannerImageCategories.get(0).bannerImages != null}" th:each="bannerImage : ${bannerImageCategories.get(0).bannerImages}">
+                                <li th:id="${bannerImage.id}" class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
+                                    <div class="rvt-radio">
+                                        <input type="radio" name="banner-image-radio-group" th:id="'banner-image-radio-' + ${bannerImage.id}"
+                                               th:aria-describedby="'someuniqueid1'">
+                                        <label th:for="'bannerimage-radio-' + ${bannerImage.id}" th:text="${bannerImage.uiName}"></label>
+                                        <img id="someuniqueid1" th:src="${bannerImage.bannerImageUrl}" class="rvt-m-top-sm"
+                                             th:alt="${bannerImage.altText}" />
+                                    </div>
+                                </li>
+                            </th:block>
                         </ul>
                     </fieldset>
                 </div>

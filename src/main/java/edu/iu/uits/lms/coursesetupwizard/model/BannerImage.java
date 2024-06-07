@@ -57,38 +57,37 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(name = "BANNER_IMAGE")
-@SequenceGenerator(name = "BANNER_IMAGE_ID_SEQ", sequenceName = "BANNER_IMAGE_ID_SEQ", allocationSize = 1)
+@Table(name = "CSW_BANNER_IMAGE")
+@SequenceGenerator(name = "CSW_BANNER_IMAGE_ID_SEQ", sequenceName = "CSW_BANNER_IMAGE_ID_SEQ", allocationSize = 1)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class BannerImage {
     @Id
-    @GeneratedValue(generator = "BANNER_IMAGE_ID_SEQ")
+    @GeneratedValue(generator = "CSW_BANNER_IMAGE_ID_SEQ")
     private Long id;
-
-    @Column(name = "NAME", nullable = false)
-    private String name;
-
-    @Column(name = "ALT_TEXT")
-    private String altText;
-
-//    @Lob
-//    @Column(name = "BANNER_IMAGE", nullable = false)
-//    private byte[] bannerImage;
-
-    @Column(name = "BANNER_IMAGE_URL", nullable = false)
-    private String bannerImageUrl;
 
     @Column(name = "ACTIVE", columnDefinition = "boolean default true")
     private boolean active = true;
 
+    @Column(name = "NAME", nullable = false)
+    private String name;
+
+    @Column(name = "UI_NAME", nullable = false)
+    private String uiName;
+
+    @Column(name = "ALT_TEXT")
+    private String altText;
+
+    @Column(name = "BANNER_IMAGE_URL", nullable = false)
+    private String bannerImageUrl;
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "BANNER_IMAGE_X_CATEGORY", joinColumns = @JoinColumn(name = "BANNER_IMAGE_ID"),
+    @JoinTable(name = "CSW_BANNER_IMAGE_X_CATEGORY", joinColumns = @JoinColumn(name = "BANNER_IMAGE_ID"),
                inverseJoinColumns = @JoinColumn(name = "BANNER_IMAGE_CATEGORY_ID"),
-               indexes = {@Index(name = "IDX_BAN_IMG_X_CAT_BID", columnList = "BANNER_IMAGE_ID"),
-                          @Index(name = "IDX_BAN_IMG_X_CAT_CAT", columnList = "BANNER_IMAGE_CATEGORY_ID")},
-               foreignKey = @ForeignKey(name = "FK_BANNER_IMAGE_ID"), inverseForeignKey = @ForeignKey(name = "FK_BANNER_IMAGE_CATEGORY_ID"))
+               indexes = {@Index(name = "IDX_CSW_BAN_IMG_X_CAT_BID", columnList = "BANNER_IMAGE_ID"),
+                          @Index(name = "IDX_CSW_BAN_IMG_X_CAT_CAT", columnList = "BANNER_IMAGE_CATEGORY_ID")},
+               foreignKey = @ForeignKey(name = "FK_CSW_BANNER_IMAGE_ID"), inverseForeignKey = @ForeignKey(name = "FK_CSW_BANNER_IMAGE_CATEGORY_ID"))
     private List<BannerImageCategory> bannerImageCategories;
 
     @Column(name = "CREATEDON")
