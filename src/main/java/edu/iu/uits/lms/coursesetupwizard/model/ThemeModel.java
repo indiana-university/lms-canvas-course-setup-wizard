@@ -1,10 +1,10 @@
-package edu.iu.uits.lms.coursesetupwizard;
+package edu.iu.uits.lms.coursesetupwizard.model;
 
 /*-
  * #%L
  * course-setup-wizard
  * %%
- * Copyright (C) 2022 Indiana University
+ * Copyright (C) 2024 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -33,53 +33,23 @@ package edu.iu.uits.lms.coursesetupwizard;
  * #L%
  */
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
-public class Constants {
+import java.io.Serializable;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-    /**
-     * Constant defining the ehcache provider
-     */
-    public static final String EHCACHE_PROVIDER_TYPE = "org.ehcache.jsr107.EhcacheCachingProvider";
+@Data
+public class ThemeModel implements Serializable {
+    private Boolean includeBannerImage;
+    private String themeId;
+    private String bannerImageCategoryId;
+    private Boolean includeNavigation;
+    private Boolean includeGuidance;
 
-    public static final String INSTRUCTOR_COURSES_CACHE_NAME = "InstructorCourses";
-    public static final String COURSE_TEMPLATES_CACHE_NAME = "CourseTemplates";
-
-
-    public static final String KEY_IMPORT_MODEL = "importModel";
-    public static final String KEY_THEME_MODEL = "themeModel";
-    public static final String ACTION_BACK = "back";
-    public static final String ACTION_NEXT = "next";
-    public static final String ACTION_HOME = "home";
-    public static final String ACTION_SUBMIT = "submit";
-
-    @AllArgsConstructor
-    @Getter
-    public enum MAIN_OPTION {
-        IMPORT,
-        TEMPLATE,
-        HOMEPAGE,
-        THEME
-    }
-
-    @AllArgsConstructor
-    @Getter
-    public enum DATE_OPTION {
-        ADJUST,
-        REMOVE,
-        NOCHANGE
-    }
-
-    @AllArgsConstructor
-    @Getter
-    public enum CONTENT_OPTION {
-        ALL,
-        ALL_WITH_BLUEPRINT_SETTINGS,
-        SELECT
-    }
-
-    private Constants() {
-        throw new IllegalStateException("Utility class");
-    }
 }

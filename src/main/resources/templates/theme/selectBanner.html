@@ -16,7 +16,7 @@
     <div class="rvt-row rvt-p-top-md">
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
             <h2 id="page-title">Select banner</h2>
-            <form id="wizard-form-submit" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+            <form id="wizard-theme-form-submit" th:object="${themeForm}" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
                 <p>
                     Your course home page may include a banner image. If you do not want a banner image on your course
                     home page, select No, then choose <span class="rvt-text-bold">Next</span>. If you do want a banner
@@ -33,14 +33,16 @@
                     <ul class="rvt-list-plain">
                         <li>
                             <div class="rvt-radio">
-                                <input type="radio" name="guidance-radio-group" id="guidance-radio-yes" value="Yes" checked>
-                                <label for="guidance-radio-yes">Yes</label>
+                                <input type="radio" th:field="*{includeBannerImage}"
+                                       name="include-banner-image-radio-group" id="include-banner-image-radio-yes" value="true">
+                                <label for="include-banner-image-radio-yes">Yes</label>
                             </div>
                         </li>
                         <li>
                             <div class="rvt-radio">
-                                <input type="radio" name="guidance-radio-group" id="guidance-radio-no" value="No">
-                                <label for="guidance-radio-no">No</label>
+                                <input type="radio" th:field="*{includeBannerImage}"
+                                       name="include-banner-image-radio-group" id="include-banner-image-radio-no" value="false">
+                                <label for="include-banner-image-radio-no">No</label>
                             </div>
                         </li>
                     </ul>
@@ -49,25 +51,15 @@
                 <div id="banner-wrapper">
                     <!-- likely alphabetizing this -->
                     <label for="select-input-categories" class="rvt-label rvt-m-top-md rvt-ts-16">Image categories</label>
-                    <select id="select-input-categories" class="rvt-select rvt-m-bottom-md">
-                        <option th:each="bannerImageCategory : ${bannerImageCategories}" th:value="${bannerImageCategory.name}"
+                    <select id="select-input-categories" class="rvt-select rvt-m-bottom-md" th:field="*{bannerImageCategoryId}">
+                        <option th:each="bannerImageCategory : ${bannerImageCategories}" th:value="${bannerImageCategory.id}"
                                 th:text="${bannerImageCategory.name}">Category</option>
                     </select>
                     <!-- radio list for banner options, dynamically rendered based on select component above -->
                     <fieldset class="rvt-fieldset">
                         <legend th:text="'Image options for ' + ${bannerImageCategories.get(0).name}"></legend>
+                        <!-- ul will be loaded by javascript on pulldown change -->
                         <ul id="image-ul" class="rvt-list-plain">
-                            <th:block th:if="${bannerImageCategories.get(0).bannerImages != null}" th:each="bannerImage : ${bannerImageCategories.get(0).bannerImages}">
-                                <li th:id="${bannerImage.id}" class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
-                                    <div class="rvt-radio">
-                                        <input type="radio" name="banner-image-radio-group" th:id="'banner-image-radio-' + ${bannerImage.id}"
-                                               th:aria-describedby="'someuniqueid1'">
-                                        <label th:for="'bannerimage-radio-' + ${bannerImage.id}" th:text="${bannerImage.uiName}"></label>
-                                        <img id="someuniqueid1" th:src="${bannerImage.bannerImageUrl}" class="rvt-m-top-sm"
-                                             th:alt="${bannerImage.altText}" />
-                                    </div>
-                                </li>
-                            </th:block>
                         </ul>
                     </fieldset>
                 </div>
@@ -103,6 +95,11 @@
             }
         }
 
+        function loadBannerImagesForSelectedCategory() {
+            let categoryId = $('#select-input-categories').val();
+            $('#image-ul').load('/app/theme/' + courseId + '/bannerimage/' + categoryId);
+        }
+
         $(document).ready(function() {
             // determine if additional fields display or not
             $('input[name=guidance-radio-group]').on('change', function() {
@@ -112,6 +109,12 @@
                     $("#banner-wrapper").addClass('rvt-display-none');
                 }
             });
+
+            $('#select-input-categories').change(function() {
+                loadBannerImagesForSelectedCategory();
+            });
+
+            loadBannerImagesForSelectedCategory();
         });
 
     </script>

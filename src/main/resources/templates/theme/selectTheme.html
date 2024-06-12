@@ -16,7 +16,7 @@
     <div class="rvt-row rvt-p-top-md">
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
             <h2 id="page-title">Select theme</h2>
-            <form id="wizard-form-submit" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+            <form id="wizard-theme-form-submit" th:object="${themeForm}" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
                 <p>
                     The theme controls the look and feel of the banner, headings, navigation menu, and
                     formatting on each page. To apply a theme to your course, choose the desired option and select
@@ -27,12 +27,12 @@
                     <legend>Theme options</legend>
                     <ul id="image-ul" class="rvt-list-plain">
                         <th:block th:if="${themes != null}" th:each="theme : ${themes}">
-                            <li th:id="${theme.id}" class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
+                            <li class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
                                 <div class="rvt-radio">
                                     <input type="radio" name="theme-radio-group" th:id="'theme-radio-' + ${theme.id}"
-                                           th:aria-describedby="'someuniqueid1'">
+                                           th:field="*{themeId}" th:value="${theme.id}" th:aria-describedby="'someuniqueid' + ${theme.id}">
                                     <label th:for="'theme-radio-' + ${theme.id}" th:text="${theme.uiName}"></label>
-                                    <img id="someuniqueid1" th:src="${theme.themeImageUrl}" class="rvt-m-top-sm"
+                                    <img th:id="'someuniqueid' + ${theme.id}" th:src="${theme.themeImageUrl}" class="rvt-m-top-sm"
                                          th:alt="${theme.altText}" />
                                 </div>
                             </li>

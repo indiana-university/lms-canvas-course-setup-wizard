@@ -1,8 +1,8 @@
 package edu.iu.uits.lms.coursesetupwizard.controller;
 
 import edu.iu.uits.lms.coursesetupwizard.model.BannerImageCategory;
-import edu.iu.uits.lms.coursesetupwizard.model.ImportModel;
 import edu.iu.uits.lms.coursesetupwizard.model.Theme;
+import edu.iu.uits.lms.coursesetupwizard.model.ThemeModel;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageCategoryRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.ThemeRepository;
@@ -34,7 +34,7 @@ import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_BACK;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_HOME;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_NEXT;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_SUBMIT;
-import static edu.iu.uits.lms.coursesetupwizard.Constants.KEY_IMPORT_MODEL;
+import static edu.iu.uits.lms.coursesetupwizard.Constants.KEY_THEME_MODEL;
 
 @Controller
 @RequestMapping("/app/theme")
@@ -95,6 +95,14 @@ public class ThemeController extends WizardController {
         OidcAuthenticationToken token = getValidatedToken(courseId);
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
 
+        ThemeModel themeModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL, ThemeModel.class);
+        if (themeModel == null) {
+            themeModel = new ThemeModel();
+            courseSessionService.addAttributeToSession(httpSession, courseId, KEY_THEME_MODEL, themeModel);
+        }
+
+        model.addAttribute("themeForm", themeModel);
+
         return new ModelAndView("theme/intro");
     }
 
@@ -115,9 +123,11 @@ public class ThemeController extends WizardController {
         OidcAuthenticationToken token = getValidatedToken(courseId);
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
 
+        ThemeModel themeModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL, ThemeModel.class);
         List<Theme> themes =  themeRepository.findByActiveTrueOrderByName();
 
         model.addAttribute("themes", themes);
+        model.addAttribute("themeForm", themeModel);
 
         return new ModelAndView("theme/selectTheme");
     }
@@ -129,10 +139,18 @@ public class ThemeController extends WizardController {
         OidcAuthenticationToken token = getValidatedToken(courseId);
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
 
+        ThemeModel themeModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL, ThemeModel.class);
         List<BannerImageCategory> bannerImageCategories =  bannerImageCategoryRepository.findByActiveTrueOrderByName();
 
-        model.addAttribute("bannerImageCategories", bannerImageCategories);
+        if (themeModel.getIncludeBannerImage() == null) {
+            themeModel.setIncludeBannerImage(true);
+        }
 
+        model.addAttribute("bannerImageCategories", bannerImageCategories);
+        model.addAttribute("courseId", courseId);
+        model.addAttribute("themeForm", themeModel);
+
+        log.info("courseId = " + courseId);
         return new ModelAndView("theme/selectBanner");
     }
 
@@ -168,26 +186,35 @@ public class ThemeController extends WizardController {
 
     @PostMapping("/{courseId}/navigate")
     @Secured({LTIConstants.INSTRUCTOR_AUTHORITY})
-    public ModelAndView navigate(@PathVariable("courseId") String courseId, Model model, @ModelAttribute ImportModel importModel,
+    public ModelAndView navigate(@PathVariable("courseId") String courseId, Model model, @ModelAttribute ThemeModel themeModel,
                                  @RequestParam(name = "action") String action, @RequestParam(name = "currentPage") int currentPage,
                                  HttpSession httpSession) {
         OidcAuthenticationToken token = getValidatedToken(courseId);
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
 
-//        ImportModel sessionImportModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_IMPORT_MODEL, ImportModel.class);
+        ThemeModel sessionThemeModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL, ThemeModel.class);
 
         int pageIndex = 0;
 
         switch (action) {
             case ACTION_HOME:
                 //Reset stuff
-                courseSessionService.removeAttributeFromSession(httpSession, courseId, KEY_IMPORT_MODEL);
+                courseSessionService.removeAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL);
                 break;
             case ACTION_BACK:
                 pageIndex = currentPage - 1;
+
+                //Re-save the session model
+                courseSessionService.addAttributeToSession(httpSession, courseId, KEY_THEME_MODEL,
+                        updateThemeModelFields(sessionThemeModel, themeModel));
+
                 break;
             case ACTION_NEXT:
                 pageIndex = currentPage + 1;
+
+                //Re-save the session model
+                courseSessionService.addAttributeToSession(httpSession, courseId, KEY_THEME_MODEL,
+                        updateThemeModelFields(sessionThemeModel, themeModel));
 
                 //Template selection page
 //                if (importModel.getSelectedTemplateId() != null) {
@@ -217,4 +244,42 @@ public class ThemeController extends WizardController {
         String url = MessageFormat.format(PAGES[pageIndex], courseId);
         return new ModelAndView("redirect:" + url);
     }
+
+    @GetMapping("{courseId}/bannerimage/{categoryId}")
+    @Secured({LTIConstants.INSTRUCTOR_AUTHORITY})
+    public ModelAndView banner(@PathVariable("courseId") String courseId, @PathVariable("categoryId") Long categoryId, Model model, HttpSession httpSession) {
+        log.debug(String.format("in /bannerimage for courseId %s wanting category %d", courseId, categoryId));
+        OidcAuthenticationToken token = getValidatedToken(courseId);
+
+        BannerImageCategory bannerImageCategory =  bannerImageCategoryRepository.findById(categoryId)
+                .orElse(new BannerImageCategory());
+        model.addAttribute("bannerImages", bannerImageCategory.getBannerImages());
+
+        return new ModelAndView("fragments :: themeBannerImageOptionsListItems");
+    }
+
+    private ThemeModel updateThemeModelFields(ThemeModel oldThemeModel, ThemeModel newThemeModel) {
+        if (newThemeModel.getThemeId() != null) {
+            oldThemeModel.setThemeId(newThemeModel.getThemeId());
+        }
+
+        if (newThemeModel.getIncludeBannerImage() != null) {
+            oldThemeModel.setIncludeBannerImage(newThemeModel.getIncludeBannerImage());
+        }
+
+        if (newThemeModel.getBannerImageCategoryId() != null) {
+            oldThemeModel.setBannerImageCategoryId(newThemeModel.getBannerImageCategoryId());
+        }
+
+        if (newThemeModel.getIncludeNavigation() != null) {
+            oldThemeModel.setIncludeNavigation(newThemeModel.getIncludeNavigation());
+        }
+
+        if (newThemeModel.getIncludeGuidance() != null) {
+            oldThemeModel.setIncludeGuidance(newThemeModel.getIncludeGuidance());
+        }
+
+        return oldThemeModel;
+    }
+
 }

@@ -109,6 +109,20 @@
     </h3>
 </div>
 
+<div th:fragment="themeBannerImageOptionsListItems">
+    <th:block th:if="${bannerImages != null}" th:each="bannerImage : ${bannerImages}">
+        <li class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
+            <div class="rvt-radio">
+                <input type="radio" name="banner-image-radio-group" th:id="'banner-image-radio-' + ${bannerImage.id}"
+                       th:value="${bannerImage.id}" th:aria-describedby="'someuniqueid' + ${bannerImage.id}">
+                <label th:for="'banner-image-radio-' + ${bannerImage.id}" th:text="${bannerImage.uiName}"></label>
+                <img id="'someuniqueid' + ${bannerImage.id}" th:src="${bannerImage.bannerImageUrl}" class="rvt-m-top-sm"
+                     th:alt="${bannerImage.altText}" />
+            </div>
+        </li>
+    </th:block>
+</div>
+
 </body>
 
 </html>
