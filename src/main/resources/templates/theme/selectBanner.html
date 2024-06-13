@@ -49,6 +49,7 @@
                 </fieldset>
                 <!-- wrapper just to make hide/show of this content easier to control -->
                 <div id="banner-wrapper">
+                    <input type="hidden" id="banner-image-id" th:field="*{bannerImageId}" />
                     <!-- likely alphabetizing this -->
                     <label for="select-input-categories" class="rvt-label rvt-m-top-md rvt-ts-16">Image categories</label>
                     <select id="select-input-categories" class="rvt-select rvt-m-bottom-md" th:field="*{bannerImageCategoryId}">
@@ -58,7 +59,7 @@
                     <!-- radio list for banner options, dynamically rendered based on select component above -->
                     <fieldset class="rvt-fieldset">
                         <legend th:text="'Image options for ' + ${bannerImageCategories.get(0).name}"></legend>
-                        <!-- ul will be loaded by javascript on pulldown change -->
+                        <!-- ul will be filled by javascript on pulldown change -->
                         <ul id="image-ul" class="rvt-list-plain">
                         </ul>
                     </fieldset>
@@ -81,23 +82,24 @@
         /*]]>*/
 
         function doSubmit() {
-            //Select control
-            var inputControl = document.querySelector('input[id="course-select-input"]');
-            //Hidden input with the actual value
-            var inputValue = document.querySelector('input[name="selectedCourseId"]');
-            if (inputValue.value == "") {
-                inputControl.setAttribute("aria-invalid", "true");
-                inputControl.setAttribute("aria-describedby", "option-message");
-                alertMessage = document.getElementById('select-alert');
-                alertMessage.classList.remove("rvt-display-none");
-                inputControl.focus();
-                return false;
-            }
+            let bannerImageId = $('input[type=radio][name=banner-image-radio-group]:checked').val();
+            $('#banner-image-id').val(bannerImageId);
         }
 
         function loadBannerImagesForSelectedCategory() {
             let categoryId = $('#select-input-categories').val();
-            $('#image-ul').load('/app/theme/' + courseId + '/bannerimage/' + categoryId);
+            $('#image-ul').load('/app/theme/' + courseId + '/bannerimage/' + categoryId ,  function() {
+                let bannerImageId = $('#banner-image-id').val();
+
+                if (bannerImageId != '') {
+                    let radioThing = $('input[type=radio][name=banner-image-radio-group]');
+                    radioThing.each(function() {
+                        if (bannerImageId == $(this).val()) {
+                            $(this).prop('checked', true);
+                        }
+                    });
+                }
+            });
         }
 
         $(document).ready(function() {

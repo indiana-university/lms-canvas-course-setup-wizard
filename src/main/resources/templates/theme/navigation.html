@@ -16,7 +16,7 @@
     <div class="rvt-row rvt-p-top-md">
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
             <h2 id="page-title">Include navigation</h2>
-            <form id="wizard-form-submit" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+            <form id="wizard-theme-form-submit" th:object="${themeForm}" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
                 <p>
                     You have the option to include navigational elements with your course. The navigation
                     appears beneath the banner image in the example below. It has four quick links that say
@@ -34,14 +34,14 @@
                     <ul class="rvt-list-plain">
                         <li>
                             <div class="rvt-radio">
-                                <input type="radio" name="navigation-group" id="navigation-yes">
-                                <label for="navigation-yes">Yes</label>
+                                <input type="radio" th:field="*{includeNavigation}" name="include-navigation-group" id="include-navigation-yes" value="true">
+                                <label for="include-navigation-yes">Yes</label>
                             </div>
                         </li>
                         <li>
                             <div class="rvt-radio">
-                                <input type="radio" name="navigation-group" id="navigation-no">
-                                <label for="navigation-no">No</label>
+                                <input type="radio" th:field="*{includeNavigation}" name="include-navigation-group" id="include-navigation-no" value="false">
+                                <label for="include-navigation-no">No</label>
                             </div>
                         </li>
                     </ul>

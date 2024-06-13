@@ -47,6 +47,7 @@ import java.util.Map;
 @Data
 public class ThemeModel implements Serializable {
     private Boolean includeBannerImage;
+    private String bannerImageId;
     private String themeId;
     private String bannerImageCategoryId;
     private Boolean includeNavigation;

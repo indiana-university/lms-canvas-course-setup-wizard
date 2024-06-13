@@ -1,5 +1,6 @@
 package edu.iu.uits.lms.coursesetupwizard.controller;
 
+import edu.iu.uits.lms.coursesetupwizard.model.BannerImage;
 import edu.iu.uits.lms.coursesetupwizard.model.BannerImageCategory;
 import edu.iu.uits.lms.coursesetupwizard.model.Theme;
 import edu.iu.uits.lms.coursesetupwizard.model.ThemeModel;
@@ -29,6 +30,7 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_BACK;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_HOME;
@@ -95,11 +97,9 @@ public class ThemeController extends WizardController {
         OidcAuthenticationToken token = getValidatedToken(courseId);
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
 
-        ThemeModel themeModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL, ThemeModel.class);
-        if (themeModel == null) {
-            themeModel = new ThemeModel();
-            courseSessionService.addAttributeToSession(httpSession, courseId, KEY_THEME_MODEL, themeModel);
-        }
+        courseSessionService.removeAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL);
+        ThemeModel themeModel = new ThemeModel();
+        courseSessionService.addAttributeToSession(httpSession, courseId, KEY_THEME_MODEL, themeModel);
 
         model.addAttribute("themeForm", themeModel);
 
@@ -112,6 +112,14 @@ public class ThemeController extends WizardController {
         log.debug("in /navigation");
         OidcAuthenticationToken token = getValidatedToken(courseId);
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
+
+        ThemeModel themeModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL, ThemeModel.class);
+
+        if (themeModel.getIncludeNavigation() == null) {
+            themeModel.setIncludeNavigation(true);
+        }
+
+        model.addAttribute("themeForm", themeModel);
 
         return new ModelAndView("theme/navigation");
     }
@@ -161,6 +169,14 @@ public class ThemeController extends WizardController {
         OidcAuthenticationToken token = getValidatedToken(courseId);
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
 
+        ThemeModel themeModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL, ThemeModel.class);
+
+        if (themeModel.getIncludeGuidance() == null) {
+            themeModel.setIncludeGuidance(true);
+        }
+
+        model.addAttribute("themeForm", themeModel);
+
         return new ModelAndView("theme/guidance");
     }
 
@@ -170,6 +186,15 @@ public class ThemeController extends WizardController {
         log.debug("in /review");
         OidcAuthenticationToken token = getValidatedToken(courseId);
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
+
+        ThemeModel themeModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL, ThemeModel.class);
+
+        Optional<Theme> theme = themeRepository.findById(Long.parseLong(themeModel.getThemeId()));
+        Optional<BannerImage> bannerImage = bannerImageRepository.findById(Long.parseLong(themeModel.getBannerImageId()));
+
+        model.addAttribute("themeName", theme.isPresent() ? theme.get().getUiName() : "None");
+        model.addAttribute("bannerImageName", bannerImage.isPresent() ? bannerImage.get().getUiName() : "None");
+        model.addAttribute("themeForm", themeModel);
 
         return new ModelAndView("theme/review");
     }
@@ -258,28 +283,32 @@ public class ThemeController extends WizardController {
         return new ModelAndView("fragments :: themeBannerImageOptionsListItems");
     }
 
-    private ThemeModel updateThemeModelFields(ThemeModel oldThemeModel, ThemeModel newThemeModel) {
-        if (newThemeModel.getThemeId() != null) {
-            oldThemeModel.setThemeId(newThemeModel.getThemeId());
+    private ThemeModel updateThemeModelFields(ThemeModel baseThemeModel, ThemeModel diffThemeModel) {
+        if (diffThemeModel.getThemeId() != null) {
+            baseThemeModel.setThemeId(diffThemeModel.getThemeId());
         }
 
-        if (newThemeModel.getIncludeBannerImage() != null) {
-            oldThemeModel.setIncludeBannerImage(newThemeModel.getIncludeBannerImage());
+        if (diffThemeModel.getIncludeBannerImage() != null) {
+            baseThemeModel.setIncludeBannerImage(diffThemeModel.getIncludeBannerImage());
         }
 
-        if (newThemeModel.getBannerImageCategoryId() != null) {
-            oldThemeModel.setBannerImageCategoryId(newThemeModel.getBannerImageCategoryId());
+        if (diffThemeModel.getBannerImageId() != null) {
+            baseThemeModel.setBannerImageId(diffThemeModel.getBannerImageId());
         }
 
-        if (newThemeModel.getIncludeNavigation() != null) {
-            oldThemeModel.setIncludeNavigation(newThemeModel.getIncludeNavigation());
+        if (diffThemeModel.getBannerImageCategoryId() != null) {
+            baseThemeModel.setBannerImageCategoryId(diffThemeModel.getBannerImageCategoryId());
         }
 
-        if (newThemeModel.getIncludeGuidance() != null) {
-            oldThemeModel.setIncludeGuidance(newThemeModel.getIncludeGuidance());
+        if (diffThemeModel.getIncludeNavigation() != null) {
+            baseThemeModel.setIncludeNavigation(diffThemeModel.getIncludeNavigation());
         }
 
-        return oldThemeModel;
+        if (diffThemeModel.getIncludeGuidance() != null) {
+            baseThemeModel.setIncludeGuidance(diffThemeModel.getIncludeGuidance());
+        }
+
+        return baseThemeModel;
     }
 
 }

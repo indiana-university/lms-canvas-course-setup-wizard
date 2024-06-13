@@ -16,7 +16,7 @@
     <div class="rvt-row rvt-p-top-md">
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
             <h2 id="page-title">Review</h2>
-            <form id="wizard-form-submit" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+            <form id="wizard-theme-form-submit" th:object="${themeForm}" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
                 <p>
                     You have selected the following theme (page design) and banner image for the content in this course.
                     To confirm your selections, select <span class="rvt-text-bold">Next</span>. To revise your
@@ -24,14 +24,14 @@
                 </p>
                 <dl class="rvt-list-description">
                     <dt>Theme</dt>
-                    <dd>Flat sections</dd>
+                    <dd th:text="${themeName}">THEME NAME</dd>
                     <dt>Banner image</dt>
                     <!-- this can also just be "No banner selected" -->
-                    <dd>Radio podcast interview</dd>
+                    <dd th:text="${bannerImageName}">BANNER IMAGE NAME</dd>
                     <dt>Include navigation?</dt>
-                    <dd>Yes</dd>
+                    <dd th:text="*{includeNavigation} ? 'Yes' : 'No'">YES</dd>
                     <dt>Include instructional design prompts and guidance?</dt>
-                    <dd>Yes</dd>
+                    <dd th:text="*{includeGuidance} ? 'Yes' : 'No'">YES</dd>
                     <dt>Full preview</dt>
                     <dd>
                         <!-- normal markup will be 3-4 images stacked on top of each other to mimick the choices made throughout -->
