@@ -65,31 +65,6 @@ public class ThemeController extends WizardController {
             "/app/theme/{0}/selectBanner", "/app/theme/{0}/navigation", "/app/theme/{0}/guidance",
             "/app/theme/{0}/review", "/app/theme/{0}/submit"};
 
-//    @PostConstruct
-//    public synchronized void redoPages() {
-//        List<String> newPagesList = new ArrayList<>();
-//
-//        for (String page : ALL_PAGES) {
-//            if (page.endsWith("guidance")) {
-//                if (featureAccessService.isFeatureEnabledForAccount(FEATURE_ID_THEME_GUIDANCE_ENABLE,
-//                        canvasService.getRootAccount(), null)) {
-//                    newPagesList.add(page);
-//                }
-//            } else if (page.endsWith("navigation")) {
-//                if (featureAccessService.isFeatureEnabledForAccount(FEATURE_ID_THEME_NAVIGATION_ENABLE,
-//                        canvasService.getRootAccount(), null)) {
-//                    newPagesList.add(page);
-//                }
-//            } else {
-//                newPagesList.add(page);
-//            }
-//        }
-//
-//        String[] newPageArray = new String[newPagesList.size()];
-//        PAGES = newPagesList.toArray(newPageArray);
-//        log.info(String.format("PAGES array set up with size %d", PAGES.length));
-//    }
-
     @Data
     @AllArgsConstructor
     public static class ThemeStep implements Serializable {
