@@ -25,12 +25,13 @@
                 <!-- radio list for theme options -->
                 <fieldset class="rvt-fieldset">
                     <legend>Theme options</legend>
+                    <div th:insert="fragments.html :: selectAlert"></div>
                     <ul id="image-ul" class="rvt-list-plain">
                         <th:block th:if="${themes != null}" th:each="theme : ${themes}">
                             <li class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
                                 <div class="rvt-radio">
-                                    <input type="radio" name="theme-radio-group" th:id="'theme-radio-' + ${theme.id}"
-                                           th:field="*{themeId}" th:value="${theme.id}" th:aria-describedby="'someuniqueid' + ${theme.id}">
+                                    <input type="radio" th:id="'theme-radio-' + ${theme.id}" th:field="*{themeId}"
+                                           th:value="${theme.id}" th:aria-describedby="'someuniqueid' + ${theme.id}">
                                     <label th:for="'theme-radio-' + ${theme.id}" th:text="${theme.uiName}"></label>
                                     <img th:id="'someuniqueid' + ${theme.id}" th:src="${theme.themeImageUrl}" class="rvt-m-top-sm"
                                          th:alt="${theme.altText}" />
@@ -57,16 +58,15 @@
         /*]]>*/
 
         function doSubmit() {
-            //Select control
-            var inputControl = document.querySelector('input[id="course-select-input"]');
-            //Hidden input with the actual value
-            var inputValue = document.querySelector('input[name="selectedCourseId"]');
-            if (inputValue.value == "") {
-                inputControl.setAttribute("aria-invalid", "true");
-                inputControl.setAttribute("aria-describedby", "option-message");
+            var checkedRadio = document.querySelector('input[name="themeId"]:checked');
+            if (checkedRadio == null) {
+                var allRadio = document.getElementsByName("themeId");
+                allRadio.forEach(btn => {
+                    btn.setAttribute("aria-describedby", "option-message");
+                });
                 alertMessage = document.getElementById('select-alert');
                 alertMessage.classList.remove("rvt-display-none");
-                inputControl.focus();
+                allRadio[0].focus();
                 return false;
             }
         }

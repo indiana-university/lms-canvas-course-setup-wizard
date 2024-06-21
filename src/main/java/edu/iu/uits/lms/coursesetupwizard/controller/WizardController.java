@@ -39,6 +39,7 @@ import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.coursesetupwizard.model.ImportModel;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
+import edu.iu.uits.lms.iuonly.services.FeatureAccessServiceImpl;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.controller.OidcTokenAwareController;
 import edu.iu.uits.lms.lti.service.OidcTokenUtils;
@@ -56,12 +57,17 @@ import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenti
 
 import javax.servlet.http.HttpSession;
 
+import static edu.iu.uits.lms.coursesetupwizard.Constants.FEATURE_ID_THEME_FRONTPAGE_ENABLE;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.KEY_IMPORT_MODEL;
+import static edu.iu.uits.lms.coursesetupwizard.Constants.KEY_THEME_MODEL;
 
 @Controller
 @RequestMapping("/app")
 @Slf4j
 public class WizardController extends OidcTokenAwareController {
+
+    @Autowired
+    protected FeatureAccessServiceImpl featureAccessService;
 
     @Autowired
     protected ToolConfig toolConfig = null;
@@ -94,10 +100,21 @@ public class WizardController extends OidcTokenAwareController {
         OidcAuthenticationToken token = getValidatedToken(courseId);
         model.addAttribute("courseId", courseId);
         courseSessionService.removeAttributeFromSession(httpSession, courseId, KEY_IMPORT_MODEL);
+        courseSessionService.removeAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL);
+
+        if (featureAccessService.isFeatureEnabledForAccount(FEATURE_ID_THEME_FRONTPAGE_ENABLE, canvasService.getRootAccount(), null)) {
+            model.addAttribute("feature_theme_frontpage", true);
+        }
 
         // Go to the regular index page if wizard hasn't been run for this course yet, otherwise, go to the page with the warning message on it
         String viewName = wizardService.alreadyCompletedForCourse(courseId) ? "alreadyCompleted" : "index";
-        return new ModelAndView(viewName);
+        ModelAndView modelAndView = new ModelAndView(viewName);
+
+        if (featureAccessService.isFeatureEnabledForAccount(FEATURE_ID_THEME_FRONTPAGE_ENABLE, canvasService.getRootAccount(), null)) {
+            modelAndView.getModelMap().addAttribute("feature_theme_frontpage", true);
+        }
+
+        return modelAndView;
     }
 
     @PostMapping("/{courseId}/menu")

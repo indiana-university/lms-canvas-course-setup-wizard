@@ -181,7 +181,7 @@
                     </div>
                     </p>
                 </div>
-                <h3 class="rvt-accordion__summary">
+                <h3 th:if="${feature_theme_frontpage != null}" class="rvt-accordion__summary">
                     <button class="rvt-accordion__toggle rvt-p-tb-xs" id="home-page-accordion-4-label"
                             data-rvt-accordion-trigger="home-page-accordion-4"
                             aria-controls="home-page-accordion-4">
@@ -196,7 +196,7 @@
                         </div>
                     </button>
                 </h3>
-                <div class="rvt-accordion__panel" id="home-page-accordion-4" aria-labelledby="home-page-accordion-4-label"
+                <div th:if="${feature_theme_frontpage != null}" class="rvt-accordion__panel" id="home-page-accordion-4" aria-labelledby="home-page-accordion-4-label"
                      data-rvt-accordion-panel="home-page-accordion-4"
                      role="region">
                     <p class="rvt-m-all-remove">
@@ -242,7 +242,7 @@
                                 <label for="radio-1-3">Add a professionally-designed, customizable home page (the IU Home Page) to this course</label>
                             </div>
                         </li>
-                        <li>
+                        <li th:if="${feature_theme_frontpage != null}">
                             <div class="rvt-radio">
                                 <input type="radio" name="menuChoice" id="radio-1-4"
                                        th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.MAIN_OPTION).THEME.name()}">

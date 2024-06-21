@@ -33,15 +33,13 @@
                     <ul class="rvt-list-plain">
                         <li>
                             <div class="rvt-radio">
-                                <input type="radio" th:field="*{includeBannerImage}"
-                                       name="include-banner-image-radio-group" id="include-banner-image-radio-yes" value="true">
+                                <input type="radio" th:field="*{includeBannerImage}" id="include-banner-image-radio-yes" value="true">
                                 <label for="include-banner-image-radio-yes">Yes</label>
                             </div>
                         </li>
                         <li>
                             <div class="rvt-radio">
-                                <input type="radio" th:field="*{includeBannerImage}"
-                                       name="include-banner-image-radio-group" id="include-banner-image-radio-no" value="false">
+                                <input type="radio" th:field="*{includeBannerImage}" id="include-banner-image-radio-no" value="false">
                                 <label for="include-banner-image-radio-no">No</label>
                             </div>
                         </li>
@@ -104,11 +102,13 @@
 
         $(document).ready(function() {
             // determine if additional fields display or not
-            $('input[name=guidance-radio-group]').on('change', function() {
-                if ( this.value == 'Yes') {
+            $('input[name=includeBannerImage]').on('change', function() {
+                if ( this.value == 'true') {
                     $("#banner-wrapper").removeClass('rvt-display-none');
                 } else {
                     $("#banner-wrapper").addClass('rvt-display-none');
+                    $('#banner-image-id').val('');
+                    $('input[type="radio"][name=banner-image-radio-group]:checked').prop('checked', false);
                 }
             });
 

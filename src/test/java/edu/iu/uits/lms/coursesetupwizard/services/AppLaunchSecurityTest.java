@@ -42,6 +42,7 @@ import edu.iu.uits.lms.coursesetupwizard.repository.ThemeRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
+import edu.iu.uits.lms.iuonly.services.FeatureAccessServiceImpl;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.config.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -94,6 +95,9 @@ public class AppLaunchSecurityTest {
 
    @MockBean
    private ThemeRepository themeRepository;
+
+   @MockBean
+   private FeatureAccessServiceImpl featureAccessService;
 
    @BeforeEach
    public void setup() {

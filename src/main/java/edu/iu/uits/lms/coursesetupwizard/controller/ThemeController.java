@@ -1,5 +1,6 @@
 package edu.iu.uits.lms.coursesetupwizard.controller;
 
+import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.model.BannerImage;
 import edu.iu.uits.lms.coursesetupwizard.model.BannerImageCategory;
 import edu.iu.uits.lms.coursesetupwizard.model.Theme;
@@ -7,6 +8,8 @@ import edu.iu.uits.lms.coursesetupwizard.model.ThemeModel;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageCategoryRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.ThemeRepository;
+import edu.iu.uits.lms.iuonly.model.FeatureAccess;
+import edu.iu.uits.lms.iuonly.services.FeatureAccessServiceImpl;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.service.OidcTokenUtils;
 import lombok.AllArgsConstructor;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.text.MessageFormat;
@@ -36,6 +40,9 @@ import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_BACK;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_HOME;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_NEXT;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_SUBMIT;
+import static edu.iu.uits.lms.coursesetupwizard.Constants.FEATURE_ID_THEME_FRONTPAGE_ENABLE;
+import static edu.iu.uits.lms.coursesetupwizard.Constants.FEATURE_ID_THEME_GUIDANCE_ENABLE;
+import static edu.iu.uits.lms.coursesetupwizard.Constants.FEATURE_ID_THEME_NAVIGATION_ENABLE;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.KEY_THEME_MODEL;
 
 @Controller
@@ -43,17 +50,45 @@ import static edu.iu.uits.lms.coursesetupwizard.Constants.KEY_THEME_MODEL;
 @Slf4j
 public class ThemeController extends WizardController {
     @Autowired
-    private BannerImageCategoryRepository bannerImageCategoryRepository;
+    protected FeatureAccessServiceImpl featureAccessService;
 
     @Autowired
-    private BannerImageRepository bannerImageRepository;
+    protected BannerImageCategoryRepository bannerImageCategoryRepository;
 
     @Autowired
-    private ThemeRepository themeRepository;
+    protected BannerImageRepository bannerImageRepository;
+
+    @Autowired
+    protected ThemeRepository themeRepository;
 
     private static final String[] PAGES = {"/app/{0}/index", "/app/theme/{0}/intro", "/app/theme/{0}/selectTheme",
             "/app/theme/{0}/selectBanner", "/app/theme/{0}/navigation", "/app/theme/{0}/guidance",
             "/app/theme/{0}/review", "/app/theme/{0}/submit"};
+
+//    @PostConstruct
+//    public synchronized void redoPages() {
+//        List<String> newPagesList = new ArrayList<>();
+//
+//        for (String page : ALL_PAGES) {
+//            if (page.endsWith("guidance")) {
+//                if (featureAccessService.isFeatureEnabledForAccount(FEATURE_ID_THEME_GUIDANCE_ENABLE,
+//                        canvasService.getRootAccount(), null)) {
+//                    newPagesList.add(page);
+//                }
+//            } else if (page.endsWith("navigation")) {
+//                if (featureAccessService.isFeatureEnabledForAccount(FEATURE_ID_THEME_NAVIGATION_ENABLE,
+//                        canvasService.getRootAccount(), null)) {
+//                    newPagesList.add(page);
+//                }
+//            } else {
+//                newPagesList.add(page);
+//            }
+//        }
+//
+//        String[] newPageArray = new String[newPagesList.size()];
+//        PAGES = newPagesList.toArray(newPageArray);
+//        log.info(String.format("PAGES array set up with size %d", PAGES.length));
+//    }
 
     @Data
     @AllArgsConstructor
@@ -80,13 +115,23 @@ public class ThemeController extends WizardController {
      */
     private List<ThemeStep> getThemeSteps(String courseId) {
         List<ThemeStep> steps = new ArrayList<>();
+
         steps.add(new ThemeStep("Intro", MessageFormat.format(PAGES[1], courseId)));
         steps.add(new ThemeStep("Select theme", MessageFormat.format(PAGES[2], courseId)));
         steps.add(new ThemeStep("Select banner", MessageFormat.format(PAGES[3], courseId)));
-        steps.add(new ThemeStep("Include navigation", MessageFormat.format(PAGES[4], courseId)));
-        steps.add(new ThemeStep("Include guidance", MessageFormat.format(PAGES[5], courseId)));
-        steps.add(new ThemeStep("Review", MessageFormat.format(PAGES[6], courseId)));
-        steps.add(new ThemeStep("Submit", MessageFormat.format(PAGES[7], courseId)));
+
+        if (featureAccessService.isFeatureEnabledForAccount(FEATURE_ID_THEME_NAVIGATION_ENABLE, canvasService.getRootAccount(), null)) {
+            steps.add(new ThemeStep("Include navigation", MessageFormat.format(PAGES[4], courseId)));
+        }
+
+        if (featureAccessService.isFeatureEnabledForAccount(FEATURE_ID_THEME_GUIDANCE_ENABLE, canvasService.getRootAccount(), null)) {
+            steps.add(new ThemeStep("Include guidance", MessageFormat.format(PAGES[PAGES.length - 3], courseId)));
+        }
+
+        steps.add(new ThemeStep("Review", MessageFormat.format(PAGES[PAGES.length - 2], courseId)));
+        steps.add(new ThemeStep("Submit", MessageFormat.format(PAGES[PAGES.length - 1], courseId)));
+
+        log.info("** STEPS length = " + steps.size());
         return steps;
     }
 
@@ -189,8 +234,10 @@ public class ThemeController extends WizardController {
 
         ThemeModel themeModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL, ThemeModel.class);
 
-        Optional<Theme> theme = themeRepository.findById(Long.parseLong(themeModel.getThemeId()));
-        Optional<BannerImage> bannerImage = bannerImageRepository.findById(Long.parseLong(themeModel.getBannerImageId()));
+        Optional<Theme> theme = ! themeModel.getThemeId().isEmpty()
+                ? themeRepository.findById(Long.parseLong(themeModel.getThemeId())) : Optional.empty();
+        Optional<BannerImage> bannerImage = ! themeModel.getBannerImageId().isEmpty()
+                ? bannerImageRepository.findById(Long.parseLong(themeModel.getBannerImageId())) : Optional.empty();
 
         model.addAttribute("themeName", theme.isPresent() ? theme.get().getUiName() : "None");
         model.addAttribute("bannerImageName", bannerImage.isPresent() ? bannerImage.get().getUiName() : "None");
@@ -233,6 +280,26 @@ public class ThemeController extends WizardController {
                 courseSessionService.addAttributeToSession(httpSession, courseId, KEY_THEME_MODEL,
                         updateThemeModelFields(sessionThemeModel, themeModel));
 
+                // if asking for the guidance page
+                if (pageIndex == PAGES.length - 3) {
+                    boolean isGuidanceFeatureEnabled = featureAccessService
+                            .isFeatureEnabledForAccount(FEATURE_ID_THEME_GUIDANCE_ENABLE, canvasService.getRootAccount(), null);
+
+                    if (! isGuidanceFeatureEnabled) {
+                        pageIndex--;
+                    }
+                }
+
+                // if asking for the navigation page
+                if (pageIndex == 4) {
+                    boolean isNavigationFeatureEnabled =
+                            featureAccessService.isFeatureEnabledForAccount(FEATURE_ID_THEME_NAVIGATION_ENABLE, canvasService.getRootAccount(), null);
+
+                    if (! isNavigationFeatureEnabled) {
+                        pageIndex--;
+                    }
+                }
+
                 break;
             case ACTION_NEXT:
                 pageIndex = currentPage + 1;
@@ -241,14 +308,26 @@ public class ThemeController extends WizardController {
                 courseSessionService.addAttributeToSession(httpSession, courseId, KEY_THEME_MODEL,
                         updateThemeModelFields(sessionThemeModel, themeModel));
 
-                //Template selection page
-//                if (importModel.getSelectedTemplateId() != null) {
-//                    sessionImportModel.setSelectedTemplateId(importModel.getSelectedTemplateId());
-//                    sessionImportModel.setSelectedTemplateName(importModel.getSelectedTemplateName());
-//                }
+                // if asking for the navigation page
+                if (pageIndex == 4) {
+                    boolean isNavigationFeatureEnabled =
+                            featureAccessService.isFeatureEnabledForAccount(FEATURE_ID_THEME_NAVIGATION_ENABLE, canvasService.getRootAccount(), null);
 
-                //Re-save the session model
-//                courseSessionService.addAttributeToSession(httpSession, courseId, KEY_IMPORT_MODEL, sessionImportModel);
+                    if (! isNavigationFeatureEnabled) {
+                        pageIndex++;
+                    }
+                }
+
+                // if asking for the guidance page
+                if (pageIndex == PAGES.length - 3) {
+                    boolean isGuidanceFeatureEnabled = featureAccessService
+                            .isFeatureEnabledForAccount(FEATURE_ID_THEME_GUIDANCE_ENABLE, canvasService.getRootAccount(), null);
+
+                    if (! isGuidanceFeatureEnabled) {
+                        pageIndex++;
+                    }
+                }
+
                 break;
             case ACTION_SUBMIT:
 //                String templateHostingUrl = toolConfig.getTemplateHostingUrl();

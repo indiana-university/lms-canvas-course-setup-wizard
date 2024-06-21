@@ -54,6 +54,10 @@ public class Constants {
     public static final String ACTION_HOME = "home";
     public static final String ACTION_SUBMIT = "submit";
 
+    public static final String FEATURE_ID_THEME_FRONTPAGE_ENABLE  = "coursesetupwizard.theme.frontpage.enable";
+    public static final String FEATURE_ID_THEME_GUIDANCE_ENABLE   = "coursesetupwizard.theme.guidance.enable";
+    public static final String FEATURE_ID_THEME_NAVIGATION_ENABLE = "coursesetupwizard.theme.navigation.enable";
+
     @AllArgsConstructor
     @Getter
     public enum MAIN_OPTION {
