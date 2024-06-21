@@ -116,6 +116,14 @@
                 loadBannerImagesForSelectedCategory();
             });
 
+            if ($('#include-banner-image-radio-yes').is(':checked')) {
+                $("#banner-wrapper").removeClass('rvt-display-none');
+            } else {
+                $("#banner-wrapper").addClass('rvt-display-none');
+                $('#banner-image-id').val('');
+                $('input[type="radio"][name=banner-image-radio-group]:checked').prop('checked', false);
+            }
+
             loadBannerImagesForSelectedCategory();
         });
 

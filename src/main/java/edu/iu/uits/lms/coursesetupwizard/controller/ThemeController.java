@@ -135,10 +135,14 @@ public class ThemeController extends WizardController {
 
         ThemeModel themeModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL, ThemeModel.class);
 
+        Theme theme = themeRepository.findById(Long.parseLong(themeModel.getThemeId())).orElse(null);
+
         if (themeModel.getIncludeNavigation() == null) {
             themeModel.setIncludeNavigation(true);
         }
 
+        model.addAttribute("exampleNavigationUrl",
+                theme != null && theme.getNavImagePreviewUrl() != null ? theme.getNavImagePreviewUrl() : "");
         model.addAttribute("themeForm", themeModel);
 
         return new ModelAndView("theme/navigation");

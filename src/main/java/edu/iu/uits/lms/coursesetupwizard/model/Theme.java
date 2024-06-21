@@ -67,8 +67,23 @@ public class Theme {
     @Column(name = "ALT_TEXT", nullable = false)
     private String altText;
 
-    @Column(name = "THEME_IMAGE_URL", nullable = false)
-    private String themeImageUrl;
+    @Column(name = "HTML", nullable = false)
+    private String html;
+
+    @Column(name = "IMAGE_URL", nullable = false)
+    private String imageUrl;
+
+    @Column(name = "NAV_IMAGE_PREVIEW_URL", nullable = false)
+    private String navImagePreviewUrl;
+
+    @Column(name = "JUST_BANNER_IMAGE_PREVIEW_URL", nullable = false)
+    private String justBannerImagePreviewUrl;
+
+    @Column(name = "JUST_NAV_IMAGE_PREVIEW_URL", nullable = false)
+    private String justNavImagePreviewUrl;
+
+    @Column(name = "JUST_HEADER_IMAGE_PREVIEW_URL", nullable = false)
+    private String justHeaderImagePreviewUrl;
 
     @Column(name = "ACTIVE", columnDefinition = "boolean default true")
     private boolean active = true;

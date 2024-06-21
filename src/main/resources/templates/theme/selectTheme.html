@@ -33,7 +33,7 @@
                                     <input type="radio" th:id="'theme-radio-' + ${theme.id}" th:field="*{themeId}"
                                            th:value="${theme.id}" th:aria-describedby="'someuniqueid' + ${theme.id}">
                                     <label th:for="'theme-radio-' + ${theme.id}" th:text="${theme.uiName}"></label>
-                                    <img th:id="'someuniqueid' + ${theme.id}" th:src="${theme.themeImageUrl}" class="rvt-m-top-sm"
+                                    <img th:id="'someuniqueid' + ${theme.id}" th:src="${theme.imageUrl}" class="rvt-m-top-sm"
                                          th:alt="${theme.altText}" />
                                 </div>
                             </li>
