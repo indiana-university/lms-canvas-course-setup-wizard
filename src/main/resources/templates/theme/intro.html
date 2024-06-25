@@ -50,18 +50,6 @@
         /*]]>*/
 
         function doSubmit() {
-            //Select control
-            var inputControl = document.querySelector('input[id="course-select-input"]');
-            //Hidden input with the actual value
-            var inputValue = document.querySelector('input[name="selectedCourseId"]');
-            if (inputValue.value == "") {
-                inputControl.setAttribute("aria-invalid", "true");
-                inputControl.setAttribute("aria-describedby", "option-message");
-                alertMessage = document.getElementById('select-alert');
-                alertMessage.classList.remove("rvt-display-none");
-                inputControl.focus();
-                return false;
-            }
         }
 
     </script>

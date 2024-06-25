@@ -60,6 +60,7 @@
                         <!-- ul will be filled by javascript on pulldown change -->
                         <ul id="image-ul" class="rvt-list-plain">
                         </ul>
+                        <div th:insert="fragments.html :: selectAlert"></div>
                     </fieldset>
                 </div>
                 <input type="hidden" name="currentPage" value="3">
@@ -80,8 +81,26 @@
         /*]]>*/
 
         function doSubmit() {
-            let bannerImageId = $('input[type=radio][name=banner-image-radio-group]:checked').val();
-            $('#banner-image-id').val(bannerImageId);
+            let yesBannerImage = document.querySelector('#include-banner-image-radio-yes:checked');
+
+            console.log("yesBannerImage.length = " + yesBannerImage.length);
+
+            if (yesBannerImage != null) {
+                let checkedRadio = document.querySelector('input[type=radio][name=banner-image-radio-group]:checked');
+                if (checkedRadio != null) {
+                    let bannerImageId = checkedRadio.value;
+                    $('#banner-image-id').val(bannerImageId);
+                } else {
+                    let allRadio = document.getElementsByName("banner-image-radio-group");
+                    allRadio.forEach(btn => {
+                        btn.setAttribute("aria-describedby", "option-message");
+                    });
+                    alertMessage = document.getElementById('select-alert');
+                    alertMessage.classList.remove("rvt-display-none");
+                    allRadio[0].focus();
+                    return false;
+                }
+            }
         }
 
         function loadBannerImagesForSelectedCategory() {
