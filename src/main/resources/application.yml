@@ -41,6 +41,7 @@ course-setup-wizard:
   env: ${app.env}
   hierarchyRootNodeName: Indiana University
   timezone: "America/Indianapolis"
+  notificationEmail: iu-uits-es-ess-lms-notify@exchange.iu.edu,lms-func-l@iu.edu
 
 server:
   error:

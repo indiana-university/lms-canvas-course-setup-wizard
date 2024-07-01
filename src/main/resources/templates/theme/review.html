@@ -35,11 +35,17 @@
                     <dt>Full preview</dt>
                     <dd>
                         <!-- normal markup will be 3-4 images stacked on top of each other to mimick the choices made throughout -->
-                        <img id="someuniqueid2-1" src="https://canvasassets.iu.edu/themes/basic_color1_4nav.jpg" class="rvt-m-top-sm"
+                        <img id="someuniqueid2-1" th:src="${justBannerImagePreviewUrl}" class="rvt-m-top-sm"
                              alt="Image shows how page elements will appear for this theme. Main header and navigation are in red with white font. Heading 3 will be centered, while headings 4-6 are left justified with a horizontal rule." />
-                        <img id="someuniqueid2-2" src="https://canvasassets.iu.edu/themes/basic_color1_4nav.jpg" class="rvt-m-top-sm"
+                        <th:block th:if="${bannerImagePreviewUrl != null}">
+                        <img id="someuniqueid2-2" th:src="${bannerImagePreviewUrl}" class="rvt-m-top-sm"
                              alt="Image shows how page elements will appear for this theme. Main header and navigation are in red with white font. Heading 3 will be centered, while headings 4-6 are left justified with a horizontal rule." />
-                        <img id="someuniqueid2-3" src="https://canvasassets.iu.edu/themes/basic_color1_4nav.jpg" class="rvt-m-top-sm"
+                        </th:block>
+                        <th:block th:if="${justNavImagePreviewUrl != null}">
+                        <img id="someuniqueid2-3" th:src="${justNavImagePreviewUrl}" class="rvt-m-top-sm"
+                             alt="Image shows how page elements will appear for this theme. Main header and navigation are in red with white font. Heading 3 will be centered, while headings 4-6 are left justified with a horizontal rule." />
+                        </th:block>
+                        <img id="someuniqueid2-4" th:src="${justHeaderImagePreviewUrl}" class="rvt-m-top-sm"
                              alt="Image shows how page elements will appear for this theme. Main header and navigation are in red with white font. Heading 3 will be centered, while headings 4-6 are left justified with a horizontal rule." />
                     </dd>
                 </dl>

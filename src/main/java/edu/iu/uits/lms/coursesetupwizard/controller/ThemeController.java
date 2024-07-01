@@ -8,6 +8,7 @@ import edu.iu.uits.lms.coursesetupwizard.model.ThemeModel;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageCategoryRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.ThemeRepository;
+import edu.iu.uits.lms.coursesetupwizard.service.ThemeProcessingService;
 import edu.iu.uits.lms.iuonly.model.FeatureAccess;
 import edu.iu.uits.lms.iuonly.services.FeatureAccessServiceImpl;
 import edu.iu.uits.lms.lti.LTIConstants;
@@ -61,6 +62,9 @@ public class ThemeController extends WizardController {
     @Autowired
     protected ThemeRepository themeRepository;
 
+    @Autowired
+    protected ThemeProcessingService themeProcessingService;
+
     private static final String[] PAGES = {"/app/{0}/index", "/app/theme/{0}/intro", "/app/theme/{0}/selectTheme",
             "/app/theme/{0}/selectBanner", "/app/theme/{0}/navigation", "/app/theme/{0}/guidance",
             "/app/theme/{0}/review", "/app/theme/{0}/submit"};
@@ -106,7 +110,6 @@ public class ThemeController extends WizardController {
         steps.add(new ThemeStep("Review", MessageFormat.format(PAGES[PAGES.length - 2], courseId)));
         steps.add(new ThemeStep("Submit", MessageFormat.format(PAGES[PAGES.length - 1], courseId)));
 
-        log.info("** STEPS length = " + steps.size());
         return steps;
     }
 
@@ -220,7 +223,20 @@ public class ThemeController extends WizardController {
 
         model.addAttribute("themeName", theme.isPresent() ? theme.get().getUiName() : "None");
         model.addAttribute("bannerImageName", bannerImage.isPresent() ? bannerImage.get().getUiName() : "None");
+
+        if (themeModel.getIncludeBannerImage() && bannerImage.isPresent()) {
+            model.addAttribute("bannerImagePreviewUrl", bannerImage.get().getBannerImageUrl());
+        }
+
         model.addAttribute("themeForm", themeModel);
+
+        model.addAttribute("justBannerImagePreviewUrl", theme.isPresent() ? theme.get().getJustBannerImagePreviewUrl() : "None");
+
+        if (themeModel.getIncludeNavigation()) {
+            model.addAttribute("justNavImagePreviewUrl", theme.isPresent() ? theme.get().getJustNavImagePreviewUrl() : "None");
+        }
+
+        model.addAttribute("justHeaderImagePreviewUrl", theme.isPresent() ? theme.get().getJustHeaderImagePreviewUrl() : "None");
 
         return new ModelAndView("theme/review");
     }
@@ -309,6 +325,8 @@ public class ThemeController extends WizardController {
 
                 break;
             case ACTION_SUBMIT:
+                themeProcessingService.processSubmit(sessionThemeModel, courseId);
+
 //                String templateHostingUrl = toolConfig.getTemplateHostingUrl();
 //                // Use the current application as the template host if no other has been configured.
 //                if (templateHostingUrl == null) {
