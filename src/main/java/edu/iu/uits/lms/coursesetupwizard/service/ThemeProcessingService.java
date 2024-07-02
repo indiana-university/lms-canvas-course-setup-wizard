@@ -1,16 +1,19 @@
 package edu.iu.uits.lms.coursesetupwizard.service;
 
+import edu.iu.uits.lms.canvas.helpers.CanvasConstants;
 import edu.iu.uits.lms.canvas.model.Announcement;
 import edu.iu.uits.lms.canvas.model.Assignment;
 import edu.iu.uits.lms.canvas.model.AssignmentCreateWrapper;
 import edu.iu.uits.lms.canvas.model.AssignmentGroup;
 import edu.iu.uits.lms.canvas.model.CourseSyllabusBody;
 import edu.iu.uits.lms.canvas.model.CourseSyllabusBodyWrapper;
+import edu.iu.uits.lms.canvas.model.DiscussionTopic;
 import edu.iu.uits.lms.canvas.model.WikiPage;
 import edu.iu.uits.lms.canvas.model.WikiPageCreateWrapper;
 import edu.iu.uits.lms.canvas.services.AnnouncementService;
 import edu.iu.uits.lms.canvas.services.AssignmentService;
 import edu.iu.uits.lms.canvas.services.CourseService;
+import edu.iu.uits.lms.canvas.services.DiscussionService;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.coursesetupwizard.model.ThemeModel;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageCategoryRepository;
@@ -41,6 +44,9 @@ public class ThemeProcessingService {
     private CourseService courseService;
 
     @Autowired
+    private DiscussionService discussionService;
+
+    @Autowired
     private EmailService emailService;
 
     @Autowired
@@ -55,7 +61,7 @@ public class ThemeProcessingService {
     @Autowired
     protected ToolConfig toolConfig;
 
-    public void processSubmit(ThemeModel themeModel, String courseId) {
+    public void processSubmit(ThemeModel themeModel, String courseId, String userToSendCommunicationAs) {
         log.info("In process Model!!!");
 
 //        Theme theme = themeRepository.findById(Long.parseLong(themeModel.getThemeId())).orElse(null);
@@ -75,7 +81,7 @@ public class ThemeProcessingService {
 //
 //        log.info("Created Wiki page is " + createdWikiPage);
 
-        List<Exception> exceptions = new ArrayList<>();
+        List<String> exceptionMessages = new ArrayList<>();
 
         WikiPage newWikiPage;
 
@@ -89,12 +95,12 @@ public class ThemeProcessingService {
         try {
             courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage));
         } catch (Exception e) {
-            exceptions.add(e);
+            exceptionMessages.add(e.getMessage());
         }
 
         //  2. Create course home page (using create process above), publish it, set as front page
         newWikiPage = new WikiPage();
-        newWikiPage.setTitle("Wizard Next Steps");
+        newWikiPage.setTitle("Course Home Page");
         newWikiPage.setPublished(true);
         newWikiPage.setFrontPage(true);
         newWikiPage.setBody("Body code TBD");
@@ -102,14 +108,14 @@ public class ThemeProcessingService {
         try {
             courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage));
         } catch (Exception e) {
-            exceptions.add(e);
+            exceptionMessages.add(e.getMessage());
         }
 
         //  3. Set the wiki page created in step 2 as the default
         try {
             courseService.updateCourseFrontPage(courseId, "wiki");
         } catch (Exception e) {
-            exceptions.add(e);
+            exceptionMessages.add(e.getMessage());
         }
 
         //  4. Update syllabus (more content to come from project team)
@@ -119,7 +125,7 @@ public class ThemeProcessingService {
         try {
             courseService.updateCourseSyllabus(courseId, new CourseSyllabusBodyWrapper(courseSyllabusBody));
         } catch (Exception e) {
-            exceptions.add(e);
+            exceptionMessages.add(e.getMessage());
         }
 
         //  5. Create Assignment Groups - these will be used by the end user later when interacting with the Multi-tool
@@ -128,7 +134,7 @@ public class ThemeProcessingService {
         try {
             assignmentGroup = assignmentService.createAssignmentGroup(courseId, "Templates");
         } catch (Exception e) {
-            exceptions.add(e);
+            exceptionMessages.add("Assignment group creation: " + e.getMessage());
         }
 
         if (assignmentGroup != null && assignmentGroup.getId() != null) {
@@ -140,7 +146,7 @@ public class ThemeProcessingService {
             try {
                 assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment));
             } catch (Exception e) {
-                exceptions.add(e);
+                exceptionMessages.add("Assignment #1 Creation: " + e.getMessage());
             }
 
             //  7. Create graded discussion in the Templates assignment group in the Assignments tool
@@ -152,7 +158,7 @@ public class ThemeProcessingService {
             try {
                 assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment));
             } catch (Exception e) {
-                exceptions.add(e);
+                exceptionMessages.add("Assignment #2 Creation: " + e.getMessage());
             }
 
             //  8. Create quiz in the Templates assignment group in the Assignments tool
@@ -164,39 +170,42 @@ public class ThemeProcessingService {
             try {
                 assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment));
             } catch (Exception e) {
-                exceptions.add(e);
+                exceptionMessages.add("Assignment #3 Creation: " + e.getMessage());
             }
         }
 
         //  9. Create ungraded discussion item in Discussions tool
-        Announcement announcement = new Announcement();
-        announcement.setTitle("[Template] Ungraded Discussion");
-        announcement.setMessage("Here's all the things you should discuss here");
-        announcement.setDiscussionType("threaded");
-        announcement.setDelayedPostAt("2099-12-30");
+        DiscussionTopic discussionTopic = new DiscussionTopic();
+        discussionTopic.setTitle("[Template] Ungraded Discussion");
+        discussionTopic.setMessage("Here's all the things you should discuss here");
+        discussionTopic.setDiscussionType("threaded");
+        discussionTopic.setDelayedPostAt("2099-12-30");
 
         try {
-            announcementService.createAnnouncement(courseId, announcement, false, null, null, null);
+            discussionService.createDiscussionTopic(courseId, discussionTopic,
+                    CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToSendCommunicationAs);
         } catch (Exception e) {
-            exceptions.add(e);
+            exceptionMessages.add("Discussion Topic #1 Creation: " + e.getMessage());
         }
 
         // 10. Create items in the Announcements tool (step 9 in Lynn’s stuff) ** still being worked on
-        announcement = new Announcement();
+        Announcement announcement = new Announcement();
         announcement.setTitle("[Template] Announcement");
         announcement.setMessage(" <content to come from project team>");
         announcement.setAnnouncement(true);
+        announcement.setPublished(true);
         announcement.setDelayedPostAt("2099-12-30");
 
         try {
-            announcementService.createAnnouncement(courseId, announcement, false, null, null, null);
+            announcementService.createAnnouncement(courseId, announcement, false,
+                    CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToSendCommunicationAs, null, null);
         } catch (Exception e) {
-            exceptions.add(e);
+            exceptionMessages.add("Announcement Creation: " + e.getMessage());
         }
 
         // 11. Log any steps that fail but continue on to the next step. Send error message to our team email accounts with info on course and failed steps.
 
-        if (! exceptions.isEmpty()) {
+        if (! exceptionMessages.isEmpty()) {
             try {
                 EmailDetails emailDetails = new EmailDetails();
 
@@ -204,11 +213,11 @@ public class ThemeProcessingService {
                 emailDetails.setSubject(emailService.getStandardHeader() + " Course Setup Wizard Theme Error");
 
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("The following exceptions happened during theme processing: \r\n");
+                stringBuilder.append("The following exceptions happened during theme processing: \r\n\r\n");
 
-                for (Exception exception : exceptions) {
-                    stringBuilder.append(exception.getMessage());
-                    stringBuilder.append("\r\n");
+                for (String exceptionMessage : exceptionMessages) {
+                    stringBuilder.append(exceptionMessage);
+                    stringBuilder.append("\r\n\r\n");
                 }
 
                 emailDetails.setBody(stringBuilder.toString());
@@ -217,6 +226,8 @@ public class ThemeProcessingService {
             } catch (LmsEmailTooBigException | MessagingException e) {
                 log.error("Error sending email");
             }
+        } else {
+            log.info("ALL worked WITHOUT error!!!!");
         }
 
         // 12. Once all steps above are completed, drop the user on the Next Steps page

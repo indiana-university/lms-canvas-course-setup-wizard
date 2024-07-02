@@ -45,6 +45,7 @@ import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository
 import edu.iu.uits.lms.coursesetupwizard.repository.ThemeRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
+import edu.iu.uits.lms.coursesetupwizard.service.ThemeProcessingService;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
 import edu.iu.uits.lms.lti.config.TestUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -107,6 +108,9 @@ public class CorsTest {
 
    @MockBean
    private ThemeRepository themeRepository;
+
+   @MockBean
+   private ThemeProcessingService themeProcessingService;
 
    public static String COURSE_ID_TST = "1234";
    public static String USER_ID_TST = "qwerty";

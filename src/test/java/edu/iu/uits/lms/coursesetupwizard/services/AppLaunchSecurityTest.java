@@ -41,6 +41,7 @@ import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository
 import edu.iu.uits.lms.coursesetupwizard.repository.ThemeRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
+import edu.iu.uits.lms.coursesetupwizard.service.ThemeProcessingService;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
 import edu.iu.uits.lms.iuonly.services.FeatureAccessServiceImpl;
 import edu.iu.uits.lms.lti.LTIConstants;
@@ -98,6 +99,9 @@ public class AppLaunchSecurityTest {
 
    @MockBean
    private FeatureAccessServiceImpl featureAccessService;
+
+   @MockBean
+   private ThemeProcessingService themeProcessingService;
 
    @BeforeEach
    public void setup() {

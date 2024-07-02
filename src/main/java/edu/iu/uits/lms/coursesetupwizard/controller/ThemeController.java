@@ -325,7 +325,8 @@ public class ThemeController extends WizardController {
 
                 break;
             case ACTION_SUBMIT:
-                themeProcessingService.processSubmit(sessionThemeModel, courseId);
+                String currentUser = oidcTokenUtils.getUserLoginId();
+                themeProcessingService.processSubmit(sessionThemeModel, courseId, currentUser);
 
 //                String templateHostingUrl = toolConfig.getTemplateHostingUrl();
 //                // Use the current application as the template host if no other has been configured.
