@@ -134,7 +134,13 @@ public class ThemeProcessingService {
         try {
             assignmentGroup = assignmentService.createAssignmentGroup(courseId, "Templates");
         } catch (Exception e) {
-            exceptionMessages.add("Assignment group creation: " + e.getMessage());
+            exceptionMessages.add("Assignment group #1 creation: " + e.getMessage());
+        }
+
+        try {
+            assignmentGroup = assignmentService.createAssignmentGroup(courseId, "Assignments");
+        } catch (Exception e) {
+            exceptionMessages.add("Assignment group #2 creation: " + e.getMessage());
         }
 
         if (assignmentGroup != null && assignmentGroup.getId() != null) {
@@ -142,6 +148,7 @@ public class ThemeProcessingService {
             Assignment assignment = new Assignment();
             assignment.setName("[Template] Assignment");
             assignment.setAssignmentGroupId(assignmentGroup.getId());
+            assignment.setDescription("<content to come from project team>");
 
             try {
                 assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment));
@@ -154,6 +161,7 @@ public class ThemeProcessingService {
             assignment.setName("[Template] Graded Discussion");
             assignment.setAssignmentGroupId(assignmentGroup.getId());
             assignment.setSubmissionTypes(List.of("discussion_topic"));
+            assignment.setDescription("<content to come from project team>");
 
             try {
                 assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment));
@@ -166,6 +174,7 @@ public class ThemeProcessingService {
             assignment.setName("[Template] Quiz");
             assignment.setAssignmentGroupId(assignmentGroup.getId());
             assignment.setSubmissionTypes(List.of("online_quiz"));
+            assignment.setDescription("<content to come from project team>");
 
             try {
                 assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment));
@@ -174,12 +183,14 @@ public class ThemeProcessingService {
             }
         }
 
+        final String DELAYED_POST_AT_STRING = "2099-12-30";
+
         //  9. Create ungraded discussion item in Discussions tool
         DiscussionTopic discussionTopic = new DiscussionTopic();
         discussionTopic.setTitle("[Template] Ungraded Discussion");
         discussionTopic.setMessage("Here's all the things you should discuss here");
-        discussionTopic.setDiscussionType("threaded");
-        discussionTopic.setDelayedPostAt("2099-12-30");
+        discussionTopic.setDiscussionType(DiscussionTopic.TYPE.THREADED);
+        discussionTopic.setDelayedPostAt(DELAYED_POST_AT_STRING);
 
         try {
             discussionService.createDiscussionTopic(courseId, discussionTopic,
@@ -191,10 +202,10 @@ public class ThemeProcessingService {
         // 10. Create items in the Announcements tool (step 9 in Lynn’s stuff) ** still being worked on
         Announcement announcement = new Announcement();
         announcement.setTitle("[Template] Announcement");
-        announcement.setMessage(" <content to come from project team>");
-        announcement.setAnnouncement(true);
         announcement.setPublished(true);
-        announcement.setDelayedPostAt("2099-12-30");
+        announcement.setDiscussionType(DiscussionTopic.TYPE.SIDE_COMMENT);
+        announcement.setDelayedPostAt(DELAYED_POST_AT_STRING);
+        announcement.setMessage("Here's all the things you should discuss here");
 
         try {
             announcementService.createAnnouncement(courseId, announcement, false,
