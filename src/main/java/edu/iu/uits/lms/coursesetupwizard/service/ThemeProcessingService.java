@@ -14,10 +14,13 @@ import edu.iu.uits.lms.canvas.services.AnnouncementService;
 import edu.iu.uits.lms.canvas.services.AssignmentService;
 import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.canvas.services.DiscussionService;
+import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
+import edu.iu.uits.lms.coursesetupwizard.model.ThemeContent;
 import edu.iu.uits.lms.coursesetupwizard.model.ThemeModel;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageCategoryRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.ThemeContentRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.ThemeRepository;
 import edu.iu.uits.lms.email.model.EmailDetails;
 import edu.iu.uits.lms.email.model.Priority;
@@ -59,53 +62,52 @@ public class ThemeProcessingService {
     protected ThemeRepository themeRepository;
 
     @Autowired
+    protected ThemeContentRepository themeContentRepository;
+
+    @Autowired
     protected ToolConfig toolConfig;
 
     public void processSubmit(ThemeModel themeModel, String courseId, String userToSendCommunicationAs) {
         log.info("In process Model!!!");
 
-//        Theme theme = themeRepository.findById(Long.parseLong(themeModel.getThemeId())).orElse(null);
-//        BannerImage bannerImage = bannerImageRepository.findById(Long.parseLong(themeModel.getBannerImageId())).orElse(null);
-
-//        List<WikiPage> wikiPages = courseService.getWikiPages(courseId);
-//
-//        log.info("Wiki pages size = " + wikiPages.size());
-
-//        WikiPage newWikiPage = new WikiPage();
-//        newWikiPage.setTitle("Test from code page");
-//        newWikiPage.setPublished(false);
-//        newWikiPage.setBody("From code body");
-//
-//        WikiPageCreateWrapper wikiPageCreateWrapper = new WikiPageCreateWrapper(newWikiPage);
-//        WikiPage createdWikiPage = courseService.createWikiPage(courseId, wikiPageCreateWrapper);
-//
-//        log.info("Created Wiki page is " + createdWikiPage);
-
         List<String> exceptionMessages = new ArrayList<>();
 
         WikiPage newWikiPage;
+        ThemeContent themeContent;
 
         //  1. Create a page called Wizard Next Steps. This page will contain information only.
-        newWikiPage = new WikiPage();
-        newWikiPage.setTitle("Wizard Next Steps");
-        newWikiPage.setPublished(false);
-        newWikiPage.setFrontPage(false);
-        newWikiPage.setBody("Body code TBD");
-
         try {
+            themeContent = themeContentRepository.findByName(Constants.THEME_NEXT_STEPS_BODY_NAME);
+
+            if (themeContent == null || themeContent.getValue() == null) {
+                throw new RuntimeException("Could not find value for " + Constants.THEME_NEXT_STEPS_BODY_NAME);
+            }
+
+            newWikiPage = new WikiPage();
+            newWikiPage.setTitle("Wizard Next Steps");
+            newWikiPage.setPublished(false);
+            newWikiPage.setFrontPage(false);
+            newWikiPage.setBody(themeContent.getValue());
+
             courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage));
         } catch (Exception e) {
             exceptionMessages.add(e.getMessage());
         }
 
         //  2. Create course home page (using create process above), publish it, set as front page
-        newWikiPage = new WikiPage();
-        newWikiPage.setTitle("Course Home Page");
-        newWikiPage.setPublished(true);
-        newWikiPage.setFrontPage(true);
-        newWikiPage.setBody("Body code TBD");
-
         try {
+            themeContent = themeContentRepository.findByName(Constants.THEME_HOME_PAGE_BODY_NAME);
+
+            if (themeContent == null || themeContent.getValue() == null) {
+                throw new RuntimeException("Could not find value for " + Constants.THEME_HOME_PAGE_BODY_NAME);
+            }
+
+            newWikiPage = new WikiPage();
+            newWikiPage.setTitle("Course Home Page");
+            newWikiPage.setPublished(true);
+            newWikiPage.setFrontPage(true);
+            newWikiPage.setBody(themeContent.getValue());
+
             courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage));
         } catch (Exception e) {
             exceptionMessages.add(e.getMessage());
@@ -119,10 +121,17 @@ public class ThemeProcessingService {
         }
 
         //  4. Update syllabus (more content to come from project team)
-        CourseSyllabusBody courseSyllabusBody = new CourseSyllabusBody();
-        courseSyllabusBody.setSyllabusBody("To be determined body");
 
         try {
+            themeContent = themeContentRepository.findByName(Constants.THEME_SYLLABUS_BODY_NAME);
+
+            if (themeContent == null || themeContent.getValue() == null) {
+                throw new RuntimeException("Could not find value for " + Constants.THEME_SYLLABUS_BODY_NAME);
+            }
+
+            CourseSyllabusBody courseSyllabusBody = new CourseSyllabusBody();
+            courseSyllabusBody.setSyllabusBody(themeContent.getValue());
+
             courseService.updateCourseSyllabus(courseId, new CourseSyllabusBodyWrapper(courseSyllabusBody));
         } catch (Exception e) {
             exceptionMessages.add(e.getMessage());
@@ -145,54 +154,78 @@ public class ThemeProcessingService {
 
         if (assignmentGroup != null && assignmentGroup.getId() != null) {
             //  6. Create assignment in the Templates assignment group in the Assignments tool.
-            Assignment assignment = new Assignment();
-            assignment.setName("[Template] Assignment");
-            assignment.setAssignmentGroupId(assignmentGroup.getId());
-            assignment.setDescription("<content to come from project team>");
+            Assignment assignment;
 
             try {
+                themeContent = themeContentRepository.findByName(Constants.THEME_ASSIGNMENT_DESCRIPTION_NAME);
+
+                if (themeContent == null || themeContent.getValue() == null) {
+                    throw new RuntimeException("Could not find value for " + Constants.THEME_ASSIGNMENT_DESCRIPTION_NAME);
+                }
+
+                assignment = new Assignment();
+                assignment.setName("[Template] Assignment");
+                assignment.setAssignmentGroupId(assignmentGroup.getId());
+                assignment.setDescription(themeContent.getValue());
+
                 assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment));
             } catch (Exception e) {
                 exceptionMessages.add("Assignment #1 Creation: " + e.getMessage());
             }
 
             //  7. Create graded discussion in the Templates assignment group in the Assignments tool
-            assignment = new Assignment();
-            assignment.setName("[Template] Graded Discussion");
-            assignment.setAssignmentGroupId(assignmentGroup.getId());
-            assignment.setSubmissionTypes(List.of("discussion_topic"));
-            assignment.setDescription("<content to come from project team>");
-
             try {
+                themeContent = themeContentRepository.findByName(Constants.THEME_GRADED_ASSIGNMENT_DESCRIPTION_NAME);
+
+                if (themeContent == null || themeContent.getValue() == null) {
+                    throw new RuntimeException("Could not find value for " + Constants.THEME_GRADED_ASSIGNMENT_DESCRIPTION_NAME);
+                }
+
+                assignment = new Assignment();
+                assignment.setName("[Template] Graded Discussion");
+                assignment.setAssignmentGroupId(assignmentGroup.getId());
+                assignment.setSubmissionTypes(List.of("discussion_topic"));
+                assignment.setDescription(themeContent.getValue());
+
                 assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment));
             } catch (Exception e) {
                 exceptionMessages.add("Assignment #2 Creation: " + e.getMessage());
             }
 
             //  8. Create quiz in the Templates assignment group in the Assignments tool
-            assignment = new Assignment();
-            assignment.setName("[Template] Quiz");
-            assignment.setAssignmentGroupId(assignmentGroup.getId());
-            assignment.setSubmissionTypes(List.of("online_quiz"));
-            assignment.setDescription("<content to come from project team>");
-
             try {
+                themeContent = themeContentRepository.findByName(Constants.THEME_QUIZ_DESCRIPTION_NAME);
+
+                if (themeContent == null || themeContent.getValue() == null) {
+                    throw new RuntimeException("Could not find value for " + Constants.THEME_QUIZ_DESCRIPTION_NAME);
+                }
+
+                assignment = new Assignment();
+                assignment.setName("[Template] Quiz");
+                assignment.setAssignmentGroupId(assignmentGroup.getId());
+                assignment.setSubmissionTypes(List.of("online_quiz"));
+                assignment.setDescription(themeContent.getValue());
+
                 assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment));
             } catch (Exception e) {
                 exceptionMessages.add("Assignment #3 Creation: " + e.getMessage());
             }
         }
 
-        final String DELAYED_POST_AT_STRING = "2099-12-30";
-
         //  9. Create ungraded discussion item in Discussions tool
-        DiscussionTopic discussionTopic = new DiscussionTopic();
-        discussionTopic.setTitle("[Template] Ungraded Discussion");
-        discussionTopic.setMessage("Here's all the things you should discuss here");
-        discussionTopic.setDiscussionType(DiscussionTopic.TYPE.THREADED);
-        discussionTopic.setDelayedPostAt(DELAYED_POST_AT_STRING);
-
         try {
+            themeContent = themeContentRepository.findByName(Constants.THEME_DISCUSSION_TOPIC_MESSAGE_NAME);
+
+            if (themeContent == null || themeContent.getValue() == null) {
+                throw new RuntimeException("Could not find value for " + Constants.THEME_DISCUSSION_TOPIC_MESSAGE_NAME);
+            }
+
+            DiscussionTopic discussionTopic = new DiscussionTopic();
+            discussionTopic.setTitle("[Template] Ungraded Discussion");
+            discussionTopic.setMessage(themeContent.getValue());
+            discussionTopic.setDiscussionType(DiscussionTopic.TYPE.THREADED);
+            discussionTopic.setDelayedPostAt(Constants.THEME_DELAYED_POST_AT_STRING);
+
             discussionService.createDiscussionTopic(courseId, discussionTopic,
                     CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToSendCommunicationAs);
         } catch (Exception e) {
@@ -200,14 +233,20 @@ public class ThemeProcessingService {
         }
 
         // 10. Create items in the Announcements tool (step 9 in Lynn’s stuff) ** still being worked on
-        Announcement announcement = new Announcement();
-        announcement.setTitle("[Template] Announcement");
-        announcement.setPublished(true);
-        announcement.setDiscussionType(DiscussionTopic.TYPE.SIDE_COMMENT);
-        announcement.setDelayedPostAt(DELAYED_POST_AT_STRING);
-        announcement.setMessage("Here's all the things you should discuss here");
-
         try {
+            themeContent = themeContentRepository.findByName(Constants.THEME_ANNOUNCEMENT_MESSAGE_NAME);
+
+            if (themeContent == null || themeContent.getValue() == null) {
+                throw new RuntimeException("Could not find value for " + Constants.THEME_ANNOUNCEMENT_MESSAGE_NAME);
+            }
+
+            Announcement announcement = new Announcement();
+            announcement.setTitle("[Template] Announcement");
+            announcement.setPublished(true);
+            announcement.setDiscussionType(DiscussionTopic.TYPE.SIDE_COMMENT);
+            announcement.setDelayedPostAt(Constants.THEME_DELAYED_POST_AT_STRING);
+            announcement.setMessage(themeContent.getValue());
+
             announcementService.createAnnouncement(courseId, announcement, false,
                     CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToSendCommunicationAs, null, null);
         } catch (Exception e) {
