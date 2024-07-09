@@ -4,9 +4,11 @@ import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.model.BannerImage;
 import edu.iu.uits.lms.coursesetupwizard.model.BannerImageCategory;
 import edu.iu.uits.lms.coursesetupwizard.model.Theme;
+import edu.iu.uits.lms.coursesetupwizard.model.ThemeLog;
 import edu.iu.uits.lms.coursesetupwizard.model.ThemeModel;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageCategoryRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.ThemeLogRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.ThemeRepository;
 import edu.iu.uits.lms.coursesetupwizard.service.ThemeProcessingService;
 import edu.iu.uits.lms.iuonly.model.FeatureAccess;
@@ -36,6 +38,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_BACK;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_HOME;
@@ -58,6 +61,9 @@ public class ThemeController extends WizardController {
 
     @Autowired
     protected BannerImageRepository bannerImageRepository;
+
+    @Autowired
+    protected ThemeLogRepository themeLogRepository;
 
     @Autowired
     protected ThemeRepository themeRepository;
@@ -325,8 +331,33 @@ public class ThemeController extends WizardController {
 
                 break;
             case ACTION_SUBMIT:
-                String currentUser = oidcTokenUtils.getUserLoginId();
-                themeProcessingService.processSubmit(sessionThemeModel, courseId, currentUser);
+
+                String testString = "Hi there, %s. How is %s doing";
+
+                log.info(String.format(testString, "dude", "dude2"));
+
+                String testString2 = "Hi there, {0}. How is {1} doing.  {0} is fine. 1234-{2}-678";
+
+                log.info(MessageFormat.format(testString2, "man", "man2", "man3"));
+                log.info(MessageFormat.format(testString2, "man"));
+
+//                String currentUser = oidcTokenUtils.getUserLoginId();
+//                List<String> exceptionMessages = themeProcessingService.processSubmit(sessionThemeModel, courseId, currentUser);
+//
+//                ThemeLog themeLog = new ThemeLog();
+//                themeLog.setCourseId(courseId);
+//                themeLog.setLoginId(currentUser);
+//                themeLog.setIncludeBannerImage(themeModel.getIncludeBannerImage());
+//                themeLog.setBannerImageId(sessionThemeModel.getBannerImageId());
+//                themeLog.setThemeId(sessionThemeModel.getThemeId());
+//                themeLog.setBannerImageCategoryId(sessionThemeModel.getBannerImageCategoryId());
+//                themeLog.setIncludeNavigation(sessionThemeModel.getIncludeNavigation());
+//                themeLog.setIncludeGuidance(sessionThemeModel.getIncludeGuidance());
+//                themeLog.setErrors(exceptionMessages.isEmpty() ? null : exceptionMessages.stream().collect(Collectors.joining()));
+//
+//                themeLog = themeLogRepository.save(themeLog);
+//
+//                log.info(String.format("Saved theme log with id %d", themeLog.getId()));
 
 //                String templateHostingUrl = toolConfig.getTemplateHostingUrl();
 //                // Use the current application as the template host if no other has been configured.

@@ -38,6 +38,7 @@ import edu.iu.uits.lms.coursesetupwizard.controller.rest.BannerImageJpaCustomRes
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageCategoryRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.ThemeLogRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.ThemeRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
@@ -96,6 +97,9 @@ public class AppLaunchSecurityTest {
 
    @MockBean
    private ThemeRepository themeRepository;
+
+   @MockBean
+   private ThemeLogRepository themeLogRepository;
 
    @MockBean
    private FeatureAccessServiceImpl featureAccessService;

@@ -39,24 +39,51 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import java.util.Date;
 
 @Entity
-@Table(name = "CSW_THEME_CONTENT")
+@Table(name = "CSW_THEME_LOG")
+@SequenceGenerator(name = "CSW_THEME_LOG_ID_SEQ", sequenceName = "CSW_THEME_LOG_ID_SEQ", allocationSize = 1)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ThemeContent {
+public class ThemeLog {
     @Id
-    @Column(name = "NAME")
-    private String name;
+    @GeneratedValue(generator = "CSW_THEME_LOG_ID_SEQ")
+    private Long id;
 
-    @Column(name = "VALUE", nullable = false)
-    private String value;
+    @Column(name = "COURSE_ID")
+    private String courseId;
+
+    @Column(name = "LOGIN_ID")
+    private String loginId;
+
+    @Column(name = "INCLUDE_BANNER_IMAGE")
+    private boolean includeBannerImage;
+
+    @Column(name = "BANNER_IMAGE_ID")
+    private String bannerImageId;
+
+    @Column(name = "THEME_ID")
+    private String themeId;
+
+    @Column(name = "BANNER_IMAGE_CATEGORY_ID")
+    private String bannerImageCategoryId;
+
+    @Column(name = "INCLUDE_NAVIGATION")
+    private boolean includeNavigation;
+
+    @Column(name = "INCLUDE_GUIDANCE")
+    private boolean includeGuidance;
+
+    @Column(name = "ERRORS")
+    private String errors;
 
     @Column(name = "CREATEDON")
     private Date createdOn;

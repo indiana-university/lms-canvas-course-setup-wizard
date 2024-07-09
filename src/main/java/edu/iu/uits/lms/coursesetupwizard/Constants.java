@@ -68,7 +68,6 @@ public class Constants {
     public static final String THEME_DISCUSSION_TOPIC_MESSAGE_NAME = "theme.discussion.topic.message";
     public static final String THEME_ANNOUNCEMENT_MESSAGE_NAME = "theme.announcement.message";
 
-
     @AllArgsConstructor
     @Getter
     public enum MAIN_OPTION {

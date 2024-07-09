@@ -1,4 +1,4 @@
-package edu.iu.uits.lms.coursesetupwizard.model;
+package edu.iu.uits.lms.coursesetupwizard.repository;
 
 /*-
  * #%L
@@ -8,18 +8,18 @@ package edu.iu.uits.lms.coursesetupwizard.model;
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- *
+ * 
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *
+ * 
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *
+ * 
  * 3. Neither the name of the Indiana University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software without
  *    specific prior written permission.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -33,43 +33,17 @@ package edu.iu.uits.lms.coursesetupwizard.model;
  * #L%
  */
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import edu.iu.uits.lms.coursesetupwizard.model.ThemeLog;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.rest.core.annotation.Description;
+import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.stereotype.Component;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.Table;
-import java.util.Date;
-
-@Entity
-@Table(name = "CSW_THEME_CONTENT")
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class ThemeContent {
-    @Id
-    @Column(name = "NAME")
-    private String name;
-
-    @Column(name = "VALUE", nullable = false)
-    private String value;
-
-    @Column(name = "CREATEDON")
-    private Date createdOn;
-
-    @Column(name = "MODIFIEDON")
-    private Date modifiedOn;
-
-    @PreUpdate
-    @PrePersist
-    public void updateTimeStamps() {
-        modifiedOn = new Date();
-        if (createdOn == null) {
-            createdOn = new Date();
-        }
-    }
+@Component
+@RepositoryRestResource(path = "themelog",
+        itemResourceDescription = @Description("Theme Log"),
+        collectionResourceDescription = @Description("Theme Log"))
+@Tag(name = "ThemeLogRepository", description = "Interact with Theme Log CRUD operations")
+public interface ThemeLogRepository extends PagingAndSortingRepository<ThemeLog, Long> {
 }

@@ -67,7 +67,7 @@ public class ThemeProcessingService {
     @Autowired
     protected ToolConfig toolConfig;
 
-    public void processSubmit(ThemeModel themeModel, String courseId, String userToSendCommunicationAs) {
+    public List<String> processSubmit(ThemeModel themeModel, String courseId, String userToSendCommunicationAs) {
         log.info("In process Model!!!");
 
         List<String> exceptionMessages = new ArrayList<>();
@@ -90,6 +90,8 @@ public class ThemeProcessingService {
             newWikiPage.setBody(themeContent.getValue());
 
             courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage));
+
+            log.info(String.format("Successfully created Wiki page for courseId %s", courseId));
         } catch (Exception e) {
             exceptionMessages.add(e.getMessage());
         }
@@ -109,6 +111,8 @@ public class ThemeProcessingService {
             newWikiPage.setBody(themeContent.getValue());
 
             courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage));
+
+            log.info(String.format("Successfully created course home page for courseId %s", courseId));
         } catch (Exception e) {
             exceptionMessages.add(e.getMessage());
         }
@@ -116,6 +120,8 @@ public class ThemeProcessingService {
         //  3. Set the wiki page created in step 2 as the default
         try {
             courseService.updateCourseFrontPage(courseId, "wiki");
+
+            log.info(String.format("Successfully set wiki as the course front page for courseId %s", courseId));
         } catch (Exception e) {
             exceptionMessages.add(e.getMessage());
         }
@@ -133,6 +139,8 @@ public class ThemeProcessingService {
             courseSyllabusBody.setSyllabusBody(themeContent.getValue());
 
             courseService.updateCourseSyllabus(courseId, new CourseSyllabusBodyWrapper(courseSyllabusBody));
+
+            log.info(String.format("Updated syllabus for courseId %s", courseId));
         } catch (Exception e) {
             exceptionMessages.add(e.getMessage());
         }
@@ -142,12 +150,16 @@ public class ThemeProcessingService {
 
         try {
             assignmentGroup = assignmentService.createAssignmentGroup(courseId, "Templates");
+
+            log.info(String.format("Successfully created Assignment Group 'Templates' for courseId %s", courseId));
         } catch (Exception e) {
             exceptionMessages.add("Assignment group #1 creation: " + e.getMessage());
         }
 
         try {
             assignmentGroup = assignmentService.createAssignmentGroup(courseId, "Assignments");
+
+            log.info(String.format("Successfully created Assignment Group 'Assignments' for courseId %s", courseId));
         } catch (Exception e) {
             exceptionMessages.add("Assignment group #2 creation: " + e.getMessage());
         }
@@ -169,6 +181,8 @@ public class ThemeProcessingService {
                 assignment.setDescription(themeContent.getValue());
 
                 assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment));
+
+                log.info(String.format("Successfully created Assignment for courseId %s", courseId));
             } catch (Exception e) {
                 exceptionMessages.add("Assignment #1 Creation: " + e.getMessage());
             }
@@ -188,6 +202,8 @@ public class ThemeProcessingService {
                 assignment.setDescription(themeContent.getValue());
 
                 assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment));
+
+                log.info(String.format("Successfully created Graded discussion Assignment for courseId %s", courseId));
             } catch (Exception e) {
                 exceptionMessages.add("Assignment #2 Creation: " + e.getMessage());
             }
@@ -207,6 +223,8 @@ public class ThemeProcessingService {
                 assignment.setDescription(themeContent.getValue());
 
                 assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment));
+
+                log.info(String.format("Successfully created quiz Assignment for courseId %s", courseId));
             } catch (Exception e) {
                 exceptionMessages.add("Assignment #3 Creation: " + e.getMessage());
             }
@@ -228,29 +246,35 @@ public class ThemeProcessingService {
 
             discussionService.createDiscussionTopic(courseId, discussionTopic,
                     CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToSendCommunicationAs);
+
+            log.info(String.format("Successfully created ungraded discussion topic for courseId %s", courseId));
         } catch (Exception e) {
             exceptionMessages.add("Discussion Topic #1 Creation: " + e.getMessage());
         }
 
         // 10. Create items in the Announcements tool (step 9 in Lynn’s stuff) ** still being worked on
-        try {
-            themeContent = themeContentRepository.findByName(Constants.THEME_ANNOUNCEMENT_MESSAGE_NAME);
+        if (themeModel != null && themeModel.getIncludeGuidance()) {
+            try {
+                themeContent = themeContentRepository.findByName(Constants.THEME_ANNOUNCEMENT_MESSAGE_NAME);
 
-            if (themeContent == null || themeContent.getValue() == null) {
-                throw new RuntimeException("Could not find value for " + Constants.THEME_ANNOUNCEMENT_MESSAGE_NAME);
+                if (themeContent == null || themeContent.getValue() == null) {
+                    throw new RuntimeException("Could not find value for " + Constants.THEME_ANNOUNCEMENT_MESSAGE_NAME);
+                }
+
+                Announcement announcement = new Announcement();
+                announcement.setTitle("[Template] Announcement");
+                announcement.setPublished(true);
+                announcement.setDiscussionType(DiscussionTopic.TYPE.SIDE_COMMENT);
+                announcement.setDelayedPostAt(Constants.THEME_DELAYED_POST_AT_STRING);
+                announcement.setMessage(themeContent.getValue());
+
+                announcementService.createAnnouncement(courseId, announcement, false,
+                        CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToSendCommunicationAs, null, null);
+
+                log.info(String.format("Successfully created Announcement for courseId %s", courseId));
+            } catch (Exception e) {
+                exceptionMessages.add("Announcement Creation: " + e.getMessage());
             }
-
-            Announcement announcement = new Announcement();
-            announcement.setTitle("[Template] Announcement");
-            announcement.setPublished(true);
-            announcement.setDiscussionType(DiscussionTopic.TYPE.SIDE_COMMENT);
-            announcement.setDelayedPostAt(Constants.THEME_DELAYED_POST_AT_STRING);
-            announcement.setMessage(themeContent.getValue());
-
-            announcementService.createAnnouncement(courseId, announcement, false,
-                    CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToSendCommunicationAs, null, null);
-        } catch (Exception e) {
-            exceptionMessages.add("Announcement Creation: " + e.getMessage());
         }
 
         // 11. Log any steps that fail but continue on to the next step. Send error message to our team email accounts with info on course and failed steps.
@@ -281,6 +305,8 @@ public class ThemeProcessingService {
         }
 
         // 12. Once all steps above are completed, drop the user on the Next Steps page
+
+        return exceptionMessages;
     }
 
 }
