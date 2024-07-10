@@ -29,6 +29,7 @@ import edu.iu.uits.lms.email.service.LmsEmailTooBigException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import javax.mail.MessagingException;
 import java.util.ArrayList;
@@ -66,6 +67,9 @@ public class ThemeProcessingService {
 
     @Autowired
     protected ToolConfig toolConfig;
+
+    @Autowired
+    private FreeMarkerConfigurer freemarkerConfigurer;
 
     public List<String> processSubmit(ThemeModel themeModel, String courseId, String userToSendCommunicationAs) {
         log.info("In process Model!!!");

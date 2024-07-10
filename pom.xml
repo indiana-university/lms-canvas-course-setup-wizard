@@ -240,6 +240,10 @@
             <artifactId>springdoc-openapi-data-rest</artifactId>
             <version>${springdoc-openapi-ui.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>
     </dependencies>
 
 
