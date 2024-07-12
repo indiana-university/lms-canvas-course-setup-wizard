@@ -55,8 +55,8 @@ public class ThemeContent {
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "VALUE", nullable = false)
-    private String value;
+    @Column(name = "TEMPLATE_TEXT", nullable = false)
+    private String templateText;
 
     @Column(name = "CREATEDON")
     private Date createdOn;

@@ -16,6 +16,7 @@ import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.canvas.services.DiscussionService;
 import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
+import edu.iu.uits.lms.coursesetupwizard.model.BannerImage;
 import edu.iu.uits.lms.coursesetupwizard.model.ThemeContent;
 import edu.iu.uits.lms.coursesetupwizard.model.ThemeModel;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageCategoryRepository;
@@ -26,14 +27,21 @@ import edu.iu.uits.lms.email.model.EmailDetails;
 import edu.iu.uits.lms.email.model.Priority;
 import edu.iu.uits.lms.email.service.EmailService;
 import edu.iu.uits.lms.email.service.LmsEmailTooBigException;
+import freemarker.cache.StringTemplateLoader;
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import javax.mail.MessagingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -71,29 +79,32 @@ public class ThemeProcessingService {
     @Autowired
     private FreeMarkerConfigurer freemarkerConfigurer;
 
-    public List<String> processSubmit(ThemeModel themeModel, String courseId, String userToSendCommunicationAs) {
+    public List<String> processSubmit(ThemeModel themeModel, String courseId, String userToCreateAs) {
         log.info("In process Model!!!");
 
         List<String> exceptionMessages = new ArrayList<>();
 
+        Map<String, String> freemarkerProcessedTextMap = loadFreemarkerTemplatesFromTheDatabase(themeModel, courseId);
+
+        String textToUse;
         WikiPage newWikiPage;
-        ThemeContent themeContent;
 
         //  1. Create a page called Wizard Next Steps. This page will contain information only.
         try {
-            themeContent = themeContentRepository.findByName(Constants.THEME_NEXT_STEPS_BODY_NAME);
+            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_NEXT_STEPS_BODY_TEMPLATE_NAME);
 
-            if (themeContent == null || themeContent.getValue() == null) {
-                throw new RuntimeException("Could not find value for " + Constants.THEME_NEXT_STEPS_BODY_NAME);
+            if (textToUse == null) {
+                throw new RuntimeException("Could not find value for " + Constants.THEME_NEXT_STEPS_BODY_TEMPLATE_NAME);
             }
 
             newWikiPage = new WikiPage();
             newWikiPage.setTitle("Wizard Next Steps");
             newWikiPage.setPublished(false);
             newWikiPage.setFrontPage(false);
-            newWikiPage.setBody(themeContent.getValue());
+            newWikiPage.setBody(textToUse);
 
-            courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage));
+            courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
+                    CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
 
             log.info(String.format("Successfully created Wiki page for courseId %s", courseId));
         } catch (Exception e) {
@@ -102,19 +113,20 @@ public class ThemeProcessingService {
 
         //  2. Create course home page (using create process above), publish it, set as front page
         try {
-            themeContent = themeContentRepository.findByName(Constants.THEME_HOME_PAGE_BODY_NAME);
+            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_HOME_PAGE_BODY_TEMPLATE_NAME);
 
-            if (themeContent == null || themeContent.getValue() == null) {
-                throw new RuntimeException("Could not find value for " + Constants.THEME_HOME_PAGE_BODY_NAME);
+            if (textToUse == null) {
+                throw new RuntimeException("Could not find value for " + Constants.THEME_HOME_PAGE_BODY_TEMPLATE_NAME);
             }
 
             newWikiPage = new WikiPage();
             newWikiPage.setTitle("Course Home Page");
             newWikiPage.setPublished(true);
             newWikiPage.setFrontPage(true);
-            newWikiPage.setBody(themeContent.getValue());
+            newWikiPage.setBody(textToUse);
 
-            courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage));
+            courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
+                    CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
 
             log.info(String.format("Successfully created course home page for courseId %s", courseId));
         } catch (Exception e) {
@@ -133,14 +145,14 @@ public class ThemeProcessingService {
         //  4. Update syllabus (more content to come from project team)
 
         try {
-            themeContent = themeContentRepository.findByName(Constants.THEME_SYLLABUS_BODY_NAME);
+            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_SYLLABUS_BODY_TEMPLATE_NAME);
 
-            if (themeContent == null || themeContent.getValue() == null) {
-                throw new RuntimeException("Could not find value for " + Constants.THEME_SYLLABUS_BODY_NAME);
+            if (textToUse == null) {
+                throw new RuntimeException("Could not find value for " + Constants.THEME_SYLLABUS_BODY_TEMPLATE_NAME);
             }
 
             CourseSyllabusBody courseSyllabusBody = new CourseSyllabusBody();
-            courseSyllabusBody.setSyllabusBody(themeContent.getValue());
+            courseSyllabusBody.setSyllabusBody(textToUse);
 
             courseService.updateCourseSyllabus(courseId, new CourseSyllabusBodyWrapper(courseSyllabusBody));
 
@@ -153,7 +165,8 @@ public class ThemeProcessingService {
         AssignmentGroup assignmentGroup = null;
 
         try {
-            assignmentGroup = assignmentService.createAssignmentGroup(courseId, "Templates");
+            assignmentGroup = assignmentService.createAssignmentGroup(courseId, "Templates",
+                    CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
 
             log.info(String.format("Successfully created Assignment Group 'Templates' for courseId %s", courseId));
         } catch (Exception e) {
@@ -161,7 +174,8 @@ public class ThemeProcessingService {
         }
 
         try {
-            assignmentGroup = assignmentService.createAssignmentGroup(courseId, "Assignments");
+            assignmentGroup = assignmentService.createAssignmentGroup(courseId, "Assignments",
+                    CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
 
             log.info(String.format("Successfully created Assignment Group 'Assignments' for courseId %s", courseId));
         } catch (Exception e) {
@@ -173,18 +187,19 @@ public class ThemeProcessingService {
             Assignment assignment;
 
             try {
-                themeContent = themeContentRepository.findByName(Constants.THEME_ASSIGNMENT_DESCRIPTION_NAME);
+                textToUse = freemarkerProcessedTextMap.get(Constants.THEME_ASSIGNMENT_DESCRIPTION_TEMPLATE_NAME);
 
-                if (themeContent == null || themeContent.getValue() == null) {
-                    throw new RuntimeException("Could not find value for " + Constants.THEME_ASSIGNMENT_DESCRIPTION_NAME);
+                if (textToUse == null) {
+                    throw new RuntimeException("Could not find value for " + Constants.THEME_ASSIGNMENT_DESCRIPTION_TEMPLATE_NAME);
                 }
 
                 assignment = new Assignment();
                 assignment.setName("[Template] Assignment");
                 assignment.setAssignmentGroupId(assignmentGroup.getId());
-                assignment.setDescription(themeContent.getValue());
+                assignment.setDescription(textToUse);
 
-                assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment));
+                assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment),
+                        CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
 
                 log.info(String.format("Successfully created Assignment for courseId %s", courseId));
             } catch (Exception e) {
@@ -193,19 +208,20 @@ public class ThemeProcessingService {
 
             //  7. Create graded discussion in the Templates assignment group in the Assignments tool
             try {
-                themeContent = themeContentRepository.findByName(Constants.THEME_GRADED_ASSIGNMENT_DESCRIPTION_NAME);
+                textToUse = freemarkerProcessedTextMap.get(Constants.THEME_GRADED_ASSIGNMENT_DESCRIPTION_TEMPLATE_NAME);
 
-                if (themeContent == null || themeContent.getValue() == null) {
-                    throw new RuntimeException("Could not find value for " + Constants.THEME_GRADED_ASSIGNMENT_DESCRIPTION_NAME);
+                if (textToUse == null) {
+                    throw new RuntimeException("Could not find value for " + Constants.THEME_GRADED_ASSIGNMENT_DESCRIPTION_TEMPLATE_NAME);
                 }
 
                 assignment = new Assignment();
                 assignment.setName("[Template] Graded Discussion");
                 assignment.setAssignmentGroupId(assignmentGroup.getId());
                 assignment.setSubmissionTypes(List.of("discussion_topic"));
-                assignment.setDescription(themeContent.getValue());
+                assignment.setDescription(textToUse);
 
-                assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment));
+                assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment),
+                        CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
 
                 log.info(String.format("Successfully created Graded discussion Assignment for courseId %s", courseId));
             } catch (Exception e) {
@@ -214,19 +230,20 @@ public class ThemeProcessingService {
 
             //  8. Create quiz in the Templates assignment group in the Assignments tool
             try {
-                themeContent = themeContentRepository.findByName(Constants.THEME_QUIZ_DESCRIPTION_NAME);
+                textToUse = freemarkerProcessedTextMap.get(Constants.THEME_QUIZ_DESCRIPTION_TEMPLATE_NAME);
 
-                if (themeContent == null || themeContent.getValue() == null) {
-                    throw new RuntimeException("Could not find value for " + Constants.THEME_QUIZ_DESCRIPTION_NAME);
+                if (textToUse == null) {
+                    throw new RuntimeException("Could not find value for " + Constants.THEME_QUIZ_DESCRIPTION_TEMPLATE_NAME);
                 }
 
                 assignment = new Assignment();
                 assignment.setName("[Template] Quiz");
                 assignment.setAssignmentGroupId(assignmentGroup.getId());
                 assignment.setSubmissionTypes(List.of("online_quiz"));
-                assignment.setDescription(themeContent.getValue());
+                assignment.setDescription(textToUse);
 
-                assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment));
+                assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment),
+                        CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
 
                 log.info(String.format("Successfully created quiz Assignment for courseId %s", courseId));
             } catch (Exception e) {
@@ -236,20 +253,20 @@ public class ThemeProcessingService {
 
         //  9. Create ungraded discussion item in Discussions tool
         try {
-            themeContent = themeContentRepository.findByName(Constants.THEME_DISCUSSION_TOPIC_MESSAGE_NAME);
+            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_DISCUSSION_TOPIC_MESSAGE_TEMPLATE_NAME);
 
-            if (themeContent == null || themeContent.getValue() == null) {
-                throw new RuntimeException("Could not find value for " + Constants.THEME_DISCUSSION_TOPIC_MESSAGE_NAME);
+            if (textToUse == null) {
+                throw new RuntimeException("Could not find value for " + Constants.THEME_DISCUSSION_TOPIC_MESSAGE_TEMPLATE_NAME);
             }
 
             DiscussionTopic discussionTopic = new DiscussionTopic();
             discussionTopic.setTitle("[Template] Ungraded Discussion");
-            discussionTopic.setMessage(themeContent.getValue());
+            discussionTopic.setMessage(textToUse);
             discussionTopic.setDiscussionType(DiscussionTopic.TYPE.THREADED);
             discussionTopic.setDelayedPostAt(Constants.THEME_DELAYED_POST_AT_STRING);
 
             discussionService.createDiscussionTopic(courseId, discussionTopic,
-                    CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToSendCommunicationAs);
+                    CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
 
             log.info(String.format("Successfully created ungraded discussion topic for courseId %s", courseId));
         } catch (Exception e) {
@@ -259,10 +276,10 @@ public class ThemeProcessingService {
         // 10. Create items in the Announcements tool (step 9 in Lynn’s stuff) ** still being worked on
         if (themeModel != null && themeModel.getIncludeGuidance()) {
             try {
-                themeContent = themeContentRepository.findByName(Constants.THEME_ANNOUNCEMENT_MESSAGE_NAME);
+                textToUse = freemarkerProcessedTextMap.get(Constants.THEME_ANNOUNCEMENT_MESSAGE_TEMPLATE_NAME);
 
-                if (themeContent == null || themeContent.getValue() == null) {
-                    throw new RuntimeException("Could not find value for " + Constants.THEME_ANNOUNCEMENT_MESSAGE_NAME);
+                if (textToUse == null) {
+                    throw new RuntimeException("Could not find value for " + Constants.THEME_ANNOUNCEMENT_MESSAGE_TEMPLATE_NAME);
                 }
 
                 Announcement announcement = new Announcement();
@@ -270,10 +287,10 @@ public class ThemeProcessingService {
                 announcement.setPublished(true);
                 announcement.setDiscussionType(DiscussionTopic.TYPE.SIDE_COMMENT);
                 announcement.setDelayedPostAt(Constants.THEME_DELAYED_POST_AT_STRING);
-                announcement.setMessage(themeContent.getValue());
+                announcement.setMessage(textToUse);
 
                 announcementService.createAnnouncement(courseId, announcement, false,
-                        CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToSendCommunicationAs, null, null);
+                        CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs, null, null);
 
                 log.info(String.format("Successfully created Announcement for courseId %s", courseId));
             } catch (Exception e) {
@@ -313,4 +330,58 @@ public class ThemeProcessingService {
         return exceptionMessages;
     }
 
+    /**
+     * Loads the freemarker template text from the database into a map
+     * @param themeModel theme model which has the form values a user selected
+     * @param courseId the courseId to use for processing
+     * @return a map which contains the processed template text with values filled in
+     */
+    private Map<String, String> loadFreemarkerTemplatesFromTheDatabase(ThemeModel themeModel, String courseId) {
+        Map<String, Object> freemarkerModel = new HashMap<>();
+
+        String bannerImageAltText = null;
+        String bannerImageUrl = null;
+
+        if (themeModel.getIncludeBannerImage() != null && themeModel.getBannerImageId() != null) {
+            Long bannerImageId = Long.valueOf(themeModel.getBannerImageId());
+            Optional<BannerImage> bannerImage = bannerImageRepository.findById(bannerImageId);
+
+            if (bannerImage.isPresent()) {
+                bannerImageAltText = bannerImage.get().getAltText();
+                bannerImageUrl = bannerImage.get().getBannerImageUrl();
+            }
+        }
+
+        freemarkerModel.put("courseId", courseId);
+        freemarkerModel.put("includeBannerImage", themeModel.getIncludeBannerImage());
+        freemarkerModel.put("bannerImageAltText", bannerImageAltText);
+        freemarkerModel.put("bannerImageUrl", bannerImageUrl);
+        freemarkerModel.put("includeGuidance", themeModel.getIncludeGuidance());
+        freemarkerModel.put("includeNavigation", themeModel.getIncludeNavigation());
+
+        Map<String, String> freemarkerProcessedTextMap = new HashMap<>();
+        StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();
+
+        Iterable<ThemeContent> allThemeContent = themeContentRepository.findAll();
+
+        for(ThemeContent themeContent : allThemeContent) {
+            stringTemplateLoader.putTemplate(themeContent.getName(), themeContent.getTemplateText());
+        }
+
+        try {
+            Configuration freemarkerTemplateConfiguration = freemarkerConfigurer.createConfiguration();
+            freemarkerTemplateConfiguration.setTemplateLoader(stringTemplateLoader);
+
+            for (ThemeContent themeContent : allThemeContent) {
+                Template freemarkerTemplate = freemarkerTemplateConfiguration.getTemplate(themeContent.getName());
+
+                freemarkerProcessedTextMap.put(themeContent.getName(),
+                        FreeMarkerTemplateUtils.processTemplateIntoString(freemarkerTemplate, freemarkerModel));
+            }
+        } catch (Exception e) {
+            log.error("Error processing templates: ", e);
+        }
+
+        return  freemarkerProcessedTextMap;
+    }
 }

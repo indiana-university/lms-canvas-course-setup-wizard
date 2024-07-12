@@ -332,17 +332,8 @@ public class ThemeController extends WizardController {
                 break;
             case ACTION_SUBMIT:
 
-                String testString = "Hi there, %s. How is %s doing";
-
-                log.info(String.format(testString, "dude", "dude2"));
-
-                String testString2 = "Hi there, {0}. How is {1} doing.  {0} is fine. 1234-{2}-678";
-
-                log.info(MessageFormat.format(testString2, "man", "man2", "man3"));
-                log.info(MessageFormat.format(testString2, "man"));
-
-//                String currentUser = oidcTokenUtils.getUserLoginId();
-//                List<String> exceptionMessages = themeProcessingService.processSubmit(sessionThemeModel, courseId, currentUser);
+                String currentUser = oidcTokenUtils.getUserLoginId();
+                List<String> exceptionMessages = themeProcessingService.processSubmit(sessionThemeModel, courseId, currentUser);
 //
 //                ThemeLog themeLog = new ThemeLog();
 //                themeLog.setCourseId(courseId);

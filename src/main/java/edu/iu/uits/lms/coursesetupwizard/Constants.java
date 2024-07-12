@@ -59,14 +59,14 @@ public class Constants {
     public static final String FEATURE_ID_THEME_NAVIGATION_ENABLE = "coursesetupwizard.theme.navigation.enable";
 
     public static final String THEME_DELAYED_POST_AT_STRING = "2099-12-30";
-    public static final String THEME_NEXT_STEPS_BODY_NAME = "theme.nextsteps.body";
-    public static final String THEME_HOME_PAGE_BODY_NAME = "theme.homepage.body";
-    public static final String THEME_SYLLABUS_BODY_NAME = "theme.syllabus.body";
-    public static final String THEME_ASSIGNMENT_DESCRIPTION_NAME = "theme.assignment.description";
-    public static final String THEME_GRADED_ASSIGNMENT_DESCRIPTION_NAME = "theme.gradedassignment.description";
-    public static final String THEME_QUIZ_DESCRIPTION_NAME = "theme.quiz.description";
-    public static final String THEME_DISCUSSION_TOPIC_MESSAGE_NAME = "theme.discussion.topic.message";
-    public static final String THEME_ANNOUNCEMENT_MESSAGE_NAME = "theme.announcement.message";
+    public static final String THEME_NEXT_STEPS_BODY_TEMPLATE_NAME = "theme.nextsteps.body.template";
+    public static final String THEME_HOME_PAGE_BODY_TEMPLATE_NAME = "theme.homepage.body.template";
+    public static final String THEME_SYLLABUS_BODY_TEMPLATE_NAME = "theme.syllabus.body.template";
+    public static final String THEME_ASSIGNMENT_DESCRIPTION_TEMPLATE_NAME = "theme.assignment.description.template";
+    public static final String THEME_GRADED_ASSIGNMENT_DESCRIPTION_TEMPLATE_NAME = "theme.gradedassignment.description.template";
+    public static final String THEME_QUIZ_DESCRIPTION_TEMPLATE_NAME = "theme.quiz.description.template";
+    public static final String THEME_DISCUSSION_TOPIC_MESSAGE_TEMPLATE_NAME = "theme.discussion.topic.message.template";
+    public static final String THEME_ANNOUNCEMENT_MESSAGE_TEMPLATE_NAME = "theme.announcement.message.template";
 
     @AllArgsConstructor
     @Getter
