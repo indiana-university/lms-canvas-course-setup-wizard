@@ -17,6 +17,7 @@ import edu.iu.uits.lms.canvas.services.DiscussionService;
 import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.coursesetupwizard.model.BannerImage;
+import edu.iu.uits.lms.coursesetupwizard.model.Theme;
 import edu.iu.uits.lms.coursesetupwizard.model.ThemeContent;
 import edu.iu.uits.lms.coursesetupwizard.model.ThemeModel;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageCategoryRepository;
@@ -31,6 +32,7 @@ import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.nullness.Opt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
@@ -341,6 +343,10 @@ public class ThemeProcessingService {
 
         String bannerImageAltText = null;
         String bannerImageUrl = null;
+        String bannerImageCssClasses = null;
+        String headerCssClasses = null;
+        String navigationCssClasses = null;
+        String wrapperCssClasses = null;
 
         if (themeModel.getIncludeBannerImage() != null && themeModel.getBannerImageId() != null) {
             Long bannerImageId = Long.valueOf(themeModel.getBannerImageId());
@@ -352,12 +358,28 @@ public class ThemeProcessingService {
             }
         }
 
-        freemarkerModel.put("courseId", courseId);
-        freemarkerModel.put("includeBannerImage", themeModel.getIncludeBannerImage());
+        if (themeModel.getThemeId() != null) {
+            Long themeId = Long.valueOf(themeModel.getThemeId());
+            Optional<Theme> theme = themeRepository.findById(themeId);
+
+            if (theme.isPresent()) {
+                bannerImageCssClasses = theme.get().getBannerImageCssClasses();
+                headerCssClasses = theme.get().getHeaderCssClasses();
+                navigationCssClasses = theme.get().getNavigationCssClasses();
+                wrapperCssClasses = theme.get().getWrapperCssClasses();
+            }
+        }
+
         freemarkerModel.put("bannerImageAltText", bannerImageAltText);
+        freemarkerModel.put("bannerImageCssClasses", bannerImageCssClasses);
         freemarkerModel.put("bannerImageUrl", bannerImageUrl);
+        freemarkerModel.put("courseId", courseId);
+        freemarkerModel.put("headerCssClasses", headerCssClasses);
+        freemarkerModel.put("includeBannerImage", themeModel.getIncludeBannerImage());
         freemarkerModel.put("includeGuidance", themeModel.getIncludeGuidance());
         freemarkerModel.put("includeNavigation", themeModel.getIncludeNavigation());
+        freemarkerModel.put("navigationCssClasses", navigationCssClasses);
+        freemarkerModel.put("wrapperCssClasses", wrapperCssClasses);
 
         Map<String, String> freemarkerProcessedTextMap = new HashMap<>();
         StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();

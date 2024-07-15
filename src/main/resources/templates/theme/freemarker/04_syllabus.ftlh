@@ -1,9 +1,10 @@
-<#-- Variables available: bannerImageUrl, includeGuidance, includeBannerImage, includeNavigation and courseId -->
+<#-- Variables available: bannerImageAltText, bannerImageCssClasses, bannerImageUrl, courseId, headerCssClasses,
+                          includeBannerImage, includeGuidance, includeNavigation, navigationCssClasses and wrapperCssClasses -->
 
-<div id="dp-wrapper" class="dp-wrapper dp-flat-sections" data-header-class="dp-header dp-flat-sections">
+<div id="dp-wrapper" class="dp-wrapper ${wrapperCssClasses}">
     <div class="dp-syllabus-nav">[Navigate the Syllabus]</div>
     <p>&nbsp;</p>
-    <header class="dp-header dp-flat-sections" style="margin-bottom: 0px;">
+    <header class="dp-header ${headerCssClasses}" style="margin-bottom: 0px;">
         <h2 class="dp-heading"><span class="dp-header-pre"><span class="dp-action-item dp-action-item-insert" style="display: none;" aria-hidden="true">Enter&nbsp; Course Number or ID</span><br /></span> <span class="dp-header-title">Syllabus</span></h2>
     </header>
     <div id="newHtmlTempId"></div>

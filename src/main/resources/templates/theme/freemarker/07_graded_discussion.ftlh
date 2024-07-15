@@ -1,7 +1,8 @@
-<#-- Variables available: bannerImageUrl, includeGuidance, includeBannerImage, includeNavigation and courseId -->
+<#-- Variables available: bannerImageAltText, bannerImageCssClasses, bannerImageUrl, courseId, headerCssClasses,
+                          includeBannerImage, includeGuidance, includeNavigation, navigationCssClasses and wrapperCssClasses -->
 
-<div id="dp-wrapper" class="dp-wrapper dp-flat-sections" data-header-class="dp-header dp-flat-sections">
-    <header class="dp-header dp-flat-sections dp-locked">
+<div id="dp-wrapper" class="dp-wrapper ${wrapperCssClasses}" data-header-class="dp-header ${wrapperCssClasses}">
+    <header class="dp-header ${headerCssClasses} dp-locked">
         <h2 class="dp-heading"><span class="dp-header-pre"> <span class="dp-header-pre-1">Name </span> <span class="dp-header-pre-2">## </span> </span> <span class="dp-header-title">[Template] Discussion</span></h2>
     </header>
     <#if includeGuidance>

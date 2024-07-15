@@ -67,9 +67,6 @@ public class Theme {
     @Column(name = "ALT_TEXT", nullable = false)
     private String altText;
 
-    @Column(name = "HTML", nullable = false)
-    private String html;
-
     @Column(name = "IMAGE_URL", nullable = false)
     private String imageUrl;
 
@@ -84,6 +81,18 @@ public class Theme {
 
     @Column(name = "JUST_HEADER_IMAGE_PREVIEW_URL", nullable = false)
     private String justHeaderImagePreviewUrl;
+
+    @Column(name = "WRAPPER_CSS_CLASSES", nullable = false)
+    private String wrapperCssClasses;
+
+    @Column(name = "HEADER_CSS_CLASSES", nullable = false)
+    private String headerCssClasses;
+
+    @Column(name = "BANNER_IMAGE_CSS_CLASSES", nullable = false)
+    private String bannerImageCssClasses;
+
+    @Column(name = "NAVIGATION_CSS_CLASSES", nullable = false)
+    private String navigationCssClasses;
 
     @Column(name = "ACTIVE", columnDefinition = "boolean default true")
     private boolean active = true;

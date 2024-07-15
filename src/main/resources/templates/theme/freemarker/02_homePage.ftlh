@@ -1,14 +1,15 @@
-<#-- Variables available: bannerImageAltText, bannerImageUrl,  courseId, includeGuidance, includeBannerImage and includeNavigation -->
+<#-- Variables available: bannerImageAltText, bannerImageCssClasses, bannerImageUrl, courseId, headerCssClasses,
+                          includeBannerImage, includeGuidance, includeNavigation, navigationCssClasses and wrapperCssClasses -->
 
-<div id="dp-wrapper" class="dp-wrapper dp-flat-sections" data-header-class="dp-header dp-flat-sections" <#if includeNavigation> data-nav-class="container-fluid dp-link-grid dp-flat-sections"</#if> >
-    <header class="dp-header dp-flat-sections">
+<div id="dp-wrapper" class="dp-wrapper ${wrapperCssClasses}" <#if includeNavigation> data-nav-class="container-fluid dp-link-grid ${navigationCssClasses}"</#if> >
+    <header class="dp-header ${headerCssClasses}">
         <h2 class="dp-heading"><span class="dp-header-pre"><span class="dp-header-pre-1">Enter SIS ID</span> </span> <span class="dp-header-title">Enter your Course Title</span></h2>
     </header>
     <#if includeBannerImage>
-    <div class="dp-banner-image"><img class="" role="presentation" src="${bannerImageUrl}" alt="${bannerImageAltText}" data-name="typewriter_five_ws.png" data-size="478 KB" data-available-range="false" data-hidden="false" data-file-id="165239671" data-filename="typewriter_five_ws.png" data-locked="false" /></div>
+    <div class="dp-banner-image"><img class="${bannerImageCssClasses}}" role="presentation" src="${bannerImageUrl}" alt="${bannerImageAltText}" data-name="typewriter_five_ws.png" data-size="478 KB" data-available-range="false" data-hidden="false" data-file-id="165239671" data-filename="typewriter_five_ws.png" data-locked="false" /></div>
     </#if>
     <#if includeNavigation>
-    <nav class="container-fluid dp-link-grid dp-flat-sections">
+    <nav class="container-fluid dp-link-grid ${navigationCssClasses}">
         <ul class="row">
             <li class="col-sm-12 col-md-6 col-lg-3"><a> Start Here</a></li>
             <li class="col-sm-12 col-md-6 col-lg-3"><a href="/courses/${courseId}/assignments/syllabus"> Syllabus</a></li>

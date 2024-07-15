@@ -1,7 +1,8 @@
-<#-- Variables available: bannerImageUrl, includeGuidance, includeBannerImage, includeNavigation and courseId -->
+<#-- Variables available: bannerImageAltText, bannerImageCssClasses, bannerImageUrl, courseId, headerCssClasses,
+                          includeBannerImage, includeGuidance, includeNavigation, navigationCssClasses and wrapperCssClasses -->
 
-<div id="dp-wrapper" class="dp-wrapper dp-flat-sections" data-header-class="dp-header cp-bg-dp-primary dp-header-pre-pos-y-top-overlap dp-header-pre-pos-x-c dp-header-pre-bg-dp-secondary dp-header-pre-s-pill dp-header-pre-out-dp-white dp-header-title-txt-mc cp-out-dp-white dp-header-out-dp-white dp-header-s-brdr-t dp-header-pre-font-sm dp-header-pre-brdr-w-2 dp-header-brdr-w-1 dp-header-wrap-brdr-w-0 dp-padding-direction-tblr dp-margin-direction-tblr">
-    <header class="dp-header dp-flat-sections">
+<div id="dp-wrapper" class="dp-wrapper ${wrapperCssClasses}">
+    <header class="dp-header ${headerCssClasses}">
         <h2 class="dp-heading"><span class="dp-header-pre"> <span class="dp-header-pre-1">Name </span> <span class="dp-header-pre-2">## </span> </span> <span class="dp-header-title">[Template] Quiz</span></h2>
     </header>
 

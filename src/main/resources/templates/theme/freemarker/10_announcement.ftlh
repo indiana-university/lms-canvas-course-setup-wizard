@@ -1,4 +1,5 @@
-<#-- Variables available: bannerImageUrl, includeGuidance, includeBannerImage, includeNavigation and courseId -->
+<#-- Variables available: bannerImageAltText, bannerImageCssClasses, bannerImageUrl, courseId, headerCssClasses,
+                          includeBannerImage, includeGuidance, includeNavigation, navigationCssClasses and wrapperCssClasses -->
 
 <#if includeGuidance>
 <div id="dp-wrapper" class="dp-wrapper">

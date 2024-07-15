@@ -1,7 +1,8 @@
-<#-- Variables available: bannerImageUrl, includeGuidance, includeBannerImage, includeNavigation and courseId -->
+<#-- Variables available: bannerImageAltText, bannerImageCssClasses, bannerImageUrl, courseId, headerCssClasses,
+                          includeBannerImage, includeGuidance, includeNavigation, navigationCssClasses and wrapperCssClasses -->
 
-<div id="dp-wrapper" class="dp-wrapper dp-flat-sections">
-    <header class="dp-header dp-flat-sections">
+<div id="dp-wrapper" class="dp-wrapper ${wrapperCssClasses}">
+    <header class="dp-header ${headerCssClasses}">
         <h2 class="dp-heading"><span class="dp-header-pre"><span class="dp-header-pre-1">Getting Started</span> </span> <span class="dp-header-title">Wizard Next Steps</span></h2>
     </header>
     <p>The wizard is building your course based on the choices you made. This page will guide you through the rest of the course setup process and get the course ready for your content.&nbsp;</p>
