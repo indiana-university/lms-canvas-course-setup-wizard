@@ -45,6 +45,8 @@ import org.springframework.stereotype.Component;
         itemResourceDescription = @Description("Theme Content"),
         collectionResourceDescription = @Description("Theme Content"))
 @Tag(name = "ThemeContentRepository", description = "Interact with Theme Content CRUD operations")
-public interface ThemeContentRepository extends PagingAndSortingRepository<ThemeContent, Long> {
-    ThemeContent findByName(String name);
+/*
+ * These REST JPA auto-defined endpoints are supplemented by some in ThemeContentJpaCustomRestController
+ */
+public interface ThemeContentRepository extends PagingAndSortingRepository<ThemeContent, String> {
 }
