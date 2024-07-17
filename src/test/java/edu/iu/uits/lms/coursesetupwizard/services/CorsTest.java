@@ -42,6 +42,7 @@ import edu.iu.uits.lms.coursesetupwizard.model.WizardCourseStatus;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageCategoryRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.ThemeContentRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.ThemeLogRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.ThemeRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
@@ -106,6 +107,9 @@ public class CorsTest {
 
    @MockBean
    private BannerImageRepository bannerImageRepository;
+
+   @MockBean
+   private ThemeContentRepository themeContentRepository;
 
    @MockBean
    private ThemeLogRepository themeLogRepository;
