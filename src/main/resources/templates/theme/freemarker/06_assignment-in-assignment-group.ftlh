@@ -2,7 +2,7 @@
                           includeBannerImage, includeGuidance, includeNavigation, navigationCssClasses and wrapperCssClasses -->
 
 <div id="dp-wrapper" class="dp-wrapper ${wrapperCssClasses}" data-header-class="dp-header ${wrapperCssClasses}">
-    <header class="dp-header ${headerCssClasses">
+    <header class="dp-header ${headerCssClasses}">
         <h2 class="dp-heading"><span class="dp-header-pre"> <span class="dp-header-pre-1">Name </span> <span class="dp-header-pre-2">## </span> </span> <span class="dp-header-title">[Template] Assignment</span></h2>
     </header>
     <div class="dp-content-block">

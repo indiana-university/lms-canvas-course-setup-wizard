@@ -1,17 +1,47 @@
 package edu.iu.uits.lms.coursesetupwizard.controller;
 
-import edu.iu.uits.lms.coursesetupwizard.Constants;
+/*-
+ * #%L
+ * course-setup-wizard
+ * %%
+ * Copyright (C) 2022 - 2024 Indiana University
+ * %%
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ *
+ * 3. Neither the name of the Indiana University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software without
+ *    specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * #L%
+ */
+
+import edu.iu.uits.lms.canvas.model.WikiPage;
 import edu.iu.uits.lms.coursesetupwizard.model.BannerImage;
 import edu.iu.uits.lms.coursesetupwizard.model.BannerImageCategory;
 import edu.iu.uits.lms.coursesetupwizard.model.Theme;
-import edu.iu.uits.lms.coursesetupwizard.model.ThemeLog;
 import edu.iu.uits.lms.coursesetupwizard.model.ThemeModel;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageCategoryRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageRepository;
-import edu.iu.uits.lms.coursesetupwizard.repository.ThemeLogRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.ThemeRepository;
 import edu.iu.uits.lms.coursesetupwizard.service.ThemeProcessingService;
-import edu.iu.uits.lms.iuonly.model.FeatureAccess;
 import edu.iu.uits.lms.iuonly.services.FeatureAccessServiceImpl;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.service.OidcTokenUtils;
@@ -31,20 +61,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_BACK;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_HOME;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_NEXT;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_SUBMIT;
-import static edu.iu.uits.lms.coursesetupwizard.Constants.FEATURE_ID_THEME_FRONTPAGE_ENABLE;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.FEATURE_ID_THEME_GUIDANCE_ENABLE;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.FEATURE_ID_THEME_NAVIGATION_ENABLE;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.KEY_THEME_MODEL;
@@ -61,9 +88,6 @@ public class ThemeController extends WizardController {
 
     @Autowired
     protected BannerImageRepository bannerImageRepository;
-
-    @Autowired
-    protected ThemeLogRepository themeLogRepository;
 
     @Autowired
     protected ThemeRepository themeRepository;
@@ -333,38 +357,14 @@ public class ThemeController extends WizardController {
             case ACTION_SUBMIT:
 
                 String currentUser = oidcTokenUtils.getUserLoginId();
-                List<String> exceptionMessages = themeProcessingService.processSubmit(sessionThemeModel, courseId, currentUser);
-//
-//                ThemeLog themeLog = new ThemeLog();
-//                themeLog.setCourseId(courseId);
-//                themeLog.setLoginId(currentUser);
-//                themeLog.setIncludeBannerImage(themeModel.getIncludeBannerImage());
-//                themeLog.setBannerImageId(sessionThemeModel.getBannerImageId());
-//                themeLog.setThemeId(sessionThemeModel.getThemeId());
-//                themeLog.setBannerImageCategoryId(sessionThemeModel.getBannerImageCategoryId());
-//                themeLog.setIncludeNavigation(sessionThemeModel.getIncludeNavigation());
-//                themeLog.setIncludeGuidance(sessionThemeModel.getIncludeGuidance());
-//                themeLog.setErrors(exceptionMessages.isEmpty() ? null : exceptionMessages.stream().collect(Collectors.joining()));
-//
-//                themeLog = themeLogRepository.save(themeLog);
-//
-//                log.info(String.format("Saved theme log with id %d", themeLog.getId()));
+                WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(sessionThemeModel, courseId, currentUser);
 
-//                String templateHostingUrl = toolConfig.getTemplateHostingUrl();
-//                // Use the current application as the template host if no other has been configured.
-//                if (templateHostingUrl == null) {
-//                    templateHostingUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-//                }
-//                try {
-//                    wizardService.doApplyTemplate(sessionImportModel, oidcTokenUtils.getUserLoginId(), templateHostingUrl);
-//                    model.addAttribute("redirectUrl", getCanvasContentMigrationsToolUrl(courseId));
-//                    // redirect to the Canvas tool
-//                    return new ModelAndView(redirectToCanvas());
-//                } catch (WizardServiceException e) {
-//                    model.addAttribute("submitError", e.getMessage());
-//                    return review(courseId, model, httpSession);
-//                }
+                // 14. Once all steps above are completed, drop the user on the Next Steps page
+                String url = String.format("%s/courses/%s/pages/%s", canvasService.getBaseUrl(), courseId, nextStepsWikiPage.getPageId());
+                log.info(">>>>>> url <<<<<< = " + url);
+                return new ModelAndView("redirect:" + url);
         }
+
         String url = MessageFormat.format(PAGES[pageIndex], courseId);
         return new ModelAndView("redirect:" + url);
     }

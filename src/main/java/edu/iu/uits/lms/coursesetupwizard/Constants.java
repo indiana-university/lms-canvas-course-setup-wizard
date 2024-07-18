@@ -67,6 +67,8 @@ public class Constants {
     public static final String THEME_QUIZ_DESCRIPTION_TEMPLATE_NAME = "theme.quiz.description.template";
     public static final String THEME_DISCUSSION_TOPIC_MESSAGE_TEMPLATE_NAME = "theme.discussion.topic.message.template";
     public static final String THEME_ANNOUNCEMENT_MESSAGE_TEMPLATE_NAME = "theme.announcement.message.template";
+    public static final String THEME_CREATE_TEMPLATE_PAGE_BODY_TEMPLATE_NAME = "theme.template.body.template";
+    public static final String THEME_MODULE_PAGE_BODY_TEMPLATE_NAME = "theme.module.body.template";
 
     @AllArgsConstructor
     @Getter
