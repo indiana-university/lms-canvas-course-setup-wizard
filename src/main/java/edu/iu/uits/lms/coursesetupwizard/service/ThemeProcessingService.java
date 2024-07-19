@@ -457,7 +457,8 @@ public class ThemeProcessingService {
         String navigationCssClasses = null;
         String wrapperCssClasses = null;
 
-        if (themeModel.getIncludeBannerImage() != null && themeModel.getBannerImageId() != null) {
+        if ((themeModel.getIncludeBannerImage() != null && themeModel.getIncludeBannerImage()) &&
+                (themeModel.getBannerImageId() != null && ! themeModel.getBannerImageId().isEmpty())) {
             Long bannerImageId = Long.valueOf(themeModel.getBannerImageId());
             Optional<BannerImage> bannerImage = bannerImageRepository.findById(bannerImageId);
 
@@ -485,7 +486,7 @@ public class ThemeProcessingService {
         freemarkerModel.put("courseId", courseId);
         freemarkerModel.put("headerCssClasses", headerCssClasses);
         freemarkerModel.put("includeBannerImage", themeModel.getIncludeBannerImage() != null && themeModel.getIncludeBannerImage());
-        freemarkerModel.put("includeGuidance", themeModel.getIncludeGuidance() != null && themeModel.getIncludeBannerImage());
+        freemarkerModel.put("includeGuidance", themeModel.getIncludeGuidance() != null && themeModel.getIncludeGuidance());
         freemarkerModel.put("includeNavigation", themeModel.getIncludeNavigation() != null && themeModel.getIncludeNavigation());
         freemarkerModel.put("navigationCssClasses", navigationCssClasses);
         freemarkerModel.put("wrapperCssClasses", wrapperCssClasses);
@@ -494,6 +495,7 @@ public class ThemeProcessingService {
         StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();
 
         Iterable<ThemeContent> allThemeContent = themeContentRepository.findAll();
+//        List<ThemeContent> allThemeContent = List.of(themeContentRepository.findById(Constants.THEME_NEXT_STEPS_BODY_TEMPLATE_NAME).get());
 
         for(ThemeContent themeContent : allThemeContent) {
             stringTemplateLoader.putTemplate(themeContent.getName(), themeContent.getTemplateText());

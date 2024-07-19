@@ -40,6 +40,8 @@ import org.springframework.data.rest.core.annotation.Description;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
 @RepositoryRestResource(path = "themecontent",
         itemResourceDescription = @Description("Theme Content"),
@@ -49,4 +51,12 @@ import org.springframework.stereotype.Component;
  * These REST JPA auto-defined endpoints are supplemented by some in ThemeContentJpaCustomRestController
  */
 public interface ThemeContentRepository extends PagingAndSortingRepository<ThemeContent, String> {
+
+    /**
+     *
+     * @param id this is the name
+     * @return
+     */
+    @Override
+    Optional<ThemeContent> findById(String id);
 }

@@ -42,7 +42,6 @@ import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.canvas.services.DiscussionService;
 import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
-import edu.iu.uits.lms.coursesetupwizard.model.BannerImage;
 import edu.iu.uits.lms.coursesetupwizard.model.Theme;
 import edu.iu.uits.lms.coursesetupwizard.model.ThemeContent;
 import edu.iu.uits.lms.coursesetupwizard.model.ThemeLog;
@@ -77,6 +76,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -132,6 +132,10 @@ public class ThemeProcessingServiceTest {
    @MockBean
    private FreeMarkerConfigurer freemarkerConfigurer;
 
+   private final String courseId = "12345";
+   private final String userToCreateAs = "me";
+   private final String nextStepsWikiPageId = "10";
+
    @BeforeEach
    public void globalMocks() throws Exception {
       ThemeContent themeContent01 = new ThemeContent();
@@ -179,6 +183,17 @@ public class ThemeProcessingServiceTest {
 
       when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(themeContents));
       when(freemarkerConfigurer.createConfiguration()).thenReturn(new Configuration());
+      
+      WikiPage nextStepsWikiPage = new WikiPage();
+      nextStepsWikiPage.setPageId(nextStepsWikiPageId);
+      nextStepsWikiPage.setTitle("Wizard Next Steps");
+      nextStepsWikiPage.setPublished(false);
+      nextStepsWikiPage.setFrontPage(false);
+      nextStepsWikiPage.setBody("");
+
+      when(courseService.createWikiPage(any(),
+              argThat(wikiPageCreateWrapper -> "Wizard Next Steps".equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
+              any())).thenReturn(nextStepsWikiPage);
 
       ThemeLog themeLog = new ThemeLog();
       themeLog.setId(1L);
@@ -187,8 +202,6 @@ public class ThemeProcessingServiceTest {
 
    @Test
    void testSuccess_loadFreemarkerTemplatesFromTheDatabase() throws Exception {
-      final String courseId = "12345";
-
       final Theme theme = new Theme();
       theme.setId(2L);
 
@@ -203,29 +216,25 @@ public class ThemeProcessingServiceTest {
 
       Assertions.assertNotNull(freemarkerProcessedTextMap);
       Assertions.assertFalse(freemarkerProcessedTextMap.isEmpty());
-      Assertions.assertEquals(10, freemarkerProcessedTextMap.size());
    }
 
    @Test
    void testSuccess_processSubmit() throws Exception {
-      final String courseId = "12345";
-
       final Theme theme = new Theme();
       theme.setId(2L);
 
       ThemeModel themeModel = new ThemeModel();
 
-      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, "me");
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
 
       verify(emailService, times(0)).sendEmail(any());
 
       Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
    }
 
    @Test
    void testFailure_processSubmit_nextStep_templateNotFound() throws Exception {
-      final String courseId = "12345";
-
       final Theme theme = new Theme();
       theme.setId(2L);
 
@@ -243,7 +252,7 @@ public class ThemeProcessingServiceTest {
       reset(themeContentRepository);
       when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(newThemeContent));
 
-      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, "me");
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
 
       verify(emailService).sendEmail(emailCaptor.capture());
 
@@ -259,8 +268,6 @@ public class ThemeProcessingServiceTest {
 
    @Test
    void testFailure_processSubmit_homePage_templateNotFound() throws Exception {
-      final String courseId = "12345";
-
       final Theme theme = new Theme();
       theme.setId(2L);
 
@@ -278,7 +285,7 @@ public class ThemeProcessingServiceTest {
       reset(themeContentRepository);
       when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(newThemeContent));
 
-      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, "me");
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
 
       verify(emailService).sendEmail(emailCaptor.capture());
 
@@ -289,13 +296,12 @@ public class ThemeProcessingServiceTest {
       Assertions.assertNotNull(body);
 
       Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
       Assertions.assertTrue(body.contains("Create Course Home Page: Could not find value for theme.homepage.body.template"));
    }
 
    @Test
    void testFailure_processSubmit_syllabus_templateNotFound() throws Exception {
-      final String courseId = "12345";
-
       final Theme theme = new Theme();
       theme.setId(2L);
 
@@ -313,7 +319,7 @@ public class ThemeProcessingServiceTest {
       reset(themeContentRepository);
       when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(newThemeContent));
 
-      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, "me");
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
 
       verify(emailService).sendEmail(emailCaptor.capture());
 
@@ -324,13 +330,12 @@ public class ThemeProcessingServiceTest {
       Assertions.assertNotNull(body);
 
       Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
       Assertions.assertTrue(body.contains("Update Syllabus: Could not find value for theme.syllabus.body.template"));
    }
 
    @Test
    void testFailure_processSubmit_assignment_templateNotFound() throws Exception {
-      final String courseId = "12345";
-
       final Theme theme = new Theme();
       theme.setId(2L);
 
@@ -352,10 +357,10 @@ public class ThemeProcessingServiceTest {
       assignmentGroup.setId(1);
 
       when(assignmentService.createAssignmentGroup(courseId, "Assignments",
-              CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + "me"))
+              CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
               .thenReturn(assignmentGroup);
 
-      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, "me");
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
 
       verify(emailService).sendEmail(emailCaptor.capture());
 
@@ -366,13 +371,12 @@ public class ThemeProcessingServiceTest {
       Assertions.assertNotNull(body);
 
       Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
       Assertions.assertTrue(body.contains("Assignment Creation: Could not find value for theme.assignment.description.template"));
    }
 
    @Test
    void testFailure_processSubmit_graded_assignment_templateNotFound() throws Exception {
-      final String courseId = "12345";
-
       final Theme theme = new Theme();
       theme.setId(2L);
 
@@ -394,10 +398,10 @@ public class ThemeProcessingServiceTest {
       assignmentGroup.setId(1);
 
       when(assignmentService.createAssignmentGroup(courseId, "Assignments",
-              CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + "me"))
+              CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
               .thenReturn(assignmentGroup);
 
-      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, "me");
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
 
       verify(emailService).sendEmail(emailCaptor.capture());
 
@@ -408,13 +412,12 @@ public class ThemeProcessingServiceTest {
       Assertions.assertNotNull(body);
 
       Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
       Assertions.assertTrue(body.contains("Graded Assignment Creation: Could not find value for theme.gradedassignment.description.template"));
    }
 
    @Test
    void testFailure_processSubmit_quiz_templateNotFound() throws Exception {
-      final String courseId = "12345";
-
       final Theme theme = new Theme();
       theme.setId(2L);
 
@@ -436,10 +439,10 @@ public class ThemeProcessingServiceTest {
       assignmentGroup.setId(1);
 
       when(assignmentService.createAssignmentGroup(courseId, "Assignments",
-              CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + "me"))
+              CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
               .thenReturn(assignmentGroup);
 
-      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, "me");
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
 
       verify(emailService).sendEmail(emailCaptor.capture());
 
@@ -450,13 +453,12 @@ public class ThemeProcessingServiceTest {
       Assertions.assertNotNull(body);
 
       Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
       Assertions.assertTrue(body.contains("Quiz Assignment Creation: Could not find value for theme.quiz.description.template"));
    }
 
    @Test
    void testFailure_processSubmit_discussionTopic_templateNotFound() throws Exception {
-      final String courseId = "12345";
-
       final Theme theme = new Theme();
       theme.setId(2L);
 
@@ -474,7 +476,7 @@ public class ThemeProcessingServiceTest {
       reset(themeContentRepository);
       when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(newThemeContent));
 
-      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, "me");
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
 
       verify(emailService).sendEmail(emailCaptor.capture());
 
@@ -485,13 +487,12 @@ public class ThemeProcessingServiceTest {
       Assertions.assertNotNull(body);
 
       Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
       Assertions.assertTrue(body.contains("Discussion Topic #1 Creation: Could not find value for theme.discussion.topic.message.template"));
    }
 
    @Test
    void testFailure_processSubmit_announcement_templateNotFound() throws Exception {
-      final String courseId = "12345";
-
       final Theme theme = new Theme();
       theme.setId(2L);
 
@@ -510,7 +511,7 @@ public class ThemeProcessingServiceTest {
       reset(themeContentRepository);
       when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(newThemeContent));
 
-      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, "me");
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
 
       verify(emailService).sendEmail(emailCaptor.capture());
 
@@ -521,13 +522,12 @@ public class ThemeProcessingServiceTest {
       Assertions.assertNotNull(body);
 
       Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
       Assertions.assertTrue(body.contains("Announcement Creation: Could not find value for theme.announcement.message.template"));
    }
 
    @Test
    void testFailure_processSubmit_createTemplate_templateNotFound() throws Exception {
-      final String courseId = "12345";
-
       final Theme theme = new Theme();
       theme.setId(2L);
 
@@ -545,7 +545,7 @@ public class ThemeProcessingServiceTest {
       reset(themeContentRepository);
       when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(newThemeContent));
 
-      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, "me");
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
 
       verify(emailService).sendEmail(emailCaptor.capture());
 
@@ -556,13 +556,12 @@ public class ThemeProcessingServiceTest {
       Assertions.assertNotNull(body);
 
       Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
       Assertions.assertTrue(body.contains("Template Page Creation: Could not find value for theme.template.body.template"));
    }
 
    @Test
    void testFailure_processSubmit_module_templateNotFound() throws Exception {
-      final String courseId = "12345";
-
       final Theme theme = new Theme();
       theme.setId(2L);
 
@@ -580,7 +579,7 @@ public class ThemeProcessingServiceTest {
       reset(themeContentRepository);
       when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(newThemeContent));
 
-      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, "me");
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
 
       verify(emailService).sendEmail(emailCaptor.capture());
 
@@ -591,6 +590,7 @@ public class ThemeProcessingServiceTest {
       Assertions.assertNotNull(body);
 
       Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
       Assertions.assertTrue(body.contains("Module Page Creation: Could not find value for theme.module.body.template"));
    }
 

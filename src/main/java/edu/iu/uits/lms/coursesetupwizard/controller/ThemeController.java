@@ -359,10 +359,18 @@ public class ThemeController extends WizardController {
                 String currentUser = oidcTokenUtils.getUserLoginId();
                 WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(sessionThemeModel, courseId, currentUser);
 
-                // 14. Once all steps above are completed, drop the user on the Next Steps page
-                String url = String.format("%s/courses/%s/pages/%s", canvasService.getBaseUrl(), courseId, nextStepsWikiPage.getPageId());
-                log.info(">>>>>> url <<<<<< = " + url);
-                return new ModelAndView("redirect:" + url);
+                String afterSubmitUrl;
+
+                if (nextStepsWikiPage == null) {
+                    // error creating first step nextSteps page
+                    afterSubmitUrl = String.format("/app/%s/index", courseId);
+                    model.addAttribute("errors", "There was a problem processing your Theme request");
+                } else {
+                    // 14. Once all steps above are completed, drop the user on the Next Steps page
+                    afterSubmitUrl = String.format("redirect:%s/courses/%s/pages/%s", canvasService.getBaseUrl(), courseId, nextStepsWikiPage.getPageId());
+                }
+
+                return new ModelAndView(afterSubmitUrl);
         }
 
         String url = MessageFormat.format(PAGES[pageIndex], courseId);
