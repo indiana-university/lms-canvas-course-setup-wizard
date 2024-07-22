@@ -63,7 +63,7 @@ import java.io.InputStream;
 @Tag(name = "ThemeContentRepository")
 @Slf4j
 /*
- * This REST controller supplements the REST JPA endpoints auto-defined in BannerImageRepository.
+ * This REST controller supplements the REST JPA endpoints auto-defined in ThemeContentRepository.
  * That's why @Tag's name matches that repository so that via swagger these endpoints are grouped under
  * the JPA auto-generated ones.
  */

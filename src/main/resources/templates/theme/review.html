@@ -59,30 +59,9 @@
 
 <th:block layout:fragment="script">
     <script th:inline="javascript">
-        /*<![CDATA[*/
-            const courseId = /*[[${courseId}]]*/
-            const selectedCourseId = /*[[${selectedCourseId}]]*/
-            var courses = /*[[${courses}]]*/;
-            window.config = {courses: courses};
-        /*]]>*/
-
         function doSubmit() {
-            //Select control
-            var inputControl = document.querySelector('input[id="course-select-input"]');
-            //Hidden input with the actual value
-            var inputValue = document.querySelector('input[name="selectedCourseId"]');
-            if (inputValue.value == "") {
-                inputControl.setAttribute("aria-invalid", "true");
-                inputControl.setAttribute("aria-describedby", "option-message");
-                alertMessage = document.getElementById('select-alert');
-                alertMessage.classList.remove("rvt-display-none");
-                inputControl.focus();
-                return false;
-            }
         }
-
     </script>
-    <script type="text/javascript" th:src="@{/app/jsreact/lms-lti-coursesetupwizard/lms-lti-coursesetupwizard.js}"></script>
 </th:block>
 </body>
 </html>

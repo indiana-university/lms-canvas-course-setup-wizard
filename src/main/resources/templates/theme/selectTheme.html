@@ -25,7 +25,6 @@
                 <!-- radio list for theme options -->
                 <fieldset class="rvt-fieldset">
                     <legend>Theme options</legend>
-                    <div th:insert="fragments.html :: selectAlert"></div>
                     <ul id="image-ul" class="rvt-list-plain">
                         <th:block th:if="${themes != null}" th:each="theme : ${themes}">
                             <li class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
@@ -39,24 +38,17 @@
                             </li>
                         </th:block>
                     </ul>
+                    <div th:insert="fragments.html :: selectAlert"></div>
                 </fieldset>
                 <input type="hidden" name="currentPage" value="2">
                 <div th:insert="theme/wizardSteps.html :: buttons(nextOnclick='return doSubmit();')"></div>
             </form>
         </div>
     </div>
-
 </div>
 
 <th:block layout:fragment="script">
     <script th:inline="javascript">
-        /*<![CDATA[*/
-            const courseId = /*[[${courseId}]]*/
-            const selectedCourseId = /*[[${selectedCourseId}]]*/
-            var courses = /*[[${courses}]]*/;
-            window.config = {courses: courses};
-        /*]]>*/
-
         function doSubmit() {
             var checkedRadio = document.querySelector('input[name="themeId"]:checked');
             if (checkedRadio == null) {
@@ -66,13 +58,10 @@
                 });
                 alertMessage = document.getElementById('select-alert');
                 alertMessage.classList.remove("rvt-display-none");
-                allRadio[0].focus();
                 return false;
             }
         }
-
     </script>
-    <script type="text/javascript" th:src="@{/app/jsreact/lms-lti-coursesetupwizard/lms-lti-coursesetupwizard.js}"></script>
 </th:block>
 </body>
 </html>

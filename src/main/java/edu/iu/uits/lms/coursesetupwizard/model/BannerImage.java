@@ -53,6 +53,7 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.util.Date;
 import java.util.List;
 
@@ -87,7 +88,8 @@ public class BannerImage {
                inverseJoinColumns = @JoinColumn(name = "BANNER_IMAGE_CATEGORY_ID"),
                indexes = {@Index(name = "IDX_CSW_BAN_IMG_X_CAT_BID", columnList = "BANNER_IMAGE_ID"),
                           @Index(name = "IDX_CSW_BAN_IMG_X_CAT_CAT", columnList = "BANNER_IMAGE_CATEGORY_ID")},
-               foreignKey = @ForeignKey(name = "FK_CSW_BANNER_IMAGE_ID"), inverseForeignKey = @ForeignKey(name = "FK_CSW_BANNER_IMAGE_CATEGORY_ID"))
+               foreignKey = @ForeignKey(name = "FK_CSW_BANNER_IMAGE_ID"), inverseForeignKey = @ForeignKey(name = "FK_CSW_BANNER_IMAGE_CATEGORY_ID"),
+               uniqueConstraints = @UniqueConstraint(columnNames = {"BANNER_IMAGE_ID", "BANNER_IMAGE_CATEGORY_ID"}))
     private List<BannerImageCategory> bannerImageCategories;
 
     @Column(name = "CREATEDON")

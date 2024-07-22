@@ -56,7 +56,7 @@
                     </select>
                     <!-- radio list for banner options, dynamically rendered based on select component above -->
                     <fieldset class="rvt-fieldset">
-                        <legend th:text="'Image options for ' + ${bannerImageCategories.get(0).name}"></legend>
+                        <legend id="banner-image-category-legend" th:text="'Image options for ' + ${bannerImageCategories.get(0).name}"></legend>
                         <!-- ul will be filled by javascript on pulldown change -->
                         <ul id="image-ul" class="rvt-list-plain">
                         </ul>
@@ -75,15 +75,10 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
             const courseId = /*[[${courseId}]]*/
-            const selectedCourseId = /*[[${selectedCourseId}]]*/
-            var courses = /*[[${courses}]]*/;
-            window.config = {courses: courses};
         /*]]>*/
 
         function doSubmit() {
             let yesBannerImage = document.querySelector('#include-banner-image-radio-yes:checked');
-
-            console.log("yesBannerImage.length = " + yesBannerImage.length);
 
             if (yesBannerImage != null) {
                 let checkedRadio = document.querySelector('input[type=radio][name=banner-image-radio-group]:checked');
@@ -97,7 +92,6 @@
                     });
                     alertMessage = document.getElementById('select-alert');
                     alertMessage.classList.remove("rvt-display-none");
-                    allRadio[0].focus();
                     return false;
                 }
             }
@@ -105,6 +99,8 @@
 
         function loadBannerImagesForSelectedCategory() {
             let categoryId = $('#select-input-categories').val();
+            let categoryName = $('#select-input-categories option[value="' + categoryId + '"]').text();
+            $('#banner-image-category-legend').text('Image options for ' + categoryName);
             $('#image-ul').load('/app/theme/' + courseId + '/bannerimage/' + categoryId ,  function() {
                 let bannerImageId = $('#banner-image-id').val();
 
@@ -147,7 +143,6 @@
         });
 
     </script>
-    <script type="text/javascript" th:src="@{/app/jsreact/lms-lti-coursesetupwizard/lms-lti-coursesetupwizard.js}"></script>
 </th:block>
 </body>
 </html>

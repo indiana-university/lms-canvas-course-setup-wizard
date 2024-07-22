@@ -41,6 +41,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
@@ -82,7 +83,8 @@ public class ThemeLog {
     @Column(name = "INCLUDE_GUIDANCE")
     private boolean includeGuidance;
 
-    @Column(name = "ERRORS")
+    @Lob
+    @Column(name = "ERRORS", columnDefinition = "TEXT")
     private String errors;
 
     @Column(name = "CREATEDON")
