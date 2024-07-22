@@ -142,3 +142,7 @@ that need to be accounted for while using this setup.
 
 This is marked as experimental due to the fact that we aren't running with this option at IU.  We are running into CORS
 issues when trying to talk to our OAuth2 service via swagger, so we can't verify if it really works or not!
+
+#### Sample Freemarker Templates
+There are sample Freemarker templates in /src/main/resources/templates/theme/freemarker.  These are meant as a starting point
+as during application run for the Theme capabilities of the tool, these templates are actually obtained from the database.
