@@ -205,7 +205,27 @@ public class ThemeController extends WizardController {
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
 
         ThemeModel themeModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL, ThemeModel.class);
-        List<BannerImageCategory> bannerImageCategories =  bannerImageCategoryRepository.findByActiveTrueOrderByName();
+        List<BannerImageCategory> allActiveBannerImageCategories =  bannerImageCategoryRepository.findByActiveTrueOrderByName();
+
+        List<BannerImageCategory> bannerImageCategories = new ArrayList<>();
+        List<BannerImage> bannerImages = new ArrayList<>();
+
+        // Let's use only the categories with images and only active images
+        for (BannerImageCategory bannerImageCategory : allActiveBannerImageCategories) {
+            List<BannerImage> allBannerImages = bannerImageCategory.getBannerImages();
+            bannerImages.clear();
+
+            for (BannerImage bannerImage : allBannerImages) {
+                if (bannerImage.isActive()) {
+                    bannerImages.add(bannerImage);
+                }
+            }
+
+            if (! bannerImages.isEmpty()) {
+                bannerImageCategory.setBannerImages(bannerImages);
+                bannerImageCategories.add(bannerImageCategory);
+            }
+        }
 
         if (themeModel.getIncludeBannerImage() == null) {
             themeModel.setIncludeBannerImage(true);
