@@ -130,7 +130,7 @@
           <input type="hidden" name="currentPage" value="3">
         </fieldset>
 
-        <div th:insert="import/wizardSteps.html :: buttons(nextOnclick='return doSubmit();')"></div>
+        <div th:insert="import/wizardSteps.html :: buttons(nextOnclick='return configureDates1Submit(this);')"></div>
 
       </form>
     </div>
@@ -139,21 +139,8 @@
 </div>
 
 <th:block layout:fragment="script">
-  <script th:inline="javascript">
-    function doSubmit() {
-        var checkedRadio = document.querySelector('input[name="dateOption"]:checked');
-        if (checkedRadio == null) {
-            var allRadio = document.getElementsByName("dateOption");
-            allRadio.forEach(btn => {
-                btn.setAttribute("aria-describedby", "option-message");
-            })
-            alertMessage = document.getElementById('select-alert');
-            alertMessage.classList.remove("rvt-display-none");
-            allRadio[0].focus();
-            return false;
-        }
-    }
-    </script>
+  <script type="text/javascript" th:src="@{/app/js/import/import.js}"></script>
 </th:block>
+
 </body>
 </html>

@@ -59,16 +59,24 @@
 
 <div th:fragment="buttons">
     <div class="rvt-button-group [ rvt-m-top-xl ]">
-        <button class="rvt-button rvt-button--secondary" name="action"
-                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_BACK}">Back</button>
-        <button th:unless="${isSubmit}" class="rvt-button" name="action" th:attr="onclick=${nextOnclick != null} ? |${nextOnclick}|"
-                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_NEXT}">Next</button>
-        <button th:if="${isSubmit}" class="rvt-button" name="action"
-                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_SUBMIT}">Submit</button>
+        <button class="rvt-button rvt-button--secondary loading-btn" name="action"
+                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_BACK}">
+            <span th:replace="fragments.html :: loadingButton(buttonText='Back', srText='Loading previous step')"></span>
+        </button>
+        <button th:unless="${isSubmit}" class="rvt-button" name="action" th:attr="onclick=${nextOnclick != null} ? |${nextOnclick}| : 'applyLoadingButton(this);'"
+                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_NEXT}">
+            <span th:replace="fragments.html :: loadingButton(buttonText='Next', srText='Loading next step')"></span>
+        </button>
+        <button th:if="${isSubmit}" class="rvt-button loading-btn" name="action"
+                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_SUBMIT}">
+            <span th:replace="fragments.html :: loadingButton(buttonText='Submit', srText='Submitting your selections')"></span>
+        </button>
     </div>
     <div class="[ rvt-m-top-xl ]">
-        <button class="rvt-button rvt-button--secondary" name="action"
-                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">Restart Wizard</button>
+        <button class="rvt-button rvt-button--secondary loading-btn" name="action"
+                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">
+            <span th:replace="fragments.html :: loadingButton(buttonText='Restart Wizard', srText='Restarting wizard')"></span>
+        </button>
     </div>
 </div>
 

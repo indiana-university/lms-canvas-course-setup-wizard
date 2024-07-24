@@ -61,49 +61,47 @@ jQuery(document).ready(function($) {
     // Otherwise, you need to manually call applyLoadingButton
     $(".loading-btn").click(function() {
         let loadingBtn = $(this).get(0);
-        applyLoadingButton(loadingBtn, true);
+        applyLoadingButton(loadingBtn);
     });
 
 });
 
-function applyLoadingButton(loadingBtn, submitForm) {
-        let btnForm = loadingBtn.form;
-        let btnValue = loadingBtn.value;
+function applyLoadingButton(loadingBtn) {
+    let btnForm = loadingBtn.form;
+    let btnValue = loadingBtn.value;
 
-        if (btnValue) {
-            // The value of disabled buttons is not submitted with the form, so we need to create
-            // a hidden input to add the value to the form
-            var hiddenInput = document.createElement('input');
-            hiddenInput.setAttribute('name', 'action');
-            hiddenInput.setAttribute('value', btnValue);
-            hiddenInput.setAttribute('type', 'hidden');
+    if (btnValue) {
+        // The value of disabled buttons is not submitted with the form, so we need to create
+        // a hidden input to add the value to the form
+        var hiddenInput = document.createElement('input');
+        hiddenInput.setAttribute('name', 'action');
+        hiddenInput.setAttribute('value', btnValue);
+        hiddenInput.setAttribute('type', 'hidden');
 
-            btnForm.appendChild(hiddenInput); //append the input to the form
-        }
-
-        loadingBtn.setAttribute("aria-busy", true);
-
-        // disable all buttons on the page
-        var buttonsToDisable = document.getElementsByTagName('button');
-        for(var i = 0; i < buttonsToDisable.length; i++) {
-            buttonsToDisable[i].disabled = true;
-        }
-
-        loadingBtn.classList.add("rvt-button--loading");
-
-        let spinners = loadingBtn.getElementsByClassName('rvt-loader');
-        if (spinners && spinners.length > 0) {
-            spinners[0].classList.remove("rvt-display-none");
-        }
-
-        let srText = loadingBtn.getElementsByClassName('sr-loader-text');
-        if (srText && srText.length > 0) {
-            srText[0].classList.remove("rvt-display-none");
-        }
-
-        // FF doesn't need this, but Chrome and Edge do
-    if (submitForm) {
-        btnForm.submit();
+        btnForm.appendChild(hiddenInput); //append the input to the form
     }
+
+    loadingBtn.setAttribute("aria-busy", true);
+
+    // disable all buttons on the page
+    var buttonsToDisable = document.getElementsByTagName('button');
+    for(var i = 0; i < buttonsToDisable.length; i++) {
+        buttonsToDisable[i].disabled = true;
+    }
+
+    loadingBtn.classList.add("rvt-button--loading");
+
+    let spinners = loadingBtn.getElementsByClassName('rvt-loader');
+    if (spinners && spinners.length > 0) {
+        spinners[0].classList.remove("rvt-display-none");
+    }
+
+    let srText = loadingBtn.getElementsByClassName('sr-loader-text');
+    if (srText && srText.length > 0) {
+        srText[0].classList.remove("rvt-display-none");
+    }
+
+    // FF doesn't need this, but Chrome and Edge do
+    btnForm.submit();
 }
 
