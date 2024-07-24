@@ -56,7 +56,7 @@
                     </select>
                     <!-- radio list for banner options, dynamically rendered based on select component above -->
                     <fieldset class="rvt-fieldset">
-                        <legend id="banner-image-category-legend" th:text="'Image options for ' + ${bannerImageCategories.get(0).name}"></legend>
+                        <legend id="banner-image-category-legend" class="rvt-sr-only" th:text="'Image options for ' + ${bannerImageCategories.get(0).name}"></legend>
                         <!-- ul will be filled by javascript on pulldown change -->
                         <ul id="image-ul" class="rvt-list-plain">
                         </ul>
@@ -64,7 +64,7 @@
                     </fieldset>
                 </div>
                 <input type="hidden" name="currentPage" value="3">
-                <div th:insert="theme/wizardSteps.html :: buttons(nextOnclick='return doSubmit();')"></div>
+                <div th:insert="theme/wizardSteps.html :: buttons(nextOnclick='return selectBannerSubmit();')"></div>
             </form>
         </div>
     </div>
@@ -76,73 +76,9 @@
         /*<![CDATA[*/
             const courseId = /*[[${courseId}]]*/
         /*]]>*/
-
-        function doSubmit() {
-            let yesBannerImage = document.querySelector('#include-banner-image-radio-yes:checked');
-
-            if (yesBannerImage != null) {
-                let checkedRadio = document.querySelector('input[type=radio][name=banner-image-radio-group]:checked');
-                if (checkedRadio != null) {
-                    let bannerImageId = checkedRadio.value;
-                    $('#banner-image-id').val(bannerImageId);
-                } else {
-                    let allRadio = document.getElementsByName("banner-image-radio-group");
-                    allRadio.forEach(btn => {
-                        btn.setAttribute("aria-describedby", "option-message");
-                    });
-                    alertMessage = document.getElementById('select-alert');
-                    alertMessage.classList.remove("rvt-display-none");
-                    return false;
-                }
-            }
-        }
-
-        function loadBannerImagesForSelectedCategory() {
-            let categoryId = $('#select-input-categories').val();
-            let categoryName = $('#select-input-categories option[value="' + categoryId + '"]').text();
-            $('#banner-image-category-legend').text('Image options for ' + categoryName);
-            $('#image-ul').load('/app/theme/' + courseId + '/bannerimage/' + categoryId ,  function() {
-                let bannerImageId = $('#banner-image-id').val();
-
-                if (bannerImageId != '') {
-                    let radioThing = $('input[type=radio][name=banner-image-radio-group]');
-                    radioThing.each(function() {
-                        if (bannerImageId == $(this).val()) {
-                            $(this).prop('checked', true);
-                        }
-                    });
-                }
-            });
-        }
-
-        $(document).ready(function() {
-            // determine if additional fields display or not
-            $('input[name=includeBannerImage]').on('change', function() {
-                if ( this.value == 'true') {
-                    $("#banner-wrapper").removeClass('rvt-display-none');
-                } else {
-                    $("#banner-wrapper").addClass('rvt-display-none');
-                    $('#banner-image-id').val('');
-                    $('input[type="radio"][name=banner-image-radio-group]:checked').prop('checked', false);
-                }
-            });
-
-            $('#select-input-categories').change(function() {
-                loadBannerImagesForSelectedCategory();
-            });
-
-            if ($('#include-banner-image-radio-yes').is(':checked')) {
-                $("#banner-wrapper").removeClass('rvt-display-none');
-            } else {
-                $("#banner-wrapper").addClass('rvt-display-none');
-                $('#banner-image-id').val('');
-                $('input[type="radio"][name=banner-image-radio-group]:checked').prop('checked', false);
-            }
-
-            loadBannerImagesForSelectedCategory();
-        });
-
     </script>
+
+    <script type="text/javascript" th:src="@{/app/js/theme/selectBanner.js}"></script>
 </th:block>
 </body>
 </html>

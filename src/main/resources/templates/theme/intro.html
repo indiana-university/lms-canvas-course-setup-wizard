@@ -33,17 +33,11 @@
                     Select the <span class="rvt-text-bold">Next</span> button to begin making your selections.
                 </p>
                 <input type="hidden" name="currentPage" value="1">
-                <div th:insert="theme/wizardSteps.html :: buttons(nextOnclick='return doSubmit();')"></div>
+                <div th:insert="theme/wizardSteps.html :: buttons"></div>
             </form>
         </div>
     </div>
 </div>
-<th:block layout:fragment="script">
-    <script th:inline="javascript">
-        function doSubmit() {
-        }
-    </script>
-</th:block>
 
 </body>
 </html>
