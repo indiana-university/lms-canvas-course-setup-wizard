@@ -64,7 +64,7 @@
                     </fieldset>
                 </div>
                 <input type="hidden" name="currentPage" value="3">
-                <div th:insert="theme/wizardSteps.html :: buttons(nextOnclick='return selectBannerSubmit();')"></div>
+                <div th:insert="theme/wizardSteps.html :: buttons(nextOnclick='return selectBannerSubmit(this);')"></div>
             </form>
         </div>
     </div>

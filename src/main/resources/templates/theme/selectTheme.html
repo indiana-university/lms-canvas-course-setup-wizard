@@ -41,16 +41,14 @@
                     <div th:insert="fragments.html :: selectAlert"></div>
                 </fieldset>
                 <input type="hidden" name="currentPage" value="2">
-                <div th:insert="theme/wizardSteps.html :: buttons(nextOnclick='return selectThemeSubmit();')"></div>
+                <div th:insert="theme/wizardSteps.html :: buttons(nextOnclick='selectThemeSubmit(this);')"></div>
             </form>
         </div>
     </div>
 </div>
 
 <th:block layout:fragment="script">
-    <script th:inline="javascript">
-        <script type="text/javascript" th:src="@{/app/js/theme/selectBanner.js}"></script>
-    </script>
+    <script type="text/javascript" th:src="@{/app/js/theme/selectTheme.js}"></script>
 </th:block>
 </body>
 </html>

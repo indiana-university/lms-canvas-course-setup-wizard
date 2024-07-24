@@ -57,8 +57,16 @@ jQuery(document).ready(function($) {
         }
     });
 
+    // If there is no validation on your button, add the loading-btn class to make it a loader.
+    // Otherwise, you need to manually call applyLoadingButton
     $(".loading-btn").click(function() {
         let loadingBtn = $(this).get(0);
+        applyLoadingButton(loadingBtn, true);
+    });
+
+});
+
+function applyLoadingButton(loadingBtn, submitForm) {
         let btnForm = loadingBtn.form;
         let btnValue = loadingBtn.value;
 
@@ -94,8 +102,8 @@ jQuery(document).ready(function($) {
         }
 
         // FF doesn't need this, but Chrome and Edge do
+    if (submitForm) {
         btnForm.submit();
-    });
-
-});
+    }
+}
 
