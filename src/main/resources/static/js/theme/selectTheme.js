@@ -1,7 +1,7 @@
 function selectThemeSubmit(button) {
-    var checkedRadio = document.querySelector('input[name="themeId"]:checked');
+    let checkedRadio = document.querySelector('input[name="themeId"]:checked');
     if (checkedRadio == null) {
-        var allRadio = document.getElementsByName("themeId");
+        let allRadio = document.getElementsByName("themeId");
         allRadio.forEach(btn => {
             btn.setAttribute("aria-describedby", "option-message");
         });

@@ -58,7 +58,7 @@ jQuery(document).ready(function($) {
     });
 
     // If there is no validation on your button, add the loading-btn class to make it a loader.
-    // Otherwise, you need to manually call applyLoadingButton
+    // Otherwise, you need to manually call applyLoadingButton after your validation
     $(".loading-btn").click(function() {
         let loadingBtn = $(this).get(0);
         applyLoadingButton(loadingBtn);
@@ -84,7 +84,7 @@ function applyLoadingButton(loadingBtn) {
     loadingBtn.setAttribute("aria-busy", true);
 
     // disable all buttons on the page
-    var buttonsToDisable = document.getElementsByTagName('button');
+    let buttonsToDisable = document.getElementsByTagName('button');
     for(var i = 0; i < buttonsToDisable.length; i++) {
         buttonsToDisable[i].disabled = true;
     }
@@ -103,5 +103,21 @@ function applyLoadingButton(loadingBtn) {
 
     // FF doesn't need this, but Chrome and Edge do
     btnForm.submit();
+}
+
+function doSubmitOptionChoice(button) {
+    let checkedRadio = document.querySelector('input[name="menuChoice"]:checked');
+    if (checkedRadio == null) {
+        let allRadio = document.getElementsByName("menuChoice");
+        allRadio.forEach(btn => {
+            btn.setAttribute("aria-describedby", "option-message");
+        })
+        alertMessage = document.getElementById('select-alert');
+        alertMessage.classList.remove("rvt-display-none");
+        allRadio[0].focus();
+        return false;
+    }
+
+    applyLoadingButton(button);
 }
 

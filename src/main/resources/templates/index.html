@@ -265,13 +265,9 @@
                 </fieldset>
                 <div class="rvt-button-group [ rvt-m-top-md ]">
                     <button class="rvt-button rvt-button--secondary" id="exit-wizard" onclick="return doExit();" data-rvt-dialog-trigger="dialogExit">Exit</button>
-                    <button class="rvt-button" onclick="return doSubmit(this);">
-                        <span class="rvt-button__content">
-                            Next
-                        </span>
-                        <div class="rvt-loader rvt-loader--xs rvt-display-none" data-loader-text="Next page is loading."></div>
+                    <button class="rvt-button" onclick="return doSubmitOptionChoice(this);">
+                        <span th:replace="fragments.html :: loadingButton(buttonText='Next', srText='Next page is loading.')"></span>
                     </button>
-                    <p aria-live="polite"><span class="rvt-sr-only" id="spinner-sr-text"></span></p>
                 </div>
             </form>
         </div>
@@ -283,44 +279,7 @@
 
 <th:block layout:fragment="script">
     <script th:inline="javascript">
-    function doSubmit(button, formSubmit = true) {
-        var checkedRadio = document.querySelector('input[name="menuChoice"]:checked');
-        if (checkedRadio == null) {
-            var allRadio = document.getElementsByName("menuChoice");
-            allRadio.forEach(btn => {
-                btn.setAttribute("aria-describedby", "option-message");
-            })
-            alertMessage = document.getElementById('select-alert');
-            alertMessage.classList.remove("rvt-display-none");
-            allRadio[0].focus();
-            return false;
-        }
 
-        button.setAttribute("aria-busy", true);
-
-        // this will disable the accordions, too, but probably fine
-        var buttonsToDisable = document.getElementsByTagName('button');
-
-        for(var i = 0; i < buttonsToDisable.length; i++) {
-            buttonsToDisable[i].disabled = true;
-        }
-
-        button.classList.add("rvt-button--loading");
-        button.getElementsByTagName('div')[0].classList.remove("rvt-display-none");
-
-        // Set screenreader-only text to notify there is some loading action happening
-        var loader = document.getElementsByClassName('rvt-loader')[0];
-        var srText = loader.dataset.loaderText;
-
-        var spinner = document.getElementById('spinner-sr-text');
-        spinner.innerHTML=srText;
-
-
-        if (formSubmit) {
-            // FF doesn't need this, but Chrome and Edge do
-            button.form.submit();
-        }
-    }
     </script>
 </th:block>
 </body>

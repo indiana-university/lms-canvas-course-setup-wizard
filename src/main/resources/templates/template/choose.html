@@ -117,8 +117,10 @@
                 <input type="hidden" id="selectedTemplateId" name="selectedTemplateId">
                 <input type="hidden" id="selectedTemplateName" name="selectedTemplateName">
                 <div class="[ rvt-m-top-xl ]">
-                    <button class="rvt-button rvt-button--secondary" name="action"
-                            th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">Restart Wizard</button>
+                    <button class="rvt-button rvt-button--secondary loading-btn" name="action"
+                            th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">
+                        <span th:replace="fragments.html :: loadingButton(buttonText='Restart Wizard', srText='Restarting wizard')"></span>
+                    </button>
                 </div>
 
             </form>

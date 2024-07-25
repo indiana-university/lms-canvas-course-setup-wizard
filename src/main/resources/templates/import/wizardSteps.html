@@ -69,7 +69,7 @@
         </button>
         <button th:if="${isSubmit}" class="rvt-button loading-btn" name="action"
                 th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_SUBMIT}">
-            <span th:replace="fragments.html :: loadingButton(buttonText='Submit', srText='Submitting your selections')"></span>
+            <span th:replace="fragments.html :: loadingButton(buttonText='Submit', srText='Initiating import. Redirecting to the Import Content Tool.')"></span>
         </button>
     </div>
     <div class="[ rvt-m-top-xl ]">
