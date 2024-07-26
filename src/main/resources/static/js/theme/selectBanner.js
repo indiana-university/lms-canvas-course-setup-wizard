@@ -14,6 +14,7 @@ function selectBannerSubmit(button) {
             });
             alertMessage = document.getElementById('select-alert');
             alertMessage.classList.remove("rvt-display-none");
+            allRadio[0].focus();
             return false;
         }
     }
@@ -21,7 +22,7 @@ function selectBannerSubmit(button) {
     applyLoadingButton(button);
 }
 
-function loadBannerImagesForSelectedCategory() {
+function loadBannerImagesForSelectedCategory(focusOnFirst) {
     let categoryId = $('#select-input-categories').val();
     let categoryName = $('#select-input-categories option[value="' + categoryId + '"]').text();
     $('#banner-image-category-legend').text('Image options for ' + categoryName);
@@ -36,7 +37,16 @@ function loadBannerImagesForSelectedCategory() {
                 }
             });
         }
+
+        // we need to do this at the end of the load
+        $('#sr-msg').html("Now displaying options for the " + categoryName + " category.");
+        if (focusOnFirst) {
+            // move focus to first image
+            $('input[type="radio"][name=banner-image-radio-group]').first().focus();
+        }
     });
+
+
 }
 
 
@@ -45,6 +55,7 @@ $(document).ready(function() {
     $('input[name=includeBannerImage]').on('change', function() {
         if ( this.value == 'true') {
             $("#banner-wrapper").removeClass('rvt-display-none');
+            $('#sr-msg').html('Select your banner options below.')
         } else {
             $("#banner-wrapper").addClass('rvt-display-none');
             $('#banner-image-id').val('');
@@ -53,7 +64,11 @@ $(document).ready(function() {
     });
 
     $('#select-input-categories').change(function() {
-        loadBannerImagesForSelectedCategory();
+        // reset validation
+        $("#select-alert").addClass("rvt-display-none");
+
+        loadBannerImagesForSelectedCategory(true);
+
     });
 
     if ($('#include-banner-image-radio-yes').is(':checked')) {
@@ -62,7 +77,8 @@ $(document).ready(function() {
         $("#banner-wrapper").addClass('rvt-display-none');
         $('#banner-image-id').val('');
         $('input[type="radio"][name=banner-image-radio-group]:checked').prop('checked', false);
+        $("#sr-msg").html(""); // reset the sr messaging
     }
 
-    loadBannerImagesForSelectedCategory();
+    loadBannerImagesForSelectedCategory(false);
 });

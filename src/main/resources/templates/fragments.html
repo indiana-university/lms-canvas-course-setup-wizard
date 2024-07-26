@@ -70,7 +70,7 @@
     </div>
 </div>
 
-<div th:fragment="selectAlert">
+<div th:fragment="selectAlert" th:with="message=${message} ?: 'Select an option before continuing.', alertId=${alertId} ?: 'option-message'">
     <div id="select-alert" class="rvt-inline-alert rvt-inline-alert--standalone rvt-inline-alert--danger rvt-display-none">
           <span class="rvt-inline-alert__icon">
               <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
@@ -80,7 +80,7 @@
                   </g>
               </svg>
           </span>
-        <span class="rvt-inline-alert__message" id="option-message">Select an option before continuing.</span>
+        <span class="rvt-inline-alert__message" id="option-message" th:text="${message}"></span>
     </div>
 </div>
 

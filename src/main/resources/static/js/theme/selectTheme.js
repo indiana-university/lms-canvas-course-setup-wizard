@@ -7,6 +7,7 @@ function selectThemeSubmit(button) {
         });
         alertMessage = document.getElementById('select-alert');
         alertMessage.classList.remove("rvt-display-none");
+        allRadio[0].focus();
         return false;
     }
 

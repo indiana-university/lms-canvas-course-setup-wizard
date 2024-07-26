@@ -92,10 +92,9 @@
                                         <p th:unless="${#strings.isEmpty(template.sponsor)}" th:text="|Sponsor: ${template.sponsor}|"></p>
 
                                         <p th:unless="${#strings.isEmpty(template.canvasCommonsUrl)}">
-                                            <a  th:href="${template.canvasCommonsUrl}" target="_blank">
+                                            <a  th:href="${template.canvasCommonsUrl}" target="_blank" aria-describedby="sr-new-window">
                                                 <span th:text="|Preview: ${template.displayName}|">Preview template</span>
                                                 <rvt-icon name="link-external"></rvt-icon>
-                                                <span class="rvt-sr-only">Opens in new window</span>
                                             </a>
                                         </p>
 
