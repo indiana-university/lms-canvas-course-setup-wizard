@@ -16,19 +16,19 @@
     <div class="rvt-row rvt-p-top-md">
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
             <h2 id="page-title">Include navigation</h2>
+            <p>
+                You have the option to include navigational elements with your course. The navigation
+                appears beneath the banner image in the example below. It has four quick links that say
+                "Start Here", "Syllabus", "Modules", and "Resources". The link names may be changed. Review the
+                Wizard Next Steps page for detailed instructions or contact your
+                <a href="https://kb.iu.edu/d/aitz" target="_blank" aria-describedby="sr-new-window">Campus Teaching and Learning Center <rvt-icon name="link-external"></rvt-icon></a>
+                for assistance.
+            </p>
+            <p>
+                Example:
+                <img th:src="${exampleNavigationUrl}" alt="Image showing an example of the theme" />
+            </p>
             <form id="wizard-theme-form-submit" th:object="${themeForm}" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
-                <p>
-                    You have the option to include navigational elements with your course. The navigation
-                    appears beneath the banner image in the example below. It has four quick links that say
-                    "Start Here", "Syllabus", "Modules", and "Resources". The link names may be changed. Review the
-                    Wizard Next Steps page for detailed instructions or contact your
-                    <a href="https://kb.iu.edu/d/aitz" target="_blank" aria-describedby="sr-new-window">Campus Teaching and Learning Center <rvt-icon name="link-external"></rvt-icon></a>
-                    for assistance.
-                </p>
-                <p>
-                    Example:
-                    <img th:src="${exampleNavigationUrl}" alt="Image showing an example of the theme" />
-                </p>
                 <fieldset class="rvt-fieldset">
                     <legend>Do you want to include navigation in the theme?</legend>
                     <ul class="rvt-list-plain">

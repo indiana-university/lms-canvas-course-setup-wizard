@@ -16,22 +16,24 @@
     <div class="rvt-row rvt-p-top-md">
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
             <h2 id="page-title">Intro</h2>
+
+            <p>
+                You have opted to select the theme (page design) and banner image for this course.
+            </p>
+            <p>
+                <span class="rvt-text-bold">Note:</span> This option should only be used when creating new course
+                content. If you want to apply these design elements to existing course materials, contact your
+                <a href="https://kb.iu.edu/d/aitz" target="_blank" aria-describedby="sr-new-window">Campus Teaching and Learning Center<rvt-icon name="link-external" class="rvt-m-left-xxs"></rvt-icon></a>
+                for assistance.
+            </p>
+            <p>
+                You will be prompted to make a series of design choices. Once you have confirmed your choices, the
+                wizard will generate a course home page and a syllabus design as well as templates for creating
+                assignments, discussions, quizzes, and pages, all with visual design elements that you chose.
+                Select the <span class="rvt-text-bold">Next</span> button to begin making your selections.
+            </p>
+
             <form id="wizard-form-submit" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
-                <p>
-                    You have opted to select the theme (page design) and banner image for this course.
-                </p>
-                <p>
-                    <span class="rvt-text-bold">Note:</span> This option should only be used when creating new course
-                    content. If you want to apply these design elements to existing course materials, contact your
-                    <a href="https://kb.iu.edu/d/aitz" target="_blank" aria-describedby="sr-new-window">Campus Teaching and Learning Center<rvt-icon name="link-external" class="rvt-m-left-xxs"></rvt-icon></a>
-                    for assistance.
-                </p>
-                <p>
-                    You will be prompted to make a series of design choices. Once you have confirmed your choices, the
-                    wizard will generate a course home page and a syllabus design as well as templates for creating
-                    assignments, discussions, quizzes, and pages, all with visual design elements that you chose.
-                    Select the <span class="rvt-text-bold">Next</span> button to begin making your selections.
-                </p>
                 <input type="hidden" name="currentPage" value="1">
                 <div th:insert="theme/wizardSteps.html :: buttons"></div>
             </form>

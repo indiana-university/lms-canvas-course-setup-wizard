@@ -39,7 +39,7 @@ function loadBannerImagesForSelectedCategory(focusOnFirst) {
         }
 
         // we need to do this at the end of the load
-        $('#sr-msg').html("Now displaying options for the " + categoryName + " category.");
+        $('#sr-msg').html("Now displaying image options for the " + categoryName + " category.");
         if (focusOnFirst) {
             // move focus to first image
             $('input[type="radio"][name=banner-image-radio-group]').first().focus();
@@ -55,7 +55,7 @@ $(document).ready(function() {
     $('input[name=includeBannerImage]').on('change', function() {
         if ( this.value == 'true') {
             $("#banner-wrapper").removeClass('rvt-display-none');
-            $('#sr-msg').html('Select your banner options below.')
+            $('#sr-msg').html('Select your banner image below.')
         } else {
             $("#banner-wrapper").addClass('rvt-display-none');
             $('#banner-image-id').val('');
