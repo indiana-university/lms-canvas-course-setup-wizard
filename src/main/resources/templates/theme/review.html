@@ -16,41 +16,42 @@
     <div class="rvt-row rvt-p-top-md">
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
             <h2 id="page-title">Review</h2>
-            <form id="wizard-theme-form-submit" th:object="${themeForm}" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
-                <p>
-                    You have selected the following theme (page design) and banner image for the content in this course.
-                    To confirm your selections, select <span class="rvt-text-bold">Next</span>. To revise your
-                    selections, return to the desired page(s) and update your choices.
-                </p>
-                <dl class="rvt-list-description">
-                    <dt>Theme</dt>
-                    <dd th:text="${themeName}">THEME NAME</dd>
-                    <dt>Banner image</dt>
-                    <!-- this can also just be "No banner selected" -->
-                    <dd th:text="${bannerImageName}">BANNER IMAGE NAME</dd>
-                    <dt>Include navigation?</dt>
-                    <dd th:text="*{includeNavigation} ? 'Yes' : 'No'">YES</dd>
-                    <dt>Include instructional design prompts and guidance?</dt>
-                    <dd th:text="*{includeGuidance} ? 'Yes' : 'No'">YES</dd>
-                    <dt>Full preview</dt>
-                    <dd>
-                        <!-- normal markup will be 3-4 images stacked on top of each other to mimick the choices made throughout -->
-                        <img id="someuniqueid2-1" th:src="${justBannerImagePreviewUrl}" class="rvt-m-top-sm"
-                             alt="Image shows how page elements will appear for this theme. Main header and navigation are in red with white font. Heading 3 will be centered, while headings 4-6 are left justified with a horizontal rule." />
-                        <th:block th:if="${bannerImagePreviewUrl != null}">
+            <p>
+                You have selected the following theme (page design) and banner image for the content in this course.
+                To confirm your selections, select <span class="rvt-text-bold">Next</span>. To revise your
+                selections, return to the desired page(s) and update your choices.
+            </p>
+            <dl class="rvt-list-description">
+                <dt>Theme</dt>
+                <dd th:text="${themeName}">THEME NAME</dd>
+                <dt>Banner image</dt>
+                <!-- this can also just be "No banner selected" -->
+                <dd th:text="${bannerImageName}">BANNER IMAGE NAME</dd>
+                <dt>Include navigation?</dt>
+                <dd th:text="*{includeNavigation} ? 'Yes' : 'No'">YES</dd>
+                <dt>Include instructional design prompts and guidance?</dt>
+                <dd th:text="*{includeGuidance} ? 'Yes' : 'No'">YES</dd>
+                <dt>Full preview</dt>
+                <dd>
+                    <!-- normal markup will be 3-4 images stacked on top of each other to mimick the choices made throughout -->
+                    <img id="someuniqueid2-1" th:src="${justBannerImagePreviewUrl}" class="rvt-m-top-sm"
+                         alt="Image shows how page elements will appear for this theme. Main header and navigation are in red with white font. Heading 3 will be centered, while headings 4-6 are left justified with a horizontal rule." />
+                    <th:block th:if="${bannerImagePreviewUrl != null}">
                         <img id="someuniqueid2-2" th:src="${bannerImagePreviewUrl}" class="rvt-m-top-sm"
                              alt="Image shows how page elements will appear for this theme. Main header and navigation are in red with white font. Heading 3 will be centered, while headings 4-6 are left justified with a horizontal rule." />
-                        </th:block>
-                        <th:block th:if="${justNavImagePreviewUrl != null}">
+                    </th:block>
+                    <th:block th:if="${justNavImagePreviewUrl != null}">
                         <img id="someuniqueid2-3" th:src="${justNavImagePreviewUrl}" class="rvt-m-top-sm"
                              alt="Image shows how page elements will appear for this theme. Main header and navigation are in red with white font. Heading 3 will be centered, while headings 4-6 are left justified with a horizontal rule." />
-                        </th:block>
-                        <img id="someuniqueid2-4" th:src="${justHeaderImagePreviewUrl}" class="rvt-m-top-sm"
-                             alt="Image shows how page elements will appear for this theme. Main header and navigation are in red with white font. Heading 3 will be centered, while headings 4-6 are left justified with a horizontal rule." />
-                    </dd>
-                </dl>
+                    </th:block>
+                    <img id="someuniqueid2-4" th:src="${justHeaderImagePreviewUrl}" class="rvt-m-top-sm"
+                         alt="Image shows how page elements will appear for this theme. Main header and navigation are in red with white font. Heading 3 will be centered, while headings 4-6 are left justified with a horizontal rule." />
+                </dd>
+            </dl>
+
+            <form id="wizard-theme-form-submit" th:object="${themeForm}" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
                 <input type="hidden" name="currentPage" value="6">
-                <div th:insert="theme/wizardSteps.html :: buttons(nextOnclick='return doSubmit();')"></div>
+                <div th:insert="theme/wizardSteps.html :: buttons"></div>
             </form>
         </div>
     </div>
@@ -58,10 +59,7 @@
 </div>
 
 <th:block layout:fragment="script">
-    <script th:inline="javascript">
-        function doSubmit() {
-        }
-    </script>
+
 </th:block>
 </body>
 </html>

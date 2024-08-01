@@ -48,23 +48,23 @@
   <div class="rvt-row rvt-p-top-md">
     <div class="rvt-cols-8-md rvt-flow rvt-prose">
       <h2 id="page-title">Adjust dates</h2>
-      <form id="wizard-form-dates2" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
 
         <div th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
 
         <p>You have opted to adjust dates during the import.</p>
         <p>
-          Use the form below to specify how dates should be adjusted. Canvas will use the dates
-          you provide to distribute event and due dates across the term for the current course.
+            Use the form below to specify how dates should be adjusted. Canvas will use the dates
+            you provide to distribute event and due dates across the term for the current course.
         </p>
         <p>
-          For best results:
-          <ul class="rvt-list">
-            <li>If the original and current courses have the same term length (e.g. 16 week, 8 week, etc.), enter the first day of class for both classes and leave the last day of class empty for both. Use the actual start date for both classes, not the term start date.</li>
-            <li>If the original course and current course have different term lengths, enter first and last day dates for both courses, using the actual first and last date of class, not the term start and end dates.</li>
-          </ul>
+            For best results:
+            <ul class="rvt-list">
+                <li>If the original and current courses have the same term length (e.g. 16 week, 8 week, etc.), enter the first day of class for both classes and leave the last day of class empty for both. Use the actual start date for both classes, not the term start date.</li>
+                <li>If the original course and current course have different term lengths, enter first and last day dates for both courses, using the actual first and last date of class, not the term start and end dates.</li>
+            </ul>
         </p>
 
+      <form id="wizard-form-dates2" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
         <div class="rvt-container-xl">
             <div class="rvt-row rvt-p-top-sm">
                 <div class="rvt-cols-6-md" th:insert="datepicker.html :: datePicker(${selectedClassDates?.origFirst}, 'original-first','date-format','classDates.origFirst', 'Original first day of class', ${origStartError})"></div>

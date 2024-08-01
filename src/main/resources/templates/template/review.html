@@ -75,16 +75,20 @@
                 <p>Once the import is complete, you can begin to edit and customize your course and the materials included in the template.</p>
                 <input type="hidden" name="currentPage" value="2">
                 <div class="rvt-button-group [ rvt-m-top-xl ]">
-                    <button class="rvt-button rvt-button--secondary" name="action"
+                    <button class="rvt-button rvt-button--secondary loading-btn" name="action"
                             th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_BACK}">
-                        Back
+                        <span th:replace="fragments.html :: loadingButton(buttonText='Back', srText='Loading previous page')"></span>
                     </button>
-                    <button class="rvt-button" name="action"
-                            th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_SUBMIT}">Submit</button>
+                    <button class="rvt-button loading-btn" name="action"
+                            th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_SUBMIT}">
+                        <span th:replace="fragments.html :: loadingButton(buttonText='Submit', srText='Applying template. Redirecting to the Import Content Tool.')"></span>
+                    </button>
                 </div>
                 <div class="[ rvt-m-top-xl ]">
-                    <button class="rvt-button rvt-button--secondary" name="action"
-                            th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">Restart Wizard</button>
+                    <button class="rvt-button rvt-button--secondary loading-btn" name="action"
+                            th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">
+                        <span th:replace="fragments.html :: loadingButton(buttonText='Restart Wizard', srText='Restarting wizard')"></span>
+                    </button>
                 </div>
             </form>
         </div>

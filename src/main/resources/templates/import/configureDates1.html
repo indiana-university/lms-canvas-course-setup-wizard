@@ -48,55 +48,54 @@
   <div class="rvt-row rvt-p-top-md">
     <div class="rvt-cols-8-md rvt-flow rvt-prose">
       <h2 id="page-title">Adjust dates</h2>
-      <form id="wizard-form-dates1" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+      <div th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
 
-        <div th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
+      <p class="rvt-m-bottom-md">
+        As part of a course import, you can adjust the due dates associated with course events
+        and assignments to fit within the start and end dates of the upcoming course. If the
+        imported course and the current course are the same duration (e.g., 8 weeks, 16 weeks, etc),
+        each due date will be moved to the same relative day and time in the term.
+      </p>
 
-        <p>
-          As part of a course import, you can adjust the due dates associated with course events
-          and assignments to fit within the start and end dates of the upcoming course. If the
-          imported course and the current course are the same duration (e.g., 8 weeks, 16 weeks, etc),
-          each due date will be moved to the same relative day and time in the term.
-        </p>
-
-        <h2 class="header-flow-override">About the options</h2>
-        <p>
-          <div class="rvt-disclosure rvt-m-bottom-sm" data-rvt-disclosure="disclosure-date-options">
-            <button type="button" aria-controls="learn-more-content" class="rvt-disclosure__toggle" data-rvt-disclosure-toggle aria-expanded="false">Learn more about date options</button>
-            <div id="learn-more-content" class="rvt-disclosure__content" data-rvt-disclosure-target hidden>
-              <div class="rvt-prose rvt-flow">
-                <h3 class="rvt-ts-18">Adjust the dates for the new term</h3>
-                <p>
-                  When adjusting dates, you will be asked to provide the start and end dates
-                  for the course you are importing and the current course. Canvas will use
-                  this information to distribute events and assignments with due dates as
-                  evenly as possible across the current course and keep them due on the same
-                  day of the week as the original course. You'll also be given the option to
-                  make day substitutions to adjust for changing class schedules, such as
-                  moving all assignments with Monday due dates to Tuesdays.
-                </p>
-                <h3 class="rvt-ts-18">Remove all dates</h3>
-                <p>
-                  The following tools will have dates removed during the import process:
-                <ul class="rvt-list">
-                  <li>Assignments (due, availability, and peer-review dates)</li>
-                  <li>Announcements (delayed post dates)</li>
-                  <li>Quizzes (due, availability, and show correct answers dates)</li>
-                  <li>Calendar events (start and end dates)</li>
-                  <li>Modules (unlock dates)</li>
-                  <li>Files (availability dates)</li>
-                </ul>
-                </p>
-                <h3 class="rvt-ts-18">Leave dates as is; do not make any changes</h3>
-                <p>
-                  Using this option, no date adjustments will happen at all after the
-                  import process is completed.
-                </p>
-              </div>
+      <h2 class="header-flow-override">About the options</h2>
+      <p>
+        <div class="rvt-disclosure rvt-m-bottom-sm" data-rvt-disclosure="disclosure-date-options">
+          <button type="button" aria-controls="learn-more-content" class="rvt-disclosure__toggle" data-rvt-disclosure-toggle aria-expanded="false">Learn more about date options</button>
+          <div id="learn-more-content" class="rvt-disclosure__content" data-rvt-disclosure-target hidden>
+            <div class="rvt-prose rvt-flow">
+              <h3 class="rvt-ts-18">Adjust the dates for the new term</h3>
+              <p>
+                When adjusting dates, you will be asked to provide the start and end dates
+                for the course you are importing and the current course. Canvas will use
+                this information to distribute events and assignments with due dates as
+                evenly as possible across the current course and keep them due on the same
+                day of the week as the original course. You'll also be given the option to
+                make day substitutions to adjust for changing class schedules, such as
+                moving all assignments with Monday due dates to Tuesdays.
+              </p>
+              <h3 class="rvt-ts-18">Remove all dates</h3>
+              <p>
+                The following tools will have dates removed during the import process:
+              <ul class="rvt-list">
+                <li>Assignments (due, availability, and peer-review dates)</li>
+                <li>Announcements (delayed post dates)</li>
+                <li>Quizzes (due, availability, and show correct answers dates)</li>
+                <li>Calendar events (start and end dates)</li>
+                <li>Modules (unlock dates)</li>
+                <li>Files (availability dates)</li>
+              </ul>
+              </p>
+              <h3 class="rvt-ts-18">Leave dates as is; do not make any changes</h3>
+              <p>
+                Using this option, no date adjustments will happen at all after the
+                import process is completed.
+              </p>
             </div>
           </div>
-        </p>
+        </div>
+      </p>
 
+      <form id="wizard-form-dates1" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
         <fieldset class="rvt-fieldset">
           <legend class="rvt-ts-23 rvt-p-bottom-xs">
             What do you want to do with the event and assignment due dates during the import?
@@ -130,7 +129,7 @@
           <input type="hidden" name="currentPage" value="3">
         </fieldset>
 
-        <div th:insert="import/wizardSteps.html :: buttons(nextOnclick='return doSubmit();')"></div>
+        <div th:insert="import/wizardSteps.html :: buttons(nextOnclick='return configureDates1Submit(this);')"></div>
 
       </form>
     </div>
@@ -139,21 +138,8 @@
 </div>
 
 <th:block layout:fragment="script">
-  <script th:inline="javascript">
-    function doSubmit() {
-        var checkedRadio = document.querySelector('input[name="dateOption"]:checked');
-        if (checkedRadio == null) {
-            var allRadio = document.getElementsByName("dateOption");
-            allRadio.forEach(btn => {
-                btn.setAttribute("aria-describedby", "option-message");
-            })
-            alertMessage = document.getElementById('select-alert');
-            alertMessage.classList.remove("rvt-display-none");
-            allRadio[0].focus();
-            return false;
-        }
-    }
-    </script>
+  <script type="text/javascript" th:src="@{/app/js/import/import.js}"></script>
 </th:block>
+
 </body>
 </html>
