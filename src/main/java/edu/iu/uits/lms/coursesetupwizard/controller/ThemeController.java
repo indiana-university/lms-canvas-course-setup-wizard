@@ -67,6 +67,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_BACK;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_HOME;
@@ -205,33 +206,16 @@ public class ThemeController extends WizardController {
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
 
         ThemeModel themeModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL, ThemeModel.class);
-        List<BannerImageCategory> allActiveBannerImageCategories =  bannerImageCategoryRepository.findByActiveTrueOrderByName();
 
-        List<BannerImageCategory> bannerImageCategories = new ArrayList<>();
-        List<BannerImage> bannerImages = new ArrayList<>();
-
-        // Let's use only the categories with images and only active images
-        for (BannerImageCategory bannerImageCategory : allActiveBannerImageCategories) {
-            List<BannerImage> allBannerImages = bannerImageCategory.getBannerImages();
-            bannerImages.clear();
-
-            for (BannerImage bannerImage : allBannerImages) {
-                if (bannerImage.isActive()) {
-                    bannerImages.add(bannerImage);
-                }
-            }
-
-            if (! bannerImages.isEmpty()) {
-                bannerImageCategory.setBannerImages(bannerImages);
-                bannerImageCategories.add(bannerImageCategory);
-            }
-        }
+        List<BannerImageCategory> activeBannerImageCategoriesWithActiveImages = bannerImageCategoryRepository.findByActiveTrueOrderByName().stream()
+                .filter(bi -> ! bi.getActiveBannerImages().isEmpty())
+                .toList();
 
         if (themeModel.getIncludeBannerImage() == null) {
             themeModel.setIncludeBannerImage(true);
         }
 
-        model.addAttribute("bannerImageCategories", bannerImageCategories);
+        model.addAttribute("bannerImageCategories", activeBannerImageCategoriesWithActiveImages);
         model.addAttribute("courseId", courseId);
         model.addAttribute("themeForm", themeModel);
 
@@ -405,7 +389,7 @@ public class ThemeController extends WizardController {
 
         BannerImageCategory bannerImageCategory =  bannerImageCategoryRepository.findById(categoryId)
                 .orElse(new BannerImageCategory());
-        model.addAttribute("bannerImages", bannerImageCategory.getBannerImages());
+        model.addAttribute("bannerImages", bannerImageCategory.getActiveBannerImages());
 
         return new ModelAndView("fragments :: themeBannerImageOptionsListItems");
     }

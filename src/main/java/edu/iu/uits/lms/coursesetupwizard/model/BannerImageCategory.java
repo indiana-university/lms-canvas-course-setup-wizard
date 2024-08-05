@@ -49,8 +49,10 @@ import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "CSW_BANNER_IMAGE_CATEGORY")
@@ -74,6 +76,12 @@ public class BannerImageCategory {
     @OrderBy("name ASC")
     @ToString.Exclude
     private List<BannerImage> bannerImages;
+
+    public List<BannerImage> getActiveBannerImages() {
+        return bannerImages.stream()
+                .filter(BannerImage::isActive)
+                .collect(Collectors.toList());
+    }
 
     @Column(name = "CREATEDON")
     private Date createdOn;
