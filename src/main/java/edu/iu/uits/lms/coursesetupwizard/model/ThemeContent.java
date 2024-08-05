@@ -40,7 +40,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Lob;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import javax.persistence.Table;
@@ -56,7 +55,6 @@ public class ThemeContent {
     @Column(name = "NAME")
     private String name;
 
-    @Lob
     @Column(name = "TEMPLATE_TEXT", columnDefinition = "TEXT")
     private String templateText;
 
