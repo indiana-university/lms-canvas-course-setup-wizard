@@ -61,9 +61,9 @@
                 <!-- this can also just be "No banner selected" -->
                 <dd th:text="${bannerImageName}">BANNER IMAGE NAME</dd>
                 <dt>Include navigation?</dt>
-                <dd th:text="*{includeNavigation} ? 'Yes' : 'No'">YES</dd>
+                <dd th:text="${includeNavigation} ? 'Yes' : 'No'">YES</dd>
                 <dt>Include instructional design prompts and guidance?</dt>
-                <dd th:text="*{includeGuidance} ? 'Yes' : 'No'">YES</dd>
+                <dd th:text="${includeGuidance} ? 'Yes' : 'No'">YES</dd>
                 <dt>Full preview</dt>
                 <dd>
                     <!-- normal markup will be 3-4 images stacked on top of each other to mimick the choices made throughout -->

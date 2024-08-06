@@ -262,7 +262,8 @@ public class ThemeController extends WizardController {
             model.addAttribute("bannerImagePreviewUrl", bannerImage.get().getBannerImageUrl());
         }
 
-        model.addAttribute("themeForm", themeModel);
+        model.addAttribute("includeNavigation", themeModel.getIncludeNavigation());
+        model.addAttribute("includeGuidance", themeModel.getIncludeGuidance());
 
         model.addAttribute("justBannerImagePreviewUrl", theme.isPresent() ? theme.get().getJustBannerImagePreviewUrl() : "None");
 
