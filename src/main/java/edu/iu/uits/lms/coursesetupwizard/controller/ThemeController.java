@@ -372,7 +372,8 @@ public class ThemeController extends WizardController {
                     model.addAttribute("errors", "There was a problem processing your Theme request");
                 } else {
                     // 14. Once all steps above are completed, drop the user on the Next Steps page
-                    afterSubmitUrl = String.format("redirect:%s/courses/%s/pages/%s", canvasService.getBaseUrl(), courseId, nextStepsWikiPage.getPageId());
+                    afterSubmitUrl = "theme/redirectParent";
+                    model.addAttribute("redirectUrl", String.format("%s/courses/%s/pages/%s", canvasService.getBaseUrl(), courseId, nextStepsWikiPage.getPageId()));
                 }
 
                 return new ModelAndView(afterSubmitUrl);
