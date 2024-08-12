@@ -41,7 +41,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,9 +66,46 @@ public class BannerImageJpaCustomRestController {
    @Autowired
    private BannerImageCategoryRepository bannerImageCategoryRepository;
 
+   @DeleteMapping("/{id}")
+   @Operation(summary = "Soft Delete Banner Image By id ")
+   public String softDeleteById(@PathVariable("id") Long id) {
+      String result;
 
-   @PutMapping("/{id}/addAssociatedCategory/{bannerImageCategoryId}")
-   @Operation(summary = "Associate a given existing Banner Category with this Banner Image")
+      BannerImage bannerImage = bannerImageRepository.findById(id).orElse(null);
+
+      if (bannerImage == null) {
+         result = String.format("Could not find Banner Image with id %d", id);
+      }
+      else {
+         bannerImageRepository.softDeleteById(id);
+         result = String.format("Soft Deleted Banner Image with id %d (%s)",
+                 id, bannerImage.getName());
+      }
+
+      return result;
+   }
+
+   @PostMapping("/undelete/{id}")
+   @Operation(summary = "Un-Soft Delete Banner Image By id ")
+   public String unSoftDeleteById(@PathVariable("id") Long id) {
+      String result;
+
+      BannerImage bannerImage = bannerImageRepository.findById(id).orElse(null);
+
+      if (bannerImage == null) {
+         result = String.format("Could not find Banner Image with id %d", id);
+      }
+      else {
+         bannerImageCategoryRepository.unSoftDeleteById(id);
+         result = String.format("Un Soft Deleted Banner Image with id %d (%s)",
+                 id, bannerImage.getName());
+      }
+
+      return result;
+   }
+
+   @PostMapping("/{id}/addAssociatedCategory/{bannerImageCategoryId}")
+   @Operation(summary = "Associate a given existing Banner Category with a Banner Image. Both the Banner Image and Category must exist already.")
    public BannerImage associateById(@PathVariable("id") Long id,
                                     @PathVariable("bannerImageCategoryId") Long bannerImageCategoryId) {
       BannerImage bannerImage = bannerImageRepository.findById(id).orElse(null);
@@ -90,8 +129,8 @@ public class BannerImageJpaCustomRestController {
       return bannerImage;
    }
 
-   @PutMapping("/{id}/removeAssociatedCategory/{bannerImageCategoryId}")
-   @Operation(summary = "Remove Association of an already associated Banner Category with this Banner Image")
+   @DeleteMapping("/{id}/removeAssociatedCategory/{bannerImageCategoryId}")
+   @Operation(summary = "Remove Association of an already associated Banner Category from a Banner Image. Both the Banner Image and Category must exist already.")
    public BannerImage removeAssociationById(@PathVariable("id") Long id,
                                             @PathVariable("bannerImageCategoryId") Long bannerImageCategoryId) {
       BannerImage bannerImage = bannerImageRepository.findById(id).orElse(null);

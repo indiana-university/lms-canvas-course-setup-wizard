@@ -41,28 +41,39 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.Description;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RepositoryRestResource(path = "bannerimagecategory",
         itemResourceDescription = @Description("Banner Image Category"),
         collectionResourceDescription = @Description("Banner Image Categories"))
 @Tag(name = "BannerImageCategoryRepository", description = "Interact with Banner Image Categories CRUD operations")
+/*
+ * These REST JPA auto-defined endpoints are supplemented by some in BannerImageCategoryJpaCustomRestController
+ */
 public interface BannerImageCategoryRepository extends PagingAndSortingRepository<BannerImageCategory, Long> {
-    @Override
     @Modifying
     @Query("UPDATE BannerImageCategory as bic SET bic.active = 'N' WHERE bic.id = :id")
     @Transactional
-    void deleteById(@Param("id") Long id);
+    @RestResource(exported = false)
+    void softDeleteById(@Param("id") Long id);
+
+    @Modifying
+    @Query("UPDATE BannerImageCategory as bic SET bic.active = 'Y' WHERE bic.id = :id")
+    @Transactional
+    @RestResource(exported = false)
+    void unSoftDeleteById(@Param("id") Long id);
 
     @Override
-    @Modifying
-    @Query("UPDATE BannerImageCategory as bic SET bic.active = 'N' WHERE bic = :bannerImageCategory")
-    @Transactional
-    void delete(@Param("bannerImageCategory") BannerImageCategory bannerImageCategory);
+    @RestResource(exported = false)
+    void deleteById(@Param("id") Long id);
 
     List<BannerImageCategory> findByActiveTrueOrderByName();
 }

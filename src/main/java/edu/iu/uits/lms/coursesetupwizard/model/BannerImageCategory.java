@@ -77,6 +77,7 @@ public class BannerImageCategory {
     @ToString.Exclude
     private List<BannerImage> bannerImages;
 
+    @JsonIgnore
     public List<BannerImage> getActiveBannerImages() {
         return bannerImages.stream()
                 .filter(BannerImage::isActive)

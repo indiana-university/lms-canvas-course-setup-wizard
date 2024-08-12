@@ -41,6 +41,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.Description;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,15 +54,19 @@ import org.springframework.transaction.annotation.Transactional;
  * These REST JPA auto-defined endpoints are supplemented by some in BannerImageJpaCustomRestController
  */
 public interface BannerImageRepository extends PagingAndSortingRepository<BannerImage, Long> {
-    @Override
     @Modifying
     @Query("UPDATE BannerImage as bi SET bi.active = 'N' WHERE bi.id = :id")
     @Transactional
-    void deleteById(@Param("id") Long id);
+    @RestResource(exported = false)
+    void softDeleteById(@Param("id") Long id);
+
+    @Modifying
+    @Query("UPDATE BannerImage as bi SET bi.active = 'Y' WHERE bi.id = :id")
+    @Transactional
+    @RestResource(exported = false)
+    void unSoftDeleteById(@Param("id") Long id);
 
     @Override
-    @Modifying
-    @Query("UPDATE BannerImage as bi SET bi.active = 'N' WHERE bi = :bannerImage")
-    @Transactional
-    void delete(@Param("bannerImage") BannerImage bannerImage);
+    @RestResource(exported = false)
+    void deleteById(@Param("id") Long id);
 }
