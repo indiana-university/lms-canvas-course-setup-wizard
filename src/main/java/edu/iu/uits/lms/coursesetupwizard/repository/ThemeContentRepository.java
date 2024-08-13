@@ -38,6 +38,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.Description;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -51,6 +52,10 @@ import java.util.Optional;
  * These REST JPA auto-defined endpoints are supplemented by some in ThemeContentJpaCustomRestController
  */
 public interface ThemeContentRepository extends PagingAndSortingRepository<ThemeContent, String> {
+
+    @Override
+    @RestResource(exported = false)
+    <S extends ThemeContent> S save(S entity);
 
     /**
      *
