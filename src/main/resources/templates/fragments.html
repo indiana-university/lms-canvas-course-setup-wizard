@@ -62,7 +62,7 @@
                 <button id="exit-confirm" class="rvt-button" role="button">
                     <span>Yes, exit</span>
                 </button>
-                <button type="button" class="rvt-button rvt-button--secondary" data-rvt-dialog-close="dialogExit" role="button">
+                <button type="button" class="rvt-button rvt-button--secondary" data-rvt-dialog-close="dialogExit" role="button" id="exit-cancel">
                     <span>No, return to wizard</span>
                 </button>
             </div>
@@ -103,7 +103,7 @@
 </div>
 
 <div th:fragment="importFromCourse (courseName)">
-    <h3 class="rvt-ts-18 rvt-p-top-sm">
+    <h3 id="import-from" class="rvt-ts-18 rvt-p-top-sm">
         <span class="rvt-display-block rvt-p-bottom-xs">Import from:</span>
         <span th:text="${courseName}"></span>
     </h3>

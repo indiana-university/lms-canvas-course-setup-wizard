@@ -60,7 +60,7 @@
                     <span class="rvt-text-bold">Preview</span> link to open the template in a new tab.
                 </p>
                 <h3 class="header-flow-override rvt-p-tb-sm">Templates</h3>
-                <div class="rvt-accordion rvt-m-bottom-lg" data-rvt-accordion="course-template-accordion">
+                <div id="template-options" class="rvt-accordion rvt-m-bottom-lg" data-rvt-accordion="course-template-accordion">
                     <div th:each="mapEntry : ${templatesForCourse}">
                         <h4 class="rvt-accordion__summary">
                             <button class="rvt-accordion__toggle rvt-p-tb-xs"
@@ -92,19 +92,19 @@
                                         <p th:unless="${#strings.isEmpty(template.sponsor)}" th:text="|Sponsor: ${template.sponsor}|"></p>
 
                                         <p th:unless="${#strings.isEmpty(template.canvasCommonsUrl)}">
-                                            <a  th:href="${template.canvasCommonsUrl}" target="_blank">
+                                            <a  th:href="${template.canvasCommonsUrl}" target="_blank" th:id="|${#strings.replace(template.displayName,' ','-')}-preview|">
                                                 <span th:text="|Preview: ${template.displayName}|">Preview template</span>
                                                 <rvt-icon name="link-external"></rvt-icon>
                                                 <span class="rvt-sr-only">Opens in new window</span>
                                             </a>
                                         </p>
 
-                                        <p th:text="${template.description}"></p>
+                                        <p th:id="|${#strings.replace(mapEntry.key,' ','-')}-desc|" th:text="${template.description}"></p>
                                         <div>
                                             <button class="rvt-button rvt-button--secondary" name="action"
                                                     th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_NEXT}"
                                                     th:data-templateid="${template.id}" th:data-templatename="|${mapEntry.key}: ${template.displayName}|"
-                                                    onclick="doSubmit(this);" th:text="|Select the ${template.displayName}|">
+                                                    onclick="doSubmit(this);" th:text="|Select the ${template.displayName}|" th:id="|${#strings.replace(template.displayName,' ','-')}-select|">
                                             </button>
                                         </div>
                                     </div>
@@ -117,7 +117,7 @@
                 <input type="hidden" id="selectedTemplateId" name="selectedTemplateId">
                 <input type="hidden" id="selectedTemplateName" name="selectedTemplateName">
                 <div class="[ rvt-m-top-xl ]">
-                    <button class="rvt-button rvt-button--secondary" name="action"
+                    <button class="rvt-button rvt-button--secondary" name="action" id="restart-wizard"
                             th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">Restart Wizard</button>
                 </div>
 

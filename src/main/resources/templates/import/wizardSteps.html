@@ -46,7 +46,7 @@
                         <span class="rvt-sr-only sr-spacing"> Step </span>
                         <span class="rvt-steps__indicator" th:text="${itemStat.index+1}">Step number</span>
                     </span>
-                    <a th:if="${activeLink}" th:href="${item.link}" class="rvt-steps__item-content" th:aria-current="${isCurrentIndicator}">
+                    <a th:if="${activeLink}" th:id="|step-${itemStat.index}|" th:href="${item.link}" class="rvt-steps__item-content" th:aria-current="${isCurrentIndicator}">
                         <span class="rvt-steps__label" th:text="${item.name}">Step name</span>
                         <span class="rvt-sr-only sr-spacing"> Step </span>
                         <span class="rvt-steps__indicator" th:text="${itemStat.index+1}">Step number</span>
@@ -59,15 +59,15 @@
 
 <div th:fragment="buttons">
     <div class="rvt-button-group [ rvt-m-top-xl ]">
-        <button class="rvt-button rvt-button--secondary" name="action"
+        <button class="rvt-button rvt-button--secondary" name="action" id="back"
                 th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_BACK}">Back</button>
         <button th:unless="${isSubmit}" class="rvt-button" name="action" th:attr="onclick=${nextOnclick != null} ? |${nextOnclick}|"
-                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_NEXT}">Next</button>
-        <button th:if="${isSubmit}" class="rvt-button" name="action"
+                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_NEXT}" id="next-step">Next</button>
+        <button th:if="${isSubmit}" class="rvt-button" name="action" id="submit"
                 th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_SUBMIT}">Submit</button>
     </div>
     <div class="[ rvt-m-top-xl ]">
-        <button class="rvt-button rvt-button--secondary" name="action"
+        <button class="rvt-button rvt-button--secondary" name="action" id="restart-wizard"
                 th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">Restart Wizard</button>
     </div>
 </div>

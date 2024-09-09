@@ -52,7 +52,7 @@
       <form id="wizard-form-review" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
         <div th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
 
-        <dl class="rvt-list-description">
+        <dl id="review-summary" class="rvt-list-description">
           <th:block th:each="mapEntry : ${reviewValues}">
             <dt th:text="${mapEntry.key}">key</dt>
             <dd th:each="theValue : ${mapEntry.value}" th:text="${theValue}">value</dd>
