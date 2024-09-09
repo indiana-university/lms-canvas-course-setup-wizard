@@ -60,7 +60,7 @@
       <h2 class="header-flow-override">About the options</h2>
       <p>
         <div class="rvt-disclosure rvt-m-bottom-sm" data-rvt-disclosure="disclosure-date-options">
-          <button type="button" aria-controls="learn-more-content" class="rvt-disclosure__toggle" data-rvt-disclosure-toggle aria-expanded="false">Learn more about date options</button>
+          <button id="learn-more-toggle" type="button" aria-controls="learn-more-content" class="rvt-disclosure__toggle" data-rvt-disclosure-toggle aria-expanded="false">Learn more about date options</button>
           <div id="learn-more-content" class="rvt-disclosure__content" data-rvt-disclosure-target hidden>
             <div class="rvt-prose rvt-flow">
               <h3 class="rvt-ts-18">Adjust the dates for the new term</h3>
@@ -97,7 +97,7 @@
 
       <form id="wizard-form-dates1" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
         <fieldset class="rvt-fieldset">
-          <legend class="rvt-ts-23 rvt-p-bottom-xs">
+          <legend id="date-choices" class="rvt-ts-23 rvt-p-bottom-xs">
             What do you want to do with the event and assignment due dates during the import?
             <span class="rvt-sr-only"> Required</span>
           </legend>

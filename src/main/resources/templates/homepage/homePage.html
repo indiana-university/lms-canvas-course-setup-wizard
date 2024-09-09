@@ -47,11 +47,11 @@
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
             <div th:if="${submitError}" th:insert="fragments.html :: submitError"></div>
             <h2 id="page-title">Add a customizable home page</h2>
-            <p>
+            <p id="homepage-intro">
                 You have opted to copy a customizable, professionally-designed home page template to your course.
                 Using the <span class="rvt-text-bold">Submit</span> button will initiate the following actions:
             </p>
-            <ul class="rvt-list">
+            <ul id="homepage-steps" class="rvt-list">
                 <li>A customizable home page template will be imported into your course and flagged as the "front page" in the Canvas Pages tool (this can take a few minutes).</li>
                 <li>
                     The templated home page will be set as the default home page for your course.
@@ -60,7 +60,7 @@
                     You will be redirected from this wizard to the Import Content tool in your course so you can check the progress of the template import.
                 </li>
             </ul>
-            <p>
+            <p id="homepage-finish">
                 Once the import is complete, visit <span class="rvt-text-bold">Home</span> in the course navigation
                 to view or begin customizing your home page. Should you later decide not to use this page, you can
                 <a href="https://community.canvaslms.com/t5/Instructor-Guide/How-do-I-change-the-Course-Home-Page/ta-p/1035" target="_blank" aria-describedby="sr-new-window">
@@ -69,11 +69,11 @@
             </p>
             <form id="wizard-form-homepage" th:action="@{|/app/homepage/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
                 <div class="rvt-button-group [ rvt-m-top-xl ]">
-                    <button class="rvt-button rvt-button--secondary loading-btn" name="action"
+                    <button class="rvt-button rvt-button--secondary loading-btn" name="action" id="back-btn"
                             th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_BACK}">
                         <span th:replace="fragments.html :: loadingButton(buttonText='Back', srText='Loading previous page')"></span>
                     </button>
-                    <button class="rvt-button" name="action"
+                    <button class="rvt-button" name="action" id="submit-btn"
                             th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_SUBMIT}">
                         <span th:replace="fragments.html :: loadingButton(buttonText='Submit', srText='Applying home page template. Redirecting to the Import Content Tool.')"></span>
                     </button>

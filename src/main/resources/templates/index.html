@@ -65,8 +65,8 @@
                 <span class="rvt-text-bold">Note:</span> The Course Setup Wizard can only be run once per
                 course, so choose the option that will save you the most time and effort.
             </p>
-            <h2 class="header-flow-override rvt-p-top-lg">Learn more about the options</h2>
-            <div class="rvt-accordion rvt-m-bottom-lg" data-rvt-accordion="course-import-accordion">
+            <h2 id="wizard-option-info" class="header-flow-override rvt-p-top-lg">Learn more about the options</h2>
+            <div id="wizard-option-summary" class="rvt-accordion rvt-m-bottom-lg" data-rvt-accordion="course-import-accordion">
                 <h3 class="rvt-accordion__summary">
                     <button class="rvt-accordion__toggle rvt-p-tb-xs"
                             id="course-import-accordion-1-label"
@@ -265,7 +265,7 @@
                 </fieldset>
                 <div class="rvt-button-group [ rvt-m-top-md ]">
                     <button class="rvt-button rvt-button--secondary" id="exit-wizard" onclick="return doExit();" data-rvt-dialog-trigger="dialogExit">Exit</button>
-                    <button class="rvt-button" onclick="return doSubmitOptionChoice(this);">
+                    <button class="rvt-button" onclick="return doSubmitOptionChoice(this);" id="next-step" >
                         <span th:replace="fragments.html :: loadingButton(buttonText='Next', srText='Next page is loading.')"></span>
                     </button>
                 </div>

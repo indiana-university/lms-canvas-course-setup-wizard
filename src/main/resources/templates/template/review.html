@@ -48,7 +48,7 @@
             <div th:if="${submitError}" th:insert="fragments.html :: submitError"></div>
             <h2 id="page-title">Review and submit</h2>
             <form id="wizard-form-review" th:action="@{|/app/template/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
-                <div class="rvt-alert rvt-alert--info rvt-m-top-md">
+                <div class="rvt-alert rvt-alert--info rvt-m-top-md" id="template-warning">
                     <p class="rvt-alert__message rvt-ts-16">
                         <span class="rvt-text-bold">Note:</span> Applying a template can make changes to your course
                         navigation (including removing the IU eTexts tool from the navigation of courses that use
@@ -56,7 +56,7 @@
                         course, consider making a copy before proceeding.
                     </p>
                 </div>
-                <p>
+                <p id="template-confirm">
                     You have opted to apply the <span class="rvt-text-bold" th:text="${selectedTemplateName}">Node_name: Template_Name</span> to your
                     course. Using the <span class="rvt-text-bold">Submit</span> button will initiate the following
                     actions (and you will not be permitted to run the wizard again in this course):
@@ -75,17 +75,17 @@
                 <p>Once the import is complete, you can begin to edit and customize your course and the materials included in the template.</p>
                 <input type="hidden" name="currentPage" value="2">
                 <div class="rvt-button-group [ rvt-m-top-xl ]">
-                    <button class="rvt-button rvt-button--secondary loading-btn" name="action"
+                    <button class="rvt-button rvt-button--secondary loading-btn" name="action" id="back-btn"
                             th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_BACK}">
                         <span th:replace="fragments.html :: loadingButton(buttonText='Back', srText='Loading previous page')"></span>
                     </button>
-                    <button class="rvt-button loading-btn" name="action"
+                    <button class="rvt-button loading-btn" name="action" id="submit-btn"
                             th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_SUBMIT}">
                         <span th:replace="fragments.html :: loadingButton(buttonText='Submit', srText='Applying template. Redirecting to the Import Content Tool.')"></span>
                     </button>
                 </div>
                 <div class="[ rvt-m-top-xl ]">
-                    <button class="rvt-button rvt-button--secondary loading-btn" name="action"
+                    <button class="rvt-button rvt-button--secondary loading-btn" name="action" id="restart-wizard"
                             th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">
                         <span th:replace="fragments.html :: loadingButton(buttonText='Restart Wizard', srText='Restarting wizard')"></span>
                     </button>

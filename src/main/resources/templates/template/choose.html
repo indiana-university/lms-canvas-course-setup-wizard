@@ -61,7 +61,7 @@
 
             <form id="wizard-form-template-selection" th:action="@{|/app/template/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
                 <h3 class="header-flow-override rvt-p-tb-sm">Templates</h3>
-                <div class="rvt-accordion rvt-m-bottom-lg" data-rvt-accordion="course-template-accordion">
+                <div id="template-options" class="rvt-accordion rvt-m-bottom-lg" data-rvt-accordion="course-template-accordion">
                     <div th:each="mapEntry : ${templatesForCourse}">
                         <h4 class="rvt-accordion__summary">
                             <button class="rvt-accordion__toggle rvt-p-tb-xs"
@@ -93,18 +93,18 @@
                                         <p th:unless="${#strings.isEmpty(template.sponsor)}" th:text="|Sponsor: ${template.sponsor}|"></p>
 
                                         <p th:unless="${#strings.isEmpty(template.canvasCommonsUrl)}">
-                                            <a  th:href="${template.canvasCommonsUrl}" target="_blank" aria-describedby="sr-new-window">
+                                            <a th:id="|${#strings.replace(template.displayName,' ','-')}-preview|" th:href="${template.canvasCommonsUrl}" target="_blank" aria-describedby="sr-new-window">
                                                 <span th:text="|Preview: ${template.displayName}|">Preview template</span>
                                                 <rvt-icon name="link-external"></rvt-icon>
                                             </a>
                                         </p>
 
-                                        <p th:text="${template.description}"></p>
+                                        <p th:id="|${#strings.replace(mapEntry.key,' ','-')}-desc|" th:text="${template.description}"></p>
                                         <div>
                                             <button class="rvt-button rvt-button--secondary" name="action"
                                                     th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_NEXT}"
                                                     th:data-templateid="${template.id}" th:data-templatename="|${mapEntry.key}: ${template.displayName}|"
-                                                    onclick="doSubmit(this);" th:text="|Select the ${template.displayName}|">
+                                                    onclick="doSubmit(this);" th:text="|Select the ${template.displayName}|" th:id="|${#strings.replace(template.displayName,' ','-')}-select|">
                                             </button>
                                         </div>
                                     </div>
@@ -117,7 +117,7 @@
                 <input type="hidden" id="selectedTemplateId" name="selectedTemplateId">
                 <input type="hidden" id="selectedTemplateName" name="selectedTemplateName">
                 <div class="[ rvt-m-top-xl ]">
-                    <button class="rvt-button rvt-button--secondary loading-btn" name="action"
+                    <button class="rvt-button rvt-button--secondary loading-btn" name="action" id="restart-wizard"
                             th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">
                         <span th:replace="fragments.html :: loadingButton(buttonText='Restart Wizard', srText='Restarting wizard')"></span>
                     </button>

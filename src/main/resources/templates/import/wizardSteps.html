@@ -46,7 +46,7 @@
                         <span class="rvt-sr-only sr-spacing"> Step </span>
                         <span class="rvt-steps__indicator" th:text="${itemStat.index+1}">Step number</span>
                     </span>
-                    <a th:if="${activeLink}" th:href="${item.link}" class="rvt-steps__item-content" th:aria-current="${isCurrentIndicator}">
+                    <a th:if="${activeLink}" th:id="|step-${itemStat.index}|" th:href="${item.link}" class="rvt-steps__item-content" th:aria-current="${isCurrentIndicator}">
                         <span class="rvt-steps__label" th:text="${item.name}">Step name</span>
                         <span class="rvt-sr-only sr-spacing"> Step </span>
                         <span class="rvt-steps__indicator" th:text="${itemStat.index+1}">Step number</span>
@@ -59,21 +59,21 @@
 
 <div th:fragment="buttons">
     <div class="rvt-button-group [ rvt-m-top-xl ]">
-        <button class="rvt-button rvt-button--secondary loading-btn" name="action"
+        <button class="rvt-button rvt-button--secondary loading-btn" name="action" id="back-btn"
                 th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_BACK}">
             <span th:replace="fragments.html :: loadingButton(buttonText='Back', srText='Loading previous step')"></span>
         </button>
         <button th:unless="${isSubmit}" class="rvt-button" name="action" th:attr="onclick=${nextOnclick != null} ? |${nextOnclick}| : 'applyLoadingButton(this);'"
-                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_NEXT}">
+                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_NEXT}" id="next-step">
             <span th:replace="fragments.html :: loadingButton(buttonText='Next', srText='Loading next step')"></span>
         </button>
-        <button th:if="${isSubmit}" class="rvt-button loading-btn" name="action"
+        <button th:if="${isSubmit}" class="rvt-button loading-btn" name="action" id="submit-btn"
                 th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_SUBMIT}">
             <span th:replace="fragments.html :: loadingButton(buttonText='Submit', srText='Initiating import. Redirecting to the Import Content Tool.')"></span>
         </button>
     </div>
     <div class="[ rvt-m-top-xl ]">
-        <button class="rvt-button rvt-button--secondary loading-btn" name="action"
+        <button class="rvt-button rvt-button--secondary loading-btn" name="action" id="restart-wizard"
                 th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">
             <span th:replace="fragments.html :: loadingButton(buttonText='Restart Wizard', srText='Restarting wizard')"></span>
         </button>
