@@ -50,7 +50,7 @@ Copyright © 2023 World Wide Web Consortium. https://www.w3.org/Consortium/Legal
                        th:classappend="${error != null} ? 'rvt-validation-danger'">
                 <div class="rvt-input-group__append">
                     <button type="button" class="rvt-button date-button" th:attr="aria-label=|Choose Date for ${label}|"
-                            th:classappend="${error != null} ? 'datepicker-error'" th:id="|${datepickerId}-picker|">
+                            th:classappend="${error != null} ? 'datepicker-error'" th:id="|${datepickerId}-btn|">
                         <rvt-icon name="calendar"></rvt-icon>
                     </button>
                 </div>
