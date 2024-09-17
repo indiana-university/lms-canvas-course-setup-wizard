@@ -37,6 +37,7 @@ import edu.iu.uits.lms.coursesetupwizard.model.ImportModel;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardServiceException;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.service.OidcTokenUtils;
+import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -49,8 +50,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
-
-import javax.servlet.http.HttpSession;
 
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_BACK;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_SUBMIT;

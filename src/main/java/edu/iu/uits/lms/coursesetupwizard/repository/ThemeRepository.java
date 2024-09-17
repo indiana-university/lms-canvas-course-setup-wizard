@@ -37,6 +37,7 @@ import edu.iu.uits.lms.coursesetupwizard.model.Theme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.Description;
@@ -55,15 +56,15 @@ import java.util.List;
 /*
  * These REST JPA auto-defined endpoints are supplemented by some in ThemeJpaCustomRestController
  */
-public interface ThemeRepository extends PagingAndSortingRepository<Theme, Long> {
+public interface ThemeRepository extends PagingAndSortingRepository<Theme, Long>, ListCrudRepository<Theme, Long> {
     @Modifying
-    @Query("UPDATE Theme as t SET t.active = 'N' WHERE t.id = :id")
+    @Query("UPDATE Theme as t SET t.active = false WHERE t.id = :id")
     @Transactional
     @RestResource(exported = false)
     void softDeleteById(@Param("id") Long id);
 
     @Modifying
-    @Query("UPDATE Theme as t SET t.active = 'Y' WHERE t.id = :id")
+    @Query("UPDATE Theme as t SET t.active = true WHERE t.id = :id")
     @Transactional
     @RestResource(exported = false)
     void unSoftDeleteById(@Param("id") Long id);

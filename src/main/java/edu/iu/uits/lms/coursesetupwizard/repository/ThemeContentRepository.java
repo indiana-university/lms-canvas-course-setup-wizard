@@ -35,6 +35,7 @@ package edu.iu.uits.lms.coursesetupwizard.repository;
 
 import edu.iu.uits.lms.coursesetupwizard.model.ThemeContent;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.Description;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
@@ -51,7 +52,7 @@ import java.util.Optional;
 /*
  * These REST JPA auto-defined endpoints are supplemented by some in ThemeContentJpaCustomRestController
  */
-public interface ThemeContentRepository extends PagingAndSortingRepository<ThemeContent, String> {
+public interface ThemeContentRepository extends PagingAndSortingRepository<ThemeContent, String>, ListCrudRepository<ThemeContent, String> {
 
     @Override
     @RestResource(exported = false)

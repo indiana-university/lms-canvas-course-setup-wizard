@@ -71,7 +71,6 @@ import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -181,7 +180,7 @@ public class ThemeProcessingServiceTest {
       List<ThemeContent> themeContents = Arrays.asList(themeContent01, themeContent02, themeContent03, themeContent04, themeContent05,
               themeContent06, themeContent07, themeContent08, themeContent09, themeContent10);
 
-      when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(themeContents));
+      when(themeContentRepository.findAll()).thenReturn(themeContents);
       when(freemarkerConfigurer.createConfiguration()).thenReturn(new Configuration());
       
       WikiPage nextStepsWikiPage = new WikiPage();
@@ -250,7 +249,7 @@ public class ThemeProcessingServiceTest {
       }
 
       reset(themeContentRepository);
-      when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(newThemeContent));
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
 
       WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
 
@@ -283,7 +282,7 @@ public class ThemeProcessingServiceTest {
       }
 
       reset(themeContentRepository);
-      when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(newThemeContent));
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
 
       WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
 
@@ -317,7 +316,7 @@ public class ThemeProcessingServiceTest {
       }
 
       reset(themeContentRepository);
-      when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(newThemeContent));
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
 
       WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
 
@@ -351,7 +350,7 @@ public class ThemeProcessingServiceTest {
       }
 
       reset(themeContentRepository);
-      when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(newThemeContent));
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
 
       AssignmentGroup assignmentGroup = new AssignmentGroup();
       assignmentGroup.setId(1);
@@ -392,7 +391,7 @@ public class ThemeProcessingServiceTest {
       }
 
       reset(themeContentRepository);
-      when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(newThemeContent));
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
 
       AssignmentGroup assignmentGroup = new AssignmentGroup();
       assignmentGroup.setId(1);
@@ -433,7 +432,7 @@ public class ThemeProcessingServiceTest {
       }
 
       reset(themeContentRepository);
-      when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(newThemeContent));
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
 
       AssignmentGroup assignmentGroup = new AssignmentGroup();
       assignmentGroup.setId(1);
@@ -474,7 +473,7 @@ public class ThemeProcessingServiceTest {
       }
 
       reset(themeContentRepository);
-      when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(newThemeContent));
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
 
       WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
 
@@ -509,7 +508,7 @@ public class ThemeProcessingServiceTest {
       }
 
       reset(themeContentRepository);
-      when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(newThemeContent));
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
 
       WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
 
@@ -543,7 +542,7 @@ public class ThemeProcessingServiceTest {
       }
 
       reset(themeContentRepository);
-      when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(newThemeContent));
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
 
       WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
 
@@ -577,7 +576,7 @@ public class ThemeProcessingServiceTest {
       }
 
       reset(themeContentRepository);
-      when(themeContentRepository.findAll()).thenReturn(new CustomIterable<>(newThemeContent));
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
 
       WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
 
@@ -593,18 +592,4 @@ public class ThemeProcessingServiceTest {
       Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
       Assertions.assertTrue(body.contains("Module Page Creation: Could not find value for theme.module.body.template"));
    }
-
-   private static class CustomIterable<T> implements Iterable<T> {
-      private List<T> elements;
-
-      public CustomIterable(List<T> elements) {
-         this.elements = elements;
-      }
-
-      @Override
-      public Iterator<T> iterator() {
-         return elements.iterator();
-      }
-   }
-
 }
