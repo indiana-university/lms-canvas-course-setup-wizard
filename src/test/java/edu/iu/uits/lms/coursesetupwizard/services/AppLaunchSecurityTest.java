@@ -117,13 +117,6 @@ public class AppLaunchSecurityTest {
 
       SecurityContextHolder.getContext().setAuthentication(token);
 
-//      mvc.perform(get("/app/"  + COURSE_ID_TST + "/index")
-//                      .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
-//                      .contentType(MediaType.APPLICATION_JSON))
-//              .andExpect(status().isInternalServerError())
-//              .andExpect(MockMvcResultMatchers.model().attributeExists("error"))
-//              .andExpect(MockMvcResultMatchers.view().name ("error"));
-
       ServletException t = Assertions.assertThrows(ServletException.class, () ->
               mvc.perform(get("/app/" + COURSE_ID_TST + "/index")
                       .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
