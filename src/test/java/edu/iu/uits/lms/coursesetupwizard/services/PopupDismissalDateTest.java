@@ -72,7 +72,6 @@ import java.util.Calendar;
 import java.util.Date;
 
 @DataJpaTest
-// @Import({ToolConfig.class, PostgresDBConfig.class})
 @ContextConfiguration(classes = {ToolConfig.class, PostgresDBConfig.class, WizardService.class})
 @Slf4j
 @ActiveProfiles("csw")
