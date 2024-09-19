@@ -9,11 +9,11 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.18</version>
+        <version>3.2.9</version>
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
-    <version>5.0.6-SNAPSHOT</version>
+    <version>6.0.0-SNAPSHOT</version>
     <description>LTI tool which allows for a wizard-like experience to setup a course in Canvas</description>
     <url>https://github.com/indiana-university/lms-canvas-course-setup-wizard</url>
     <inceptionYear>2022</inceptionYear>
@@ -55,27 +55,27 @@
     <properties>
         <app.version>${project.version}</app.version>
         <commons-io.version>2.16.1</commons-io.version>
-        <git-commit-id-maven-plugin.version>8.0.2</git-commit-id-maven-plugin.version>
-        <hibernate5-ddl-maven-plugin.version>2.5.0</hibernate5-ddl-maven-plugin.version>
+        <git-commit-id-maven-plugin.version>9.0.1</git-commit-id-maven-plugin.version>
+        <hibernate6-ddl-maven-plugin.version>1.0.2</hibernate6-ddl-maven-plugin.version>
         <java.version>21</java.version>
         <jdk.source>21</jdk.source>
         <jdk.target>21</jdk.target>
         <jquery.version>3.7.1</jquery.version>
-        <lms-canvas-rivet.version>5.2.7.0_1</lms-canvas-rivet.version>
-        <lms-embedded-services.version>5.2.39</lms-embedded-services.version>
-        <lms-team-spring-boot-it12>5.4.7</lms-team-spring-boot-it12>
+        <lms-canvas-rivet.version>6.2.8.1_1</lms-canvas-rivet.version>
+        <lms-embedded-services.version>6.0.2</lms-embedded-services.version>
+        <lms-team-spring-boot-it12>6.5.0</lms-team-spring-boot-it12>
         <nimbus-jose-jwt.version>9.10.1</nimbus-jose-jwt.version>
         <nodejs.version>v14.15.5</nodejs.version>
         <npm.version>6.14.11</npm.version>
-        <springdoc-openapi-ui.version>1.8.0</springdoc-openapi-ui.version>
-        <spring-cloud-starter-parent.version>2021.0.9</spring-cloud-starter-parent.version>
+        <springdoc-openapi-ui.version>2.6.0</springdoc-openapi-ui.version>
+        <spring-cloud-starter-parent.version>2023.0.3</spring-cloud-starter-parent.version>
         <spring-security-bom.version>5.5.2</spring-security-bom.version>
         <webjars-locator.version>0.52</webjars-locator.version>
 
         <frontend-maven-plugin.version>1.15.0</frontend-maven-plugin.version>
         <plugins.compiler.version>3.13.0</plugins.compiler.version>
         <plugins.license.version>2.4.0</plugins.license.version>
-        <plugins.release.version>3.0.1</plugins.release.version>
+        <plugins.release.version>3.1.1</plugins.release.version>
     </properties>
 
     <dependencyManagement>
@@ -118,7 +118,7 @@
         </dependency>
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
-            <artifactId>thymeleaf-extras-springsecurity5</artifactId>
+            <artifactId>thymeleaf-extras-springsecurity6</artifactId>
         </dependency>
         <dependency>
             <groupId>nz.net.ultraq.thymeleaf</groupId>
@@ -176,11 +176,6 @@
         </dependency>
         <dependency>
             <groupId>edu.iu.uits.lms</groupId>
-            <artifactId>lms-canvas-redis-config</artifactId>
-            <version>${lms-embedded-services.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>edu.iu.uits.lms</groupId>
             <artifactId>lms-email-service</artifactId>
             <version>${lms-embedded-services.version}</version>
         </dependency>
@@ -232,20 +227,23 @@
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>${springdoc-openapi-ui.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-data-rest</artifactId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
             <version>${springdoc-openapi-ui.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-freemarker</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-properties-migrator</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.session</groupId>
+            <artifactId>spring-session-data-redis</artifactId>
+        </dependency>
     </dependencies>
-
 
     <build>
         <finalName>course-setup-wizard</finalName>
@@ -288,8 +286,8 @@
             </plugin>
             <plugin>
                 <groupId>de.jpdigital</groupId>
-                <artifactId>hibernate54-ddl-maven-plugin</artifactId>
-                <version>${hibernate5-ddl-maven-plugin.version}</version>
+                <artifactId>hibernate65-ddl-maven-plugin</artifactId>
+                <version>${hibernate6-ddl-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -301,7 +299,7 @@
                 <configuration>
                     <dialects>
                         <param>h2</param>
-                        <param>postgresql9</param>
+                        <param>postgresql</param>
                     </dialects>
                     <packages>
                         <param>edu.iu.uits.lms.coursesetupwizard</param>

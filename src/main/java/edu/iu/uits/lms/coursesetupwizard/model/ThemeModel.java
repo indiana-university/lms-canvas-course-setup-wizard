@@ -34,15 +34,8 @@ package edu.iu.uits.lms.coursesetupwizard.model;
  */
 
 import lombok.Data;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import java.io.Serializable;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Data
 public class ThemeModel implements Serializable {

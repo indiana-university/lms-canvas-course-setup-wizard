@@ -45,6 +45,7 @@ import edu.iu.uits.lms.coursesetupwizard.service.ThemeProcessingService;
 import edu.iu.uits.lms.iuonly.services.FeatureAccessServiceImpl;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.service.OidcTokenUtils;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -61,7 +62,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
-import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;

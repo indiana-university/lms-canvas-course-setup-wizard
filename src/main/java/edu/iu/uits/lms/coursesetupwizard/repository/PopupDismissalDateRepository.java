@@ -35,13 +35,15 @@ package edu.iu.uits.lms.coursesetupwizard.repository;
 
 import edu.iu.uits.lms.coursesetupwizard.model.PopupDismissalDate;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-public interface PopupDismissalDateRepository extends PagingAndSortingRepository<PopupDismissalDate, Long> {
+public interface PopupDismissalDateRepository extends PagingAndSortingRepository<PopupDismissalDate, Long>,
+        ListCrudRepository<PopupDismissalDate, Long> {
 
    @Query(value = "SELECT pdd FROM PopupDismissalDate pdd WHERE pdd.showOn < CURRENT_TIMESTAMP ORDER BY pdd.showOn DESC")
    List<PopupDismissalDate> getPreviousDismissalDates();

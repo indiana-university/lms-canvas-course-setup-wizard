@@ -37,6 +37,7 @@ import edu.iu.uits.lms.coursesetupwizard.model.BannerImage;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.Description;
@@ -53,15 +54,15 @@ import org.springframework.transaction.annotation.Transactional;
 /*
  * These REST JPA auto-defined endpoints are supplemented by some in BannerImageJpaCustomRestController
  */
-public interface BannerImageRepository extends PagingAndSortingRepository<BannerImage, Long> {
+public interface BannerImageRepository extends PagingAndSortingRepository<BannerImage, Long>, ListCrudRepository<BannerImage, Long> {
     @Modifying
-    @Query("UPDATE BannerImage as bi SET bi.active = 'N' WHERE bi.id = :id")
+    @Query("UPDATE BannerImage as bi SET bi.active = false WHERE bi.id = :id")
     @Transactional
     @RestResource(exported = false)
     void softDeleteById(@Param("id") Long id);
 
     @Modifying
-    @Query("UPDATE BannerImage as bi SET bi.active = 'Y' WHERE bi.id = :id")
+    @Query("UPDATE BannerImage as bi SET bi.active = true WHERE bi.id = :id")
     @Transactional
     @RestResource(exported = false)
     void unSoftDeleteById(@Param("id") Long id);

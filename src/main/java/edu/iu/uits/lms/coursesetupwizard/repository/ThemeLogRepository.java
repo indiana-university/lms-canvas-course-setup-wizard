@@ -35,6 +35,7 @@ package edu.iu.uits.lms.coursesetupwizard.repository;
 
 import edu.iu.uits.lms.coursesetupwizard.model.ThemeLog;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.Description;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
@@ -45,5 +46,5 @@ import org.springframework.stereotype.Component;
         itemResourceDescription = @Description("Theme Log"),
         collectionResourceDescription = @Description("Theme Log"))
 @Tag(name = "ThemeLogRepository", description = "Interact with Theme Log CRUD operations")
-public interface ThemeLogRepository extends PagingAndSortingRepository<ThemeLog, Long> {
+public interface ThemeLogRepository extends PagingAndSortingRepository<ThemeLog, Long>, ListCrudRepository<ThemeLog, Long> {
 }

@@ -33,14 +33,25 @@ package edu.iu.uits.lms.coursesetupwizard.services;
  * #L%
  */
 
+import edu.iu.uits.lms.canvas.services.AccountService;
+import edu.iu.uits.lms.canvas.services.BlueprintService;
+import edu.iu.uits.lms.canvas.services.ContentMigrationService;
+import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.coursesetupwizard.config.PostgresDBConfig;
+import edu.iu.uits.lms.coursesetupwizard.config.SecurityConfig;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.coursesetupwizard.model.PopupDismissalDate;
 import edu.iu.uits.lms.coursesetupwizard.model.PopupStatus;
 import edu.iu.uits.lms.coursesetupwizard.model.WizardUserCourse;
+import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageCategoryRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.ThemeRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
+import edu.iu.uits.lms.iuonly.services.HierarchyResourceService;
+import edu.iu.uits.lms.iuonly.services.TemplateAuditService;
+import freemarker.template.Template;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -51,9 +62,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -61,7 +72,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 @DataJpaTest
-@Import({ToolConfig.class, PostgresDBConfig.class})
+@ContextConfiguration(classes = {ToolConfig.class, PostgresDBConfig.class, WizardService.class})
 @Slf4j
 @ActiveProfiles("csw")
 public class PopupDismissalDateTest {
@@ -77,6 +88,33 @@ public class PopupDismissalDateTest {
 
    @MockBean
    private JwtDecoder jwtDecoder;
+
+   @MockBean
+   private BannerImageRepository bannerImageRepository;
+
+   @MockBean
+   private ThemeRepository themeRepository;
+
+   @MockBean
+   private BannerImageCategoryRepository bannerImageCategoryRepository;
+
+   @MockBean
+   private CourseService courseService;
+
+   @MockBean
+   private ContentMigrationService contentMigrationService;
+
+   @MockBean
+   private AccountService accountService;
+
+   @MockBean
+   private BlueprintService blueprintService;
+
+   @MockBean
+   private HierarchyResourceService hierarchyResourceService;
+
+   @MockBean
+   private TemplateAuditService templateAuditService;
 
    private static final String USER1 = "user1";
    private static final String COURSE1 = "course1";

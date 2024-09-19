@@ -52,7 +52,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.persistence.EntityNotFoundException;
 import java.io.IOException;
 
 @RestController
@@ -89,7 +88,7 @@ public class ThemeContentJpaCustomRestController {
    @GetMapping("/{name}/getTemplateTextAsFile")
    @Operation(summary = "Get the Template Text for the given themeContent as a file to download")
    public ResponseEntity<byte[]> getTemplateTextAsFile(@PathVariable("name") String name) {
-      ThemeContent themeContent = themeContentRepository.findById(name).orElseThrow(EntityNotFoundException::new);
+      ThemeContent themeContent = themeContentRepository.findById(name).orElseThrow();
 
       HttpHeaders headers = new HttpHeaders();
       headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + themeContent.getName() + ".txt\"");
@@ -103,7 +102,7 @@ public class ThemeContentJpaCustomRestController {
    @PutMapping(value = "/{name}/putTemplateTextAsFile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
    @Operation(summary = "Update the Template Text for the given themeContent from the file uploaded")
    public ResponseEntity<ThemeContent> putTemplateTextAsFile(@PathVariable("name") String name, @RequestParam("templateTextFile") MultipartFile templateTextFile) throws IOException {
-      ThemeContent themeContent = themeContentRepository.findById(name).orElseThrow(EntityNotFoundException::new);
+      ThemeContent themeContent = themeContentRepository.findById(name).orElseThrow();
 
       themeContent.setTemplateText(new String(templateTextFile.getBytes()));
 

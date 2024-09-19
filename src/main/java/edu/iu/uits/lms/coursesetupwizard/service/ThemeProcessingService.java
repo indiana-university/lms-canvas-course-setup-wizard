@@ -68,13 +68,13 @@ import edu.iu.uits.lms.email.service.LmsEmailTooBigException;
 import freemarker.cache.StringTemplateLoader;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
+import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
-import javax.mail.MessagingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
