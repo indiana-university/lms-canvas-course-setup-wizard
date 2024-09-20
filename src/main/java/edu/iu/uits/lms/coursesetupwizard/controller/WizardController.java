@@ -123,6 +123,7 @@ public class WizardController extends OidcTokenAwareController {
                                    HttpSession httpSession) {
         log.debug("in /menu");
         OidcAuthenticationToken token = getValidatedToken(courseId);
+        OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
 //        model.addAttribute("courseId", courseId);
         ImportModel importModel = new ImportModel();
         importModel.setMenuChoice(menuChoice);
@@ -132,13 +133,13 @@ public class WizardController extends OidcTokenAwareController {
         Constants.MAIN_OPTION mainOption = Constants.MAIN_OPTION.valueOf(menuChoice);
         switch (mainOption) {
             case IMPORT:
-                return new ModelAndView("redirect:/app/import/" + courseId + "/selectCourse");
+                return new ModelAndView("redirect:/app/import/" + oidcTokenUtils.getCourseId() + "/selectCourse");
             case TEMPLATE:
-                return new ModelAndView("redirect:/app/template/" + courseId + "/choose");
+                return new ModelAndView("redirect:/app/template/" + oidcTokenUtils.getCourseId() + "/choose");
             case HOMEPAGE:
-                return new ModelAndView("redirect:/app/homepage/" + courseId + "/homePage");
+                return new ModelAndView("redirect:/app/homepage/" + oidcTokenUtils.getCourseId() + "/homePage");
             case THEME:
-                return new ModelAndView("redirect:/app/theme/" + courseId + "/intro");
+                return new ModelAndView("redirect:/app/theme/" + oidcTokenUtils.getCourseId() + "/intro");
             default:
                 return new ModelAndView("index");
         }
