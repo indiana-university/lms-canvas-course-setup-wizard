@@ -368,7 +368,7 @@ public class ThemeController extends WizardController {
 
                 if (nextStepsWikiPage == null) {
                     // error creating first step nextSteps page
-                    afterSubmitUrl = String.format("/app/%s/index", courseId);
+                    afterSubmitUrl = String.format("/app/%s/index", oidcTokenUtils.getCourseId());
                     model.addAttribute("errors", "There was a problem processing your Theme request");
                 } else {
                     // 14. Once all steps above are completed, drop the user on the Next Steps page
