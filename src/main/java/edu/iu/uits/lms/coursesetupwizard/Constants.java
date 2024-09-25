@@ -81,6 +81,30 @@ public class Constants {
 
     @AllArgsConstructor
     @Getter
+    public enum AdminOption {
+        POPUP,
+        FEATURE,
+        THEME,
+        EDITTHEME,
+        THEMECONTENT,
+        BANNER,
+        EDITBANNER,
+        BANNERCATEGORY;
+
+        public static AdminOption findByName(String name) {
+            AdminOption result = null;
+            for (AdminOption option : values()) {
+                if (option.name().equalsIgnoreCase(name)) {
+                    result = option;
+                    break;
+                }
+            }
+            return result;
+        }
+    }
+
+    @AllArgsConstructor
+    @Getter
     public enum DATE_OPTION {
         ADJUST,
         REMOVE,

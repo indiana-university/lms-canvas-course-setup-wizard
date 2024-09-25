@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<!--
+  #%L
+  course-setup-wizard
+  %%
+  Copyright (C) 2022 Indiana University
+  %%
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice, this
+     list of conditions and the following disclaimer.
+  
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+  3. Neither the name of the Indiana University nor the names of its contributors
+     may be used to endorse or promote products derived from this software without
+     specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+  #L%
+  -->
+
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+  <head>
+    <title>Course Setup Wizard - Themes</title>
+  </head>
+
+  <body class="rvt-layout">
+    <div layout:fragment="content">
+
+      <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='theme')}"></div>
+
+      <div id="edit-theme">
+        <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Edit Blah Blah Theme</h2>
+
+        <div class="rvt-m-tb-md">
+          <div class="rvt-checkbox">
+            <input type="checkbox" name="checkbox-demo" id="active-theme" checked>
+            <label for="active-theme">Active</label>
+          </div>
+        </div>
+
+        <fieldset class="rvt-fieldset rvt-m-top-md">
+          <legend class="rvt-legend [ rvt-text-bold rvt-ts-16 rvt-border-bottom rvt-p-bottom-xs ]">Theme Details</legend>
+
+          <label for="theme-name" class="rvt-label rvt-m-top-sm">Name</label>
+          <input type="text" id="theme-name" class="rvt-text-input">
+
+          <label for="theme-ui-name" class="rvt-label rvt-m-top-sm">UI Name</label>
+          <input type="text" id="theme-ui-name" class="rvt-text-input">
+        </fieldset>
+
+        <fieldset class="rvt-fieldset rvt-m-top-md">
+          <legend class="rvt-legend [ rvt-text-bold rvt-ts-16 rvt-border-bottom rvt-p-bottom-xs ]">Theme Image Details</legend>
+
+          <label for="theme-image-url" class="rvt-label rvt-m-top-sm">Image URL</label>
+          <input type="text" id="theme-image-url" class="rvt-text-input">
+          <label for="theme-alt-text" class="rvt-label rvt-m-top-sm">Alt Text</label>
+          <input type="text" id="theme-alt-text" class="rvt-text-input">
+        </fieldset>
+
+
+        <fieldset class="rvt-fieldset rvt-m-top-md">
+          <legend class="rvt-legend [ rvt-text-bold rvt-ts-16 rvt-border-bottom rvt-p-bottom-xs ]">Preview Image URLs</legend>
+          <label for="nav-image-preview" class="rvt-label rvt-m-top-sm">Full navigation image</label>
+          <input type="text" id="nav-image-preview" class="rvt-text-input">
+
+          <label for="banner-image-preview" class="rvt-label rvt-m-top-sm">Banner image only</label>
+          <input type="text" id="banner-image-preview" class="rvt-text-input">
+
+          <label for="nav-only-preview" class="rvt-label rvt-m-top-sm">Navigation image only</label>
+          <input type="text" id="nav-only-preview" class="rvt-text-input">
+
+          <label for="header-only-preview" class="rvt-label rvt-m-top-sm">Header image only</label>
+          <input type="text" id="header-only-preview" class="rvt-text-input">
+        </fieldset>
+
+        <fieldset class="rvt-fieldset rvt-m-top-md">
+          <legend class="rvt-legend [ rvt-text-bold rvt-ts-16 rvt-border-bottom rvt-p-bottom-xs ]">CSS</legend>
+
+          <label for="wrapper-css" class="rvt-label rvt-m-top-sm">Wrapper classes</label>
+          <input type="text" id="wrapper-css" class="rvt-text-input">
+
+          <label for="header-css" class="rvt-label rvt-m-top-sm">Header classes</label>
+          <input type="text" id="header-css" class="rvt-text-input">
+
+          <label for="banner-css" class="rvt-label rvt-m-top-sm">Banner image classes</label>
+          <input type="text" id="banner-css" class="rvt-text-input">
+        </fieldset>
+
+        <form>
+          <div class="rvt-button-group rvt-m-top-xl">
+            <button id="return-to-themes" class="rvt-button rvt-button--secondary">Return to theme list</button>
+            <button id="theme-edit-reset" class="rvt-button rvt-button--secondary">Reset changes</button>
+            <button id="theme-edit-save" class="rvt-button">Save</button>
+          </div>
+        </form>
+
+      </div>
+
+    </div>
+
+  </body>
+</html>
