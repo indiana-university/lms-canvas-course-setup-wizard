@@ -55,13 +55,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/rest/themecontent")
-@Tag(name = "ThemeContentRepository")
+@RequestMapping("/rest/themecontent-custom")
+@Tag(name = "ThemeContentCustom")
 @Slf4j
 /*
  * This REST controller supplements the REST JPA endpoints auto-defined in ThemeContentRepository.
- * That's why @Tag's name matches that repository so that via swagger these endpoints are grouped under
- * the JPA auto-generated ones.
  */
 public class ThemeContentJpaCustomRestController {
    @Autowired
