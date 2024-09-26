@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<!--
+  #%L
+  course-setup-wizard
+  %%
+  Copyright (C) 2022 - 2024 Indiana University
+  %%
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice, this
+     list of conditions and the following disclaimer.
+  
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+  3. Neither the name of the Indiana University nor the names of its contributors
+     may be used to endorse or promote products derived from this software without
+     specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+  #L%
+  -->
+
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<div th:fragment="steps">
+    <nav>
+        <ol class="rvt-steps rvt-p-bottom-md rvt-cols-8-md">
+            <li class="rvt-steps__item" th:each="item,itemStat : ${themeSteps}">
+                <th:block th:with="activeLink=${itemStat.index < currentStep},isCurrentIndicator=${currentStep == (itemStat.index+1)} ? 'step'">
+                    <span th:unless="${activeLink}" class="rvt-steps__item-content" th:aria-current="${isCurrentIndicator}">
+                        <span class="rvt-steps__label" th:text="${item.name}">Step name</span>
+                        <span class="rvt-sr-only sr-spacing"> Step </span>
+                        <span class="rvt-steps__indicator" th:text="${itemStat.index+1}">Step number</span>
+                    </span>
+                    <a th:if="${activeLink}" th:href="${item.link}" class="rvt-steps__item-content" th:aria-current="${isCurrentIndicator}">
+                        <span class="rvt-steps__label" th:text="${item.name}">Step name</span>
+                        <span class="rvt-sr-only sr-spacing"> Step </span>
+                        <span class="rvt-steps__indicator" th:text="${itemStat.index+1}">Step number</span>
+                    </a>
+                </th:block>
+            </li>
+        </ol>
+    </nav>
+</div>
+
+<div th:fragment="buttons">
+    <div class="rvt-button-group [ rvt-m-top-xl ]">
+        <button class="rvt-button rvt-button--secondary loading-btn" name="action" id="step-back"
+                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_BACK}">
+            <span th:replace="fragments.html :: loadingButton(buttonText='Back', srText='Loading previous step')"></span>
+        </button>
+        <button th:unless="${isSubmit}" id="step-next" class="rvt-button" name="action" th:attr="onclick=${nextOnclick != null} ? |${nextOnclick}| : 'applyLoadingButton(this);'"
+                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_NEXT}">
+            <span th:replace="fragments.html :: loadingButton(buttonText='Next', srText='Loading next step')"></span>
+        </button>
+        <button th:if="${isSubmit}" id="step-submit" class="rvt-button loading-btn" name="action"
+                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_SUBMIT}">
+            <span th:replace="fragments.html :: loadingButton(buttonText='Submit', srText='Applying your selections. Redirecting to the instructions page in your course.')"></span>
+        </button>
+    </div>
+    <div class="[ rvt-m-top-xl ]">
+        <button id="step-restart" class="rvt-button rvt-button--secondary loading-btn" name="action"
+                th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">
+            <span th:replace="fragments.html :: loadingButton(buttonText='Restart Wizard', srText='Restarting wizard')"></span>
+        </button>
+    </div>
+</div>
+
+</body>
+
+</html>

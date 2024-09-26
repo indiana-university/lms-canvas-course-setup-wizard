@@ -49,4 +49,5 @@ public class ToolConfig {
    private String templateHostingUrl;
    private String hierarchyRootNodeName;
    private String timezone;
+   private String[] notificationEmail;
 }

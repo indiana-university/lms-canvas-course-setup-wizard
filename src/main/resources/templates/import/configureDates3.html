@@ -48,19 +48,20 @@
   <div class="rvt-row rvt-p-top-md">
     <div class="rvt-cols-8-md rvt-flow rvt-prose">
       <h2 id="page-title">Adjust dates</h2>
+
+      <div th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
+
+      <p>
+        As part of the date adjustment process, you can change the days of the week on which
+        assignments are due. For example, you can opt to move Monday due dates in the imported
+        course to Tuesdays in the upcoming course.
+      </p>
+      <p>
+        Use the form below to shift due dates from the day of week specified in the original
+        imported course (left column) to a different day in the new course (right column).
+      </p>
+
       <form id="wizard-form-dates3" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
-
-        <div th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
-
-        <p>
-          As part of the date adjustment process, you can change the days of the week on which
-          assignments are due. For example, you can opt to move Monday due dates in the imported
-          course to Tuesdays in the upcoming course.
-        </p>
-        <p>
-          Use the form below to shift due dates from the day of week specified in the original
-          imported course (left column) to a different day in the new course (right column).
-        </p>
         <table class="rvt-table-plain table-width-override">
           <caption class="rvt-sr-only">Table of inputs for day of the week adjustments</caption>
           <thead>

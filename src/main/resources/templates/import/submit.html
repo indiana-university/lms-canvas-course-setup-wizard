@@ -48,39 +48,39 @@
   <div class="rvt-row rvt-p-top-md">
     <div class="rvt-cols-8-md rvt-flow rvt-prose">
       <h2 id="page-title">Review and submit</h2>
-      <form id="wizard-form-submit" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+      <div th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
 
-        <div th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
-
-        <th:block th:if="${selectedContentOption == T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).ALL.name() ||
+      <th:block th:if="${selectedContentOption == T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).ALL.name() ||
                            selectedContentOption == T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).ALL_WITH_BLUEPRINT_SETTINGS.name()}">
-          <p id="submit-notes-all">
-            After you <span class="rvt-text-bold">Submit</span> this form, you will be redirected from this
-            wizard to the Import Content page in your course. A progress bar will appear while the import is
-            being processed. Once the import is complete, you can begin to update the imported content as needed.
-          </p>
-        </th:block>
-        <th:block th:if="${selectedContentOption == T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).SELECT.name()}">
-          <p id="submit-notes-select">
-            After you <span class="rvt-text-bold">Submit</span> this form, you will be redirected from this
-            wizard to the Import Content page in your course. Select the blue
-            <span class="rvt-text-bold">Select Content</span> button under Current Jobs to select the
-            content you wish to import. Then select the specific tools and/or items you wish to import.
-          </p>
-          <img id="select-content-img" th:src="@{/app/images/importScreenShot.png}" alt="screenshot of Canvas's Course Import tool showing the location of the Select Content button on the right side of the screen" />
-          <p id="submit-notes-progess">
-            A progress bar will appear while the import is being processed. Once the import is complete,
-            you can begin to update the imported content as needed.
-          </p>
-        </th:block>
-        <p id="submit-notes-home">
-          <span class="rvt-text-bold">Note:</span> The home page from the imported course will become the
-          new home page in the current course. No home page adjustments should be needed.
+        <p id="submit-notes-all">
+          After you <span class="rvt-text-bold">Submit</span> this form, you will be redirected from this
+          wizard to the Import Content page in your course. A progress bar will appear while the import is
+          being processed. Once the import is complete, you can begin to update the imported content as needed.
         </p>
-        <p id="submit-notes-dates" th:if="${selectedDateOption == T(edu.iu.uits.lms.coursesetupwizard.Constants.DATE_OPTION).REMOVE.name() or selectedDateOption == T(edu.iu.uits.lms.coursesetupwizard.Constants.DATE_OPTION).NOCHANGE.name()}">
-          <span class="rvt-text-bold">Tip:</span> For a fast and easy way to review and update
-          assignment dates, visit <a href="https://community.canvaslms.com/t5/Instructor-Guide/How-do-I-bulk-update-due-dates-and-availability-dates-as-an/ta-p/1195" target="_blank">How do I bulk update due dates and availability dates as an instructor? <span class="rvt-sr-only">Opens in new window</span><rvt-icon name="link-external"></rvt-icon></a>
+      </th:block>
+      <th:block th:if="${selectedContentOption == T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).SELECT.name()}">
+        <p id="submit-notes-select">
+          After you <span class="rvt-text-bold">Submit</span> this form, you will be redirected from this
+          wizard to the Import Content page in your course. Select the blue
+          <span class="rvt-text-bold">Select Content</span> button under Current Jobs to select the
+          content you wish to import. Then select the specific tools and/or items you wish to import.
         </p>
+        <img id="select-content-img" th:src="@{/app/images/importScreenShot.png}" alt="screenshot of Canvas's Course Import tool showing the location of the Select Content button on the right side of the screen" />
+        <p id="submit-notes-progess">
+          A progress bar will appear while the import is being processed. Once the import is complete,
+          you can begin to update the imported content as needed.
+        </p>
+      </th:block>
+      <p id="submit-notes-home">
+        <span class="rvt-text-bold">Note:</span> The home page from the imported course will become the
+        new home page in the current course. No home page adjustments should be needed.
+      </p>
+      <p id="submit-notes-dates" th:if="${selectedDateOption == T(edu.iu.uits.lms.coursesetupwizard.Constants.DATE_OPTION).REMOVE.name() or selectedDateOption == T(edu.iu.uits.lms.coursesetupwizard.Constants.DATE_OPTION).NOCHANGE.name()}">
+        <span class="rvt-text-bold">Tip:</span> For a fast and easy way to review and update
+        assignment dates, visit <a href="https://community.canvaslms.com/t5/Instructor-Guide/How-do-I-bulk-update-due-dates-and-availability-dates-as-an/ta-p/1195" target="_blank" aria-describedby="sr-new-window">How do I bulk update due dates and availability dates as an instructor? <rvt-icon name="link-external"></rvt-icon></a>
+      </p>
+
+      <form id="wizard-form-submit" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
         <input type="hidden" name="currentPage" value="7">
         <div th:insert="import/wizardSteps.html :: buttons(isSubmit=true)"></div>
       </form>

@@ -50,4 +50,74 @@ jQuery(document).ready(function($) {
         $(this).val($(this).val().trim());
     });
 
+    $(".radio-card--clickable input").change(function() {
+        $("#image-ul>li.radio-card--clickable--checked").removeClass("radio-card--clickable--checked");
+        if ($(this).is(":checked")) {
+            $(this).parent().parent().addClass("radio-card--clickable--checked");
+        }
+    });
+
+    // If there is no validation on your button, add the loading-btn class to make it a loader.
+    // Otherwise, you need to manually call applyLoadingButton after your validation
+    $(".loading-btn").click(function() {
+        let loadingBtn = $(this).get(0);
+        applyLoadingButton(loadingBtn);
+    });
+
 });
+
+function applyLoadingButton(loadingBtn) {
+    let btnForm = loadingBtn.form;
+    let btnValue = loadingBtn.value;
+
+    if (btnValue) {
+        // The value of disabled buttons is not submitted with the form, so we need to create
+        // a hidden input to add the value to the form
+        var hiddenInput = document.createElement('input');
+        hiddenInput.setAttribute('name', 'action');
+        hiddenInput.setAttribute('value', btnValue);
+        hiddenInput.setAttribute('type', 'hidden');
+
+        btnForm.appendChild(hiddenInput); //append the input to the form
+    }
+
+    loadingBtn.setAttribute("aria-busy", true);
+
+    // disable all buttons on the page
+    let buttonsToDisable = document.getElementsByTagName('button');
+    for(var i = 0; i < buttonsToDisable.length; i++) {
+        buttonsToDisable[i].disabled = true;
+    }
+
+    loadingBtn.classList.add("rvt-button--loading");
+
+    let spinners = loadingBtn.getElementsByClassName('rvt-loader');
+    if (spinners && spinners.length > 0) {
+        spinners[0].classList.remove("rvt-display-none");
+    }
+
+    let srText = loadingBtn.getElementsByClassName('sr-loader-text');
+    if (srText && srText.length > 0) {
+        srText[0].classList.remove("rvt-display-none");
+    }
+
+    // FF doesn't need this, but Chrome and Edge do
+    btnForm.submit();
+}
+
+function doSubmitOptionChoice(button) {
+    let checkedRadio = document.querySelector('input[name="menuChoice"]:checked');
+    if (checkedRadio == null) {
+        let allRadio = document.getElementsByName("menuChoice");
+        allRadio.forEach(btn => {
+            btn.setAttribute("aria-describedby", "option-message");
+        })
+        alertMessage = document.getElementById('select-alert');
+        alertMessage.classList.remove("rvt-display-none");
+        allRadio[0].focus();
+        return false;
+    }
+
+    applyLoadingButton(button);
+}
+

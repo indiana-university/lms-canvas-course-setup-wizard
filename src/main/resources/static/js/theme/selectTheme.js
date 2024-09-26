@@ -1,10 +1,8 @@
-package edu.iu.uits.lms.coursesetupwizard.services.swagger;
-
 /*-
  * #%L
  * course-setup-wizard
  * %%
- * Copyright (C) 2022 Indiana University
+ * Copyright (C) 2022 - 2024 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -32,23 +30,18 @@ package edu.iu.uits.lms.coursesetupwizard.services.swagger;
  * OF THE POSSIBILITY OF SUCH DAMAGE.
  * #L%
  */
+function selectThemeSubmit(button) {
+    let checkedRadio = document.querySelector('input[name="themeId"]:checked');
+    if (checkedRadio == null) {
+        let allRadio = document.getElementsByName("themeId");
+        allRadio.forEach(btn => {
+            btn.setAttribute("aria-describedby", "option-message");
+        });
+        alertMessage = document.getElementById('select-alert');
+        alertMessage.classList.remove("rvt-display-none");
+        allRadio[0].focus();
+        return false;
+    }
 
-import edu.iu.uits.lms.coursesetupwizard.WebApplication;
-import edu.iu.uits.lms.coursesetupwizard.config.SecurityConfig;
-import edu.iu.uits.lms.lti.swagger.AbstractSwaggerCustomTest;
-import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-
-import java.util.List;
-
-@SpringBootTest(classes = {WebApplication.class, SecurityConfig.class})
-public class SwaggerCustomTest extends AbstractSwaggerCustomTest {
-   @MockBean
-   private BufferingApplicationStartup bufferingApplicationStartup;
-
-   @Override
-   protected List<String> getEmbeddedSwaggerToolPaths() {
-      return SwaggerTestUtil.getEmbeddedSwaggerToolPaths(super.getEmbeddedSwaggerToolPaths());
-   }
+    applyLoadingButton(button);
 }

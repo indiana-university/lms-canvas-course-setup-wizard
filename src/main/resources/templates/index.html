@@ -42,7 +42,18 @@
 
 <body class="rvt-layout">
 <div layout:fragment="content">
-
+    <div th:if="${errors}" class="rvt-alert rvt-alert--danger [ rvt-m-top-md ]" role="alert" aria-labelledby="error-alert-title" data-rvt-alert="error">
+        <div class="rvt-alert__title" id="error-alert-title">Error</div>
+        <th:block th:each="error : ${errors}">
+        <p class="rvt-alert__message" th:text="${error}">There was an issue with the Wizard.</p>
+        </th:block>
+        <button class="rvt-alert__dismiss" data-rvt-alert-close>
+            <span class="rvt-sr-only">Close</span>
+            <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
+                <path fill="currentColor" d="M9.41,8l5.29-5.29a1,1,0,0,0-1.41-1.41L8,6.59,2.71,1.29A1,1,0,0,0,1.29,2.71L6.59,8,1.29,13.29a1,1,0,1,0,1.41,1.41L8,9.41l5.29,5.29a1,1,0,0,0,1.41-1.41Z"/>
+            </svg>
+        </button>
+    </div>
     <div class="rvt-row rvt-p-top-sm">
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
             <h2>About the Course Setup Wizard</h2>
@@ -123,9 +134,7 @@
                         <p>
                             <span class="rvt-text-bold">Note:</span> This option is most useful for creating new
                             course content. If you want to apply a template to existing course materials,
-                            <a href="https://kb.iu.edu/d/aitz" target="_blank">contact your campus teaching and learning center for assistance.
-                                <span class="rvt-sr-only">Opens in new window</span><rvt-icon name="link-external"></rvt-icon>
-                            </a>
+                            <a href="https://kb.iu.edu/d/aitz" target="_blank" aria-describedby="sr-new-window">contact your campus teaching and learning center for assistance.<rvt-icon name="link-external"></rvt-icon></a>
                         </p>
                         <p>
                             A template is a collection of content, settings, and design and/or branding elements
@@ -183,6 +192,39 @@
                     </div>
                     </p>
                 </div>
+                <h3 th:if="${feature_theme_frontpage != null}" class="rvt-accordion__summary">
+                    <button class="rvt-accordion__toggle rvt-p-tb-xs" id="home-page-accordion-4-label"
+                            data-rvt-accordion-trigger="home-page-accordion-4"
+                            aria-controls="home-page-accordion-4">
+                        <span class="rvt-accordion__toggle-text rvt-ts-20">Themes and banners</span>
+                        <div class="rvt-accordion__toggle-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                                <g fill="currentColor">
+                                    <path class="rvt-accordion__icon-bar" d="M8,15a1,1,0,0,1-1-1V2A1,1,0,0,1,9,2V14A1,1,0,0,1,8,15Z" />
+                                    <path d="M14,9H2A1,1,0,0,1,2,7H14a1,1,0,0,1,0,2Z" />
+                                </g>
+                            </svg>
+                        </div>
+                    </button>
+                </h3>
+                <div th:if="${feature_theme_frontpage != null}" class="rvt-accordion__panel" id="home-page-accordion-4" aria-labelledby="home-page-accordion-4-label"
+                     data-rvt-accordion-panel="home-page-accordion-4"
+                     role="region">
+                    <p class="rvt-m-all-remove">
+                    <div class="rvt-prose rvt-flow">
+                        <p>
+                            Select this option for a streamlined design experience with a consistent visual theme and a
+                            custom banner. This option is best suited for new course creation.
+                        </p>
+                        <p>
+                            The wizard will use your selected theme to set up a homepage and templates for your
+                            assignments, quizzes, and pages. For help updating existing content, contact your local
+                            <a href="https://kb.iu.edu/d/aitz" target="_blank" aria-describedby="sr-new-window">Teaching and Learning Center<rvt-icon name="link-external" class="rvt-m-left-xxs"></rvt-icon></a>
+                            or the IU Instructional Design Clinic.
+                        </p>
+                    </div>
+                    </p>
+                </div>
             </div>
             <form id="wizard-form-main" th:action="@{|/app/${courseId}/menu|}" method="post" enctype="multipart/form-data">
                 <fieldset class="rvt-fieldset rvt-p-bottom-xs">
@@ -197,24 +239,25 @@
                                 <label for="radio-1-1">Import content from another Canvas course into this course</label>
                             </div>
                         </li>
-                        <!--                                <li>-->
-                        <!--                                    <div class="rvt-radio">-->
-                        <!--                                        <input type="radio" name="menuChoice" id="radio-1-2" value="theme" th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).MAIN_OPTION.THEME.name()}">-->
-                        <!--                                        <label for="radio-1-2">Select the theme (page design), banner image, and colors for this course</label>-->
-                        <!--                                    </div>-->
-                        <!--                                </li>-->
                         <li>
                             <div class="rvt-radio">
-                                <input type="radio" name="menuChoice" id="radio-1-3"
+                                <input type="radio" name="menuChoice" id="radio-1-2"
                                        th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.MAIN_OPTION).TEMPLATE.name()}">
-                                <label for="radio-1-3">Import the customizable IU Course Template or another template into this course</label>
+                                <label for="radio-1-2">Import the customizable IU Course Template or another template into this course</label>
                             </div>
                         </li>
                         <li>
                             <div class="rvt-radio">
-                                <input type="radio" name="menuChoice" id="radio-1-4"
+                                <input type="radio" name="menuChoice" id="radio-1-3"
                                        th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.MAIN_OPTION).HOMEPAGE.name()}">
-                                <label for="radio-1-4">Add a professionally-designed, customizable home page (the IU Home Page) to this course</label>
+                                <label for="radio-1-3">Add a professionally-designed, customizable home page (the IU Home Page) to this course</label>
+                            </div>
+                        </li>
+                        <li th:if="${feature_theme_frontpage != null}">
+                            <div class="rvt-radio">
+                                <input type="radio" name="menuChoice" id="radio-1-4"
+                                       th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.MAIN_OPTION).THEME.name()}">
+                                <label for="radio-1-4">Select a theme and banner image for this course</label>
                             </div>
                         </li>
                     </ul>
@@ -222,13 +265,9 @@
                 </fieldset>
                 <div class="rvt-button-group [ rvt-m-top-md ]">
                     <button class="rvt-button rvt-button--secondary" id="exit-wizard" onclick="return doExit();" data-rvt-dialog-trigger="dialogExit">Exit</button>
-                    <button class="rvt-button" id="next-step" onclick="return doSubmit(this);">
-                        <span class="rvt-button__content">
-                            Next
-                        </span>
-                        <div class="rvt-loader rvt-loader--xs rvt-display-none" data-loader-text="Next page is loading."></div>
+                    <button class="rvt-button" onclick="return doSubmitOptionChoice(this);" id="next-step" >
+                        <span th:replace="fragments.html :: loadingButton(buttonText='Next', srText='Next page is loading.')"></span>
                     </button>
-                    <p aria-live="polite"><span class="rvt-sr-only" id="spinner-sr-text"></span></p>
                 </div>
             </form>
         </div>
@@ -240,44 +279,7 @@
 
 <th:block layout:fragment="script">
     <script th:inline="javascript">
-    function doSubmit(button, formSubmit = true) {
-        var checkedRadio = document.querySelector('input[name="menuChoice"]:checked');
-        if (checkedRadio == null) {
-            var allRadio = document.getElementsByName("menuChoice");
-            allRadio.forEach(btn => {
-                btn.setAttribute("aria-describedby", "option-message");
-            })
-            alertMessage = document.getElementById('select-alert');
-            alertMessage.classList.remove("rvt-display-none");
-            allRadio[0].focus();
-            return false;
-        }
 
-        button.setAttribute("aria-busy", true);
-
-        // this will disable the accordions, too, but probably fine
-        var buttonsToDisable = document.getElementsByTagName('button');
-
-        for(var i = 0; i < buttonsToDisable.length; i++) {
-            buttonsToDisable[i].disabled = true;
-        }
-
-        button.classList.add("rvt-button--loading");
-        button.getElementsByTagName('div')[0].classList.remove("rvt-display-none");
-
-        // Set screenreader-only text to notify there is some loading action happening
-        var loader = document.getElementsByClassName('rvt-loader')[0];
-        var srText = loader.dataset.loaderText;
-
-        var spinner = document.getElementById('spinner-sr-text');
-        spinner.innerHTML=srText;
-
-
-        if (formSubmit) {
-            // FF doesn't need this, but Chrome and Edge do
-            button.form.submit();
-        }
-    }
     </script>
 </th:block>
 </body>

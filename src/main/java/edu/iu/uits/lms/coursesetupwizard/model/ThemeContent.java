@@ -1,25 +1,25 @@
-package edu.iu.uits.lms.coursesetupwizard.services.swagger;
+package edu.iu.uits.lms.coursesetupwizard.model;
 
 /*-
  * #%L
  * course-setup-wizard
  * %%
- * Copyright (C) 2022 Indiana University
+ * Copyright (C) 2022 - 2024 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- * 
+ *
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * 3. Neither the name of the Indiana University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software without
  *    specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -33,16 +33,43 @@ package edu.iu.uits.lms.coursesetupwizard.services.swagger;
  * #L%
  */
 
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import static edu.iu.uits.lms.iuonly.IuCustomConstants.IUCUSTOM_GROUP_CODE_PATH;
+import java.util.Date;
 
-public class SwaggerTestUtil {
+@Entity
+@Table(name = "CSW_THEME_CONTENT")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ThemeContent {
+    @Id
+    @Column(name = "NAME")
+    private String name;
 
-   protected static  List<String> getEmbeddedSwaggerToolPaths(List<String> baseList) {
-      List<String> expandedList = new ArrayList<>(baseList);
-      expandedList.add(IUCUSTOM_GROUP_CODE_PATH);
-      return expandedList;
-   }
+    @Column(name = "TEMPLATE_TEXT", columnDefinition = "TEXT")
+    private String templateText;
+
+    @Column(name = "CREATEDON")
+    private Date createdOn;
+
+    @Column(name = "MODIFIEDON")
+    private Date modifiedOn;
+
+    @PreUpdate
+    @PrePersist
+    public void updateTimeStamps() {
+        modifiedOn = new Date();
+        if (createdOn == null) {
+            createdOn = new Date();
+        }
+    }
 }

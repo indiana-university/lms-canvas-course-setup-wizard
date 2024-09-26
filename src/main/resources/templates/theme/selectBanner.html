@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<!--
+  #%L
+  course-setup-wizard
+  %%
+  Copyright (C) 2022 - 2024 Indiana University
+  %%
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice, this
+     list of conditions and the following disclaimer.
+  
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+  3. Neither the name of the Indiana University nor the names of its contributors
+     may be used to endorse or promote products derived from this software without
+     specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+  #L%
+  -->
+
+
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Course Setup Wizard - Select banner</title>
+</head>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+    <div th:insert="theme/wizardSteps.html :: steps(currentStep=3)"></div>
+
+    <div class="rvt-row rvt-p-top-md">
+        <div class="rvt-cols-8-md rvt-flow rvt-prose">
+            <h2 id="page-title">Select banner</h2>
+
+            <span id="sr-msg" class="rvt-sr-only" aria-live="polite"></span>
+
+            <p>
+                Your course home page may include a banner image. If you do not want a banner image on your course
+                home page, select No, then choose <span class="rvt-text-bold">Next</span>. If you do want a banner
+                image, choose a category to browse images. Select the image you want to use and then choose
+                <span class="rvt-text-bold">Next</span>.
+            </p>
+            <p>
+                <span class="rvt-text-bold">Note:</span> You may replace the banner image with something from Adobe
+                Stock or another source by editing the course home page. Review the Next Steps document in this
+                course, contact your Campus Teaching and Learning Center, or the ID Clinic for more details.
+            </p>
+
+            <form id="wizard-theme-form-submit" th:object="${themeForm}" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+                <fieldset class="rvt-fieldset">
+                    <legend>Do you want to include a banner image?</legend>
+                    <ul class="rvt-list-plain">
+                        <li>
+                            <div class="rvt-radio">
+                                <input type="radio" th:field="*{includeBannerImage}" id="include-banner-image-radio-yes" value="true">
+                                <label for="include-banner-image-radio-yes">Yes</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="rvt-radio">
+                                <input type="radio" th:field="*{includeBannerImage}" id="include-banner-image-radio-no" value="false">
+                                <label for="include-banner-image-radio-no">No</label>
+                            </div>
+                        </li>
+                    </ul>
+                </fieldset>
+                <!-- wrapper just to make hide/show of this content easier to control -->
+                <div id="banner-wrapper">
+                    <input type="hidden" id="banner-image-id" th:field="*{bannerImageId}" />
+                    <!-- likely alphabetizing this -->
+                    <label for="select-input-categories" class="rvt-label rvt-m-top-md rvt-ts-16">Image categories</label>
+                    <select id="select-input-categories" class="rvt-select rvt-m-bottom-md" th:field="*{bannerImageCategoryId}">
+                        <option th:each="bannerImageCategory : ${bannerImageCategories}" th:value="${bannerImageCategory.id}"
+                                th:text="${bannerImageCategory.name}">Category</option>
+                    </select>
+                    <!-- radio list for banner options, dynamically rendered based on select component above -->
+                    <fieldset class="rvt-fieldset">
+                        <legend id="banner-image-category-legend" class="rvt-sr-only">
+                            <span th:text="'Image options for ' + ${bannerImageCategories.get(0).name}"></span>
+                            <span> Required</span>
+                        </legend>
+                        <div th:insert="fragments.html :: selectAlert (message='Select a banner image to continue.')"></div>
+                        <!-- ul will be filled by javascript on pulldown change -->
+                        <ul id="image-ul" class="rvt-list-plain">
+                        </ul>
+                    </fieldset>
+                </div>
+                <input type="hidden" name="currentPage" value="3">
+                <div th:insert="theme/wizardSteps.html :: buttons(nextOnclick='return selectBannerSubmit(this);')"></div>
+            </form>
+        </div>
+    </div>
+
+</div>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+            const courseId = /*[[${courseId}]]*/
+        /*]]>*/
+    </script>
+
+    <script type="text/javascript" th:src="@{/app/js/theme/selectBanner.js}"></script>
+</th:block>
+</body>
+</html>

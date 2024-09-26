@@ -1,10 +1,10 @@
-package edu.iu.uits.lms.coursesetupwizard.services.swagger;
+package edu.iu.uits.lms.coursesetupwizard.model;
 
 /*-
  * #%L
  * course-setup-wizard
  * %%
- * Copyright (C) 2022 Indiana University
+ * Copyright (C) 2024 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -33,22 +33,17 @@ package edu.iu.uits.lms.coursesetupwizard.services.swagger;
  * #L%
  */
 
-import edu.iu.uits.lms.coursesetupwizard.WebApplication;
-import edu.iu.uits.lms.coursesetupwizard.config.SecurityConfig;
-import edu.iu.uits.lms.lti.swagger.AbstractSwaggerDisabledTest;
-import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import lombok.Data;
 
-import java.util.List;
+import java.io.Serializable;
 
-@SpringBootTest(classes = {WebApplication.class, SecurityConfig.class})
-public class SwaggerDisabledTest extends AbstractSwaggerDisabledTest {
-   @MockBean
-   private BufferingApplicationStartup bufferingApplicationStartup;
+@Data
+public class ThemeModel implements Serializable {
+    private Boolean includeBannerImage;
+    private String bannerImageId;
+    private String themeId;
+    private String bannerImageCategoryId;
+    private Boolean includeNavigation;
+    private Boolean includeGuidance;
 
-   @Override
-   protected List<String> getEmbeddedSwaggerToolPaths() {
-      return SwaggerTestUtil.getEmbeddedSwaggerToolPaths(super.getEmbeddedSwaggerToolPaths());
-   }
 }

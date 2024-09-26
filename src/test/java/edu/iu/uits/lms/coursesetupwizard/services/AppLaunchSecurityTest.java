@@ -33,32 +33,39 @@ package edu.iu.uits.lms.coursesetupwizard.services;
  * #L%
  */
 
+import edu.iu.uits.lms.canvas.services.CanvasService;
+import edu.iu.uits.lms.common.server.ServerInfo;
+import edu.iu.uits.lms.common.session.CourseSessionService;
+import edu.iu.uits.lms.coursesetupwizard.config.SecurityConfig;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
-import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
-import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
-import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
+import edu.iu.uits.lms.coursesetupwizard.controller.WizardController;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
+import edu.iu.uits.lms.iuonly.services.FeatureAccessServiceImpl;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.config.TestUtils;
+import edu.iu.uits.lms.lti.controller.InvalidTokenContextException;
+import edu.iu.uits.lms.lti.repository.DefaultInstructorRoleRepository;
+import jakarta.servlet.ServletException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(properties = {"oauth.tokenprovider.url=http://foo"})
-@Import(ToolConfig.class)
+@ContextConfiguration(classes = {ToolConfig.class, WizardController.class, SecurityConfig.class})
 @ActiveProfiles("none")
 public class AppLaunchSecurityTest {
 
@@ -68,16 +75,25 @@ public class AppLaunchSecurityTest {
    private MockMvc mvc;
 
    @MockBean
-   private WizardService wizardService;
+   private FeatureAccessServiceImpl featureAccessService;
 
    @MockBean
-   private WizardCourseStatusRepository wizardCourseStatusRepository;
+   private WizardService wizardService = null;
 
    @MockBean
-   private WizardUserCourseRepository wizardUserCourseRepository;
+   private CanvasService canvasService = null;
 
    @MockBean
-   private PopupDismissalDateRepository popupDismissalDateRepository = null;
+   private CourseSessionService courseSessionService;
+
+   @MockBean
+   private DefaultInstructorRoleRepository defaultInstructorRoleRepository;
+
+   @MockBean
+   private ClientRegistrationRepository clientRegistrationRepository;
+
+   @MockBean(name = ServerInfo.BEAN_NAME)
+   private ServerInfo serverInfo;
 
    @BeforeEach
    public void setup() {
@@ -87,7 +103,7 @@ public class AppLaunchSecurityTest {
 
    @Test
    public void appNoAuthnLaunch() throws Exception {
-      //This is a secured endpoint and should not allow access without authn
+      // This is a secured endpoint and should not allow access without authn
       mvc.perform(get("/app/"  + COURSE_ID_TST + "/index")
             .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
             .contentType(MediaType.APPLICATION_JSON))
@@ -101,12 +117,15 @@ public class AppLaunchSecurityTest {
 
       SecurityContextHolder.getContext().setAuthentication(token);
 
-      mvc.perform(get("/app/"  + COURSE_ID_TST + "/index")
+      ServletException t = Assertions.assertThrows(ServletException.class, () ->
+              mvc.perform(get("/app/" + COURSE_ID_TST + "/index")
                       .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
                       .contentType(MediaType.APPLICATION_JSON))
-              .andExpect(status().isInternalServerError())
-              .andExpect(MockMvcResultMatchers.model().attributeExists("error"))
-              .andExpect(MockMvcResultMatchers.view().name ("error"));
+      );
+
+      Assertions.assertInstanceOf(InvalidTokenContextException.class, t.getCause());
+      Assertions.assertEquals("Context in authentication token does not match request context", t.getCause().getMessage());
+
    }
 
    @Test
@@ -116,7 +135,7 @@ public class AppLaunchSecurityTest {
 
       SecurityContextHolder.getContext().setAuthentication(token);
 
-      //This is a secured endpoint and should not allow access without authn
+      // This is a secured endpoint and should not allow access without authn
       mvc.perform(get("/app/"  + COURSE_ID_TST + "/index")
               .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
               .contentType(MediaType.APPLICATION_JSON))
@@ -130,7 +149,7 @@ public class AppLaunchSecurityTest {
 
       SecurityContextHolder.getContext().setAuthentication(token);
 
-      //This is a secured endpoint and should not allow access without instructor authn
+      // This is a secured endpoint and should not allow access without instructor authn
       mvc.perform(get("/app/"  + COURSE_ID_TST + "/index")
               .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
               .contentType(MediaType.APPLICATION_JSON))
@@ -139,7 +158,7 @@ public class AppLaunchSecurityTest {
 
    @Test
    public void randomUrlNoAuth() throws Exception {
-      //This is a secured endpoint and should not allow access without authn
+      // This is a secured endpoint and should not allow access without authn
       mvc.perform(get("/asdf/foobar")
             .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
             .contentType(MediaType.APPLICATION_JSON))
@@ -149,14 +168,13 @@ public class AppLaunchSecurityTest {
    @Test
    public void randomUrlWithAuth() throws Exception {
       OidcAuthenticationToken token = TestUtils.buildToken("userId",
-              COURSE_ID_TST, LTIConstants.BASE_USER_AUTHORITY);
+              COURSE_ID_TST, LTIConstants.INSTRUCTOR_AUTHORITY);
       SecurityContextHolder.getContext().setAuthentication(token);
 
-      //This is a secured endpoint and should not allow access without authn
+      // This is a secured endpoint and should not allow access without authn
       mvc.perform(get("/asdf/foobar")
             .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
    }
-
 }

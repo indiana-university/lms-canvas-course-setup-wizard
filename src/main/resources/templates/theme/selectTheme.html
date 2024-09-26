@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<!--
+  #%L
+  course-setup-wizard
+  %%
+  Copyright (C) 2022 - 2024 Indiana University
+  %%
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice, this
+     list of conditions and the following disclaimer.
+  
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+  3. Neither the name of the Indiana University nor the names of its contributors
+     may be used to endorse or promote products derived from this software without
+     specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+  #L%
+  -->
+
+
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Course Setup Wizard - Select theme</title>
+</head>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+    <div th:insert="theme/wizardSteps.html :: steps(currentStep=2)"></div>
+
+    <div class="rvt-row rvt-p-top-md">
+        <div class="rvt-cols-8-md rvt-flow rvt-prose">
+            <h2 id="page-title">Select theme</h2>
+            <p>
+                The theme controls the look and feel of the banner, headings, navigation menu, and
+                formatting on each page. To apply a theme to your course, choose the desired option and select
+                <span class="rvt-text-bold">Next</span>.
+            </p>
+
+            <form id="wizard-theme-form-submit" th:object="${themeForm}" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+                <!-- radio list for theme options -->
+                <fieldset class="rvt-fieldset">
+                    <legend>
+                        <span>Theme options</span>
+                        <span class="rvt-sr-only"> Required</span></legend>
+                    <div th:insert="fragments.html :: selectAlert (message='Select a theme option to continue.')"></div>
+                    <ul id="image-ul" class="rvt-list-plain">
+                        <th:block th:if="${themes != null}" th:each="theme : ${themes}">
+                            <li class="rvt-border-all rvt-border-radius-md rvt-p-all-xs rvt-m-bottom-xxs radio-card--clickable">
+                                <div class="rvt-radio">
+                                    <input type="radio" th:id="'theme-radio-' + ${theme.id}" th:field="*{themeId}"
+                                           th:value="${theme.id}" th:aria-describedby="'someuniqueid' + ${theme.id}">
+                                    <label th:for="'theme-radio-' + ${theme.id}" th:text="${theme.uiName}"></label>
+                                    <img th:id="'someuniqueid' + ${theme.id}" th:src="${theme.imageUrl}" class="rvt-m-top-sm"
+                                         th:alt="${theme.altText}" />
+                                </div>
+                            </li>
+                        </th:block>
+                    </ul>
+                </fieldset>
+                <input type="hidden" name="currentPage" value="2">
+                <div th:insert="theme/wizardSteps.html :: buttons(nextOnclick='return selectThemeSubmit(this);')"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script type="text/javascript" th:src="@{/app/js/theme/selectTheme.js}"></script>
+</th:block>
+</body>
+</html>

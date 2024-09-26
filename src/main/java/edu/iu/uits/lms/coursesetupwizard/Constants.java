@@ -48,17 +48,35 @@ public class Constants {
 
 
     public static final String KEY_IMPORT_MODEL = "importModel";
+    public static final String KEY_THEME_MODEL = "themeModel";
     public static final String ACTION_BACK = "back";
     public static final String ACTION_NEXT = "next";
     public static final String ACTION_HOME = "home";
     public static final String ACTION_SUBMIT = "submit";
+
+    public static final String FEATURE_ID_THEME_FRONTPAGE_ENABLE  = "coursesetupwizard.theme.frontpage.enable";
+    public static final String FEATURE_ID_THEME_GUIDANCE_ENABLE   = "coursesetupwizard.theme.guidance.enable";
+    public static final String FEATURE_ID_THEME_NAVIGATION_ENABLE = "coursesetupwizard.theme.navigation.enable";
+
+    public static final String THEME_DELAYED_POST_AT_STRING = "2099-12-30";
+    public static final String THEME_NEXT_STEPS_BODY_TEMPLATE_NAME = "theme.nextsteps.body.template";
+    public static final String THEME_HOME_PAGE_BODY_TEMPLATE_NAME = "theme.homepage.body.template";
+    public static final String THEME_SYLLABUS_BODY_TEMPLATE_NAME = "theme.syllabus.body.template";
+    public static final String THEME_ASSIGNMENT_DESCRIPTION_TEMPLATE_NAME = "theme.assignment.description.template";
+    public static final String THEME_GRADED_ASSIGNMENT_DESCRIPTION_TEMPLATE_NAME = "theme.gradedassignment.description.template";
+    public static final String THEME_QUIZ_DESCRIPTION_TEMPLATE_NAME = "theme.quiz.description.template";
+    public static final String THEME_DISCUSSION_TOPIC_MESSAGE_TEMPLATE_NAME = "theme.discussion.topic.message.template";
+    public static final String THEME_ANNOUNCEMENT_MESSAGE_TEMPLATE_NAME = "theme.announcement.message.template";
+    public static final String THEME_CREATE_TEMPLATE_PAGE_BODY_TEMPLATE_NAME = "theme.template.body.template";
+    public static final String THEME_MODULE_PAGE_BODY_TEMPLATE_NAME = "theme.module.body.template";
 
     @AllArgsConstructor
     @Getter
     public enum MAIN_OPTION {
         IMPORT,
         TEMPLATE,
-        HOMEPAGE
+        HOMEPAGE,
+        THEME
     }
 
     @AllArgsConstructor

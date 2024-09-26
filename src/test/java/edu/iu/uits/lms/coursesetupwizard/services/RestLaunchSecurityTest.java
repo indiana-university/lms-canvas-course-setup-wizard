@@ -33,26 +33,38 @@ package edu.iu.uits.lms.coursesetupwizard.services;
  * #L%
  */
 
+import edu.iu.uits.lms.coursesetupwizard.config.SecurityConfig;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
+import edu.iu.uits.lms.coursesetupwizard.controller.rest.BannerImageJpaCustomRestController;
+import edu.iu.uits.lms.coursesetupwizard.controller.rest.PopupRestController;
+import edu.iu.uits.lms.coursesetupwizard.controller.rest.WizardCourseStatusRestController;
+import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageCategoryRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.ThemeContentRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.ThemeLogRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.ThemeRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
+import edu.iu.uits.lms.coursesetupwizard.service.ThemeProcessingService;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
 import edu.iu.uits.lms.lti.config.TestUtils;
+import edu.iu.uits.lms.lti.repository.DefaultInstructorRoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Collection;
@@ -63,13 +75,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(properties = {"oauth.tokenprovider.url=http://foo"})
-@Import(ToolConfig.class)
+@ContextConfiguration(classes = {ToolConfig.class, PopupRestController.class, WizardCourseStatusRestController.class, SecurityConfig.class})
 @Slf4j
 @ActiveProfiles("none")
 public class RestLaunchSecurityTest {
 
    @Autowired
    private MockMvc mvc;
+
+   @MockBean
+   private BannerImageJpaCustomRestController bannerImageJpaCustomRestController;
 
    @MockBean
    private WizardService wizardService;
@@ -82,6 +97,30 @@ public class RestLaunchSecurityTest {
 
    @MockBean
    private PopupDismissalDateRepository popupDismissalDateRepository = null;
+
+   @MockBean
+   private BannerImageCategoryRepository bannerImageCategoryRepository;
+
+   @MockBean
+   private BannerImageRepository bannerImageRepository;
+
+   @MockBean
+   private ThemeContentRepository themeContentRepository;
+
+   @MockBean
+   private ThemeLogRepository themeLogRepository;
+
+   @MockBean
+   private ThemeRepository themeRepository;
+
+   @MockBean
+   private ThemeProcessingService themeProcessingService;
+
+   @MockBean
+   private DefaultInstructorRoleRepository defaultInstructorRoleRepository;
+
+   @MockBean
+   private ClientRegistrationRepository clientRegistrationRepository;
 
    @Test
    public void restNoAuthnLaunch() throws Exception {

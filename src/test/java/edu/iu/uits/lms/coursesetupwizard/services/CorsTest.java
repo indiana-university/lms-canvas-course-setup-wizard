@@ -35,14 +35,25 @@ package edu.iu.uits.lms.coursesetupwizard.services;
 
 import edu.iu.uits.lms.common.test.CommonTestUtils;
 import edu.iu.uits.lms.coursesetupwizard.Constants;
+import edu.iu.uits.lms.coursesetupwizard.config.SecurityConfig;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
+import edu.iu.uits.lms.coursesetupwizard.controller.rest.BannerImageJpaCustomRestController;
+import edu.iu.uits.lms.coursesetupwizard.controller.rest.PopupRestController;
+import edu.iu.uits.lms.coursesetupwizard.controller.rest.WizardCourseStatusRestController;
 import edu.iu.uits.lms.coursesetupwizard.model.PopupStatus;
 import edu.iu.uits.lms.coursesetupwizard.model.WizardCourseStatus;
+import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageCategoryRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.BannerImageRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.PopupDismissalDateRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.ThemeContentRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.ThemeLogRepository;
+import edu.iu.uits.lms.coursesetupwizard.repository.ThemeRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardCourseStatusRepository;
 import edu.iu.uits.lms.coursesetupwizard.repository.WizardUserCourseRepository;
+import edu.iu.uits.lms.coursesetupwizard.service.ThemeProcessingService;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
 import edu.iu.uits.lms.lti.config.TestUtils;
+import edu.iu.uits.lms.lti.repository.DefaultInstructorRoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,9 +66,11 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -72,13 +85,16 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(properties = {"oauth.tokenprovider.url=http://foo", "lms.swagger.cors.origin=asdf", "lms.js.cors.origin=http://www.someurl.com"})
-@Import(ToolConfig.class)
+@ContextConfiguration(classes = {PopupRestController.class, WizardCourseStatusRestController.class, SecurityConfig.class})
 @Slf4j
 @ActiveProfiles("swagger")
 public class CorsTest {
 
    @Autowired
    private MockMvc mvc;
+
+   @MockBean
+   private BannerImageJpaCustomRestController bannerImageJpaCustomRestController;
 
    @MockBean
    WizardService wizardService = null;
@@ -91,6 +107,31 @@ public class CorsTest {
 
    @MockBean
    private PopupDismissalDateRepository popupDismissalDateRepository = null;
+
+   @MockBean
+   private BannerImageCategoryRepository bannerImageCategoryRepository;
+
+   @MockBean
+   private BannerImageRepository bannerImageRepository;
+
+   @MockBean
+   private ThemeContentRepository themeContentRepository;
+
+   @MockBean
+   private ThemeLogRepository themeLogRepository;
+
+   @MockBean
+   private ThemeRepository themeRepository;
+
+   @MockBean
+   private ThemeProcessingService themeProcessingService;
+
+   @MockBean
+   private DefaultInstructorRoleRepository defaultInstructorRoleRepository;
+
+   @MockBean
+   private ClientRegistrationRepository clientRegistrationRepository;
+
 
    public static String COURSE_ID_TST = "1234";
    public static String USER_ID_TST = "qwerty";
@@ -109,7 +150,7 @@ public class CorsTest {
 
    @Test
    public void restCheckCors() throws Exception {
-      //This is not a secured endpoint so should be successful
+      // This is not a secured endpoint so should be successful
       SecurityContextHolder.getContext().setAuthentication(null);
       mvc.perform(get("/rest/popup/{course}/{user}/status", COURSE_ID_TST, USER_ID_TST)
                   .header(HttpHeaders.USER_AGENT, CommonTestUtils.defaultUseragent())

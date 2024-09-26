@@ -46,19 +46,20 @@
     <div class="rvt-row rvt-p-top-sm">
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
             <h2 id="page-title">Import a template</h2>
+            <p>
+                A template is a Canvas course that serves as a model for other courses. Templates can consist of
+                any combination of settings, instructional content, and branding elements. The templates
+                available to you are listed below in an accordion, organized by the sponsoring unit (university,
+                campus, school, or department).
+            </p>
+            <p>
+                Expand the sections of the accordion to browse the templates. Use the
+                <span class="rvt-text-bold">Select</span> button on the template you want to use.
+                If you are unsure about which template to choose, read the description and/or visit the
+                <span class="rvt-text-bold">Preview</span> link to open the template in a new tab.
+            </p>
+
             <form id="wizard-form-template-selection" th:action="@{|/app/template/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
-                <p>
-                    A template is a Canvas course that serves as a model for other courses. Templates can consist of
-                    any combination of settings, instructional content, and branding elements. The templates
-                    available to you are listed below in an accordion, organized by the sponsoring unit (university,
-                    campus, school, or department).
-                </p>
-                <p>
-                    Expand the sections of the accordion to browse the templates. Use the
-                    <span class="rvt-text-bold">Select</span> button on the template you want to use.
-                    If you are unsure about which template to choose, read the description and/or visit the
-                    <span class="rvt-text-bold">Preview</span> link to open the template in a new tab.
-                </p>
                 <h3 class="header-flow-override rvt-p-tb-sm">Templates</h3>
                 <div id="template-options" class="rvt-accordion rvt-m-bottom-lg" data-rvt-accordion="course-template-accordion">
                     <div th:each="mapEntry : ${templatesForCourse}">
@@ -92,10 +93,9 @@
                                         <p th:unless="${#strings.isEmpty(template.sponsor)}" th:text="|Sponsor: ${template.sponsor}|"></p>
 
                                         <p th:unless="${#strings.isEmpty(template.canvasCommonsUrl)}">
-                                            <a  th:href="${template.canvasCommonsUrl}" target="_blank" th:id="|${#strings.replace(template.displayName,' ','-')}-preview|">
+                                            <a th:id="|${#strings.replace(template.displayName,' ','-')}-preview|" th:href="${template.canvasCommonsUrl}" target="_blank" aria-describedby="sr-new-window">
                                                 <span th:text="|Preview: ${template.displayName}|">Preview template</span>
                                                 <rvt-icon name="link-external"></rvt-icon>
-                                                <span class="rvt-sr-only">Opens in new window</span>
                                             </a>
                                         </p>
 
@@ -117,8 +117,10 @@
                 <input type="hidden" id="selectedTemplateId" name="selectedTemplateId">
                 <input type="hidden" id="selectedTemplateName" name="selectedTemplateName">
                 <div class="[ rvt-m-top-xl ]">
-                    <button class="rvt-button rvt-button--secondary" name="action" id="restart-wizard"
-                            th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">Restart Wizard</button>
+                    <button class="rvt-button rvt-button--secondary loading-btn" name="action" id="restart-wizard"
+                            th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">
+                        <span th:replace="fragments.html :: loadingButton(buttonText='Restart Wizard', srText='Restarting wizard')"></span>
+                    </button>
                 </div>
 
             </form>
