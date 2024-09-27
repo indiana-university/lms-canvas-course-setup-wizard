@@ -43,10 +43,85 @@
   <body class="rvt-layout">
     <div layout:fragment="content">
 
+      <div th:insert="~{admin/fragments/adminDialogs :: deleteConfirm(headingText='Delete Theme Content',itemName='theme.nextsteps.body.template', itemType='theme content', buttonText='Delete theme content')}"></div>
+
       <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='themecontent')}"></div>
+
 
       <div id="popup-settings">
         <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Theme Content</h2>
+
+        <table class="rvt-table-compact">
+          <caption class="rvt-sr-only">Table of current themes</caption>
+          <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <th scope="row">theme.nextsteps.body.template</th>
+            <td>
+              <a href="/app/admin/editThemeContent" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]">
+                <rvt-icon name="pencil"></rvt-icon>
+                <span>Edit</span>
+              </a>
+              <button class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left" data-rvt-dialog-trigger="delete-confirmation">
+                <rvt-icon name="trash" class="rvt-p-left-xs"></rvt-icon>
+                <span>Delete</span>
+              </button>
+          </tr>
+          <tr>
+            <th scope="row">theme.homepage.body.template</th>
+            <td>
+              <a href="/app/admin/editThemeContent" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]">
+                <rvt-icon name="pencil" ></rvt-icon>
+                <span>Edit</span>
+              </a>
+              <button class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left" data-rvt-dialog-trigger="delete-confirmation">
+                <rvt-icon name="trash" class="rvt-p-left-xs"></rvt-icon>
+                <span>Delete</span>
+              </button>
+          </tr>
+          <tr>
+            <th scope="row">theme.syllabus.body.template</th>
+            <td>
+              <a href="/app/admin/editThemeContent" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]">
+                <rvt-icon name="pencil" ></rvt-icon>
+                <span>Edit</span>
+              </a>
+              <button class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left" data-rvt-dialog-trigger="delete-confirmation">
+                <rvt-icon name="trash" class="rvt-p-left-xs"></rvt-icon>
+                <span>Delete</span>
+              </button>
+          </tr>
+          <tr>
+            <th scope="row">theme.assignment.description.template</th>
+            <td>
+              <a href="/app/admin/editThemeContent" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]">
+                <rvt-icon name="pencil" ></rvt-icon>
+                <span>Edit</span>
+              </a>
+              <button class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left" data-rvt-dialog-trigger="delete-confirmation">
+                <rvt-icon name="trash" class="rvt-p-left-xs"></rvt-icon>
+                <span>Delete</span>
+              </button>
+          </tr>
+          <tr>
+            <th scope="row">theme.gradedassignment.description.template</th>
+            <td>
+              <a href="/app/admin/editThemeContent" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]">
+                <rvt-icon name="pencil" ></rvt-icon>
+                <span>Edit</span>
+              </a>
+              <button class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left" data-rvt-dialog-trigger="delete-confirmation">
+                <rvt-icon name="trash" class="rvt-p-left-xs"></rvt-icon>
+                <span>Delete</span>
+              </button>
+          </tr>
+          </tbody>
+        </table>
       </div>
 
     </div>

@@ -37,50 +37,50 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
   <head>
-    <title>Course Setup Wizard - Adjust dates</title>
+    <title>Course Setup Wizard - Theme Content</title>
   </head>
 
   <body class="rvt-layout">
     <div layout:fragment="content">
 
-      <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='feature')}"></div>
+      <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='themeContent')}"></div>
 
-      <div id="feature-settings">
-        <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Course Setup Wizard Features</h2>
+      <div id="edit-theme-content">
+        <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Edit Theme Content</h2>
+        <h3 class="rvt-ts-20 rvt-m-bottom-sm">theme.nextsteps.body.template</h3>
 
-        <fieldset class="rvt-fieldset">
-          <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Themes and banners</legend>
-          <ul class="rvt-list-plain rvt-width-xl">
-            <li>
-              <div class="rvt-checkbox">
-                <input type="checkbox" name="feature-options" id="theme-frontpage">
-                <label for="theme-frontpage">Enable front page</label>
-              </div>
-            </li>
-            <li>
-              <div class="rvt-checkbox">
-                <input type="checkbox" name="feature-options" id="theme-guidance">
-                <label for="theme-guidance">Enable guidance</label>
-              </div>
-            </li>
-            <li>
-              <div class="rvt-checkbox">
-                <input type="checkbox" name="feature-options" id="theme-nav" checked>
-                <label for="theme-nav">Enable navigation</label>
-              </div>
-            </li>
-          </ul>
-        </fieldset>
+        <form id="theme-content-form">
 
-        <form>
+          <label for="content-name" class="rvt-label rvt-m-top-sm rvt-ts-16">Name</label>
+          <input type="text" id="content-name" class="rvt-text-input" value="theme.nextsteps.body.template">
+
+          <div class="rvt-p-top-md">
+            <label for="textarea-default" class="rvt-label rvt-m-top-sm rvt-ts-16">Add/edit theme content</label>
+            <textarea id="textarea-default" class="rvt-textarea"></textarea>
+
+            <div class="rvt-file rvt-m-top-lg" data-rvt-file-input="theme-file-input">
+              <input type="file" data-rvt-file-input-button="theme-file-input" id="theme-file-input" aria-describedby="file-description">
+              <label for="theme-file-input" class="rvt-button">
+                <span>Upload a file with theme content</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">  <path d="M2 1h8.414L14 4.586V15H2V1Zm2 2v10h8V7.5H7.5V3H4Zm5.5 0v2.5H12v-.086L9.586 3H9.5Z"/></svg>
+              </label>
+              <div class="rvt-file__preview" data-rvt-file-input-preview="theme-file-input" id="file-description">
+                No file selected
+              </div>
+            </div>
+
+          </div>
+
           <div class="rvt-button-group rvt-m-top-xl">
-            <button id="popup-cancel" class="rvt-button rvt-button--secondary">Cancel changes</button>
-            <button id="popup-save" class="rvt-button">Save</button>
+            <button id="return-to-content" class="rvt-button rvt-button--secondary">Return to theme content list</button>
+            <button id="content-edit-cancel" class="rvt-button rvt-button--secondary">Cancel changes</button>
+            <button id="content-edit-save" class="rvt-button">Save</button>
           </div>
         </form>
 
       </div>
 
     </div>
+
   </body>
 </html>

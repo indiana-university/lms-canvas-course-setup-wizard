@@ -166,6 +166,7 @@ public class WizardController extends OidcTokenAwareController {
         }
 
         model.addAttribute("action", currentOption.name());
+        model.addAttribute("adminTool", true);
 
         switch (currentOption) {
             case POPUP:
@@ -178,8 +179,12 @@ public class WizardController extends OidcTokenAwareController {
                 return new ModelAndView("/admin/editTheme");
             case THEMECONTENT:
                 return new ModelAndView("/admin/themeContent");
+            case EDITTHEMECONTENT:
+                return new ModelAndView("/admin/editThemeContent");
             case BANNER:
                 return new ModelAndView("/admin/banner");
+            case EDITBANNER:
+                return new ModelAndView("/admin/editBanner");
             case BANNERCATEGORY:
                 return new ModelAndView("/admin/bannerCategory");
             default:

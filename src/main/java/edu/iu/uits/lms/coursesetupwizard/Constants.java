@@ -87,6 +87,7 @@ public class Constants {
         THEME,
         EDITTHEME,
         THEMECONTENT,
+        EDITTHEMECONTENT,
         BANNER,
         EDITBANNER,
         BANNERCATEGORY;

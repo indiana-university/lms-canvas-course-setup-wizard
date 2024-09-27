@@ -37,50 +37,51 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout}">
   <head>
-    <title>Course Setup Wizard - Adjust dates</title>
+    <title>Course Setup Wizard - Themes</title>
   </head>
 
   <body class="rvt-layout">
     <div layout:fragment="content">
 
-      <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='feature')}"></div>
+      <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='banner')}"></div>
 
-      <div id="feature-settings">
-        <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Course Setup Wizard Features</h2>
+      <div id="edit-theme">
+        <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Edit Banner Image</h2>
 
-        <fieldset class="rvt-fieldset">
-          <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Themes and banners</legend>
-          <ul class="rvt-list-plain rvt-width-xl">
-            <li>
-              <div class="rvt-checkbox">
-                <input type="checkbox" name="feature-options" id="theme-frontpage">
-                <label for="theme-frontpage">Enable front page</label>
-              </div>
-            </li>
-            <li>
-              <div class="rvt-checkbox">
-                <input type="checkbox" name="feature-options" id="theme-guidance">
-                <label for="theme-guidance">Enable guidance</label>
-              </div>
-            </li>
-            <li>
-              <div class="rvt-checkbox">
-                <input type="checkbox" name="feature-options" id="theme-nav" checked>
-                <label for="theme-nav">Enable navigation</label>
-              </div>
-            </li>
-          </ul>
+        <div class="rvt-m-tb-md">
+          <div class="rvt-checkbox">
+            <input type="checkbox" name="checkbox-demo" id="active-banner" checked>
+            <label for="active-banner">Active</label>
+          </div>
+        </div>
+
+        <fieldset class="rvt-fieldset rvt-m-top-md">
+          <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Banner Image Details</legend>
+
+          <label for="banner-name" class="rvt-label rvt-m-top-sm rvt-ts-16">Name</label>
+          <input type="text" id="banner-name" class="rvt-text-input" value="radio_podcast_interview">
+
+          <label for="banner-ui-name" class="rvt-label rvt-m-top-sm rvt-ts-16">UI Name</label>
+          <input type="text" id="banner-ui-name" class="rvt-text-input" value="Radio or Podcast Interview">
+
+          <label for="banner-alt-text" class="rvt-label rvt-m-top-sm rvt-ts-16">Alt Text</label>
+          <textarea class="rvt-textarea" id="banner-alt-text">Image shows two people talking into microphones while wearing headphones.</textarea>
+
+          <label for="banner-image-url" class="rvt-label rvt-m-top-sm rvt-ts-16">Image URL</label>
+          <input type="text" id="banner-image-url" class="rvt-text-input" value="https://canvasassets.iu.edu/banners/newspaper_keyboard_screen.png">
         </fieldset>
 
         <form>
           <div class="rvt-button-group rvt-m-top-xl">
-            <button id="popup-cancel" class="rvt-button rvt-button--secondary">Cancel changes</button>
-            <button id="popup-save" class="rvt-button">Save</button>
+            <button id="return-to-banners" class="rvt-button rvt-button--secondary">Return to banner list</button>
+            <button id="banner-edit-cancel" class="rvt-button rvt-button--secondary">Cancel changes</button>
+            <button id="banner-edit-save" class="rvt-button">Save</button>
           </div>
         </form>
 
       </div>
 
     </div>
+
   </body>
 </html>
