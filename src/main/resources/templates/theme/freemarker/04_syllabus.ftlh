@@ -93,8 +93,8 @@
     <h3>Technical support</h3>
     <p>For additional help with technical issues, consult:</p>
     <ul>
-        <li><a class="" href="https://kb.iu.edu/d/abxl">University Information Technology Services (UITS)</a> (phone and online support)</li>
-        <li><a href="https://kb.iu.edu/index.html">IU Knowledge Base (IUKB)</a> (information and how-to articles on all supported UITS software and services )</li>
+        <li><a class="" href="https://servicenow.iu.edu/kb?id=kb_article_view&sysparm_article=KB0023963">University Information Technology Services (UITS)</a> (phone and online support)</li>
+        <li><a href="https://servicenow.iu.edu/kb">IU Knowledge Base (IUKB)</a> (information and how-to articles on all supported UITS software and services )</li>
         <li><a class="" style="background-color: rgba(0, 0, 0, 0);" href="https://community.canvaslms.com/t5/Student-Guide/tkb-p/student" target="_blank" rel="noopener">Canvas Student Guide</a></li>
         <li><a href="https://iuware.iu.edu/" target="_blank" rel="noopener">IUware</a> (download free software)</li>
     </ul>

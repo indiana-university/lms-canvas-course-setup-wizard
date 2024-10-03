@@ -84,7 +84,7 @@
     <h3>Need help?</h3>
     <ul>
         <li style="text-align: left;"><span><span style="color: #000000;">Visit the</span> <strong><a class="" href="https://learning.iu.edu/">Learning.IU website</a></strong></span><span style="color: #000000;"> for information and resources about learning at IU.</span></li>
-        <li style="text-align: left;"><a class="" href="https://kb.iu.edu/d/abxl" target="_blank" rel="noopener"><span><strong>UITS Tech Support:</strong></span></a><span style="color: #000000;"> Open 24/7 to help with your technology questions.</span></li>
+        <li style="text-align: left;"><a class="" href="https://servicenow.iu.edu/kb?id=kb_article_view&sysparm_article=KB0023963" target="_blank" rel="noopener"><span><strong>UITS Tech Support:</strong></span></a><span style="color: #000000;"> Open 24/7 to help with your technology questions.</span></li>
         <li style="text-align: left;"><span style="color: #000000;">Enroll yourself in <strong><a class="inline_disabled dp-ext-ignore" href="https://iu.test.instructure.com/courses/1683358" target="_blank" rel="noopener">The Student Guide to IU eTexts</a></strong> to learn all the basics about the initiative, and view tutorials for using Engage.</span></li>
     </ul>
 </div>
