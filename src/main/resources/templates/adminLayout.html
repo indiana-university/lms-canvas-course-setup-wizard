@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<!--
+  #%L
+  course-setup-wizard
+  %%
+  Copyright (C) 2022 Indiana University
+  %%
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice, this
+     list of conditions and the following disclaimer.
+  
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+  3. Neither the name of the Indiana University nor the names of its contributors
+     may be used to endorse or promote products derived from this software without
+     specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+  #L%
+  -->
+
+
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <title>Course Setup Wizard Admin Tools</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" type="text/css" th:href="@{/app/jsrivet/rivet-core/rivet.min.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/app/jsrivet/rivet-icons/rivet-icon-element.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/app/webjars/datatables/css/dataTables.dataTables.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/app/webjars/datatables-select/css/select.dataTables.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/app/jsrivet/datatables-ext/datatables-ally.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/app/css/coursesetupwizard.css}"/>
+</head>
+<body class="rvt-layout">
+
+<main id="main-content" class="rvt-flex rvt-flex-column rvt-grow-1" aria-labelledby="page-title">
+    <div class="rvt-bg-black-000 rvt-border-bottom rvt-p-top-lg">
+        <div class="rvt-container-lg rvt-prose rvt-flow rvt-p-bottom-xl">
+            <h1 id="csw-header" class="rvt-m-top-xs" tabindex="-1">
+                Course Setup Wizard Admin Tools
+            </h1>
+        </div>
+    </div>
+
+    <div class="rvt-layout__wrapper [ rvt-p-tb-md ]">
+        <span id="sr-new-window" hidden>Opens in new window</span>
+        <div layout:fragment="content" class="rvt-container-lg">
+            Page content goes here
+            <!--
+                add something like this to the child page to complete the page layout
+
+                <div class="rvt-grid">
+                    <div class="rvt-grid__item">
+                        <span>Grid item</span>
+                    </div>
+                </div>
+
+                See https://rivet.uits.iu.edu/components/layout/grid/ for options, depending on what's needed.
+            -->
+
+        </div>
+    </div>
+</main>
+
+
+<footer th:unless="${hideFooter}" class="rvt-ts-12 rvt-container rvt-m-top-lg">
+    <div id="footer" th:text="${@serverInfo}"></div>
+</footer>
+
+<script type="text/javascript" th:src="@{/app/jsrivet/rivet-core/rivet.min.js}"></script>
+<script type="module" th:src="@{/app/jsrivet/rivet-icons/rivet-icons.js}"></script>
+<script type="text/javascript" th:src="@{/app/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/app/webjars/datatables/js/dataTables.min.js}"></script>
+<script type="text/javascript" th:src="@{/app/webjars/datatables-buttons/js/dataTables.buttons.min.js}"></script>
+<script type="text/javascript" th:src="@{/app/webjars/datatables-buttons/js/buttons.html5.min.js}"></script>
+<script type="text/javascript" th:src="@{/app/webjars/datatables-select/js/dataTables.select.min.js}"></script>
+<script type="text/javascript" th:src="@{/app/jsrivet/datatables-ext/datatables-filters.js}"></script>
+<script type="text/javascript" th:src="@{/app/jsrivet/datatables-ext/datatables-ally.js}"></script>
+<script type="text/javascript" th:src="@{/app/js/coursesetupwizard.js}"></script>
+<script type="text/javascript" th:src="@{/app/js/datepicker.js}"></script>
+<script type="text/javascript" th:src="@{/app/js/admin/admin.js}"></script>
+
+<script>
+  Rivet.init();
+</script>
+
+<th:block th:if="${adminTool}" layout:fragment="fragments.html :: datatablesScript">
+</th:block>
+
+<th:block layout:fragment="script">
+    <!--
+        // load in individual pages javascript
+    -->
+</th:block>
+</body>
+</html>

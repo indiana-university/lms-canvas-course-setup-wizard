@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!--
+  #%L
+  course-setup-wizard
+  %%
+  Copyright (C) 2022 Indiana University
+  %%
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice, this
+     list of conditions and the following disclaimer.
+  
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+  3. Neither the name of the Indiana University nor the names of its contributors
+     may be used to endorse or promote products derived from this software without
+     specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+  #L%
+  -->
+
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{adminLayout}">
+<head>
+  <title>Course Setup Wizard - Popup</title>
+</head>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+  <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='popup')}"></div>
+
+  <div id="popup-details">
+    <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Popup Reset</h2>
+<!--    <button type="button" class="rvt-button rvt-m-bottom-lg">-->
+<!--      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">  <path d="M7 7V.5h2V7h6.5v2H9v6.5H7V9H.5V7H7Z"/></svg>-->
+<!--      <span>Add a new popup reset</span>-->
+<!--    </button>-->
+
+    <a href="/app/admin/popup/new" class="rvt-ts-20">
+      <rvt-icon name="plus"></rvt-icon>
+      <span>Add a new popup reset</span>
+    </a>
+
+    <table class="rvt-table-stripes rvt-m-top-lg">
+      <caption class="rvt-sr-only">Table of popup reset records</caption>
+      <thead>
+      <tr>
+        <th scope="col">Show on date</th>
+        <th scope="col">Notes</th>
+        <th scope="col">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="popup : ${popupList}">
+        <th scope="row" th:text="${#dates.format(popup.showOn, 'yyyy/MM/dd')}">2024/07/22</th>
+        <td th:text="${popup.notes}">As part of a periodic reset, the Course Setup Wizard popup has been re-enabled. In the future, this area will contain information on new Wizard features and essential system maintenance notifications.</td>
+        <td>
+          <a th:href="|/app/admin/popup/${popup.id}/edit|" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]">
+            <rvt-icon name="pencil"></rvt-icon>
+            <span>Edit</span>
+          </a>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+</div>
+
+<th:block layout:fragment="script">
+  <script type="text/javascript" th:src="@{/app/js/import/import.js}"></script>
+</th:block>
+
+</body>
+</html>
