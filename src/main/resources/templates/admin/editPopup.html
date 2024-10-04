@@ -35,9 +35,9 @@
 <html lang="en-US"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+      layout:decorate="~{adminLayout}">
   <head>
-    <title>Course Setup Wizard - Adjust dates</title>
+    <title>Course Setup Wizard - Popup</title>
   </head>
 
   <body class="rvt-layout">
@@ -45,21 +45,33 @@
 
       <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='popup')}"></div>
 
-      <div id="popup-settings">
-        <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Popup Settings</h2>
-        <label for="reset-date" class="rvt-label rvt-ts-16">Reset date</label>
-        <input type="text" id="reset-date" class="rvt-text-input rvt-m-bottom-sm">
-        <label for="popup-notes" class="rvt-label rvt-ts-16">Notes</label>
-        <textarea id="popup-notes" class="rvt-textarea"></textarea>
+      <nav role="navigation" aria-label="Breadcrumbs" class="rvt-m-bottom-sm">
+        <ol class="rvt-breadcrumbs">
+          <li>
+            <a href="/app/admin/popup">
+              Popup reset list
+            </a>
+          </li>
+          <li aria-current="page"th:text="${create} ? 'New popup reset' : 'Edit popup reset'">Edit popup reset</li>
+        </ol>
+      </nav>
 
-        <form>
+      <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm" th:text="${create} ? 'Create new popup reset' : |Edit popup reset: ${#dates.format(popupForm.showOn, 'yyyy/MM/dd')}|">Edit popup reset settings</h2>
+
+      <form id="wizard-popup-form-submit" th:object="${popupForm}" th:action="@{|/app/admin/popup/new/save|}" method="post" enctype="multipart/form-data">
+
+        <div id="popup-settings">
+          <label for="reset-date" class="rvt-label rvt-ts-16">Show on date (YYYY/MM/DD)</label>
+          <input type="text" id="reset-date" th:field="*{showOn}" class="rvt-text-input rvt-m-bottom-sm">
+          <label for="reset-notes" class="rvt-label rvt-ts-16">Notes</label>
+          <textarea id="reset-notes" th:field="*{notes}" class="rvt-textarea"></textarea>
+
           <div class="rvt-button-group rvt-m-top-xl">
-            <button id="popup-cancel" class="rvt-button rvt-button--secondary">Cancel changes</button>
+            <button id="popup-cancel" class="rvt-button rvt-button--secondary">Reset changes</button>
             <button id="popup-save" class="rvt-button">Save</button>
           </div>
-        </form>
-      </div>
-
+        </div>
+      </form>
     </div>
   </body>
 </html>

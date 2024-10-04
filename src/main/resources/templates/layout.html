@@ -52,10 +52,7 @@
 <main id="main-content" class="rvt-flex rvt-flex-column rvt-grow-1" aria-labelledby="page-title">
     <div class="rvt-bg-black-000 rvt-border-bottom rvt-p-top-lg">
         <div class="rvt-container-lg rvt-prose rvt-flow rvt-p-bottom-xl">
-            <h1 id="csw-header" class="rvt-m-top-xs" tabindex="-1">
-                Course Setup Wizard
-                <span th:text="${adminTool} ? ' Admin Tools'"></span>
-            </h1>
+            <h1 id="csw-header" class="rvt-m-top-xs" tabindex="-1">Course Setup Wizard</h1>
         </div>
     </div>
 
@@ -90,7 +87,6 @@
 <script type="text/javascript" th:src="@{/app/webjars/jquery/jquery.min.js}"></script>
 <script type="text/javascript" th:src="@{/app/js/coursesetupwizard.js}"></script>
 <script type="text/javascript" th:src="@{/app/js/datepicker.js}"></script>
-
 <script>
   Rivet.init();
 
@@ -99,9 +95,6 @@
   }
 
 </script>
-
-<th:block th:if="${adminTool}" layout:fragment="fragments.html :: datatablesScript">
-</th:block>
 
 <th:block layout:fragment="script">
     <!--

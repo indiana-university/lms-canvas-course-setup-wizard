@@ -154,55 +154,6 @@ public class WizardController extends OidcTokenAwareController {
         return new ModelAndView(redirectToCanvas());
     }
 
-    @RequestMapping({"/admin","/admin/{action}"})
-    @Secured({LTIConstants.INSTRUCTOR_AUTHORITY})
-    public ModelAndView adminAction(@PathVariable(required = false) String action, Model model, HttpSession httpSession) {
-        log.debug("in /admin");
-        OidcAuthenticationToken token = getTokenWithoutContext();
-
-        Constants.AdminOption currentOption = Constants.AdminOption.findByName(action);
-        if (currentOption == null) {
-            currentOption = Constants.AdminOption.POPUP;
-        }
-
-        model.addAttribute("action", currentOption.name());
-        model.addAttribute("adminTool", true);
-
-        switch (currentOption) {
-            case POPUP:
-                return new ModelAndView("/admin/popup");
-            case FEATURE:
-                return new ModelAndView("/admin/feature");
-            case THEME:
-                return new ModelAndView("/admin/theme");
-            case EDITTHEME:
-                return new ModelAndView("/admin/editTheme");
-            case THEMECONTENT:
-                return new ModelAndView("/admin/themeContent");
-            case EDITTHEMECONTENT:
-                return new ModelAndView("/admin/editThemeContent");
-            case BANNER:
-                return new ModelAndView("/admin/banner");
-            case EDITBANNER:
-                return new ModelAndView("/admin/editBanner");
-            case BANNERCATEGORY:
-                return new ModelAndView("/admin/bannerCategory");
-            default:
-                return new ModelAndView("/admin/popup");
-        }
-
-    }
-
-    @PostMapping("admin/theme/{themeId}")
-    @Secured({LTIConstants.INSTRUCTOR_AUTHORITY})
-    public ModelAndView editTheme(@PathVariable("themeId") String themeId, Model model, @RequestParam("menuChoice") String menuChoice,
-                                   HttpSession httpSession) {
-        log.debug("in /admin");
-        OidcAuthenticationToken token = getTokenWithoutContext();
-        model.addAttribute("themeId", themeId);
-        return new ModelAndView("/admin/editTheme");
-    }
-
     @RequestMapping(value = "/redirectToCanvas")
     public String redirectToCanvas() {
         return "redirectToCanvas";

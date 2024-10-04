@@ -35,7 +35,7 @@
 <html lang="en-US"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+      layout:decorate="~{adminLayout}">
   <head>
     <title>Course Setup Wizard - Themes</title>
   </head>
@@ -45,72 +45,82 @@
 
       <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='theme')}"></div>
 
+      <nav role="navigation" aria-label="Breadcrumbs" class="rvt-m-bottom-sm">
+        <ol class="rvt-breadcrumbs">
+          <li>
+            <a href="/app/admin/theme">
+              Themes
+            </a>
+          </li>
+          <li aria-current="page" th:text="${create} ? 'New theme' : 'Edit theme'">Edit theme</li>
+        </ol>
+      </nav>
+
       <div id="edit-theme">
-        <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Edit Theme: Basic Color</h2>
+        <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm" th:text="${create} ? 'Create new theme' : |Edit theme: ${themeForm.uiName}|">Edit Theme</h2>
 
-        <div class="rvt-m-tb-md">
-          <div class="rvt-checkbox">
-            <input type="checkbox" name="checkbox-demo" id="active-theme" checked>
-            <label for="active-theme">Active</label>
+        <form id="wizard-theme-form-submit" th:object="${themeForm}" th:action="@{|/app/admin/theme/${themeId}/save|}" method="post" enctype="multipart/form-data">
+          <div class="rvt-m-tb-md">
+            <div class="rvt-checkbox">
+              <input type="checkbox" name="checkbox-demo" id="active-theme" th:field="*{active}">
+              <label for="active-theme">Active</label>
+            </div>
           </div>
-        </div>
 
-        <fieldset class="rvt-fieldset rvt-m-top-md">
-          <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Theme Details</legend>
+          <fieldset class="rvt-fieldset rvt-m-top-md">
+            <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Theme details</legend>
 
-          <label for="theme-ui-name" class="rvt-label rvt-m-top-sm rvt-ts-16">UI Name</label>
-          <input type="text" id="theme-ui-name" class="rvt-text-input" value="Basic Color">
+            <label for="theme-ui-name" class="rvt-label rvt-m-top-sm rvt-ts-16">UI Name</label>
+            <input th:field="*{uiName}" type="text" id="theme-ui-name" class="rvt-text-input">
 
-          <label for="theme-name" class="rvt-label rvt-m-top-sm rvt-ts-16">Name</label>
-          <input type="text" id="theme-name" class="rvt-text-input" value="basic_color1">
+            <label for="theme-name" class="rvt-label rvt-m-top-sm rvt-ts-16">Name</label>
+            <input type="text" id="theme-name" th:field="*{name}" class="rvt-text-input">
 
-        </fieldset>
+          </fieldset>
 
-        <fieldset class="rvt-fieldset rvt-m-top-md">
-          <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Theme Image Details</legend>
+          <fieldset class="rvt-fieldset rvt-m-top-md">
+            <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Theme image details</legend>
 
-          <label for="theme-image-url" class="rvt-label rvt-m-top-sm rvt-ts-16">Image URL</label>
-          <input type="text" id="theme-image-url" class="rvt-text-input" value="https://canvasassets.iu.edu/themes/basic_color1.jpg">
-          <label for="theme-alt-text" class="rvt-label rvt-m-top-sm rvt-ts-16">Alt Text</label>
-          <textarea class="rvt-textarea" id="theme-alt-text">Basic theme. Banner is white text on red bar. Navigation is white text on angled red boxes. Headings are Canvas default.</textarea>
-        </fieldset>
+            <label for="theme-image-url" class="rvt-label rvt-m-top-sm rvt-ts-16">Image URL</label>
+            <input type="text" th:field="*{imageUrl}" id="theme-image-url" class="rvt-text-input">
+            <label for="theme-alt-text" class="rvt-label rvt-m-top-sm rvt-ts-16">Alt Text</label>
+            <textarea th:field="*{altText}" class="rvt-textarea" id="theme-alt-text">Alt text</textarea>
+          </fieldset>
 
 
-        <fieldset class="rvt-fieldset rvt-m-top-md">
-          <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Preview Image URLs</legend>
-          <label for="nav-image-preview" class="rvt-label rvt-m-top-sm rvt-ts-16">Full navigation image</label>
-          <input type="text" id="nav-image-preview" class="rvt-text-input" value="https://canvasassets.iu.edu/themes/basic_color1_4nav.jpg">
+          <fieldset class="rvt-fieldset rvt-m-top-md">
+            <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Preview image URLs</legend>
+            <label for="nav-image-preview" class="rvt-label rvt-m-top-sm rvt-ts-16">Full navigation image</label>
+            <input th:field="*{navImagePreviewUrl}" type="text" id="nav-image-preview" class="rvt-text-input">
 
-          <label for="banner-image-preview" class="rvt-label rvt-m-top-sm rvt-ts-16">Banner image only</label>
-          <input type="text" id="banner-image-preview" class="rvt-text-input" value="https://canvasassets.iu.edu/themes/theme_parts/basic_color1_banner_only.jpg">
+            <label for="banner-image-preview" class="rvt-label rvt-m-top-sm rvt-ts-16">Banner image only</label>
+            <input th:field="*{justBannerImagePreviewUrl}" type="text" id="banner-image-preview" class="rvt-text-input">
 
-          <label for="nav-only-preview" class="rvt-label rvt-m-top-sm rvt-ts-16" >Navigation image only</label>
-          <input type="text" id="nav-only-preview" class="rvt-text-input" value="https://canvasassets.iu.edu/themes/theme_parts/basic_color1_nav_only.jpg">
+            <label for="nav-only-preview" class="rvt-label rvt-m-top-sm rvt-ts-16" >Navigation image only</label>
+            <input th:field="*{justNavImagePreviewUrl}" type="text" id="nav-only-preview" class="rvt-text-input">
 
-          <label for="header-only-preview" class="rvt-label rvt-m-top-sm rvt-ts-16">Header image only</label>
-          <input type="text" id="header-only-preview" class="rvt-text-input" value="https://canvasassets.iu.edu/themes/theme_parts/basic_color1_headers_only.jpg">
-        </fieldset>
+            <label for="header-only-preview" class="rvt-label rvt-m-top-sm rvt-ts-16">Header image only</label>
+            <input th:field="*{justHeaderImagePreviewUrl}" type="text" id="header-only-preview" class="rvt-text-input">
+          </fieldset>
 
-        <fieldset class="rvt-fieldset rvt-m-top-md">
-          <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">CSS</legend>
+          <fieldset class="rvt-fieldset rvt-m-top-md">
+            <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">CSS</legend>
 
-          <label for="wrapper-css" class="rvt-label rvt-m-top-sm rvt-ts-16">Wrapper classes</label>
-          <input type="text" id="wrapper-css" class="rvt-text-input" value="dp-basic-color">
+            <label for="wrapper-css" class="rvt-label rvt-m-top-sm rvt-ts-16">Wrapper classes</label>
+            <input th:field="*{wrapperCssClasses}" type="text" id="wrapper-css" class="rvt-text-input">
 
-          <label for="header-css" class="rvt-label rvt-m-top-sm rvt-ts-16" value="dp-basic-color">Header classes</label>
-          <input type="text" id="header-css" class="rvt-text-input">
+            <label for="header-css" class="rvt-label rvt-m-top-sm rvt-ts-16">Header classes</label>
+            <input th:field="*{headerCssClasses}" type="text" id="header-css" class="rvt-text-input">
 
-          <label for="banner-css" class="rvt-label rvt-m-top-sm rvt-ts-16">Banner image classes</label>
-          <input type="text" id="banner-css" class="rvt-text-input">
+            <label for="banner-css" class="rvt-label rvt-m-top-sm rvt-ts-16">Banner image classes</label>
+            <input th:field="*{bannerImageCssClasses}" type="text" id="banner-css" class="rvt-text-input">
 
-          <label for="banner-css" class="rvt-label rvt-m-top-sm rvt-ts-16">Navigation classes</label>
-          <input type="text" id="nav-css" class="rvt-text-input" value="dp-link-grid-angle-r">
-        </fieldset>
+            <label for="banner-css" class="rvt-label rvt-m-top-sm rvt-ts-16">Navigation classes</label>
+            <input th:field="*{navigationCssClasses}" type="text" id="nav-css" class="rvt-text-input">
+          </fieldset>
 
-        <form>
           <div class="rvt-button-group rvt-m-top-xl">
-            <button id="return-to-themes" class="rvt-button rvt-button--secondary">Return to theme list</button>
-            <button id="theme-edit-cancel" class="rvt-button rvt-button--secondary">Cancel changes</button>
+            <button id="theme-edit-cancel" class="rvt-button rvt-button--secondary">Reset changes</button>
             <button id="theme-edit-save" class="rvt-button">Save</button>
           </div>
         </form>

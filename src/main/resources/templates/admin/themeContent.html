@@ -35,7 +35,7 @@
 <html lang="en-US"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+      layout:decorate="~{adminLayout}">
   <head>
     <title>Course Setup Wizard - Theme Content</title>
   </head>
@@ -44,6 +44,7 @@
     <div layout:fragment="content">
 
       <div th:insert="~{admin/fragments/adminDialogs :: deleteConfirm(headingText='Delete Theme Content',itemName='theme.nextsteps.body.template', itemType='theme content', buttonText='Delete theme content')}"></div>
+      <div th:insert="~{admin/fragments/adminDialogs :: uploadThemeContent}"></div>
 
       <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='themecontent')}"></div>
 
@@ -51,8 +52,13 @@
       <div id="popup-settings">
         <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Theme Content</h2>
 
-        <table class="rvt-table-compact">
-          <caption class="rvt-sr-only">Table of current themes</caption>
+        <a href="/app/admin/themeContent/new" class="rvt-ts-20">
+          <rvt-icon name="plus"></rvt-icon>
+          <span>Add new theme content</span>
+        </a>
+
+        <table class="rvt-table-compact rvt-m-top-lg">
+          <caption class="rvt-sr-only">Table of current theme contents</caption>
           <thead>
           <tr>
             <th scope="col">Name</th>
@@ -60,62 +66,20 @@
           </tr>
           </thead>
           <tbody>
-          <tr>
-            <th scope="row">theme.nextsteps.body.template</th>
+          <tr th:each="content : ${contentList}">
+            <th scope="row" th:text="${content.name}">theme content name</th>
             <td>
-              <a href="/app/admin/editThemeContent" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]">
+              <a th:id="|edit-content-${contentStat.index}|" th:href="|/app/admin/themeContent/${content.name}/edit|" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]">
                 <rvt-icon name="pencil"></rvt-icon>
                 <span>Edit</span>
               </a>
-              <button class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left" data-rvt-dialog-trigger="delete-confirmation">
-                <rvt-icon name="trash" class="rvt-p-left-xs"></rvt-icon>
-                <span>Delete</span>
+              <button th:id="|upload-content-${contentStat.index}|" class="upload-content rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left" data-rvt-dialog-trigger="upload-content-dialog"
+                      th:data-upload-content="${content.name}">
+                <rvt-icon name="upload" class="rvt-p-left-xs"></rvt-icon>
+                <span>Upload content</span>
               </button>
-          </tr>
-          <tr>
-            <th scope="row">theme.homepage.body.template</th>
-            <td>
-              <a href="/app/admin/editThemeContent" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]">
-                <rvt-icon name="pencil" ></rvt-icon>
-                <span>Edit</span>
-              </a>
-              <button class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left" data-rvt-dialog-trigger="delete-confirmation">
-                <rvt-icon name="trash" class="rvt-p-left-xs"></rvt-icon>
-                <span>Delete</span>
-              </button>
-          </tr>
-          <tr>
-            <th scope="row">theme.syllabus.body.template</th>
-            <td>
-              <a href="/app/admin/editThemeContent" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]">
-                <rvt-icon name="pencil" ></rvt-icon>
-                <span>Edit</span>
-              </a>
-              <button class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left" data-rvt-dialog-trigger="delete-confirmation">
-                <rvt-icon name="trash" class="rvt-p-left-xs"></rvt-icon>
-                <span>Delete</span>
-              </button>
-          </tr>
-          <tr>
-            <th scope="row">theme.assignment.description.template</th>
-            <td>
-              <a href="/app/admin/editThemeContent" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]">
-                <rvt-icon name="pencil" ></rvt-icon>
-                <span>Edit</span>
-              </a>
-              <button class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left" data-rvt-dialog-trigger="delete-confirmation">
-                <rvt-icon name="trash" class="rvt-p-left-xs"></rvt-icon>
-                <span>Delete</span>
-              </button>
-          </tr>
-          <tr>
-            <th scope="row">theme.gradedassignment.description.template</th>
-            <td>
-              <a href="/app/admin/editThemeContent" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]">
-                <rvt-icon name="pencil" ></rvt-icon>
-                <span>Edit</span>
-              </a>
-              <button class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left" data-rvt-dialog-trigger="delete-confirmation">
+              <button th:id="|delete-content-${contentStat.index}|" class="delete-content rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left" data-rvt-dialog-trigger="delete-confirmation"
+                th:data-content-name="${content.name}">
                 <rvt-icon name="trash" class="rvt-p-left-xs"></rvt-icon>
                 <span>Delete</span>
               </button>
@@ -125,5 +89,6 @@
       </div>
 
     </div>
+
   </body>
 </html>

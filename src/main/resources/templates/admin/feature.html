@@ -35,9 +35,9 @@
 <html lang="en-US"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+      layout:decorate="~{adminLayout}">
   <head>
-    <title>Course Setup Wizard - Adjust dates</title>
+    <title>Course Setup Wizard - Features</title>
   </head>
 
   <body class="rvt-layout">
@@ -45,42 +45,49 @@
 
       <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='feature')}"></div>
 
+      <div th:insert="~{admin/fragments/adminDialogs :: deleteConfirm(headingText='Delete Feature Flag',itemName='theme.nextsteps.body.template', itemType='feature flag', buttonText='Delete feature flag')}"></div>
+      <div th:insert="~{admin/fragments/adminDialogs :: enableFeature}"></div>
+
       <div id="feature-settings">
         <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Course Setup Wizard Features</h2>
 
-        <fieldset class="rvt-fieldset">
-          <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Themes and banners</legend>
-          <ul class="rvt-list-plain rvt-width-xl">
-            <li>
-              <div class="rvt-checkbox">
-                <input type="checkbox" name="feature-options" id="theme-frontpage">
-                <label for="theme-frontpage">Enable front page</label>
-              </div>
-            </li>
-            <li>
-              <div class="rvt-checkbox">
-                <input type="checkbox" name="feature-options" id="theme-guidance">
-                <label for="theme-guidance">Enable guidance</label>
-              </div>
-            </li>
-            <li>
-              <div class="rvt-checkbox">
-                <input type="checkbox" name="feature-options" id="theme-nav" checked>
-                <label for="theme-nav">Enable navigation</label>
-              </div>
-            </li>
-          </ul>
-        </fieldset>
+<!--        <a href="/app/admin/manageFeatures" class="rvt-ts-20">-->
+<!--          <rvt-icon name="plus"></rvt-icon>-->
+<!--          <span>Manage features for an account</span>-->
+<!--        </a>-->
 
-        <form>
-          <div class="rvt-button-group rvt-m-top-xl">
-            <button id="popup-cancel" class="rvt-button rvt-button--secondary">Cancel changes</button>
-            <button id="popup-save" class="rvt-button">Save</button>
-          </div>
-        </form>
+        <button id="enable-feature" type="button" class="rvt-button" data-rvt-dialog-trigger="enable-feature-dialog">
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">  <path d="M7 7V.5h2V7h6.5v2H9v6.5H7V9H.5V7H7Z"/></svg>
+          <span>Enable a feature for an account</span>
+        </button>
+
+        <table id="featureTable" class="rvt-table-cells rvt-table-compact rvt-m-top-sm table-line-height-override">
+          <caption class="rvt-sr-only">Table of enabled wizard features for specific accounts.</caption>
+          <thead>
+          <tr>
+            <th scope="col" class="colFeature"><button type="button">Feature</button></th>
+            <th scope="col" class="colAccount"><button type="button">Account</button></th>
+            <th scope="col" class="colActions">Actions</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="feature : ${featureList}">
+            <td th:text="${feature.featureId}">Front page</td>
+            <td th:text="${feature.accountId}">98865</td>
+            <td>
+              <button class="feature-delete rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]"
+                      data-rvt-dialog-trigger="delete-confirmation" data-delete-feature="coursesetupwizard.theme.frontpage.enable" data-delete-account="98865">
+                <rvt-icon name="trash" class="rvt-p-left-xs"></rvt-icon>
+                <span>Delete</span>
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
 
       </div>
 
     </div>
+
   </body>
 </html>

@@ -35,7 +35,7 @@
 <html lang="en-US"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+      layout:decorate="~{adminLayout}">
   <head>
     <title>Course Setup Wizard - Theme Content</title>
   </head>
@@ -43,20 +43,30 @@
   <body class="rvt-layout">
     <div layout:fragment="content">
 
-      <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='themeContent')}"></div>
+      <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='themecontent')}"></div>
+
+      <nav role="navigation" aria-label="Breadcrumbs" class="rvt-m-bottom-sm">
+        <ol class="rvt-breadcrumbs">
+          <li>
+            <a href="/app/admin/themeContent">
+              Theme Content
+            </a>
+          </li>
+          <li aria-current="page"th:text="${create} ? 'New theme content' : 'Edit theme content'">Edit theme content</li>
+        </ol>
+      </nav>
 
       <div id="edit-theme-content">
-        <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Edit Theme Content</h2>
-        <h3 class="rvt-ts-20 rvt-m-bottom-sm">theme.nextsteps.body.template</h3>
+        <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm" th:text="${create} ? 'Create new theme content' : |Edit theme content: ${contentForm.name}|">Edit Theme Content</h2>
 
-        <form id="theme-content-form">
+        <form id="theme-content-form" th:object="${contentForm}" th:action="@{|/app/admin/themeContent/${themeId}/save|}" method="post" enctype="multipart/form-data">
 
           <label for="content-name" class="rvt-label rvt-m-top-sm rvt-ts-16">Name</label>
-          <input type="text" id="content-name" class="rvt-text-input" value="theme.nextsteps.body.template">
+          <input type="text" th:field="*{name}" id="content-name" class="rvt-text-input">
 
           <div class="rvt-p-top-md">
-            <label for="textarea-default" class="rvt-label rvt-m-top-sm rvt-ts-16">Add/edit theme content</label>
-            <textarea id="textarea-default" class="rvt-textarea"></textarea>
+            <label for="textarea-content" class="rvt-label rvt-m-top-sm rvt-ts-16">Template text</label>
+            <textarea id="textarea-content" th:field="*{templateText}" class="rvt-textarea"></textarea>
 
             <div class="rvt-file rvt-m-top-lg" data-rvt-file-input="theme-file-input">
               <input type="file" data-rvt-file-input-button="theme-file-input" id="theme-file-input" aria-describedby="file-description">
@@ -72,7 +82,7 @@
           </div>
 
           <div class="rvt-button-group rvt-m-top-xl">
-            <button id="return-to-content" class="rvt-button rvt-button--secondary">Return to theme content list</button>
+<!--            <button id="return-to-content" class="rvt-button rvt-button&#45;&#45;secondary">Return to theme content list</button>-->
             <button id="content-edit-cancel" class="rvt-button rvt-button--secondary">Cancel changes</button>
             <button id="content-edit-save" class="rvt-button">Save</button>
           </div>

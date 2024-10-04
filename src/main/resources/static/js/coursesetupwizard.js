@@ -121,3 +121,5 @@ function doSubmitOptionChoice(button) {
     applyLoadingButton(button);
 }
 
+
+

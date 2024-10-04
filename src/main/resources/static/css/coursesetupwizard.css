@@ -110,3 +110,7 @@
 .radio-card--clickable--checked {
     box-shadow: 0 0 0 0.25rem #328bb8;
 }
+
+#textarea-content {
+    height: 25rem;
+}

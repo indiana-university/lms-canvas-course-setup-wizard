@@ -36,6 +36,8 @@ package edu.iu.uits.lms.coursesetupwizard;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
+
 public class Constants {
 
     /**
@@ -83,7 +85,9 @@ public class Constants {
     @Getter
     public enum AdminOption {
         POPUP,
+        EDITPOPUP,
         FEATURE,
+        MANAGEFEATURES,
         THEME,
         EDITTHEME,
         THEMECONTENT,
@@ -120,6 +124,11 @@ public class Constants {
         SELECT
     }
 
+    public static final String FEATURE_THEME_GUIDANCE = "coursesetupwizard.theme.guidance.enable";
+    public static final String FEATURE_THEME_NAVIGATION = "coursesetupwizard.theme.navigation.enable";
+    public static final String FEATURE_THEME_FRONT_PAGE = "coursesetupwizard.theme.frontpage.enable";
+
+    public static final List<String> WIZARD_FEATURES = List.of(FEATURE_THEME_GUIDANCE, FEATURE_THEME_NAVIGATION, FEATURE_THEME_FRONT_PAGE);
     private Constants() {
         throw new IllegalStateException("Utility class");
     }

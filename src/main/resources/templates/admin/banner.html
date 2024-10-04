@@ -35,9 +35,9 @@
 <html lang="en-US"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+      layout:decorate="~{adminLayout}">
 <head>
-  <title>Course Setup Wizard - Banners</title>
+  <title>Course Setup Wizard - Banner Images</title>
 </head>
 
 <body class="rvt-layout">
@@ -46,65 +46,49 @@
   <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='banner')}"></div>
 
   <div id="banners">
-    <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Banners</h2>
-    <button type="button" class="rvt-button rvt-m-bottom-lg">
-      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">  <path d="M7 7V.5h2V7h6.5v2H9v6.5H7V9H.5V7H7Z"/></svg>
-      <span>Add a new banner image</span>
-    </button>
+    <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Banner Images</h2>
 
-    <table class="rvt-table-compact">
-      <caption class="rvt-sr-only">Table of current banners</caption>
+    <a href="/app/admin/banner/new" class="rvt-ts-20">
+      <rvt-icon name="plus"></rvt-icon>
+      <span>Add a new banner image</span>
+    </a>
+
+    <table class="rvt-table-compact rvt-m-top-lg rvt-table-stripes">
+      <caption class="rvt-sr-only">Table of current banner images</caption>
       <thead>
       <tr>
         <th scope="col">UI Name</th>
         <th scope="col">Name</th>
+        <th scope="col">Categories</th>
         <th scope="col">Active?</th>
         <th scope="col">Actions</th>
       </tr>
       </thead>
       <tbody>
-      <tr>
-        <th scope="row">Radio or Podcast Interview</th>
-        <td>radio_podcast_interview</td>
-        <td><rvt-icon name="check-circle-solid" class="rvt-color-green-400"></rvt-icon></td>
+      <tr th:each="banner : ${bannerList}">
+        <th scope="row" th:text="${banner.uiName}">UI Name</th>
+        <td th:text="${banner.name}">Name</td>
+        <td>Visual and Performing Arts <br />
+          Pets<br />
+          Culinary Arts
+        </td>
         <td>
-          <a href="/app/admin/editBanner" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]">
+          <span th:if="${banner.active}">
+            <rvt-icon name="check-circle-solid" class="rvt-color-green-400"></rvt-icon>
+          </span>
+        </td>
+        <td>
+          <a th:href="|/app/admin/banner/${banner.id}/edit|" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]">
             <rvt-icon name="pencil"></rvt-icon>
             <span>Edit</span>
           </a>
-          <button class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left">
+          <button th:if="${banner.active}" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left" th:data-banner-id="${banner.id}">
             <rvt-icon name="close" class="rvt-p-left-xs"></rvt-icon>
             <span>Inactivate</span>
           </button>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">Print and Electronic Journalism</th>
-        <td>newspaper_keyboard_screen</td>
-        <td></td>
-        <td>
-          <a href="/app/admin/editBanner" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]">
-            <rvt-icon name="pencil"></rvt-icon>
-            <span>Edit</span>
-          </a>
-          <button class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left">
+          <button th:unless="${banner.active}" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left" th:data-banner-id="${banner.id}">
             <rvt-icon name="check" class="rvt-p-left-xs"></rvt-icon>
             <span>Activate</span>
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">Empty Video Set</th>
-        <td>empty_news_set</td>
-        <td><rvt-icon name="check-circle-solid" class="rvt-color-green-400"></rvt-icon></td>
-        <td>
-          <a href="/app/admin/editBanner" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]">
-            <rvt-icon name="pencil"></rvt-icon>
-            <span>Edit</span>
-          </a>
-          <button class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left">
-            <rvt-icon name="close" class="rvt-p-left-xs"></rvt-icon>
-            <span>Inactivate</span>
           </button>
         </td>
       </tr>

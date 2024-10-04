@@ -35,9 +35,9 @@
 <html lang="en-US"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+      layout:decorate="~{adminLayout}">
   <head>
-    <title>Course Setup Wizard - Themes</title>
+    <title>Course Setup Wizard - Edit Banner Image</title>
   </head>
 
   <body class="rvt-layout">
@@ -45,36 +45,51 @@
 
       <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='banner')}"></div>
 
-      <div id="edit-theme">
-        <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Edit Banner Image</h2>
+      <nav role="navigation" aria-label="Breadcrumbs" class="rvt-m-bottom-sm">
+        <ol class="rvt-breadcrumbs">
+          <li>
+            <a href="/app/admin/banner">
+              Banner Images
+            </a>
+          </li>
+          <li aria-current="page" th:text="${create} ? 'New banner image' : 'Edit banner image'">Edit banner image</li>
+        </ol>
+      </nav>
 
+      <div id="edit-banner">
+        <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm" th:text="${create} ? 'Create new banner image' : |Edit banner image: ${bannerForm.uiName}|">Edit Banner Image</h2>
+
+        <form id="wizard-banner-form-submit" th:object="${bannerForm}" th:action="@{|/app/admin/banner/${bannerId}/save|}" method="post" enctype="multipart/form-data">
         <div class="rvt-m-tb-md">
           <div class="rvt-checkbox">
-            <input type="checkbox" name="checkbox-demo" id="active-banner" checked>
+            <input th:field="*{active}" type="checkbox" name="checkbox-demo" id="active-banner" checked>
             <label for="active-banner">Active</label>
           </div>
         </div>
 
         <fieldset class="rvt-fieldset rvt-m-top-md">
-          <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Banner Image Details</legend>
+          <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Banner image details</legend>
 
           <label for="banner-name" class="rvt-label rvt-m-top-sm rvt-ts-16">Name</label>
-          <input type="text" id="banner-name" class="rvt-text-input" value="radio_podcast_interview">
+          <input th:field="*{name}" type="text" id="banner-name" class="rvt-text-input" value="radio_podcast_interview">
 
           <label for="banner-ui-name" class="rvt-label rvt-m-top-sm rvt-ts-16">UI Name</label>
-          <input type="text" id="banner-ui-name" class="rvt-text-input" value="Radio or Podcast Interview">
+          <input th:field="*{uiName}" type="text" id="banner-ui-name" class="rvt-text-input" value="Radio or Podcast Interview">
 
           <label for="banner-alt-text" class="rvt-label rvt-m-top-sm rvt-ts-16">Alt Text</label>
-          <textarea class="rvt-textarea" id="banner-alt-text">Image shows two people talking into microphones while wearing headphones.</textarea>
+          <textarea th:field="*{altText}" class="rvt-textarea" id="banner-alt-text">Image shows two people talking into microphones while wearing headphones.</textarea>
 
           <label for="banner-image-url" class="rvt-label rvt-m-top-sm rvt-ts-16">Image URL</label>
-          <input type="text" id="banner-image-url" class="rvt-text-input" value="https://canvasassets.iu.edu/banners/newspaper_keyboard_screen.png">
+          <input th:field="*{bannerImageUrl}" type="text" id="banner-image-url" class="rvt-text-input">
+
+          <label for="categorySelect" class="rvt-label rvt-m-top-sm rvt-ts-16">Banner Image Categories</label>
+          <select id="categorySelect" class="recipient-select textAreaDefault rvt-select" multiple>
+              <option th:each="category : ${categories}" th:text="${category.name}" th:value="${category.id}"> </option>
+          </select>
         </fieldset>
 
-        <form>
           <div class="rvt-button-group rvt-m-top-xl">
-            <button id="return-to-banners" class="rvt-button rvt-button--secondary">Return to banner list</button>
-            <button id="banner-edit-cancel" class="rvt-button rvt-button--secondary">Cancel changes</button>
+            <button id="banner-edit-cancel" class="rvt-button rvt-button--secondary">Reset changes</button>
             <button id="banner-edit-save" class="rvt-button">Save</button>
           </div>
         </form>
