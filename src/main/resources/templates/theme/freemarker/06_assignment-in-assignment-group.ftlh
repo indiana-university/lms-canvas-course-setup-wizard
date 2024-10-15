@@ -39,7 +39,7 @@
             <li>Use the following resources as you complete this task:
                 <ul>
                     <li><strong>[Note for Instructors: Add a link to your campus' Writing Center and/or IU Library Catalog if applicable]</strong></li>
-                    <li><a class="inline_disabled external" href="https://owl.purdue.edu/" target="_blank" rel="noopener"><span>Purdue OWL</span><span class="external_link_icon" role="presentation"><span class="screenreader-only">Links to an external site.</span></span></a></li>
+                    <li><a class="inline_disabled external" href="https://owl.purdue.edu/" target="_blank" rel="noopener noreferrer"><span>Purdue OWL</span><span class="external_link_icon" role="presentation"><span class="screenreader-only">Links to an external site.</span></span></a></li>
                 </ul>
             </li>
         </ol>

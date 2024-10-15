@@ -30,7 +30,7 @@
                     </ol>
                 </blockquote>
             </li>
-            <li>In the <strong>Criteria for success</strong> section, adapt or replace the sample criteria with your assessment criteria. If you plan to use a <a class="inline_disabled dp-ext-ignore" href="https://community.canvaslms.com/docs/DOC-26472-4152724129" target="_blank" rel="noopener"> Canvas Rubric </a> for grading, encourage students to review the rubric before they participate.</li>
+            <li>In the <strong>Criteria for success</strong> section, adapt or replace the sample criteria with your assessment criteria. If you plan to use a <a class="inline_disabled dp-ext-ignore" href="https://community.canvaslms.com/docs/DOC-26472-4152724129" target="_blank" rel="noopener noreferrer"> Canvas Rubric </a> for grading, encourage students to review the rubric before they participate.</li>
             <li>When you are finished customizing this discussion topic, if you want to delete these instructions, click the green action items icon at the lower right ( <i class="dp-icon fas fa-tasks cp-bg-success dp-i-shape-rounded" aria-hidden="true"> </i>) to open the action items window. Then click the&nbsp;<strong>Remove</strong> button under the instruction block and close the action items window.</li>
         </ol>
     </div>
