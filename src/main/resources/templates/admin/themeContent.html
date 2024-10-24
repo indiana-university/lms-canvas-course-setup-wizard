@@ -43,11 +43,12 @@
   <body class="rvt-layout">
     <div layout:fragment="content">
 
-      <div th:insert="~{admin/fragments/adminDialogs :: deleteConfirm(headingText='Delete Theme Content',itemName='theme.nextsteps.body.template', itemType='theme content', buttonText='Delete theme content')}"></div>
+      <div th:insert="~{admin/fragments/adminDialogs :: deleteConfirm(headingText='Delete Theme Content', buttonText='Delete theme content')}"></div>
       <div th:insert="~{admin/fragments/adminDialogs :: uploadThemeContent}"></div>
 
-      <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='themecontent')}"></div>
+      <div th:if="${successMsg}" th:insert="~{fragments.html :: successMsg(msgText=${successMsg})}"></div>
 
+      <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='themecontent')}"></div>
 
       <div id="popup-settings">
         <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Theme Content</h2>
@@ -57,29 +58,30 @@
           <span>Add new theme content</span>
         </a>
 
-        <table class="rvt-table-compact rvt-m-top-lg">
+        <table id="themeContentTable" class="rvt-table-stripes rvt-m-top-lg">
           <caption class="rvt-sr-only">Table of current theme contents</caption>
           <thead>
           <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Actions</th>
+            <th scope="col" class="colName">Name</th>
+            <th scope="col" class="colActions">Actions</th>
           </tr>
           </thead>
           <tbody>
           <tr th:each="content : ${contentList}">
-            <th scope="row" th:text="${content.name}">theme content name</th>
-            <td>
-              <a th:id="|edit-content-${contentStat.index}|" th:href="|/app/admin/themeContent/${content.name}/edit|" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]">
+            <th scope="row" th:id="|content-${contentStat.index}|" th:text="${content.name}">theme content name</th>
+            <td class="actions">
+              <a th:href="|/app/admin/themeContent/${content.name}/edit|" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]"
+                 th:aria-describedBy="|content-${contentStat.index}|">
                 <rvt-icon name="pencil"></rvt-icon>
                 <span>Edit</span>
               </a>
-              <button th:id="|upload-content-${contentStat.index}|" class="upload-content rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left" data-rvt-dialog-trigger="upload-content-dialog"
-                      th:data-upload-content="${content.name}">
+              <button th:id="|upload-content-${contentStat.index}|" class="upload-content rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left"
+                      data-rvt-dialog-trigger="upload-content-dialog" th:data-content-name="${content.name}" th:aria-describedBy="|content-${contentStat.index}|">
                 <rvt-icon name="upload" class="rvt-p-left-xs"></rvt-icon>
-                <span>Upload content</span>
+                <span>Upload</span>
               </button>
-              <button th:id="|delete-content-${contentStat.index}|" class="delete-content rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left" data-rvt-dialog-trigger="delete-confirmation"
-                th:data-content-name="${content.name}">
+              <button th:id="|delete-content-${contentStat.index}|" class="delete-content rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left"
+                      data-rvt-dialog-trigger="delete-confirmation" th:data-content-name="${content.name}" th:aria-describedBy="|content-${contentStat.index}|">
                 <rvt-icon name="trash" class="rvt-p-left-xs"></rvt-icon>
                 <span>Delete</span>
               </button>

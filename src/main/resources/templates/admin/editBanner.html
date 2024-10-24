@@ -44,22 +44,23 @@
     <div layout:fragment="content">
 
       <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='banner')}"></div>
+      <div th:insert="~{admin/fragments/adminDialogs :: bannerCategory}"></div>
 
-      <nav role="navigation" aria-label="Breadcrumbs" class="rvt-m-bottom-sm">
-        <ol class="rvt-breadcrumbs">
-          <li>
-            <a href="/app/admin/banner">
-              Banner Images
-            </a>
-          </li>
-          <li aria-current="page" th:text="${create} ? 'New banner image' : 'Edit banner image'">Edit banner image</li>
-        </ol>
-      </nav>
+<!--      <nav role="navigation" aria-label="Breadcrumbs" class="rvt-m-bottom-sm">-->
+<!--        <ol class="rvt-breadcrumbs">-->
+<!--          <li>-->
+<!--            <a href="/app/admin/banner">-->
+<!--              Banner Images-->
+<!--            </a>-->
+<!--          </li>-->
+<!--          <li aria-current="page" th:text="${create} ? 'New banner image' : 'Edit banner image'">Edit banner image</li>-->
+<!--        </ol>-->
+<!--      </nav>-->
 
       <div id="edit-banner">
         <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm" th:text="${create} ? 'Create new banner image' : |Edit banner image: ${bannerForm.uiName}|">Edit Banner Image</h2>
 
-        <form id="wizard-banner-form-submit" th:object="${bannerForm}" th:action="@{|/app/admin/banner/${bannerId}/save|}" method="post" enctype="multipart/form-data">
+        <form id="wizard-banner-form-submit" th:object="${bannerForm}" th:action="${create}? @{/app/admin/banner/new/submit} : @{|/app/admin/banner/${bannerId}/update|}" method="post" enctype="multipart/form-data">
         <div class="rvt-m-tb-md">
           <div class="rvt-checkbox">
             <input th:field="*{active}" type="checkbox" name="checkbox-demo" id="active-banner" checked>
@@ -70,27 +71,42 @@
         <fieldset class="rvt-fieldset rvt-m-top-md">
           <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Banner image details</legend>
 
-          <label for="banner-name" class="rvt-label rvt-m-top-sm rvt-ts-16">Name</label>
-          <input th:field="*{name}" type="text" id="banner-name" class="rvt-text-input" value="radio_podcast_interview">
+          <label for="banner-name" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Name</label>
+          <input th:field="*{name}" type="text" id="banner-name" class="rvt-text-input required-input" aria-required="true" data-error-id="banner-name-error">
+          <div th:insert="~{fragments.html :: textInputError(errorMsg='Name is required.', errorId='banner-name-error')}"></div>
 
-          <label for="banner-ui-name" class="rvt-label rvt-m-top-sm rvt-ts-16">UI Name</label>
-          <input th:field="*{uiName}" type="text" id="banner-ui-name" class="rvt-text-input" value="Radio or Podcast Interview">
+          <label for="banner-ui-name" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">UI Name</label>
+          <input th:field="*{uiName}" type="text" id="banner-ui-name" class="rvt-text-input required-input" aria-required="true" data-error-id="ui-name-error">
+          <div th:insert="~{fragments.html :: textInputError(errorMsg='UI name is required.', errorId='ui-name-error')}"></div>
 
-          <label for="banner-alt-text" class="rvt-label rvt-m-top-sm rvt-ts-16">Alt Text</label>
-          <textarea th:field="*{altText}" class="rvt-textarea" id="banner-alt-text">Image shows two people talking into microphones while wearing headphones.</textarea>
+          <label for="banner-alt-text" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Alt Text</label>
+          <textarea th:field="*{altText}" class="rvt-textarea required-input" id="banner-alt-text" aria-required="true" data-error-id="alt-text-error"></textarea>
+          <div th:insert="~{fragments.html :: textInputError(errorMsg='Alt text is required.', errorId='alt-text-error')}"></div>
 
-          <label for="banner-image-url" class="rvt-label rvt-m-top-sm rvt-ts-16">Image URL</label>
-          <input th:field="*{bannerImageUrl}" type="text" id="banner-image-url" class="rvt-text-input">
+          <label for="banner-image-url" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Image URL</label>
+          <input th:field="*{bannerImageUrl}" type="text" id="banner-image-url" class="rvt-text-input required-input" data-error-id="image-url-error" aria-required="true">
+          <div th:insert="~{fragments.html :: textInputError(errorMsg='Image URL is required.', errorId='image-url-error')}"></div>
 
-          <label for="categorySelect" class="rvt-label rvt-m-top-sm rvt-ts-16">Banner Image Categories</label>
+          <div class="rvt-flex rvt-p-tb-sm rvt-m-top-md">
+            <div class="rvt-flex rvt-items-center">
+              <label for="categorySelect" class="rvt-label rvt-m-top-sm rvt-ts-16">Banner Image Categories</label>
+            </div>
+            <div class="rvt-flex rvt-items-center rvt-grow-1 rvt-justify-end rvt-m-left-md">
+              <button id="add-banner-category" type="button" class="rvt-button" data-rvt-dialog-trigger="banner-category-dialog">
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">  <path d="M7 7V.5h2V7h6.5v2H9v6.5H7V9H.5V7H7Z"/></svg>
+                <span>Add a new banner image category</span>
+              </button>
+            </div>
+          </div>
+
           <select id="categorySelect" class="recipient-select textAreaDefault rvt-select" multiple>
-              <option th:each="category : ${categories}" th:text="${category.name}" th:value="${category.id}"> </option>
+              <option th:each="category : ${categories}" th:text="${category.name}" th:value="${category.id}" th:selected="${selectedCategories.contains(category.id)}"> </option>
           </select>
         </fieldset>
 
           <div class="rvt-button-group rvt-m-top-xl">
-            <button id="banner-edit-cancel" class="rvt-button rvt-button--secondary">Reset changes</button>
-            <button id="banner-edit-save" class="rvt-button">Save</button>
+            <button id="banner-edit-cancel" class="rvt-button rvt-button--secondary" name="action" value="cancel">Cancel and return to list</button>
+            <button id="banner-edit-save" class="rvt-button validate-not-empty" name="action" value="submit">Save</button>
           </div>
         </form>
 

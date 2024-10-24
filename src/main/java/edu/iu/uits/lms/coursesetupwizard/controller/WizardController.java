@@ -57,7 +57,7 @@ import org.springframework.web.servlet.ModelAndView;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
 
-import static edu.iu.uits.lms.coursesetupwizard.Constants.FEATURE_ID_THEME_FRONTPAGE_ENABLE;
+import static edu.iu.uits.lms.coursesetupwizard.Constants.WizardFeature;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.KEY_IMPORT_MODEL;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.KEY_THEME_MODEL;
 
@@ -102,7 +102,7 @@ public class WizardController extends OidcTokenAwareController {
         courseSessionService.removeAttributeFromSession(httpSession, courseId, KEY_IMPORT_MODEL);
         courseSessionService.removeAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL);
 
-        if (featureAccessService.isFeatureEnabledForAccount(FEATURE_ID_THEME_FRONTPAGE_ENABLE, canvasService.getRootAccount(), null)) {
+        if (featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_FRONTPAGE.id, canvasService.getRootAccount(), null)) {
             model.addAttribute("feature_theme_frontpage", true);
         }
 
@@ -110,7 +110,7 @@ public class WizardController extends OidcTokenAwareController {
         String viewName = wizardService.alreadyCompletedForCourse(courseId) ? "alreadyCompleted" : "index";
         ModelAndView modelAndView = new ModelAndView(viewName);
 
-        if (featureAccessService.isFeatureEnabledForAccount(FEATURE_ID_THEME_FRONTPAGE_ENABLE, canvasService.getRootAccount(), null)) {
+        if (featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_FRONTPAGE.id, canvasService.getRootAccount(), null)) {
             modelAndView.getModelMap().addAttribute("feature_theme_frontpage", true);
         }
 

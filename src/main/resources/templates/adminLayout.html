@@ -48,6 +48,11 @@
     <link rel="stylesheet" type="text/css" th:href="@{/app/webjars/datatables-select/css/select.dataTables.min.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/app/jsrivet/datatables-ext/datatables-ally.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/app/css/coursesetupwizard.css}"/>
+
+    <script>
+    /*to prevent Firefox FOUC, this must be here*/
+    let FF_FOUC_FIX;
+    </script>
 </head>
 <body class="rvt-layout">
 
@@ -102,7 +107,7 @@
   Rivet.init();
 </script>
 
-<th:block th:if="${adminTool}" layout:fragment="fragments.html :: datatablesScript">
+<th:block layout:fragment="fragments.html :: datatablesScript">
 </th:block>
 
 <th:block layout:fragment="script">

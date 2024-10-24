@@ -49,19 +49,97 @@ jQuery(document).ready(function($) {
     });
 
     $(".feature-delete").click(function(event) {
-        let feature = $(this).data("delete-feature");
-        let accountId = $(this).data("delete-account");
+        let featureName = $(this).data("delete-feature-name");
+        let featureId = $(this).data("delete-feature-id");
+        let accountId = $(this).data("delete-feature-account");
 
-        $("#deleted-item").text(feature);
-        $("#deleted-post-text").text(" for account " + accountId);
+        $("#delete-feature-name").text(featureName);
+        $("#delete-feature-id").text(featureId);
+        $("#delete-account-id").text(accountId);
+    });
+
+    $(".delete-content").click(function(event) {
+        let contentName = $(this).data("content-name");
+        $("#deleted-item").text(contentName);
     });
 
     $(".upload-content").click(function(event) {
         let content = $(this).data("content-name");
-        $("#theme-content-name").text(content);
+        $("#content-name").text(content);
     });
 
+    $(".validate-not-empty").click(function(event) {
+        let valid = true;
+        $('input.required-input[type=text], textarea.required-input, select.required-input').each(function () {
+            let currInput = $(this);
+            let errorId = currInput.data("error-id");
+
+            if (currInput.is(':visible') && (!currInput.val() || !currInput.val().trim() ||
+                (currInput.is('select') && currInput.val() == 0) ||
+                (currInput.hasClass('validate-date') && isNaN(new Date(currInput.val()))))) {
+                invalidInput(currInput, errorId);
+                valid = false;
+            } else {
+                validInput(currInput, errorId);
+            }
+        });
+
+        if (!valid) {
+            $('[aria-invalid="true"]').first().focus();
+        }
+
+        return valid;
+    });
+
+     $(".validate-dialog").click(function(event) {
+            let valid = true;
+            $('input.required-input-dialog[type=text], select.required-input-dialog').each(function () {
+                let currInput = $(this);
+                let errorId = currInput.data("error-id");
+
+                if (!currInput.val() || !currInput.val().trim()) {
+                    invalidInput(currInput, errorId);
+                    valid = false;
+                } else {
+                    validInput(currInput, errorId);
+                }
+            });
+
+            if (!valid) {
+                $('[aria-invalid="true"]').first().focus();
+            }
+
+            return valid;
+        });
+
 });
+
+function invalidInput(currInput, errorId) {
+    currInput.attr({
+        "aria-describedby": errorId,
+        "aria-invalid": "true"
+    })
+
+    $('#' + errorId).removeClass("rvt-display-none");
+}
+
+function validInput(currInput, errorId) {
+    currInput.removeAttr('aria-describedby aria-invalid');
+    $('#' + errorId).addClass("rvt-display-none");
+}
+
+function resetDialogValidation() {
+    $('.required-input-dialog').each(function () {
+        let currInput = $(this);
+        let errorId = currInput.data("error-id");
+        validInput(currInput, errorId);
+    });
+}
+
+// Ensure any old validation is reset when a dialog is opened
+document.addEventListener('rvtDialogOpened', function (event) {
+    resetDialogValidation();
+})
 
 
 // Customize a few of the search input related wrapper classes
@@ -71,22 +149,19 @@ DataTable.ext.classes.search.container = 'rvt-p-top-md search-wrapper';
 // DataTables sorting defaults to third click removing sorting. This sets it to asc/desc only
 DataTable.defaults.column.orderSequence = ['asc', 'desc'];
 
+// Uses filters
 var table = $('#featureTable').DataTable({
    orderCellsTop: true,
    paging: false,
-   order: [[1, 'asc']],
+   order: [[0, 'asc']],
    language: {
        // Setting the text for the search label, mostly to remove the colon that is there by default
        search: 'Search',
        select: {
           aria: {
-
           }
        }
    },
-    lmsAlly: {
-        checkLabelTargetSelector: 'td.displayName'
-    },
    columnDefs: [
         {
             targets: ['.colActions'],
@@ -94,7 +169,7 @@ var table = $('#featureTable').DataTable({
         },
         {
             // Enabling filters for these columns
-            targets: ['.colFeature', '.colCategory', '.colAccount'],
+            targets: ['.colFeatureName', '.colFeatureId', '.colCategory', '.colAccount'],
             lmsFilters: true
         }
        ],
@@ -115,5 +190,67 @@ var table = $('#featureTable').DataTable({
                includeClearFilters: true
            }
        },
+   }
+});
+
+// Sorted ascending, no filters
+var table = $('#themeTable, #themeContentTable, #bannerTable, #bannerCategoryTable').DataTable({
+   orderCellsTop: true,
+   paging: false,
+   order: [[0, 'asc']],
+   language: {
+       // Setting the text for the search label, mostly to remove the colon that is there by default
+       search: 'Search',
+       select: {
+          aria: {
+          }
+       }
+   },
+   columnDefs: [
+        {
+            targets: ['.colActions'],
+            orderable: false
+        }
+       ],
+   initComplete: function () {
+       $('#appTable').wrap("<div style='overflow:auto;width:100%;position:relative;'></div>");
+       $('.search-wrapper label').addClass('rvt-label rvt-ts-16');
+       $('.search-wrapper').addClass('-rvt-m-bottom-sm rvt-p-top-none');
+   },
+   select: {
+        selector: 'th:first-child',
+        style: 'multi',
+        info: false
+   }
+});
+
+// no filters, sorted descending
+var table = $('#popupTable').DataTable({
+   orderCellsTop: true,
+   paging: false,
+   order: [[0, 'desc']],
+   language: {
+       // Setting the text for the search label, mostly to remove the colon that is there by default
+       search: 'Search',
+       select: {
+          aria: {
+          }
+       }
+   },
+   columnDefs: [
+        {
+            targets: ['.colActions'],
+            orderable: false
+        }
+       ],
+   initComplete: function () {
+       $('#appTable').wrap("<div style='overflow:auto;width:100%;position:relative;'></div>");
+       $('.search-wrapper label').addClass('rvt-label rvt-ts-16');
+       $('.search-wrapper').addClass('-rvt-m-bottom-sm rvt-p-top-none');
+   },
+   select: {
+        selector: 'th:first-child',
+        style: 'multi',
+        info: false
    }
 });

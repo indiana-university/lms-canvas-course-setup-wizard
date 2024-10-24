@@ -45,16 +45,16 @@
 
       <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='feature')}"></div>
 
-      <nav role="navigation" aria-label="Breadcrumbs" class="rvt-m-bottom-sm">
-        <ol class="rvt-breadcrumbs">
-          <li>
-            <a href="/app/admin/feature">
-              Features
-            </a>
-          </li>
-          <li aria-current="page">Manage</li>
-        </ol>
-      </nav>
+<!--      <nav role="navigation" aria-label="Breadcrumbs" class="rvt-m-bottom-sm">-->
+<!--        <ol class="rvt-breadcrumbs">-->
+<!--          <li>-->
+<!--            <a href="/app/admin/feature">-->
+<!--              Features-->
+<!--            </a>-->
+<!--          </li>-->
+<!--          <li aria-current="page">Manage</li>-->
+<!--        </ol>-->
+<!--      </nav>-->
 
       <form id="wizard-feature-form" th:object="${featureForm}" th:action="@{|/app/admin/theme/${themeId}/save|}" method="post" enctype="multipart/form-data">
 

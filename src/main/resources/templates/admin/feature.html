@@ -43,10 +43,12 @@
   <body class="rvt-layout">
     <div layout:fragment="content">
 
-      <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='feature')}"></div>
-
-      <div th:insert="~{admin/fragments/adminDialogs :: deleteConfirm(headingText='Delete Feature Flag',itemName='theme.nextsteps.body.template', itemType='feature flag', buttonText='Delete feature flag')}"></div>
+      <div th:insert="~{admin/fragments/adminDialogs :: deleteFeature}"></div>
       <div th:insert="~{admin/fragments/adminDialogs :: enableFeature}"></div>
+
+      <div th:if="${successMsg}" th:insert="~{fragments.html :: successMsg(msgText=${successMsg})}"></div>
+
+      <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='feature')}"></div>
 
       <div id="feature-settings">
         <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Course Setup Wizard Features</h2>
@@ -61,22 +63,26 @@
           <span>Enable a feature for an account</span>
         </button>
 
-        <table id="featureTable" class="rvt-table-cells rvt-table-compact rvt-m-top-sm table-line-height-override">
+        <table id="featureTable" class="rvt-table-stripes rvt-m-top-sm">
           <caption class="rvt-sr-only">Table of enabled wizard features for specific accounts.</caption>
           <thead>
           <tr>
-            <th scope="col" class="colFeature"><button type="button">Feature</button></th>
+            <th scope="col" class="colFeatureName"><button type="button">Feature Name</button></th>
+            <th scope="col" class="colFeatureId"><button type="button">Feature ID</button></th>
             <th scope="col" class="colAccount"><button type="button">Account</button></th>
             <th scope="col" class="colActions">Actions</th>
           </tr>
           </thead>
           <tbody>
           <tr th:each="feature : ${featureList}">
-            <td th:text="${feature.featureId}">Front page</td>
+            <td th:id="|feature-${featureStat.index}|" th:text="${feature.displayName}">Front page</td>
+            <td th:text="${feature.id}">Front page</td>
             <td th:text="${feature.accountId}">98865</td>
-            <td>
+            <td class="actions">
               <button class="feature-delete rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]"
-                      data-rvt-dialog-trigger="delete-confirmation" data-delete-feature="coursesetupwizard.theme.frontpage.enable" data-delete-account="98865">
+                      data-rvt-dialog-trigger="delete-feature-confirmation" th:data-delete-feature-name="${feature.displayName}"
+                      th:data-delete-feature-id="${feature.id}" th:data-delete-feature-account="${feature.accountId}"
+                      th:aria-describedBy="|feature-${featureStat.index}|">
                 <rvt-icon name="trash" class="rvt-p-left-xs"></rvt-icon>
                 <span>Delete</span>
               </button>

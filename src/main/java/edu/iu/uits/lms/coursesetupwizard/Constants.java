@@ -36,8 +36,6 @@ package edu.iu.uits.lms.coursesetupwizard;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.List;
-
 public class Constants {
 
     /**
@@ -55,11 +53,35 @@ public class Constants {
     public static final String ACTION_NEXT = "next";
     public static final String ACTION_HOME = "home";
     public static final String ACTION_SUBMIT = "submit";
+    public static final String ACTION_CANCEL = "cancel";
 
-    public static final String FEATURE_ID_THEME_FRONTPAGE_ENABLE  = "coursesetupwizard.theme.frontpage.enable";
-    public static final String FEATURE_ID_THEME_GUIDANCE_ENABLE   = "coursesetupwizard.theme.guidance.enable";
-    public static final String FEATURE_ID_THEME_NAVIGATION_ENABLE = "coursesetupwizard.theme.navigation.enable";
+    @Getter
+    @AllArgsConstructor
+    public enum WizardFeature {
+        THEME_FRONTPAGE("coursesetupwizard.theme.frontpage.enable", "Theme Front Page"),
+        THEME_GUIDANCE("coursesetupwizard.theme.guidance.enable", "Theme Guidance"),
+        THEME_NAVIGATION("coursesetupwizard.theme.navigation.enable", "Theme Navigation");
 
+        public final String id;
+        public final String displayName;
+
+        /**
+         *
+         * @param featureId
+         * @return the display name for the feature with the given id.  If no feature is found with the given id,
+         * the featureId is returned.
+         */
+        public static String findDisplayNameById(String featureId) {
+            String featureDisplayName = featureId;
+            for (WizardFeature feature : values()) {
+                if (feature.getId().equalsIgnoreCase(featureId)) {
+                    featureDisplayName = feature.getDisplayName();
+                    break;
+                }
+            }
+            return featureDisplayName;
+        }
+    }
     public static final String THEME_DELAYED_POST_AT_STRING = "2099-12-30";
     public static final String THEME_NEXT_STEPS_BODY_TEMPLATE_NAME = "theme.nextsteps.body.template";
     public static final String THEME_HOME_PAGE_BODY_TEMPLATE_NAME = "theme.homepage.body.template";
@@ -124,11 +146,6 @@ public class Constants {
         SELECT
     }
 
-    public static final String FEATURE_THEME_GUIDANCE = "coursesetupwizard.theme.guidance.enable";
-    public static final String FEATURE_THEME_NAVIGATION = "coursesetupwizard.theme.navigation.enable";
-    public static final String FEATURE_THEME_FRONT_PAGE = "coursesetupwizard.theme.frontpage.enable";
-
-    public static final List<String> WIZARD_FEATURES = List.of(FEATURE_THEME_GUIDANCE, FEATURE_THEME_NAVIGATION, FEATURE_THEME_FRONT_PAGE);
     private Constants() {
         throw new IllegalStateException("Utility class");
     }

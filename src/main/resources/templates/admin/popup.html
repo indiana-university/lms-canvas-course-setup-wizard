@@ -43,35 +43,34 @@
 <body class="rvt-layout">
 <div layout:fragment="content">
 
+  <div th:if="${successMsg}" th:insert="~{fragments.html :: successMsg(msgText=${successMsg})}"></div>
+
   <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='popup')}"></div>
 
   <div id="popup-details">
     <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Popup Reset</h2>
-<!--    <button type="button" class="rvt-button rvt-m-bottom-lg">-->
-<!--      <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">  <path d="M7 7V.5h2V7h6.5v2H9v6.5H7V9H.5V7H7Z"/></svg>-->
-<!--      <span>Add a new popup reset</span>-->
-<!--    </button>-->
 
     <a href="/app/admin/popup/new" class="rvt-ts-20">
       <rvt-icon name="plus"></rvt-icon>
       <span>Add a new popup reset</span>
     </a>
 
-    <table class="rvt-table-stripes rvt-m-top-lg">
+    <table id="popupTable" class="rvt-table-stripes rvt-m-top-lg">
       <caption class="rvt-sr-only">Table of popup reset records</caption>
       <thead>
       <tr>
         <th scope="col">Show on date</th>
-        <th scope="col">Notes</th>
-        <th scope="col">Actions</th>
+        <th scope="col" class="colNotes">Notes</th>
+        <th scope="col" class="colActions">Actions</th>
       </tr>
       </thead>
       <tbody>
       <tr th:each="popup : ${popupList}">
-        <th scope="row" th:text="${#dates.format(popup.showOn, 'yyyy/MM/dd')}">2024/07/22</th>
+        <th scope="row" th:text="${#dates.format(popup.showOn, 'MM/dd/yyyy')}">2024/07/22</th>
         <td th:text="${popup.notes}">As part of a periodic reset, the Course Setup Wizard popup has been re-enabled. In the future, this area will contain information on new Wizard features and essential system maintenance notifications.</td>
-        <td>
-          <a th:href="|/app/admin/popup/${popup.id}/edit|" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]">
+        <td class="actions">
+          <a th:href="|/app/admin/popup/${popup.id}/edit|" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]"
+            th:aria-describedBy="|popup-${popupStat.index}|">
             <rvt-icon name="pencil"></rvt-icon>
             <span>Edit</span>
           </a>

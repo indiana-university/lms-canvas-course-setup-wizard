@@ -45,46 +45,48 @@
 
       <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='themecontent')}"></div>
 
-      <nav role="navigation" aria-label="Breadcrumbs" class="rvt-m-bottom-sm">
-        <ol class="rvt-breadcrumbs">
-          <li>
-            <a href="/app/admin/themeContent">
-              Theme Content
-            </a>
-          </li>
-          <li aria-current="page"th:text="${create} ? 'New theme content' : 'Edit theme content'">Edit theme content</li>
-        </ol>
-      </nav>
+<!--      <nav role="navigation" aria-label="Breadcrumbs" class="rvt-m-bottom-sm">-->
+<!--        <ol class="rvt-breadcrumbs">-->
+<!--          <li>-->
+<!--            <a href="/app/admin/themeContent">-->
+<!--              Theme Content-->
+<!--            </a>-->
+<!--          </li>-->
+<!--          <li aria-current="page"th:text="${create} ? 'New theme content' : 'Edit theme content'">Edit theme content</li>-->
+<!--        </ol>-->
+<!--      </nav>-->
 
       <div id="edit-theme-content">
         <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm" th:text="${create} ? 'Create new theme content' : |Edit theme content: ${contentForm.name}|">Edit Theme Content</h2>
 
-        <form id="theme-content-form" th:object="${contentForm}" th:action="@{|/app/admin/themeContent/${themeId}/save|}" method="post" enctype="multipart/form-data">
+        <form id="theme-content-form" th:object="${contentForm}" th:action="@{/app/admin/themeContent/edit/submit}" method="post" enctype="multipart/form-data">
 
-          <label for="content-name" class="rvt-label rvt-m-top-sm rvt-ts-16">Name</label>
-          <input type="text" th:field="*{name}" id="content-name" class="rvt-text-input">
+          <label for="content-name" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Name</label>
+          <input type="text" th:field="*{name}" id="content-name" class="rvt-text-input required-input" data-error-id="content-text-error" aria-required="true">
+          <div th:insert="~{fragments.html :: textInputError(errorMsg='Theme content name is required.', errorId='content-name-error')}"></div>
 
           <div class="rvt-p-top-md">
-            <label for="textarea-content" class="rvt-label rvt-m-top-sm rvt-ts-16">Template text</label>
-            <textarea id="textarea-content" th:field="*{templateText}" class="rvt-textarea"></textarea>
+            <label for="textarea-content" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Template text</label>
+            <textarea id="textarea-content" th:field="*{templateText}" class="rvt-textarea required-input" data-error-id="content-text-error" aria-required="true"></textarea>
+            <div th:insert="~{fragments.html :: textInputError(errorMsg='Template text is required.', errorId='content-text-error')}"></div>
 
-            <div class="rvt-file rvt-m-top-lg" data-rvt-file-input="theme-file-input">
-              <input type="file" data-rvt-file-input-button="theme-file-input" id="theme-file-input" aria-describedby="file-description">
-              <label for="theme-file-input" class="rvt-button">
-                <span>Upload a file with theme content</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">  <path d="M2 1h8.414L14 4.586V15H2V1Zm2 2v10h8V7.5H7.5V3H4Zm5.5 0v2.5H12v-.086L9.586 3H9.5Z"/></svg>
-              </label>
-              <div class="rvt-file__preview" data-rvt-file-input-preview="theme-file-input" id="file-description">
-                No file selected
-              </div>
-            </div>
+<!--            <div class="rvt-file rvt-m-top-lg" data-rvt-file-input="theme-file-input">-->
+<!--              <input type="file" data-rvt-file-input-button="theme-file-input" id="theme-file-input" aria-describedby="file-description">-->
+<!--              <label for="theme-file-input" class="rvt-button">-->
+<!--                <span>Upload a file with theme content</span>-->
+<!--                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">  <path d="M2 1h8.414L14 4.586V15H2V1Zm2 2v10h8V7.5H7.5V3H4Zm5.5 0v2.5H12v-.086L9.586 3H9.5Z"/></svg>-->
+<!--              </label>-->
+<!--              <div class="rvt-file__preview" data-rvt-file-input-preview="theme-file-input" id="file-description">-->
+<!--                No file selected-->
+<!--              </div>-->
+<!--            </div>-->
 
           </div>
 
           <div class="rvt-button-group rvt-m-top-xl">
 <!--            <button id="return-to-content" class="rvt-button rvt-button&#45;&#45;secondary">Return to theme content list</button>-->
-            <button id="content-edit-cancel" class="rvt-button rvt-button--secondary">Cancel changes</button>
-            <button id="content-edit-save" class="rvt-button">Save</button>
+            <button id="content-edit-cancel" class="rvt-button rvt-button--secondary" name="action" value="cancel">Cancel and return to list</button>
+            <button id="content-edit-save" class="rvt-button validate-not-empty">Save</button>
           </div>
         </form>
 

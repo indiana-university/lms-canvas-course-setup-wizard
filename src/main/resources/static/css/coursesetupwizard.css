@@ -114,3 +114,12 @@
 #textarea-content {
     height: 25rem;
 }
+
+.required-label:after {
+    content:" *";
+    color: red;
+}
+
+.actions {
+    white-space: nowrap;
+}
