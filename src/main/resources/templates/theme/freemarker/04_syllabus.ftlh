@@ -88,15 +88,15 @@
         <li>Webcam</li>
         <li>External microphone or headset with built-in microphone</li>
         <li>Some way to make and post a simple video (e.g., using a webcam, or a smartphone).</li>
-        <li>Access to Canvas using a<span>&nbsp;</span><span><a class="external" href="https://community.canvaslms.com/docs/doc-10720" target="_blank" rel="noopener">supported web browser</a>.</span></li>
+        <li>Access to Canvas using a<span>&nbsp;</span><span><a class="external" href="https://community.canvaslms.com/docs/doc-10720" target="_blank" rel="noopener noreferrer">supported web browser</a>.</span></li>
     </ul>
     <h3>Technical support</h3>
     <p>For additional help with technical issues, consult:</p>
     <ul>
         <li><a class="" href="https://servicenow.iu.edu/kb?id=kb_article_view&sysparm_article=KB0023963">University Information Technology Services (UITS)</a> (phone and online support)</li>
         <li><a href="https://servicenow.iu.edu/kb">IU Knowledge Base (IUKB)</a> (information and how-to articles on all supported UITS software and services )</li>
-        <li><a class="" style="background-color: rgba(0, 0, 0, 0);" href="https://community.canvaslms.com/t5/Student-Guide/tkb-p/student" target="_blank" rel="noopener">Canvas Student Guide</a></li>
-        <li><a href="https://iuware.iu.edu/" target="_blank" rel="noopener">IUware</a> (download free software)</li>
+        <li><a class="" style="background-color: rgba(0, 0, 0, 0);" href="https://community.canvaslms.com/t5/Student-Guide/tkb-p/student" target="_blank" rel="noopener noreferrer">Canvas Student Guide</a></li>
+        <li><a href="https://iuware.iu.edu/" target="_blank" rel="noopener noreferrer">IUware</a> (download free software)</li>
     </ul>
     <h3>Course assessment &amp; grades</h3>
     <p>&nbsp;</p>
