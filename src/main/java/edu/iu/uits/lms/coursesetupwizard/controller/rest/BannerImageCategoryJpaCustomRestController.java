@@ -48,13 +48,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/rest/bannerimagecategory")
-@Tag(name = "BannerImageCategoryRepository")
+@RequestMapping("/rest/bannerimagecategory-custom")
+@Tag(name = "BannerImageCategoryCustom")
 @Slf4j
 /*
  * This REST controller supplements the REST JPA endpoints auto-defined in BannerImageCategoryRepository.
- * That's why @Tag's name matches that repository so that via swagger these endpoints are grouped under
- * the JPA auto-generated ones.
  */
 public class BannerImageCategoryJpaCustomRestController {
    @Autowired

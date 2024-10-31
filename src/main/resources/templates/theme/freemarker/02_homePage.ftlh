@@ -37,7 +37,7 @@
             <li style="text-align: left;">In the <strong>Meet your instructor </strong>section, write a few sentences to introduce yourself.&nbsp; You may also want to consider adding a photo or a welcome video.&nbsp; <br /><br />Then, fill in your contact information and office hours. Let your students know your preferred contact method, typical turnaround time on questions, and how to contact you in emergencies.&nbsp; For example:
                 <p>&nbsp;</p>
                 <blockquote>
-                    <p><strong>Email:</strong> <em> <strong>Canvas e-mail</strong> is my preferred means of contact. I will return your e-mails within 48 business hours. For emergencies only, contact me at <a href="mailto:johndoe@iu.edu" target="_blank" rel="noopener">johndoe@iu.edu</a> and use the subject line to describe the nature of the emergency.</em></p>
+                    <p><strong>Email:</strong> <em> <strong>Canvas e-mail</strong> is my preferred means of contact. I will return your e-mails within 48 business hours. For emergencies only, contact me at <a href="mailto:johndoe@iu.edu" target="_blank" rel="noopener noreferrer">johndoe@iu.edu</a> and use the subject line to describe the nature of the emergency.</em></p>
                 </blockquote>
             </li>
             <li style="text-align: left;"><span>In the <strong>Need help? </strong>section, revise the listed resources as needed.&nbsp; For example, if your course does not use an eText, remove the third bullet point. Also, if there are campus- or course-specific resources or services that you want your students to know about, add them in the list.&nbsp;&nbsp;</span><span><br /></span></li>
@@ -65,7 +65,7 @@
             </ul>
         </li>
     </ul>
-    <p style="padding-left: 40px;">As noted in the Schedule of Classes, we will be using an IU eText in this class. For more information, please see: "<a class="inline_disabled external" href="http://expand.iu.edu/browse/etexts/courses/the-student-guide-to-iu-etexts" target="_blank" rel="noopener"><span>The Student Guide to IU eTexts</span><span class="external_link_icon" role="presentation"><span class="screenreader-only">Links to an external site.</span></span></a>&rdquo;. &nbsp;</p>
+    <p style="padding-left: 40px;">As noted in the Schedule of Classes, we will be using an IU eText in this class. For more information, please see: "<a class="inline_disabled external" href="http://expand.iu.edu/browse/etexts/courses/the-student-guide-to-iu-etexts" target="_blank" rel="noopener noreferrer"><span>The Student Guide to IU eTexts</span><span class="external_link_icon" role="presentation"><span class="screenreader-only">Links to an external site.</span></span></a>&rdquo;. &nbsp;</p>
     <ul>
         <li style="list-style-type: none;">
             <ul>
@@ -84,7 +84,7 @@
     <h3>Need help?</h3>
     <ul>
         <li style="text-align: left;"><span><span style="color: #000000;">Visit the</span> <strong><a class="" href="https://learning.iu.edu/">Learning.IU website</a></strong></span><span style="color: #000000;"> for information and resources about learning at IU.</span></li>
-        <li style="text-align: left;"><a class="" href="https://kb.iu.edu/d/abxl" target="_blank" rel="noopener"><span><strong>UITS Tech Support:</strong></span></a><span style="color: #000000;"> Open 24/7 to help with your technology questions.</span></li>
-        <li style="text-align: left;"><span style="color: #000000;">Enroll yourself in <strong><a class="inline_disabled dp-ext-ignore" href="https://iu.test.instructure.com/courses/1683358" target="_blank" rel="noopener">The Student Guide to IU eTexts</a></strong> to learn all the basics about the initiative, and view tutorials for using Engage.</span></li>
+        <li style="text-align: left;"><a class="" href="https://servicenow.iu.edu/kb?id=kb_article_view&sysparm_article=KB0023963" target="_blank" rel="noopener noreferrer"><span><strong>UITS Tech Support:</strong></span></a><span style="color: #000000;"> Open 24/7 to help with your technology questions.</span></li>
+        <li style="text-align: left;"><span style="color: #000000;">Enroll yourself in <strong><a class="inline_disabled dp-ext-ignore" href="https://iu.test.instructure.com/courses/1683358" target="_blank" rel="noopener noreferrer">The Student Guide to IU eTexts</a></strong> to learn all the basics about the initiative, and view tutorials for using Engage.</span></li>
     </ul>
 </div>

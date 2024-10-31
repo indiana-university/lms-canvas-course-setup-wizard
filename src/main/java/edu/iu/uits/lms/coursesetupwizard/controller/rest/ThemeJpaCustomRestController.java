@@ -46,13 +46,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/rest/theme")
-@Tag(name = "ThemeRepository")
+@RequestMapping("/rest/theme-custom")
+@Tag(name = "ThemeCustom")
 @Slf4j
 /*
  * This REST controller supplements the REST JPA endpoints auto-defined in ThemeRepository.
- * That's why @Tag's name matches that repository so that via swagger these endpoints are grouped under
- * the JPA auto-generated ones.
  */
 public class ThemeJpaCustomRestController {
    @Autowired
