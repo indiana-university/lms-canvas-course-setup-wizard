@@ -105,8 +105,12 @@
         </fieldset>
 
           <div class="rvt-button-group rvt-m-top-xl">
-            <button id="banner-edit-cancel" class="rvt-button rvt-button--secondary" name="action" value="cancel">Cancel and return to list</button>
-            <button id="banner-edit-save" class="rvt-button validate-not-empty" name="action" value="submit">Save</button>
+            <button id="banner-edit-cancel" class="rvt-button rvt-button--secondary loading-btn" name="action" value="cancel">
+              <span th:replace="~{fragments.html :: loadingButton(buttonText='Cancel and return to list', srText='Loading list of banner images')}"></span>
+            </button>
+            <button id="banner-edit-save" class="rvt-button validate-not-empty" name="action" value="submit">
+              <span th:replace="~{fragments.html :: loadingButton(buttonText='Save', srText='Saving banner image')}"></span>
+            </button>
           </div>
         </form>
 

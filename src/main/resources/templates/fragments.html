@@ -150,7 +150,7 @@
 </th:block>
 
 <th:block th:fragment="errorMsg (errorText)">
-    <div class="rvt-alert rvt-alert--danger [ rvt-m-top-md ]" role="alert" aria-labelledby="error-title" data-rvt-alert="error">
+    <div class="rvt-alert rvt-alert--danger [ rvt-m-bottom-md ]" role="alert" aria-labelledby="error-title" data-rvt-alert="error">
         <div class="rvt-alert__title" id="error-title">Error</div>
         <p class="rvt-alert__message" th:text="${errorText}">There was an error!</p>
     </div>

@@ -67,6 +67,12 @@
 
     <div class="rvt-layout__wrapper [ rvt-p-tb-md ]">
         <span id="sr-new-window" hidden>Opens in new window</span>
+
+        <div id="messaging" class="rvt-container-lg">
+            <div th:if="${successMsg}" th:insert="~{fragments.html :: successMsg(msgText=${successMsg})}"></div>
+            <div th:if="${errorMsg}" th:insert="~{fragments.html :: errorMsg(errorText=${errorMsg})}"></div>
+        </div>
+
         <div layout:fragment="content" class="rvt-container-lg">
             Page content goes here
             <!--

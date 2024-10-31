@@ -102,7 +102,7 @@ public class WizardController extends OidcTokenAwareController {
         courseSessionService.removeAttributeFromSession(httpSession, courseId, KEY_IMPORT_MODEL);
         courseSessionService.removeAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL);
 
-        if (featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_FRONTPAGE.id, canvasService.getRootAccount(), null)) {
+        if (featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_FRONTPAGE.featureId, canvasService.getRootAccount(), null)) {
             model.addAttribute("feature_theme_frontpage", true);
         }
 
@@ -110,7 +110,7 @@ public class WizardController extends OidcTokenAwareController {
         String viewName = wizardService.alreadyCompletedForCourse(courseId) ? "alreadyCompleted" : "index";
         ModelAndView modelAndView = new ModelAndView(viewName);
 
-        if (featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_FRONTPAGE.id, canvasService.getRootAccount(), null)) {
+        if (featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_FRONTPAGE.featureId, canvasService.getRootAccount(), null)) {
             modelAndView.getModelMap().addAttribute("feature_theme_frontpage", true);
         }
 

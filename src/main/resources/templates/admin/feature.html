@@ -46,8 +46,6 @@
       <div th:insert="~{admin/fragments/adminDialogs :: deleteFeature}"></div>
       <div th:insert="~{admin/fragments/adminDialogs :: enableFeature}"></div>
 
-      <div th:if="${successMsg}" th:insert="~{fragments.html :: successMsg(msgText=${successMsg})}"></div>
-
       <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='feature')}"></div>
 
       <div id="feature-settings">
@@ -76,13 +74,13 @@
           <tbody>
           <tr th:each="feature : ${featureList}">
             <td th:id="|feature-${featureStat.index}|" th:text="${feature.displayName}">Front page</td>
-            <td th:text="${feature.id}">Front page</td>
+            <td th:text="${feature.featureId}">Front page</td>
             <td th:text="${feature.accountId}">98865</td>
             <td class="actions">
               <button class="feature-delete rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]"
                       data-rvt-dialog-trigger="delete-feature-confirmation" th:data-delete-feature-name="${feature.displayName}"
-                      th:data-delete-feature-id="${feature.id}" th:data-delete-feature-account="${feature.accountId}"
-                      th:aria-describedBy="|feature-${featureStat.index}|">
+                      th:data-delete-id="${feature.id}" th:data-delete-feature-account="${feature.accountId}"
+                      th:data-delete-feature-id="${feature.featureId}" th:aria-describedBy="|feature-${featureStat.index}|">
                 <rvt-icon name="trash" class="rvt-p-left-xs"></rvt-icon>
                 <span>Delete</span>
               </button>

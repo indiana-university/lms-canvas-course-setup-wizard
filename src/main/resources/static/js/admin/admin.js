@@ -36,7 +36,7 @@ jQuery(document).ready(function($) {
     $("#add-banner-category").click(function(event) {
         $("#banner-category-title").text("Add Banner Image Category");
         $("#category-name").val('');
-        $("#category-id").val('new');
+        $("#category-id").val('');
     });
 
     $(".edit-category").click(function(event) {
@@ -50,67 +50,67 @@ jQuery(document).ready(function($) {
 
     $(".feature-delete").click(function(event) {
         let featureName = $(this).data("delete-feature-name");
+        let id = $(this).data("delete-id");
         let featureId = $(this).data("delete-feature-id");
         let accountId = $(this).data("delete-feature-account");
 
         $("#delete-feature-name").text(featureName);
         $("#delete-feature-id").text(featureId);
         $("#delete-account-id").text(accountId);
+
+        $("#delete-feature-confirm").val(id);
     });
 
     $(".delete-content").click(function(event) {
         let contentName = $(this).data("content-name");
-        $("#deleted-item").text(contentName);
+        $("#delete-content-name").text(contentName);
+        $("#delete-content-confirm").val(contentName);
     });
 
     $(".upload-content").click(function(event) {
         let content = $(this).data("content-name");
         $("#content-name").text(content);
+        $("#theme-content-id").val(content);
     });
 
-    $(".validate-not-empty").click(function(event) {
+    $(".validate-not-empty, .validate-dialog").click(function(event) {
         let valid = true;
-        $('input.required-input[type=text], textarea.required-input, select.required-input').each(function () {
+        let validatedInputs;
+        let submitButton = $(this);
+        if (submitButton.hasClass("validate-not-empty")) {
+            validatedInputs = $('.required-input');
+        } else {
+            validatedInputs = $('.required-input-dialog');
+        }
+
+        validatedInputs.each(function () {
             let currInput = $(this);
             let errorId = currInput.data("error-id");
 
-            if (currInput.is(':visible') && (!currInput.val() || !currInput.val().trim() ||
-                (currInput.is('select') && currInput.val() == 0) ||
-                (currInput.hasClass('validate-date') && isNaN(new Date(currInput.val()))))) {
+            let isVisible = currInput.is(':visible');
+            let isEmptyText = !currInput.val() || !currInput.val().trim();
+            let isEmptySelect = currInput.is('select') && currInput.val() == 0;
+            let isInvalidDate = currInput.hasClass('validate-date') && isNaN(new Date(currInput.val()));
+            let isMissingFile = currInput.is('file') && currInput.get(0).files.length === 0;
+
+            if (isVisible && (isEmptyText || isEmptySelect || isInvalidDate || isMissingFile)) {
                 invalidInput(currInput, errorId);
                 valid = false;
             } else {
+                // remove any old validation since it is valid now
                 validInput(currInput, errorId);
             }
         });
 
         if (!valid) {
             $('[aria-invalid="true"]').first().focus();
+        } else {
+            // this method expects the javascript object, not the jquery object
+            applyLoadingButton(submitButton.get(0));
         }
 
         return valid;
     });
-
-     $(".validate-dialog").click(function(event) {
-            let valid = true;
-            $('input.required-input-dialog[type=text], select.required-input-dialog').each(function () {
-                let currInput = $(this);
-                let errorId = currInput.data("error-id");
-
-                if (!currInput.val() || !currInput.val().trim()) {
-                    invalidInput(currInput, errorId);
-                    valid = false;
-                } else {
-                    validInput(currInput, errorId);
-                }
-            });
-
-            if (!valid) {
-                $('[aria-invalid="true"]').first().focus();
-            }
-
-            return valid;
-        });
 
 });
 
@@ -139,6 +139,10 @@ function resetDialogValidation() {
 // Ensure any old validation is reset when a dialog is opened
 document.addEventListener('rvtDialogOpened', function (event) {
     resetDialogValidation();
+})
+
+document.querySelector('[data-rvt-dialog="enable-feature-dialog"]')?.addEventListener('rvtDialogOpened', function (event) {
+   document.getElementById('enable-feature-form').reset();
 })
 
 
@@ -210,6 +214,11 @@ var table = $('#themeTable, #themeContentTable, #bannerTable, #bannerCategoryTab
         {
             targets: ['.colActions'],
             orderable: false
+        },
+
+        {
+            targets: ['.colDates'],
+            type: 'date'
         }
        ],
    initComplete: function () {
@@ -241,6 +250,10 @@ var table = $('#popupTable').DataTable({
         {
             targets: ['.colActions'],
             orderable: false
+        },
+        {
+            targets: ['.colDates'],
+            type: 'date'
         }
        ],
    initComplete: function () {

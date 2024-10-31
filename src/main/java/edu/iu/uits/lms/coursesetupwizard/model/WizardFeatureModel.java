@@ -33,20 +33,16 @@ package edu.iu.uits.lms.coursesetupwizard.model;
  * #L%
  */
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import java.io.Serializable;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Data
+@AllArgsConstructor
 public class WizardFeatureModel implements Serializable {
-   private String id;
-   private String displayName;
+   private Long id;
+   private String featureId;
    private String accountId;
+   private String displayName;
 }

@@ -123,3 +123,9 @@
 .actions {
     white-space: nowrap;
 }
+
+table.dataTable thead > tr > th button {
+    cursor: pointer;
+}
+
+

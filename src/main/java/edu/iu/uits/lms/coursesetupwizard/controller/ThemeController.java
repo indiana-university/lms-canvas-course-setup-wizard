@@ -129,11 +129,11 @@ public class ThemeController extends WizardController {
         steps.add(new ThemeStep("Select theme", MessageFormat.format(PAGES[2], courseId)));
         steps.add(new ThemeStep("Select banner", MessageFormat.format(PAGES[3], courseId)));
 
-        if (featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_NAVIGATION.id, canvasService.getRootAccount(), null)) {
+        if (featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_NAVIGATION.featureId, canvasService.getRootAccount(), null)) {
             steps.add(new ThemeStep("Include navigation", MessageFormat.format(PAGES[4], courseId)));
         }
 
-        if (featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_GUIDANCE.id, canvasService.getRootAccount(), null)) {
+        if (featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_GUIDANCE.featureId, canvasService.getRootAccount(), null)) {
             steps.add(new ThemeStep("Include guidance", MessageFormat.format(PAGES[PAGES.length - 3], courseId)));
         }
 
@@ -312,7 +312,7 @@ public class ThemeController extends WizardController {
                 // if asking for the guidance page
                 if (pageIndex == PAGES.length - 3) {
                     boolean isGuidanceFeatureEnabled = featureAccessService
-                            .isFeatureEnabledForAccount(WizardFeature.THEME_GUIDANCE.id, canvasService.getRootAccount(), null);
+                            .isFeatureEnabledForAccount(WizardFeature.THEME_GUIDANCE.featureId, canvasService.getRootAccount(), null);
 
                     if (! isGuidanceFeatureEnabled) {
                         pageIndex--;
@@ -322,7 +322,7 @@ public class ThemeController extends WizardController {
                 // if asking for the navigation page
                 if (pageIndex == 4) {
                     boolean isNavigationFeatureEnabled =
-                            featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_NAVIGATION.id, canvasService.getRootAccount(), null);
+                            featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_NAVIGATION.featureId, canvasService.getRootAccount(), null);
 
                     if (! isNavigationFeatureEnabled) {
                         pageIndex--;
@@ -340,7 +340,7 @@ public class ThemeController extends WizardController {
                 // if asking for the navigation page
                 if (pageIndex == 4) {
                     boolean isNavigationFeatureEnabled =
-                            featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_NAVIGATION.id, canvasService.getRootAccount(), null);
+                            featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_NAVIGATION.featureId, canvasService.getRootAccount(), null);
 
                     if (! isNavigationFeatureEnabled) {
                         pageIndex++;
@@ -350,7 +350,7 @@ public class ThemeController extends WizardController {
                 // if asking for the guidance page
                 if (pageIndex == PAGES.length - 3) {
                     boolean isGuidanceFeatureEnabled = featureAccessService
-                            .isFeatureEnabledForAccount(WizardFeature.THEME_GUIDANCE.id, canvasService.getRootAccount(), null);
+                            .isFeatureEnabledForAccount(WizardFeature.THEME_GUIDANCE.featureId, canvasService.getRootAccount(), null);
 
                     if (! isGuidanceFeatureEnabled) {
                         pageIndex++;

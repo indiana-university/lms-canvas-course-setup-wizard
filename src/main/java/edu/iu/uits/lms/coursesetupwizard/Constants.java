@@ -62,7 +62,7 @@ public class Constants {
         THEME_GUIDANCE("coursesetupwizard.theme.guidance.enable", "Theme Guidance"),
         THEME_NAVIGATION("coursesetupwizard.theme.navigation.enable", "Theme Navigation");
 
-        public final String id;
+        public final String featureId;
         public final String displayName;
 
         /**
@@ -74,7 +74,7 @@ public class Constants {
         public static String findDisplayNameById(String featureId) {
             String featureDisplayName = featureId;
             for (WizardFeature feature : values()) {
-                if (feature.getId().equalsIgnoreCase(featureId)) {
+                if (feature.getFeatureId().equalsIgnoreCase(featureId)) {
                     featureDisplayName = feature.getDisplayName();
                     break;
                 }

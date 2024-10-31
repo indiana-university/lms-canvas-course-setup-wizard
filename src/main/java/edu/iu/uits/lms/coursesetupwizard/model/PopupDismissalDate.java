@@ -35,13 +35,7 @@ package edu.iu.uits.lms.coursesetupwizard.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import edu.iu.uits.lms.common.date.DateFormatUtil;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -65,6 +59,7 @@ public class PopupDismissalDate {
 
    @JsonFormat(pattern = DateFormatUtil.JSON_DATE_FORMAT, timezone="America/Indianapolis")
    @DateTimeFormat (pattern = "MM/dd/yyyy")
+   //@Temporal(TemporalType.DATE)
    @Column(name = "SHOW_ON")
    private Date showOn;
 

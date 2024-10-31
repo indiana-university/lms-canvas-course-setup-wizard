@@ -101,7 +101,7 @@ function applyLoadingButton(loadingBtn) {
         srText[0].classList.remove("rvt-display-none");
     }
 
-    // FF doesn't need this, but Chrome and Edge do
+    // FF doesn't need this, but Chrome and Edge do.
     btnForm.submit();
 }
 

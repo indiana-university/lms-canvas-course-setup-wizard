@@ -59,7 +59,7 @@
       <div id="edit-theme">
         <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm" th:text="${create} ? 'Create new theme' : |Edit theme: ${themeForm.uiName}|">Edit Theme</h2>
 
-        <form id="wizard-theme-form-submit" th:object="${themeForm}" th:action="@{/app/admin/theme/edit/submit}" method="post" enctype="multipart/form-data">
+        <form id="wizard-theme-form-submit" th:object="${themeForm}" th:action="${create}? @{/app/admin/theme/new/submit} : @{|/app/admin/theme/${themeId}/update|}" method="post" enctype="multipart/form-data">
           <div class="rvt-m-tb-md">
             <div class="rvt-checkbox">
               <input type="checkbox" name="checkbox-demo" id="active-theme" th:field="*{active}">
@@ -132,8 +132,12 @@
           </fieldset>
 
           <div class="rvt-button-group rvt-m-top-xl">
-            <button id="theme-edit-cancel" class="rvt-button rvt-button--secondary" name="action" value="cancel">Cancel and return to list</button>
-            <button id="theme-edit-save" class="rvt-button validate-not-empty">Save</button>
+            <button id="theme-edit-cancel" class="rvt-button rvt-button--secondary loading-btn" name="action" value="cancel">
+              <span th:replace="~{fragments.html :: loadingButton(buttonText='Cancel and return to list', srText='Loading list of themes')}"></span>
+            </button>
+            <button id="theme-edit-save" class="rvt-button validate-not-empty" name="action" value="submit">
+              <span th:replace="~{fragments.html :: loadingButton(buttonText='Save', srText='Saving theme')}"></span>
+            </button>
           </div>
         </form>
 

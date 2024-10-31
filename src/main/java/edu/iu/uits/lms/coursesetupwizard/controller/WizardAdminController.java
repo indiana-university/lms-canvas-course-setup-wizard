@@ -54,10 +54,13 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
-import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -110,7 +113,7 @@ public class WizardAdminController extends WizardController {
     @RequestMapping({"","/","/{action}"})
     public ModelAndView adminAction(@PathVariable(required = false) String action, Model model, HttpSession httpSession) {
         log.debug("in /admin");
-        OidcAuthenticationToken token = getTokenWithoutContext();
+        getTokenWithoutContext();
 
         Constants.AdminOption currentOption = Constants.AdminOption.findByName(action);
         if (currentOption == null) {
@@ -149,7 +152,7 @@ public class WizardAdminController extends WizardController {
     @GetMapping("/theme")
     public ModelAndView themeList(Model model, HttpSession httpSession) {
         log.debug("in /theme");
-        OidcAuthenticationToken token = getTokenWithoutContext();
+        getTokenWithoutContext();
 
         List<Theme> themeList = (List<Theme>)themeRepository.findAll(Sort.by("uiName"));
 
@@ -158,10 +161,96 @@ public class WizardAdminController extends WizardController {
         return new ModelAndView("/admin/theme");
     }
 
+
+    @GetMapping("/theme/{themeId}/edit")
+    public ModelAndView editTheme(@PathVariable("themeId") Long themeId, Model model, HttpSession httpSession) {
+        log.debug("in /admin/theme/" + themeId + "/edit");
+        getTokenWithoutContext();
+
+        model.addAttribute("themeId", themeId);
+        Theme theme = themeRepository.findById(themeId).orElse(null);
+        //TODO throw error if theme not found
+        model.addAttribute("themeForm", theme);
+
+        return new ModelAndView("/admin/editTheme");
+    }
+
+    @PostMapping(value = "/theme/{themeId}/update")
+    public ModelAndView editThemeSubmit(@RequestParam(name = "action") String action, @PathVariable("themeId") Long themeId, @ModelAttribute Theme theme, Model model, HttpSession session) {
+        log.debug("in /theme/" + themeId + "/update");
+        getTokenWithoutContext();
+
+        switch (action) {
+            case ACTION_CANCEL:
+                return themeList(model, session);
+            case ACTION_SUBMIT:
+                model.addAttribute("successMsg", theme.getUiName() + " theme was updated.");
+                return themeList(model, session);
+        }
+
+        model.addAttribute("errorMsg", "Unknown action  when attempting to edit a theme: " + action);
+        return editTheme(themeId, model, session);
+    }
+
+    @GetMapping("/theme/new")
+    public ModelAndView createTheme(Model model, HttpSession httpSession) {
+        log.debug("in /admin/theme/new");
+        getTokenWithoutContext();
+
+        model.addAttribute("create", true);
+        Theme newTheme = new Theme();
+        newTheme.setActive(false);
+
+        model.addAttribute("themeForm", newTheme);
+        return new ModelAndView("/admin/editTheme");
+    }
+
+    @PostMapping(value = "/theme/new/submit")
+    public ModelAndView createThemeSubmit(@RequestParam(name = "action") String action, @ModelAttribute Theme theme, Model model, HttpSession session) {
+        log.debug("in /theme/new/submit");
+        getTokenWithoutContext();
+
+        switch (action) {
+            case ACTION_CANCEL:
+                return themeList(model, session);
+            case ACTION_SUBMIT:
+
+                model.addAttribute("successMsg", theme.getUiName() + " theme was created.");
+                return themeList(model, session);
+        }
+
+        model.addAttribute("errorMsg", "Unknown action when attempting to create a new theme: " + action);
+        return createTheme(model, session);
+    }
+
+    @PostMapping(value = "/theme/toggle")
+    public ModelAndView toggleTheme(@RequestParam Long themeId, Model model, HttpSession session) {
+        log.debug(" in /theme/toggle");
+        getTokenWithoutContext();
+
+        Theme theme = themeRepository.findById(themeId).orElse(null);
+        if (theme == null) {
+            model.addAttribute("errorMsg", "No theme found with id: " + themeId);
+            return themeList(model, session);
+        }
+
+        // activate/inactive this theme
+        if (theme.isActive()) {
+            //themeRepository.softDeleteById(bannerId);
+        } else {
+            //themeRepository.unSoftDeleteById(bannerId);
+        }
+
+        String successMsg = theme.getUiName() + " theme is now " + (theme.isActive() ? "active." : "inactive.");
+        model.addAttribute("successMsg", successMsg);
+
+        return themeList(model, session);
+    }
+
     @GetMapping("/banner")
     public ModelAndView bannerList(Model model, HttpSession httpSession) {
         log.debug("in /banner");
-        OidcAuthenticationToken token = getTokenWithoutContext();
+        getTokenWithoutContext();
 
         List<BannerImage> bannerList = (List<BannerImage>)bannerRepository.findAll(Sort.by("uiName"));
 
@@ -171,18 +260,102 @@ public class WizardAdminController extends WizardController {
         return new ModelAndView("/admin/banner");
     }
 
-    @RequestMapping(value = "/banner/edit/submit", method = RequestMethod.POST, params = {"action=cancel"})
-    public ModelAndView bannerEditCancel(Model model, HttpSession session) {
-        log.debug("cancelling banner edit");
+    @GetMapping("/banner/{bannerId}/edit")
+    public ModelAndView editBanner(@PathVariable("bannerId") String bannerId, Model model, HttpSession httpSession) {
+        log.debug("in /admin/banner/" + bannerId + "/edit");
         getTokenWithoutContext();
-        return bannerList(model, session);
+
+        model.addAttribute("bannerId", bannerId);
+        BannerImage banner = bannerRepository.findById(Long.parseLong(bannerId)).orElse(null);
+
+        //TODO throw error if banner not found?
+        model.addAttribute("bannerForm", banner);
+        List<BannerImageCategory> categories = (List<BannerImageCategory>)bannerCategoryRepository.findAll(Sort.by("name"));
+        model.addAttribute("categories", categories);
+
+        List<Long> selectedCategories = banner.getBannerImageCategories().stream()
+                .map(BannerImageCategory::getId)
+                .collect(Collectors.toList());
+        model.addAttribute("selectedCategories", selectedCategories);
+
+        return new ModelAndView("/admin/editBanner");
     }
 
-    @RequestMapping(value = "/banner/edit/submit", method = RequestMethod.POST, params = {"action=edit"})
-    public ModelAndView bannerEditSubmit(Model model, HttpSession session) {
-        log.debug("saving banner changes");
+    @RequestMapping(value = "/banner/{bannerId}/update", method = RequestMethod.POST)
+    public ModelAndView editBannerSubmit(@RequestParam(name = "action") String action, @PathVariable("bannerId") String bannerId,
+                                         @ModelAttribute BannerImage banner, Model model, HttpSession session) {
+        log.debug("in /banner/" + bannerId + "/update");
         getTokenWithoutContext();
 
+        switch (action) {
+            case ACTION_CANCEL:
+                return bannerList(model, session);
+            case ACTION_SUBMIT:
+                model.addAttribute("successMsg", banner.getUiName() + " banner image was updated.");
+                return bannerList(model, session);
+        }
+
+        model.addAttribute("errorMsg", "Unknown action when attempting to edit a banner image: " + action);
+        return editBanner(bannerId, model, session);
+    }
+
+    @GetMapping("/banner/new")
+    public ModelAndView createBanner(Model model, HttpSession httpSession) {
+        log.debug("in /admin/banner/new");
+        getTokenWithoutContext();
+
+        model.addAttribute("create", true);
+
+        List<BannerImageCategory> categories = (List<BannerImageCategory>)bannerCategoryRepository.findAll(Sort.by("name"));
+        model.addAttribute("categories", categories);
+
+        BannerImage newBanner = new BannerImage();
+        newBanner.setActive(false);
+
+        model.addAttribute("selectedCategories", new ArrayList<>());
+        model.addAttribute("bannerForm", newBanner);
+        return new ModelAndView("/admin/editBanner");
+    }
+
+    @PostMapping(value = "/banner/new/submit")
+    public ModelAndView createBannerSubmit(@RequestParam(name = "action") String action, @ModelAttribute BannerImage bannerModel, Model model, HttpSession session) {
+        log.debug("in /banner/new/submit");
+        getTokenWithoutContext();
+
+        switch (action) {
+            case ACTION_CANCEL:
+                return bannerList(model, session);
+            case ACTION_SUBMIT:
+                //wizardAdminService.saveBannerImageAndCategories(bannerModel, null);
+
+                model.addAttribute("successMsg", bannerModel.getUiName() + " banner image was created.");
+                return bannerList(model, session);
+        }
+
+        model.addAttribute("errorMsg", "Unknown action " + action + " when attempting to save a new banner image.");
+        return createBanner(model, session);
+    }
+
+    @PostMapping(value = "/banner/toggle")
+    public ModelAndView toggleBanner(@RequestParam Long bannerId, Model model, HttpSession session) {
+        log.debug("in /banner/toggle");
+        getTokenWithoutContext();
+
+        BannerImage banner = bannerRepository.findById(bannerId).orElse(null);
+        if (banner == null) {
+            model.addAttribute("errorMsg", "No banner image found with id: " + bannerId);
+            return bannerList(model, session);
+        }
+
+        // activate/inactive this banner image
+        if (banner.isActive()) {
+            //bannerRepository.softDeleteById(bannerId);
+        } else {
+            //bannerRepository.unSoftDeleteById(bannerId);
+        }
+
+        String successMsg = banner.getUiName() + " banner image is now " + (banner.isActive() ? "active." : "inactive.");
+        model.addAttribute("successMsg", successMsg);
 
         return bannerList(model, session);
     }
@@ -190,7 +363,7 @@ public class WizardAdminController extends WizardController {
     @GetMapping("/bannerCategory")
     public ModelAndView bannerCategoryList(Model model, HttpSession httpSession) {
         log.debug("in /bannerCategory");
-        OidcAuthenticationToken token = getTokenWithoutContext();
+        getTokenWithoutContext();
 
         List<BannerImageCategory> bannerCategoryList = (List<BannerImageCategory>)bannerCategoryRepository.findAll(Sort.by("name"));
         model.addAttribute("categoryList", bannerCategoryList);
@@ -198,10 +371,63 @@ public class WizardAdminController extends WizardController {
         return new ModelAndView("/admin/bannerCategory");
     }
 
+    @RequestMapping(value = "/bannerCategory/save", method = RequestMethod.POST)
+    public ModelAndView saveBannerCategory(@RequestParam (required = false) Long categoryId, @RequestParam String categoryName,
+                                         Model model, HttpSession session) {
+        log.debug("in /bannerCategory/save");
+        getTokenWithoutContext();
+
+        BannerImageCategory category = new BannerImageCategory();
+        String successMsg;
+
+        if (categoryId == null) {
+            // create a new banner image category
+            successMsg = categoryName + " category was created.";
+        } else {
+            category = bannerCategoryRepository.findById(categoryId).orElse(null);
+            if (category == null) {
+                model.addAttribute("errorMsg", "No banner category found with id: " + categoryId);
+                return bannerCategoryList(model, session);
+            }
+
+            successMsg = categoryName + " category was updated.";
+        }
+
+        category.setName(categoryName);
+        //bannerCategoryRepository.save(category);
+
+        model.addAttribute("successMsg", successMsg);
+        return bannerCategoryList(model, session);
+    }
+
+    @PostMapping(value = "/bannerCategory/toggle")
+    public ModelAndView toggleBannerCategory(@RequestParam Long categoryId, Model model, HttpSession session) {
+        log.debug("in /bannerCategory/toggle");
+        getTokenWithoutContext();
+
+        BannerImageCategory category = bannerCategoryRepository.findById(categoryId).orElse(null);
+        if (category == null) {
+            model.addAttribute("errorMsg", "No banner category found with id: " + categoryId);
+            return bannerCategoryList(model, session);
+        }
+
+        // activate/inactive this banner image category
+        if (category.isActive()) {
+            //bannerCategoryRepository.softDeleteById(categoryId);
+        } else {
+            //bannerCategoryRepository.unSoftDeleteById(categoryId);
+        }
+
+        String successMsg = category.getName() + " category is now " + (category.isActive() ? "active." : "inactive.");
+        model.addAttribute("successMsg", successMsg);
+
+        return bannerCategoryList(model, session);
+    }
+
     @GetMapping("/popup")
-    public ModelAndView popupList(Model model, HttpSession httpSession) {
+    public ModelAndView popupList(Model model, HttpSession session) {
         log.debug("in /popup");
-        OidcAuthenticationToken token = getTokenWithoutContext();
+        getTokenWithoutContext();
 
         List<PopupDismissalDate> popupList = (List<PopupDismissalDate>)popupRepository.findAll(Sort.by("showOn").descending());
 
@@ -211,14 +437,13 @@ public class WizardAdminController extends WizardController {
     }
 
     @GetMapping("/popup/{popupId}/edit")
-    public ModelAndView editPopup(@PathVariable("popupId") Long popupId, Model model, HttpSession httpSession) {
+    public ModelAndView editPopup(@PathVariable("popupId") Long popupId, Model model, HttpSession session) {
         log.debug("in /admin/popup/" + popupId + "/edit");
-        OidcAuthenticationToken token = getTokenWithoutContext();
+        getTokenWithoutContext();
 
         model.addAttribute("popupId", popupId);
 
         PopupDismissalDate popup = popupRepository.findById(popupId).orElse(null);
-        String formattedShownOn = PopupDateUtil.date2String(popup.getShowOn(), PopupDateUtil.INPUT_DATE_FORMAT_MMDDYYYY);
 
         model.addAttribute("popupForm", popup);
 
@@ -226,9 +451,9 @@ public class WizardAdminController extends WizardController {
     }
 
     @GetMapping("/popup/new")
-    public ModelAndView createPopupDate(Model model, HttpSession httpSession) {
+    public ModelAndView createPopupDate(Model model, HttpSession session) {
         log.debug("in /admin/popup/new");
-        OidcAuthenticationToken token = getTokenWithoutContext();
+        getTokenWithoutContext();
 
         model.addAttribute("create", true);
 
@@ -240,8 +465,9 @@ public class WizardAdminController extends WizardController {
     }
 
     @PostMapping(value = "/popup/{popupId}/update")
-    public ModelAndView popupEditSave(@RequestParam(name = "action") String action, @PathVariable("popupId") Long popupId, @ModelAttribute PopupDismissalDate popupModel, Model model, HttpSession session) {
-        OidcAuthenticationToken token = getTokenWithoutContext();
+    public ModelAndView editPopupSubmit(@RequestParam(name = "action") String action, @PathVariable("popupId") Long popupId, @ModelAttribute PopupDismissalDate popupModel, Model model, HttpSession session) {
+        log.debug("in /popup/" + popupId + "/update");
+        getTokenWithoutContext();
 
         PopupDismissalDate updatedPopupDismissalDate = popupRepository.findById(popupId).orElse(null);
 
@@ -249,22 +475,17 @@ public class WizardAdminController extends WizardController {
             model.addAttribute("errorMsg", "Popup reset with id " + popupId + " does not exist.");
             return editPopup(popupId, model, session);
         }
-        String db = updatedPopupDismissalDate.getShowOn().toString();
-        String modeldate = popupModel.getShowOn().toString();
 
         switch (action) {
             case ACTION_CANCEL:
                 return popupList(model, session);
             case ACTION_SUBMIT:
-                // validate the date if it has been updated
-                if (!updatedPopupDismissalDate.getShowOn().equals(popupModel.getShowOn())) {
-                    try {
-                        PopupDateUtil.validate(popupModel.getShowOn(), PopupDateUtil.INPUT_DATE_FORMAT_MMDDYYYY);
-                        updatedPopupDismissalDate.setShowOn(popupModel.getShowOn());
-                    } catch (IllegalArgumentException iae) {
-                        model.addAttribute("errorMsg", iae.getMessage());
-                        return editPopup(popupId, model, session);
-                    }
+                try {
+                    PopupDateUtil.validate(popupModel.getShowOn(), PopupDateUtil.INPUT_DATE_FORMAT_MMDDYYYY);
+                    updatedPopupDismissalDate.setShowOn(popupModel.getShowOn());
+                } catch (IllegalArgumentException iae) {
+                    model.addAttribute("errorMsg", iae.getMessage());
+                    return editPopup(popupId, model, session);
                 }
 
                 updatedPopupDismissalDate.setNotes(popupModel.getNotes());
@@ -280,8 +501,9 @@ public class WizardAdminController extends WizardController {
     }
 
     @PostMapping(value = "/popup/new/submit")
-    public ModelAndView createPopupSave(@RequestParam(name = "action") String action, @ModelAttribute PopupDismissalDate popupModel, Model model, HttpSession session) {
-        OidcAuthenticationToken token = getTokenWithoutContext();
+    public ModelAndView createPopupSubmit(@RequestParam(name = "action") String action, @ModelAttribute PopupDismissalDate popupModel, Model model, HttpSession session) {
+        log.debug("in /popup/new/submit");
+        getTokenWithoutContext();
 
         switch (action) {
             case ACTION_CANCEL:
@@ -309,9 +531,9 @@ public class WizardAdminController extends WizardController {
     @GetMapping("/feature")
     public ModelAndView featureList(Model model, HttpSession httpSession) {
         log.debug("in /feature");
-        OidcAuthenticationToken token = getTokenWithoutContext();
+        getTokenWithoutContext();
 
-        List<String> featureIds = Stream.of(WizardFeature.values()).map(WizardFeature::getId).collect(Collectors.toList());
+        List<String> featureIds = Stream.of(WizardFeature.values()).map(WizardFeature::getFeatureId).collect(Collectors.toList());
 
         List<FeatureAccess> allFeatures = featureAccessRepository.findAll();
         List<FeatureAccess> wizardFeatures = allFeatures.stream()
@@ -320,26 +542,56 @@ public class WizardAdminController extends WizardController {
 
         List<WizardFeatureModel> featureList = new ArrayList<>();
         for (FeatureAccess feature : wizardFeatures) {
-            WizardFeatureModel newFeature = new WizardFeatureModel();
-            newFeature.setId(feature.getFeatureId());
-            newFeature.setAccountId(feature.getAccountId());
-            newFeature.setDisplayName(WizardFeature.findDisplayNameById(feature.getFeatureId()));
-
-            featureList.add(newFeature);
+            WizardFeatureModel featureModel = new WizardFeatureModel(feature.getId(), feature.getFeatureId(), feature.getAccountId(), WizardFeature.findDisplayNameById(feature.getFeatureId()));
+            featureList.add(featureModel);
         }
 
         model.addAttribute("featureList", featureList);
 
-        List<String> featureOptions = Stream.of(WizardFeature.values()).sorted().map(WizardFeature::getDisplayName).collect(Collectors.toList());
+        List<WizardFeature> featureOptions = Arrays.asList(WizardFeature.values());
         model.addAttribute("featureOptions", featureOptions);
 
         return new ModelAndView("/admin/feature");
     }
 
+    @PostMapping(value = "/feature/enable")
+    public ModelAndView enableFeature(@RequestParam String featureId, @RequestParam String accountId, Model model, HttpSession session) {
+        log.debug("in /feature/enable");
+        getTokenWithoutContext();
+
+        // verify that feature isn't already enabled
+        if(featureAccessService.isFeatureEnabledForAccount(featureId, accountId, null)) {
+            model.addAttribute("errorMsg", featureId + " is already enabled for account " + accountId);
+            return featureList(model, session);
+        };
+
+        FeatureAccess newAccess = new FeatureAccess();
+        newAccess.setFeatureId(featureId);
+        newAccess.setAccountId(accountId);
+
+        //featureAccessRepository.save(newAccess);
+
+        model.addAttribute("successMsg", WizardFeature.findDisplayNameById(featureId) + " feature enabled for account " + accountId + ".");
+        return featureList(model, session);
+    }
+
+    @PostMapping(value = "/feature/delete")
+    public ModelAndView deleteFeature(@RequestParam Long deleteId, Model model, HttpSession session) {
+        log.debug("in /feature/delete");
+        getTokenWithoutContext();
+
+        FeatureAccess feature = featureAccessRepository.findById(deleteId).orElse(null);
+
+        // delete
+
+        model.addAttribute("successMsg", WizardFeature.findDisplayNameById(feature.getFeatureId()) + " feature deleted for account " + feature.getAccountId() + ".");
+        return featureList(model, session);
+    }
+
     @GetMapping("/themeContent")
     public ModelAndView themeContentList(Model model, HttpSession httpSession) {
         log.debug("in /themeContent");
-        OidcAuthenticationToken token = getTokenWithoutContext();
+        getTokenWithoutContext();
 
         List<ThemeContent> contentList = (List<ThemeContent>)themeContentRepository.findAll(Sort.by("name"));
         model.addAttribute("contentList", contentList);
@@ -350,12 +602,11 @@ public class WizardAdminController extends WizardController {
     @GetMapping("/themeContent/{contentName}/edit")
     public ModelAndView editThemeContent(@PathVariable("contentName") String contentName, Model model, HttpSession httpSession) {
         log.debug("in /admin/themeContent/" + contentName + "/edit");
-        OidcAuthenticationToken token = getTokenWithoutContext();
+        getTokenWithoutContext();
 
         model.addAttribute("contentName", contentName);
         ThemeContent content = themeContentRepository.findById(contentName).orElse(null);
 
-        //TODO throw error if content not found?
         model.addAttribute("contentForm", content);
 
         return new ModelAndView("/admin/editThemeContent");
@@ -364,7 +615,7 @@ public class WizardAdminController extends WizardController {
     @GetMapping("/themeContent/new")
     public ModelAndView createThemeContent(Model model, HttpSession httpSession) {
         log.debug("in /admin/themeContent/new");
-        OidcAuthenticationToken token = getTokenWithoutContext();
+        getTokenWithoutContext();
 
         model.addAttribute("create", true);
 
@@ -374,100 +625,95 @@ public class WizardAdminController extends WizardController {
         return new ModelAndView("/admin/editThemeContent");
     }
 
-
-
-    @PostMapping(value = "/themeContent/edit/submit", params = {"action=cancel"})
-    public ModelAndView themeContentEditCancel(Model model, HttpSession session) {
-        return themeContentList(model, session);
-    }
-
-
-    @PostMapping(value = "/theme/edit/submit", params = {"action=cancel"})
-    public ModelAndView themeEditCancel(Model model, HttpSession session) {
-        return themeList(model, session);
-    }
-
-    @GetMapping("/theme/{themeId}/edit")
-    public ModelAndView editTheme(@PathVariable("themeId") String themeId, Model model, HttpSession httpSession) {
-        log.debug("in /admin/theme/" + themeId);
-        OidcAuthenticationToken token = getTokenWithoutContext();
-
-        model.addAttribute("themeId", themeId);
-        Theme theme = themeRepository.findById(Long.parseLong(themeId)).orElse(null);
-        //TODO throw error if theme not found
-        model.addAttribute("themeForm", theme);
-
-        return new ModelAndView("/admin/editTheme");
-    }
-
-    @GetMapping("/theme/new")
-    public ModelAndView createTheme(Model model, HttpSession httpSession) {
-        log.debug("in /admin/theme/new");
-        OidcAuthenticationToken token = getTokenWithoutContext();
-
-        model.addAttribute("create", true);
-        Theme newTheme = new Theme();
-        newTheme.setActive(false);
-
-        model.addAttribute("themeForm", newTheme);
-        return new ModelAndView("/admin/editTheme");
-    }
-
-    @GetMapping("/banner/{bannerId}/edit")
-    public ModelAndView editBanner(@PathVariable("bannerId") String bannerId, Model model, HttpSession httpSession) {
-        log.debug("in /admin/banner/" + bannerId);
-        OidcAuthenticationToken token = getTokenWithoutContext();
-
-        model.addAttribute("bannerId", bannerId);
-        BannerImage banner = bannerRepository.findById(Long.parseLong(bannerId)).orElse(null);
-
-        //TODO throw error if banner not found?
-        model.addAttribute("bannerForm", banner);
-        List<BannerImageCategory> categories = (List<BannerImageCategory>)bannerCategoryRepository.findAll(Sort.by("name"));
-        model.addAttribute("categories", categories);
-
-        List<Long> selectedCategories = banner.getBannerImageCategories().stream()
-                .map(BannerImageCategory::getId)
-                .collect(Collectors.toList());
-        model.addAttribute("selectedCategories", selectedCategories);
-
-        return new ModelAndView("/admin/editBanner");
-    }
-
-    @GetMapping("/banner/new")
-    public ModelAndView createBanner(Model model, HttpSession httpSession) {
-        log.debug("in /admin/banner/new");
-        OidcAuthenticationToken token = getTokenWithoutContext();
-
-        model.addAttribute("create", true);
-
-        List<BannerImageCategory> categories = (List<BannerImageCategory>)bannerCategoryRepository.findAll(Sort.by("name"));
-        model.addAttribute("categories", categories);
-
-        BannerImage newBanner = new BannerImage();
-        newBanner.setActive(false);
-
-        model.addAttribute("selectedCategories", new ArrayList<>());
-        model.addAttribute("bannerForm", newBanner);
-        return new ModelAndView("/admin/editBanner");
-    }
-
-    @PostMapping(value = "/banner/new/submit")
-    public ModelAndView createBannerSubmit(@RequestParam(name = "action") String action, @ModelAttribute BannerImage bannerModel, Model model, HttpSession session) {
-        OidcAuthenticationToken token = getTokenWithoutContext();
+    @PostMapping(value = "/themeContent/new/submit")
+    public ModelAndView createThemeContentSubmit(@RequestParam(name = "action") String action, @ModelAttribute ThemeContent themeContent, Model model, HttpSession session) {
+        log.debug(" in /themeContent/new/submit");
+        getTokenWithoutContext();
 
         switch (action) {
             case ACTION_CANCEL:
-                return bannerList(model, session);
+                return themeContentList(model, session);
             case ACTION_SUBMIT:
-                //wizardAdminService.saveBannerImageAndCategories(bannerModel, null);
+                //themeContentRepository.save(themeContent);
 
-                model.addAttribute("successMsg", "Banner image " + bannerModel.getUiName() + " was created.");
-                return bannerList(model, session);
+                model.addAttribute("successMsg", themeContent.getName() + " theme content was created.");
+                return themeContentList(model, session);
         }
 
-        model.addAttribute("errorMsg", "Unknown action " + action + " when attempting to save a new banner image.");
-        return createBanner(model, session);
+        model.addAttribute("errorMsg", "Unknown action when attempting to create new theme content: " + action);
+        return createThemeContent(model, session);
+    }
+
+    @PostMapping(value = "/themeContent/upload")
+    public ModelAndView uploadThemeContent(@RequestParam String contentName, @RequestParam("templateTextFile")
+        MultipartFile templateTextFile, Model model, HttpSession session) {
+        log.debug(" in /themeContent/upload");
+        getTokenWithoutContext();
+
+        ThemeContent content = themeContentRepository.findById(contentName).orElse(null);
+        if (content == null) {
+            model.addAttribute("errorMsg", "No theme content found with name: " + contentName);
+            return themeContentList(model, session);
+
+        } else {
+            try {
+                content.setTemplateText(new String(templateTextFile.getBytes()));
+            } catch (IOException e) {
+                model.addAttribute("errorMsg", "An error occurred reading uploaded file: " + e.getMessage());
+                return themeContentList(model, session);
+            }
+
+            //themeContentRepository.save(themeContent);
+
+            model.addAttribute("successMsg", content.getName() + " theme content was updated.");
+            return themeContentList(model, session);
+        }
+    }
+
+
+
+    @PostMapping(value = "/themeContent/{contentName}/update")
+    public ModelAndView editThemeContentSubmit(@RequestParam(name = "action") String action, @PathVariable("contentName") String contentName, @ModelAttribute ThemeContent themeContent, Model model, HttpSession session) {
+        log.debug("in /themeContent/" + contentName + "/update");
+        getTokenWithoutContext();
+
+        switch (action) {
+            case ACTION_CANCEL:
+                return themeContentList(model, session);
+            case ACTION_SUBMIT:
+                ThemeContent content = themeContentRepository.findById(contentName).orElse(null);
+                if (content == null) {
+                    model.addAttribute("errorMsg", "No theme content found with name: " + contentName);
+                    return editThemeContent(contentName, model, session);
+
+                } else {
+                    content.setTemplateText(themeContent.getTemplateText());
+                    //themeContentRepository.save(themeContent);
+
+                    model.addAttribute("successMsg", themeContent.getName() + " theme content was updated.");
+                    return themeContentList(model, session);
+                }
+        }
+
+        model.addAttribute("errorMsg", "Unknown action  when attempting to edit theme content: " + action);
+        return editThemeContent(contentName, model, session);
+    }
+
+    @PostMapping(value = "/themeContent/delete")
+    public ModelAndView deleteThemeContent(@RequestParam String contentName, Model model, HttpSession session) {
+        log.debug("in /themeContent/delete");
+        getTokenWithoutContext();
+
+        if (!themeContentRepository.existsById(contentName)) {
+            model.addAttribute("errorMsg", "Theme content does not exist: " + contentName);
+            return themeContentList(model, session);
+        }
+
+        // delete
+        //themeContentRepository.deleteById(contentName);
+
+        model.addAttribute("successMsg", contentName + " theme content was deleted.");
+        return themeContentList(model, session);
     }
 
 

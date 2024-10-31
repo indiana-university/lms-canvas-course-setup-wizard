@@ -43,60 +43,61 @@
   <body class="rvt-layout">
     <div layout:fragment="content">
 
-      <div th:insert="~{admin/fragments/adminDialogs :: deleteConfirm(headingText='Delete banner image category', buttonText='Delete category')}"></div>
       <div th:insert="~{admin/fragments/adminDialogs :: bannerCategory}"></div>
-
-      <div th:if="${successMsg}" th:insert="~{fragments.html :: successMsg(msgText=${successMsg})}"></div>
 
       <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='bannercategory')}"></div>
 
       <div id="banner-categories">
         <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Banner Image Categories</h2>
 
-        <button id="add-banner-category" type="button" class="rvt-button rvt-m-bottom-lg" data-rvt-dialog-trigger="banner-category-dialog">
-          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">  <path d="M7 7V.5h2V7h6.5v2H9v6.5H7V9H.5V7H7Z"/></svg>
+        <button id="add-banner-category" type="button" class="rvt-button" data-rvt-dialog-trigger="banner-category-dialog">
+          <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M7 7V.5h2V7h6.5v2H9v6.5H7V9H.5V7H7Z"/></svg>
           <span>Add a banner image category</span>
         </button>
 
-        <table id="bannerCategoryTable" class="rvt-table-stripes rvt-m-top-lg">
-          <caption class="rvt-sr-only">Table of banner image categories</caption>
-          <thead>
-          <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Active?</th>
-            <th scope="col" class="colActions">Actions</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr th:each="category : ${categoryList}">
-            <th scope="row" th:id="|cat-${categoryStat.index}|" th:text="${category.name}">Biological and Biomedical Sciences</th>
-            <td>
-              <span th:if=${category.active}>
-                <rvt-icon  name="check-circle-solid" class="rvt-color-green-400"></rvt-icon>
-                <span class="rvt-sr-only">Active</span>
-              </span>
-              <span th:unless="${category.active}" class="rvt-sr-only">Not active</span>
-            </td>
-            <td class="actions">
-              <button class="edit-category rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]" data-rvt-dialog-trigger="banner-category-dialog"
-                th:data-category-name="${category.name}" th:data-category-id="${category.id}" th:aria-describedBy="|cat-${categoryStat.index}|">
-                <rvt-icon name="pencil"></rvt-icon>
-                <span>Edit</span>
-              </button>
-              <button th:if="${category.active}" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left"
-                      th:data-category-id="${category.id}" th:aria-describedBy="|cat-${categoryStat.index}|">
-                <rvt-icon name="close" class="rvt-p-left-xs"></rvt-icon>
-                <span>Inactivate</span>
-              </button>
-              <button th:unless="${category.active}" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left"
-                      th:data-category-id="${category.id}" th:aria-describedBy="|cat-${categoryStat.index}|">
-                <rvt-icon name="check" class="rvt-p-left-xs"></rvt-icon>
-                <span>Activate</span>
-              </button>
-            </td>
-          </tr>
-          </tbody>
-        </table>
+        <form id="banner-category-list-form" th:action="@{|/app/admin/bannerCategory/toggle|}" method="post" enctype="multipart/form-data">
+
+          <table id="bannerCategoryTable" class="rvt-table-stripes rvt-m-top-lg">
+            <caption class="rvt-sr-only">Table of banner image categories</caption>
+            <thead>
+            <tr>
+              <th scope="col"><button type="button">Name</button></th>
+              <th scope="col"><button type="button">Active?</button></th>
+              <th scope="col" class="colActions">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="category : ${categoryList}">
+              <th scope="row" th:id="|cat-${categoryStat.index}|" th:text="${category.name}">Biological and Biomedical Sciences</th>
+              <td>
+                <span th:if=${category.active}>
+                  <rvt-icon  name="check-circle-solid" class="rvt-color-green-400"></rvt-icon>
+                  <span class="rvt-sr-only">Active</span>
+                </span>
+                <span th:unless="${category.active}" class="rvt-sr-only">Not active</span>
+              </td>
+              <td class="actions">
+                <button type="button" class="edit-category rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]" data-rvt-dialog-trigger="banner-category-dialog"
+                  th:data-category-name="${category.name}" th:data-category-id="${category.id}" th:aria-describedBy="|cat-${categoryStat.index}|">
+                  <rvt-icon name="pencil"></rvt-icon>
+                  <span>Edit</span>
+                </button>
+                <button th:if="${category.active}" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left"
+                        th:data-category-id="${category.id}" th:aria-describedBy="|cat-${categoryStat.index}|" name="categoryId" th:value="${category.id}">
+                  <rvt-icon name="close" class="rvt-p-left-xs"></rvt-icon>
+                  <span>Inactivate</span>
+                </button>
+                <button th:unless="${category.active}" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left"
+                        th:data-category-id="${category.id}" th:aria-describedBy="|cat-${categoryStat.index}|" name="categoryId" th:value="${category.id}">
+                  <rvt-icon name="check" class="rvt-p-left-xs"></rvt-icon>
+                  <span>Activate</span>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+
+        </form>
 
       </div>
 
