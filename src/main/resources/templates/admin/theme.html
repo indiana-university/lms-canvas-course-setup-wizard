@@ -62,27 +62,32 @@
               <th scope="col" class="colUIName"><button type="button">UI Name</button></th>
               <th scope="col" class="colName"><button type="button">Name</button></th>
               <th scope="col" class="colActive"><button type="button">Active?</button></th>
-              <th scope="col" class="colActions">Actions</th>
+              <th scope="col" class="colActions rvt-text-center">Actions</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="theme : ${themeList}">
-              <th scope="row" th:id="|theme-${themeStat.index}|" th:text="${theme.uiName}">Basic Color!</th>
+              <td scope="row" th:id="|theme-${themeStat.index}|">
+                <a th:href="|/app/admin/theme/${theme.id}/edit|" th:text="${theme.uiName}" class="rvt-link" th:aria-describedby="|theme-desc-${themeStat.index}|">
+                  Basic color
+                </a>
+                  <span th:id="|theme-desc-${themeStat.index}|" hidden th:text="|Edit the ${theme.uiName} theme|"></span>
+              </td>
               <td th:text="${theme.name}">basic_color1!</td>
-              <td>
+              <td class="rvt-text-center">
                 <span th:if=${theme.active}>
                   <rvt-icon  name="check-circle-solid" class="rvt-color-green-400"></rvt-icon>
                   <span class="rvt-sr-only">Active</span>
                 </span>
                 <span th:unless="${theme.active}" class="rvt-sr-only">Not active</span>
               </td>
-              <td class="actions">
-                <a th:href="|/app/admin/theme/${theme.id}/edit|" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]"
-                   th:aria-describedBy="|theme-${themeStat.index}|">
-                  <rvt-icon name="pencil"></rvt-icon>
-                  <span>Edit</span>
-                </a>
-                <button th:if="${theme.active}" class="toggle-theme rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left"
+              <td class="actions rvt-text-center">
+<!--                <a th:href="|/app/admin/theme/${theme.id}/edit|" class="rvt-button rvt-button&#45;&#45;small rvt-button&#45;&#45;plain [ rvt-text-regular ]"-->
+<!--                   th:aria-describedBy="|theme-${themeStat.index}|">-->
+<!--                  <rvt-icon name="pencil"></rvt-icon>-->
+<!--                  <span>Edit</span>-->
+<!--                </a>-->
+                <button th:if="${theme.active}" class="toggle-theme rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]"
                         th:data-theme-id="${theme.id}" th:aria-describedBy="|theme-${themeStat.index}|" name="themeId" th:value="${theme.id}">
                   <rvt-icon name="close" class="rvt-p-left-xs"></rvt-icon>
                   <span>Inactivate</span>

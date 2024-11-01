@@ -61,19 +61,21 @@
           <thead>
           <tr>
             <th scope="col" class="colName"><button type="button">Name</button></th>
-            <th scope="col" class="colActions">Actions</th>
+            <th scope="col" class="colActions rvt-text-center">Actions</th>
           </tr>
           </thead>
           <tbody>
           <tr th:each="content : ${contentList}">
-            <th scope="row" th:id="|content-${contentStat.index}|" th:text="${content.name}">theme content name</th>
-            <td class="actions">
-              <a th:href="|/app/admin/themeContent/${content.name}/edit|" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]"
-                 th:aria-describedBy="|content-${contentStat.index}|">
-                <rvt-icon name="pencil"></rvt-icon>
-                <span>Edit</span>
-              </a>
-              <button th:id="|upload-content-${contentStat.index}|" class="upload-content rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left"
+            <td th:id="|content-${contentStat.index}|" >
+              <a th:href="|/app/admin/themeContent/${content.name}/edit|" th:text="${content.name}" class="rvt-link"></a>
+            </td>
+            <td class="actions rvt-text-center">
+<!--              <a th:href="|/app/admin/themeContent/${content.name}/edit|" class="rvt-button rvt-button&#45;&#45;small rvt-button&#45;&#45;plain [ rvt-text-regular ]"-->
+<!--                 th:aria-describedBy="|content-${contentStat.index}|">-->
+<!--                <rvt-icon name="pencil"></rvt-icon>-->
+<!--                <span>Edit</span>-->
+<!--              </a>-->
+              <button th:id="|upload-content-${contentStat.index}|" class="upload-content rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]"
                       data-rvt-dialog-trigger="upload-content-dialog" th:data-content-name="${content.name}" th:aria-describedBy="|content-${contentStat.index}|">
                 <rvt-icon name="upload" class="rvt-p-left-xs"></rvt-icon>
                 <span>Upload</span>

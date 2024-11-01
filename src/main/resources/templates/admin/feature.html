@@ -68,7 +68,7 @@
             <th scope="col" class="colFeatureName"><button type="button">Feature Name</button></th>
             <th scope="col" class="colFeatureId"><button type="button">Feature ID</button></th>
             <th scope="col" class="colAccount"><button type="button">Account</button></th>
-            <th scope="col" class="colActions">Actions</th>
+            <th scope="col" class="colActions rvt-text-center">Actions</th>
           </tr>
           </thead>
           <tbody>
@@ -76,8 +76,8 @@
             <td th:id="|feature-${featureStat.index}|" th:text="${feature.displayName}">Front page</td>
             <td th:text="${feature.featureId}">Front page</td>
             <td th:text="${feature.accountId}">98865</td>
-            <td class="actions">
-              <button class="feature-delete rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]"
+            <td class="actions rvt-text-center">
+              <button th:id="|feature-delete-${featureStat.index}|" class="feature-delete rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]"
                       data-rvt-dialog-trigger="delete-feature-confirmation" th:data-delete-feature-name="${feature.displayName}"
                       th:data-delete-id="${feature.id}" th:data-delete-feature-account="${feature.accountId}"
                       th:data-delete-feature-id="${feature.featureId}" th:aria-describedBy="|feature-${featureStat.index}|">

@@ -63,32 +63,36 @@
           <th scope="col"><button type="button">Name</button></th>
           <th scope="col"><button type="button">Categories</button></th>
           <th scope="col"><button type="button">Active?</button></th>
-          <th scope="col" class="colActions">Actions</th>
+          <th scope="col" class="colActions rvt-text-center">Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="banner : ${bannerList}">
-          <th scope="row" th:text="${banner.uiName}" th:id="|banner-${bannerStat.index}|">UI Name</th>
+          <td th:id="|banner-${bannerStat.index}|">
+            <a th:href="|/app/admin/banner/${banner.id}/edit|" class="rvt-link" th:text="${banner.uiName}">
+              UI Name
+            </a>
+          </td>
           <td th:text="${banner.name}">Name</td>
           <td>
             <th:block th:each="category : ${banner.bannerImageCategories}" >
               <span th:text="${category.name}"></span><br />
             </th:block>
           </td>
-          <td>
+          <td class="rvt-text-center">
             <span th:if=${banner.active}>
                   <rvt-icon  name="check-circle-solid" class="rvt-color-green-400"></rvt-icon>
                   <span class="rvt-sr-only">Active</span>
                 </span>
             <span th:unless="${banner.active}" class="rvt-sr-only">Not active</span>
           </td>
-          <td class="actions">
-            <a th:href="|/app/admin/banner/${banner.id}/edit|" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]"
-               th:aria-describedBy="|banner-${bannerStat.index}|">
-              <rvt-icon name="pencil"></rvt-icon>
-              <span>Edit</span>
-            </a>
-            <button th:if="${banner.active}" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left"
+          <td class="actions rvt-text-center">
+<!--            <a th:href="|/app/admin/banner/${banner.id}/edit|" class="rvt-button rvt-button&#45;&#45;small rvt-button&#45;&#45;plain [ rvt-text-regular ]"-->
+<!--               th:aria-describedBy="|banner-${bannerStat.index}|">-->
+<!--              <rvt-icon name="pencil"></rvt-icon>-->
+<!--              <span>Edit</span>-->
+<!--            </a>-->
+            <button th:if="${banner.active}" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]"
                     th:data-banner-id="${banner.id}" th:aria-describedBy="|banner-${bannerStat.index}|" name="bannerId" th:value="${banner.id}">
               <rvt-icon name="close" class="rvt-p-left-xs"></rvt-icon>
               <span>Inactivate</span>

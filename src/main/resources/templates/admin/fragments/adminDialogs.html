@@ -53,9 +53,10 @@
                 <button id="delete-content-cancel" type="button" class="rvt-button rvt-button--secondary" data-rvt-dialog-close="delete-content-confirmation">
                     Cancel
                 </button>
-                <button id="delete-content-confirm" class="rvt-button rvt-button--danger loading-btn" name="contentName">
+                <button id="delete-content-confirm" class="rvt-button rvt-button--danger loading-btn">
                     <span th:replace="~{fragments.html :: loadingButton(buttonText='Delete theme content', srText='Deleting theme content')}"></span>
                 </button>
+                <input type="hidden" id="delete-content-input" name="contentName">
             </div>
         </form>
     </div>
@@ -87,9 +88,10 @@
                 <button id="delete-feature-cancel" type="button" class="rvt-button rvt-button--secondary" data-rvt-dialog-close="delete-feature-confirmation">
                     Cancel
                 </button>
-                <button id="delete-feature-confirm" class="rvt-button rvt-button--danger loading-btn" name="deleteId">
+                <button id="delete-feature-confirm" class="rvt-button rvt-button--danger loading-btn">
                     <span th:replace="~{fragments.html :: loadingButton(buttonText='Delete feature', srText='Deleting feature')}"></span>
                 </button>
+                <input type="hidden" id="delete-id-input" name="deleteId">
             </div>
         </form>
     </div>
@@ -150,7 +152,7 @@
                     Cancel
                 </button>
                 <button id="enable-feature-confirm" class="rvt-button validate-dialog">
-                    <span th:replace="~{fragments.html :: loadingButton(buttonText='Save', srText='Saving feature')}"></span>
+                    <span th:replace="~{fragments.html :: loadingButton(buttonText='Enable feature', srText='Enabling feature')}"></span>
                 </button>
             </div>
         </form>

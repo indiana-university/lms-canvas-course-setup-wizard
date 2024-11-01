@@ -58,13 +58,13 @@ jQuery(document).ready(function($) {
         $("#delete-feature-id").text(featureId);
         $("#delete-account-id").text(accountId);
 
-        $("#delete-feature-confirm").val(id);
+        $("#delete-id-input").val(id);
     });
 
     $(".delete-content").click(function(event) {
         let contentName = $(this).data("content-name");
         $("#delete-content-name").text(contentName);
-        $("#delete-content-confirm").val(contentName);
+        $("#delete-content-input").val(contentName);
     });
 
     $(".upload-content").click(function(event) {
@@ -73,6 +73,7 @@ jQuery(document).ready(function($) {
         $("#theme-content-id").val(content);
     });
 
+    // dialog needs to be separate because we don't want to validate hidden dialog fields on the main screen or validate the main screen when we are in a dialog
     $(".validate-not-empty, .validate-dialog").click(function(event) {
         let valid = true;
         let validatedInputs;
@@ -198,7 +199,7 @@ var table = $('#featureTable').DataTable({
 });
 
 // Sorted ascending, no filters
-var table = $('#themeTable, #themeContentTable, #bannerTable, #bannerCategoryTable').DataTable({
+var table = $('#themeTable, #themeContentTable, #bannerTable, #bannerCategoryTable, #popupTable').DataTable({
    orderCellsTop: true,
    paging: false,
    order: [[0, 'asc']],
@@ -232,38 +233,38 @@ var table = $('#themeTable, #themeContentTable, #bannerTable, #bannerCategoryTab
         info: false
    }
 });
-
-// no filters, sorted descending
-var table = $('#popupTable').DataTable({
-   orderCellsTop: true,
-   paging: false,
-   order: [[0, 'desc']],
-   language: {
-       // Setting the text for the search label, mostly to remove the colon that is there by default
-       search: 'Search',
-       select: {
-          aria: {
-          }
-       }
-   },
-   columnDefs: [
-        {
-            targets: ['.colActions'],
-            orderable: false
-        },
-        {
-            targets: ['.colDates'],
-            type: 'date'
-        }
-       ],
-   initComplete: function () {
-       $('#appTable').wrap("<div style='overflow:auto;width:100%;position:relative;'></div>");
-       $('.search-wrapper label').addClass('rvt-label rvt-ts-16');
-       $('.search-wrapper').addClass('-rvt-m-bottom-sm rvt-p-top-none');
-   },
-   select: {
-        selector: 'th:first-child',
-        style: 'multi',
-        info: false
-   }
-});
+//
+//// no filters, sorted descending
+//var table = $('#popupTable').DataTable({
+//   orderCellsTop: true,
+//   paging: false,
+//   order: [[0, 'desc']],
+//   language: {
+//       // Setting the text for the search label, mostly to remove the colon that is there by default
+//       search: 'Search',
+//       select: {
+//          aria: {
+//          }
+//       }
+//   },
+//   columnDefs: [
+//        {
+//            targets: ['.colActions'],
+//            orderable: false
+//        },
+//        {
+//            targets: ['.colDates'],
+//            type: 'date'
+//        }
+//       ],
+//   initComplete: function () {
+//       $('#appTable').wrap("<div style='overflow:auto;width:100%;position:relative;'></div>");
+//       $('.search-wrapper label').addClass('rvt-label rvt-ts-16');
+//       $('.search-wrapper').addClass('-rvt-m-bottom-sm rvt-p-top-none');
+//   },
+//   select: {
+//        selector: 'th:first-child',
+//        style: 'multi',
+//        info: false
+//   }
+//});

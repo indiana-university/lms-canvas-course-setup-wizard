@@ -63,20 +63,20 @@
             <tr>
               <th scope="col"><button type="button">Name</button></th>
               <th scope="col"><button type="button">Active?</button></th>
-              <th scope="col" class="colActions">Actions</th>
+              <th scope="col" class="colActions rvt-text-center">Actions</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="category : ${categoryList}">
               <th scope="row" th:id="|cat-${categoryStat.index}|" th:text="${category.name}">Biological and Biomedical Sciences</th>
-              <td>
+              <td class="rvt-text-center">
                 <span th:if=${category.active}>
                   <rvt-icon  name="check-circle-solid" class="rvt-color-green-400"></rvt-icon>
                   <span class="rvt-sr-only">Active</span>
                 </span>
                 <span th:unless="${category.active}" class="rvt-sr-only">Not active</span>
               </td>
-              <td class="actions">
+              <td class="actions rvt-text-center">
                 <button type="button" class="edit-category rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]" data-rvt-dialog-trigger="banner-category-dialog"
                   th:data-category-name="${category.name}" th:data-category-id="${category.id}" th:aria-describedBy="|cat-${categoryStat.index}|">
                   <rvt-icon name="pencil"></rvt-icon>
