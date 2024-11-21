@@ -46,12 +46,14 @@
   <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='popup')}"></div>
 
   <div id="popup-details">
-    <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Popup Reset</h2>
+    <h2 id="page-title" class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Popup Reset</h2>
 
     <a href="/app/admin/popup/new" class="rvt-ts-20">
       <rvt-icon name="plus"></rvt-icon>
       <span>Add a new popup reset</span>
     </a>
+
+    <span id="searchText" hidden>Search for popup resets within the table</span>
 
     <table id="popupTable" class="rvt-table-stripes rvt-m-top-lg">
       <caption class="rvt-sr-only">Table of popup reset records</caption>

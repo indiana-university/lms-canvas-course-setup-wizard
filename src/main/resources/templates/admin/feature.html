@@ -49,7 +49,7 @@
       <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='feature')}"></div>
 
       <div id="feature-settings">
-        <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Course Setup Wizard Features</h2>
+        <h2 id="page-title" class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Course Setup Wizard Features</h2>
 
 <!--        <a href="/app/admin/manageFeatures" class="rvt-ts-20">-->
 <!--          <rvt-icon name="plus"></rvt-icon>-->
@@ -60,6 +60,8 @@
           <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">  <path d="M7 7V.5h2V7h6.5v2H9v6.5H7V9H.5V7H7Z"/></svg>
           <span>Enable a feature for an account</span>
         </button>
+
+        <span id="searchText" hidden>Search for features within the table</span>
 
         <table id="featureTable" class="rvt-table-stripes rvt-m-top-sm">
           <caption class="rvt-sr-only">Table of enabled wizard features for specific accounts.</caption>

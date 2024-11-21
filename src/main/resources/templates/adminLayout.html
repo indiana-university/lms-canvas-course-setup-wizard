@@ -37,10 +37,11 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <title>Course Setup Wizard Admin Tools</title>
+    <title>Course Setup Wizard Admin Tool</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta charset="utf-8" />
+    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+    <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="stylesheet" type="text/css" th:href="@{/app/jsrivet/rivet-core/rivet.min.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/app/jsrivet/rivet-icons/rivet-icon-element.css}"/>
@@ -49,10 +50,10 @@
     <link rel="stylesheet" type="text/css" th:href="@{/app/jsrivet/datatables-ext/datatables-ally.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/app/css/coursesetupwizard.css}"/>
 
-    <script>
-    /*to prevent Firefox FOUC, this must be here*/
-    let FF_FOUC_FIX;
-    </script>
+<!--    <script>-->
+<!--    /*to prevent Firefox FOUC, this must be here*/-->
+<!--    let FF_FOUC_FIX;-->
+<!--    </script>-->
 </head>
 <body class="rvt-layout">
 
@@ -60,7 +61,7 @@
     <div class="rvt-bg-black-000 rvt-border-bottom rvt-p-top-lg">
         <div class="rvt-container-lg rvt-prose rvt-flow rvt-p-bottom-xl">
             <h1 id="csw-header" class="rvt-m-top-xs" tabindex="-1">
-                Course Setup Wizard Admin Tools
+                Course Setup Wizard Admin Tool
             </h1>
         </div>
     </div>

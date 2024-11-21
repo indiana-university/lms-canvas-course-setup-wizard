@@ -15,7 +15,7 @@ package edu.iu.uits.lms.coursesetupwizard.controller;
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * 3. Neither the name of the Indiana University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software without
  *    specific prior written permission.
@@ -40,7 +40,6 @@ import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.coursesetupwizard.model.*;
 import edu.iu.uits.lms.coursesetupwizard.repository.*;
 import edu.iu.uits.lms.coursesetupwizard.service.PopupDateUtil;
-import edu.iu.uits.lms.coursesetupwizard.service.WizardAdminService;
 import edu.iu.uits.lms.coursesetupwizard.service.WizardService;
 import edu.iu.uits.lms.iuonly.model.FeatureAccess;
 import edu.iu.uits.lms.iuonly.repository.FeatureAccessRepository;
@@ -50,6 +49,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -106,10 +106,6 @@ public class WizardAdminController extends WizardController {
     @Autowired
     protected AccountService accountService;
 
-    @Autowired
-    protected WizardAdminService wizardAdminService;
-
-
     @RequestMapping({"","/","/{action}"})
     public ModelAndView adminAction(@PathVariable(required = false) String action, Model model, HttpSession httpSession) {
         log.debug("in /admin");
@@ -125,22 +121,14 @@ public class WizardAdminController extends WizardController {
         switch (currentOption) {
             case POPUP:
                 return popupList(model, httpSession);
-            case EDITPOPUP:
-                return new ModelAndView("/admin/editPopup");
             case FEATURE:
-                return new ModelAndView("/admin/feature");
+                return featureList(model, httpSession);
             case THEME:
                 return themeList(model, httpSession);
-            case EDITTHEME:
-                return new ModelAndView("/admin/editTheme");
             case THEMECONTENT:
                 return themeContentList(model, httpSession);
-            case EDITTHEMECONTENT:
-                return new ModelAndView("/admin/editThemeContent");
             case BANNER:
                 return bannerList(model, httpSession);
-            case EDITBANNER:
-                return new ModelAndView("/admin/editBanner");
             case BANNERCATEGORY:
                 return bannerCategoryList(model, httpSession);
             default:
@@ -168,15 +156,15 @@ public class WizardAdminController extends WizardController {
         getTokenWithoutContext();
 
         model.addAttribute("themeId", themeId);
+
         Theme theme = themeRepository.findById(themeId).orElse(null);
-        //TODO throw error if theme not found
         model.addAttribute("themeForm", theme);
 
         return new ModelAndView("/admin/editTheme");
     }
 
     @PostMapping(value = "/theme/{themeId}/update")
-    public ModelAndView editThemeSubmit(@RequestParam(name = "action") String action, @PathVariable("themeId") Long themeId, @ModelAttribute Theme theme, Model model, HttpSession session) {
+    public ModelAndView editThemeSubmit(@RequestParam(name = "action") String action, @PathVariable("themeId") Long themeId, @ModelAttribute Theme themeModel, Model model, HttpSession session) {
         log.debug("in /theme/" + themeId + "/update");
         getTokenWithoutContext();
 
@@ -184,6 +172,20 @@ public class WizardAdminController extends WizardController {
             case ACTION_CANCEL:
                 return themeList(model, session);
             case ACTION_SUBMIT:
+                Theme theme = themeRepository.findById(themeId).orElse(null);
+                if (theme == null) {
+                    model.addAttribute("errorMsg", "No theme found with id: " + themeId);
+                    return themeList(model, session);
+                }
+
+                theme.mergeEditableFields(themeModel);
+
+                if (!theme.isValid()) {
+                    // We shouldn't get here because of the client side validation, but just in case...
+                    model.addAttribute("errorMsg", "Theme is missing required fields.");
+                    return editTheme(themeId, model, session);
+                }
+
                 model.addAttribute("successMsg", theme.getUiName() + " theme was updated.");
                 return themeList(model, session);
         }
@@ -202,11 +204,12 @@ public class WizardAdminController extends WizardController {
         newTheme.setActive(false);
 
         model.addAttribute("themeForm", newTheme);
+
         return new ModelAndView("/admin/editTheme");
     }
 
     @PostMapping(value = "/theme/new/submit")
-    public ModelAndView createThemeSubmit(@RequestParam(name = "action") String action, @ModelAttribute Theme theme, Model model, HttpSession session) {
+    public ModelAndView createThemeSubmit(@RequestParam(name = "action") String action, @ModelAttribute Theme themeModel, Model model, HttpSession session) {
         log.debug("in /theme/new/submit");
         getTokenWithoutContext();
 
@@ -214,8 +217,18 @@ public class WizardAdminController extends WizardController {
             case ACTION_CANCEL:
                 return themeList(model, session);
             case ACTION_SUBMIT:
+                Theme newTheme = new Theme();
+                newTheme.mergeEditableFields(themeModel);
 
-                model.addAttribute("successMsg", theme.getUiName() + " theme was created.");
+                if (!newTheme.isValid()) {
+                    // We shouldn't get here because of the client side validation, but just in case...
+                    model.addAttribute("errorMsg", "Theme is missing required fields.");
+                    return createTheme(model, session);
+                }
+
+                themeRepository.save(newTheme);
+
+                model.addAttribute("successMsg", newTheme.getUiName() + " theme was created.");
                 return themeList(model, session);
         }
 
@@ -236,10 +249,12 @@ public class WizardAdminController extends WizardController {
 
         // activate/inactive this theme
         if (theme.isActive()) {
-            //themeRepository.softDeleteById(bannerId);
+            theme.setActive(false);
         } else {
-            //themeRepository.unSoftDeleteById(bannerId);
+            theme.setActive(true);
         }
+
+        themeRepository.save(theme);
 
         String successMsg = theme.getUiName() + " theme is now " + (theme.isActive() ? "active." : "inactive.");
         model.addAttribute("successMsg", successMsg);
@@ -261,14 +276,15 @@ public class WizardAdminController extends WizardController {
     }
 
     @GetMapping("/banner/{bannerId}/edit")
-    public ModelAndView editBanner(@PathVariable("bannerId") String bannerId, Model model, HttpSession httpSession) {
+    public ModelAndView editBanner(@PathVariable("bannerId") Long bannerId, Model model, HttpSession httpSession) {
         log.debug("in /admin/banner/" + bannerId + "/edit");
         getTokenWithoutContext();
 
-        model.addAttribute("bannerId", bannerId);
-        BannerImage banner = bannerRepository.findById(Long.parseLong(bannerId)).orElse(null);
+        model.addAttribute("customId", httpSession.getId());
 
-        //TODO throw error if banner not found?
+        model.addAttribute("bannerId", bannerId);
+        BannerImage banner = bannerRepository.findById(bannerId).orElse(null);
+
         model.addAttribute("bannerForm", banner);
         List<BannerImageCategory> categories = (List<BannerImageCategory>)bannerCategoryRepository.findAll(Sort.by("name"));
         model.addAttribute("categories", categories);
@@ -281,9 +297,9 @@ public class WizardAdminController extends WizardController {
         return new ModelAndView("/admin/editBanner");
     }
 
-    @RequestMapping(value = "/banner/{bannerId}/update", method = RequestMethod.POST)
-    public ModelAndView editBannerSubmit(@RequestParam(name = "action") String action, @PathVariable("bannerId") String bannerId,
-                                         @ModelAttribute BannerImage banner, Model model, HttpSession session) {
+    @PostMapping(value = "/banner/{bannerId}/update")
+    public ModelAndView editBannerSubmit(@RequestParam(name = "action") String action, @PathVariable("bannerId") Long bannerId,
+                                         @ModelAttribute BannerImage bannerModel, Model model, HttpSession session) {
         log.debug("in /banner/" + bannerId + "/update");
         getTokenWithoutContext();
 
@@ -291,6 +307,21 @@ public class WizardAdminController extends WizardController {
             case ACTION_CANCEL:
                 return bannerList(model, session);
             case ACTION_SUBMIT:
+                BannerImage banner = bannerRepository.findById(bannerId).orElse(null);
+                if (banner == null) {
+                    model.addAttribute("errorMsg", "No banner image found with id: " + bannerId);
+                    return bannerList(model, session);
+                }
+
+                banner.mergeEditableFields(bannerModel);
+
+                if (!banner.isValid()) {
+                    // We shouldn't get here because of the client side validation, but just in case...
+                    model.addAttribute("errorMsg", "Banner image is missing required fields.");
+                    return editBanner(bannerId, model, session);
+                }
+
+                bannerRepository.save(banner);
                 model.addAttribute("successMsg", banner.getUiName() + " banner image was updated.");
                 return bannerList(model, session);
         }
@@ -326,9 +357,18 @@ public class WizardAdminController extends WizardController {
             case ACTION_CANCEL:
                 return bannerList(model, session);
             case ACTION_SUBMIT:
-                //wizardAdminService.saveBannerImageAndCategories(bannerModel, null);
+                BannerImage newBanner = new BannerImage();
+                newBanner.mergeEditableFields(bannerModel);
 
-                model.addAttribute("successMsg", bannerModel.getUiName() + " banner image was created.");
+                if (!newBanner.isValid()) {
+                    // We shouldn't get here because of the client side validation, but just in case...
+                    model.addAttribute("errorMsg", "Banner image is missing required fields.");
+                    return createBanner(model, session);
+                }
+
+                bannerRepository.save(newBanner);
+
+                model.addAttribute("successMsg", newBanner.getUiName() + " banner image was created.");
                 return bannerList(model, session);
         }
 
@@ -349,10 +389,12 @@ public class WizardAdminController extends WizardController {
 
         // activate/inactive this banner image
         if (banner.isActive()) {
-            //bannerRepository.softDeleteById(bannerId);
+            banner.setActive(false);
         } else {
-            //bannerRepository.unSoftDeleteById(bannerId);
+            banner.setActive(true);
         }
+
+        bannerRepository.save(banner);
 
         String successMsg = banner.getUiName() + " banner image is now " + (banner.isActive() ? "active." : "inactive.");
         model.addAttribute("successMsg", successMsg);
@@ -371,7 +413,7 @@ public class WizardAdminController extends WizardController {
         return new ModelAndView("/admin/bannerCategory");
     }
 
-    @RequestMapping(value = "/bannerCategory/save", method = RequestMethod.POST)
+    @PostMapping(value = "/bannerCategory/save")
     public ModelAndView saveBannerCategory(@RequestParam (required = false) Long categoryId, @RequestParam String categoryName,
                                          Model model, HttpSession session) {
         log.debug("in /bannerCategory/save");
@@ -394,10 +436,42 @@ public class WizardAdminController extends WizardController {
         }
 
         category.setName(categoryName);
-        //bannerCategoryRepository.save(category);
+        bannerCategoryRepository.save(category);
 
         model.addAttribute("successMsg", successMsg);
         return bannerCategoryList(model, session);
+    }
+
+    /**
+     *
+     * @param category
+     * @return the id of the newly created category
+     */
+    @PostMapping(value = "/bannerCategory/createInline")
+    public ResponseEntity<String> createBannerCategory(@RequestBody BannerImageCategory category) {
+        BannerImageCategory newCategory = new BannerImageCategory();
+        newCategory.setActive(category.isActive());
+        newCategory.setName(category.getName());
+
+        if (!newCategory.isValid()) {
+            return ResponseEntity.badRequest().body("Category name is required.");
+        }
+
+        BannerImageCategory savedCategory;
+        try {
+            savedCategory = bannerCategoryRepository.save(newCategory);
+        } catch (Exception e) {
+            log.error("Unable to save new banner image category: " + category.getName(), e);
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+        return ResponseEntity.ok(savedCategory.getId().toString());
+    }
+
+    @GetMapping("/bannerCategory/all")
+    public ResponseEntity<List<BannerImageCategory>> getAllCategories() {
+        List<BannerImageCategory> allCategories = (List<BannerImageCategory>)bannerCategoryRepository.findAll(Sort.by("name"));
+        return ResponseEntity.ok(allCategories);
     }
 
     @PostMapping(value = "/bannerCategory/toggle")
@@ -413,10 +487,12 @@ public class WizardAdminController extends WizardController {
 
         // activate/inactive this banner image category
         if (category.isActive()) {
-            //bannerCategoryRepository.softDeleteById(categoryId);
+            category.setActive(false);
         } else {
-            //bannerCategoryRepository.unSoftDeleteById(categoryId);
+            category.setActive(true);
         }
+
+        bannerCategoryRepository.save(category);
 
         String successMsg = category.getName() + " category is now " + (category.isActive() ? "active." : "inactive.");
         model.addAttribute("successMsg", successMsg);
@@ -444,6 +520,11 @@ public class WizardAdminController extends WizardController {
         model.addAttribute("popupId", popupId);
 
         PopupDismissalDate popup = popupRepository.findById(popupId).orElse(null);
+
+        // If the popup is in the past, show a read-only view
+        if (popup.getShowOn().before(new Date())) {
+            model.addAttribute("readOnly", true);
+        }
 
         model.addAttribute("popupForm", popup);
 
@@ -482,21 +563,27 @@ public class WizardAdminController extends WizardController {
             case ACTION_SUBMIT:
                 try {
                     PopupDateUtil.validate(popupModel.getShowOn(), PopupDateUtil.INPUT_DATE_FORMAT_MMDDYYYY);
-                    updatedPopupDismissalDate.setShowOn(popupModel.getShowOn());
                 } catch (IllegalArgumentException iae) {
                     model.addAttribute("errorMsg", iae.getMessage());
                     return editPopup(popupId, model, session);
                 }
 
+                updatedPopupDismissalDate.setShowOn(popupModel.getShowOn());
                 updatedPopupDismissalDate.setNotes(popupModel.getNotes());
 
-                //popupRepository.save(updatedPopupDismissalDate);
+                if (!updatedPopupDismissalDate.isValid()) {
+                    // We shouldn't get here because of the client side validation, but just in case...
+                    model.addAttribute("errorMsg", "Updated popup reset is missing required fields.");
+                    return editPopup(popupId, model, session);
+                }
+
+                popupRepository.save(updatedPopupDismissalDate);
 
                 model.addAttribute("successMsg", "The popup reset was updated successfully.");
                 return popupList(model, session);
         }
 
-        model.addAttribute("errorMsg", "Unknown action  when attempting to edit a popup: " + action);
+        model.addAttribute("errorMsg", "Unknown action when attempting to edit a popup: " + action);
         return createPopupDate(model, session);
     }
 
@@ -518,7 +605,17 @@ public class WizardAdminController extends WizardController {
                     return createPopupDate(model, session);
                 }
 
-                //popupRepository.save(popupModel);
+                PopupDismissalDate newPopup = new PopupDismissalDate();
+                newPopup.setShowOn(popupModel.getShowOn());
+                newPopup.setNotes(popupModel.getNotes());
+
+                if (!newPopup.isValid()) {
+                    // We shouldn't get here because of the client side validation, but just in case...
+                    model.addAttribute("errorMsg", "New popup reset is missing required fields.");
+                    return createPopupDate(model, session);
+                }
+
+                popupRepository.save(newPopup);
 
                 model.addAttribute("successMsg", "The popup reset " + popupModel.getShowOn() + " was created successfully.");
                 return popupList(model, session);
@@ -561,7 +658,7 @@ public class WizardAdminController extends WizardController {
 
         // verify that feature isn't already enabled
         if(featureAccessService.isFeatureEnabledForAccount(featureId, accountId, null)) {
-            model.addAttribute("errorMsg", featureId + " is already enabled for account " + accountId);
+            model.addAttribute("errorMsg", WizardFeature.findDisplayNameById(featureId) + " is already enabled for account " + accountId);
             return featureList(model, session);
         };
 
@@ -569,7 +666,7 @@ public class WizardAdminController extends WizardController {
         newAccess.setFeatureId(featureId);
         newAccess.setAccountId(accountId);
 
-        //featureAccessRepository.save(newAccess);
+        featureAccessRepository.save(newAccess);
 
         model.addAttribute("successMsg", WizardFeature.findDisplayNameById(featureId) + " feature enabled for account " + accountId + ".");
         return featureList(model, session);
@@ -582,7 +679,12 @@ public class WizardAdminController extends WizardController {
 
         FeatureAccess feature = featureAccessRepository.findById(deleteId).orElse(null);
 
+        if (!featureAccessRepository.existsById(deleteId)) {
+            model.addAttribute("errorMsg", "Feature with id does not exist: " + deleteId);
+            return featureList(model, session);
+        }
         // delete
+        featureAccessRepository.deleteById(deleteId);
 
         model.addAttribute("successMsg", WizardFeature.findDisplayNameById(feature.getFeatureId()) + " feature deleted for account " + feature.getAccountId() + ".");
         return featureList(model, session);
@@ -626,7 +728,7 @@ public class WizardAdminController extends WizardController {
     }
 
     @PostMapping(value = "/themeContent/new/submit")
-    public ModelAndView createThemeContentSubmit(@RequestParam(name = "action") String action, @ModelAttribute ThemeContent themeContent, Model model, HttpSession session) {
+    public ModelAndView createThemeContentSubmit(@RequestParam(name = "action") String action, @ModelAttribute ThemeContent contentModel, Model model, HttpSession session) {
         log.debug(" in /themeContent/new/submit");
         getTokenWithoutContext();
 
@@ -634,9 +736,19 @@ public class WizardAdminController extends WizardController {
             case ACTION_CANCEL:
                 return themeContentList(model, session);
             case ACTION_SUBMIT:
-                //themeContentRepository.save(themeContent);
+                ThemeContent newContent = new ThemeContent();
+                newContent.setName(contentModel.getName());
+                newContent.setTemplateText(contentModel.getTemplateText());
 
-                model.addAttribute("successMsg", themeContent.getName() + " theme content was created.");
+                if (!newContent.isValid()) {
+                    // We shouldn't get here because of the client side validation, but just in case...
+                    model.addAttribute("errorMsg", "New theme content is missing required fields.");
+                    return createThemeContent(model, session);
+                }
+
+                themeContentRepository.save(newContent);
+
+                model.addAttribute("successMsg", newContent.getName() + " theme content was created.");
                 return themeContentList(model, session);
         }
 
@@ -654,23 +766,26 @@ public class WizardAdminController extends WizardController {
         if (content == null) {
             model.addAttribute("errorMsg", "No theme content found with name: " + contentName);
             return themeContentList(model, session);
+        }
 
-        } else {
-            try {
-                content.setTemplateText(new String(templateTextFile.getBytes()));
-            } catch (IOException e) {
-                model.addAttribute("errorMsg", "An error occurred reading uploaded file: " + e.getMessage());
-                return themeContentList(model, session);
-            }
-
-            //themeContentRepository.save(themeContent);
-
-            model.addAttribute("successMsg", content.getName() + " theme content was updated.");
+        try {
+            content.setTemplateText(new String(templateTextFile.getBytes()));
+        } catch (IOException e) {
+            model.addAttribute("errorMsg", "An error occurred reading uploaded file: " + e.getMessage());
             return themeContentList(model, session);
         }
+
+        if (!content.isValid()) {
+            // We shouldn't get here because of the client side validation, but just in case...
+            model.addAttribute("errorMsg", "Updated theme content is missing required fields.");
+            return themeContentList(model, session);
+        }
+
+        themeContentRepository.save(content);
+
+        model.addAttribute("successMsg", content.getName() + " theme content was updated.");
+        return themeContentList(model, session);
     }
-
-
 
     @PostMapping(value = "/themeContent/{contentName}/update")
     public ModelAndView editThemeContentSubmit(@RequestParam(name = "action") String action, @PathVariable("contentName") String contentName, @ModelAttribute ThemeContent themeContent, Model model, HttpSession session) {
@@ -685,14 +800,13 @@ public class WizardAdminController extends WizardController {
                 if (content == null) {
                     model.addAttribute("errorMsg", "No theme content found with name: " + contentName);
                     return editThemeContent(contentName, model, session);
-
-                } else {
-                    content.setTemplateText(themeContent.getTemplateText());
-                    //themeContentRepository.save(themeContent);
-
-                    model.addAttribute("successMsg", themeContent.getName() + " theme content was updated.");
-                    return themeContentList(model, session);
                 }
+
+                content.setTemplateText(themeContent.getTemplateText());
+                themeContentRepository.save(themeContent);
+
+                model.addAttribute("successMsg", themeContent.getName() + " theme content was updated.");
+                return themeContentList(model, session);
         }
 
         model.addAttribute("errorMsg", "Unknown action  when attempting to edit theme content: " + action);
@@ -710,11 +824,10 @@ public class WizardAdminController extends WizardController {
         }
 
         // delete
-        //themeContentRepository.deleteById(contentName);
+        themeContentRepository.deleteById(contentName);
 
         model.addAttribute("successMsg", contentName + " theme content was deleted.");
         return themeContentList(model, session);
     }
-
 
 }

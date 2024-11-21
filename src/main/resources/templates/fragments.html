@@ -139,7 +139,7 @@
 </span>
 
 <th:block th:fragment="successMsg (msgText)">
-    <div class="rvt-alert rvt-alert--success [ rvt-m-bottom-md ]" role="alert" aria-labelledby="success-alert-title" data-rvt-alert="success">
+    <div id="success-alert" tabindex="-1" class="rvt-alert rvt-alert--success [ rvt-m-bottom-md ]" role="alert" aria-labelledby="success-alert-title" data-rvt-alert="success">
         <div class="rvt-alert__title" id="success-alert-title">Success</div>
         <p id="success-msg-text" class="rvt-alert__message" th:text="${msgText}">Your action was successful.</p>
         <button class="rvt-alert__dismiss" data-rvt-alert-close>
@@ -150,7 +150,7 @@
 </th:block>
 
 <th:block th:fragment="errorMsg (errorText)">
-    <div class="rvt-alert rvt-alert--danger [ rvt-m-bottom-md ]" role="alert" aria-labelledby="error-title" data-rvt-alert="error">
+    <div id="error-alert" tabindex="-1" class="rvt-alert rvt-alert--danger [ rvt-m-bottom-md ]" role="alert" aria-labelledby="error-title" data-rvt-alert="error">
         <div class="rvt-alert__title" id="error-title">Error</div>
         <p class="rvt-alert__message" th:text="${errorText}">There was an error!</p>
     </div>

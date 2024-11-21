@@ -128,4 +128,8 @@ table.dataTable thead > tr > th button {
     cursor: pointer;
 }
 
+#success-alert:focus, #error-alert:focus {
+    outline: none;
+}
+
 

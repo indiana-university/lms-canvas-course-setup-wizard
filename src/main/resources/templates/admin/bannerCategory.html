@@ -48,7 +48,7 @@
       <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='bannercategory')}"></div>
 
       <div id="banner-categories">
-        <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Banner Image Categories</h2>
+        <h2 id="page-title" class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Banner Image Categories</h2>
 
         <button id="add-banner-category" type="button" class="rvt-button" data-rvt-dialog-trigger="banner-category-dialog">
           <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M7 7V.5h2V7h6.5v2H9v6.5H7V9H.5V7H7Z"/></svg>
@@ -57,12 +57,15 @@
 
         <form id="banner-category-list-form" th:action="@{|/app/admin/bannerCategory/toggle|}" method="post" enctype="multipart/form-data">
 
+          <span id="searchText" hidden>Search for banner image categories within the table</span>
+
           <table id="bannerCategoryTable" class="rvt-table-stripes rvt-m-top-lg">
             <caption class="rvt-sr-only">Table of banner image categories</caption>
             <thead>
             <tr>
               <th scope="col"><button type="button">Name</button></th>
               <th scope="col"><button type="button">Active?</button></th>
+              <th class="colActive">Active</th>
               <th scope="col" class="colActions rvt-text-center">Actions</th>
             </tr>
             </thead>
@@ -74,7 +77,14 @@
                   <rvt-icon  name="check-circle-solid" class="rvt-color-green-400"></rvt-icon>
                   <span class="rvt-sr-only">Active</span>
                 </span>
-                <span th:unless="${category.active}" class="rvt-sr-only">Not active</span>
+                <span th:unless="${category.active}">
+                  <span th:unless="${category.active}">
+                    <rvt-icon  name="close-circle-solid" class="rvt-color-crimson-400"></rvt-icon>
+                    <span class="rvt-sr-only">Not Active</span>
+                  </span>
+                </span>
+              </td>
+              <td th:text="${category.active} ? 'Active' : 'Not active'">
               </td>
               <td class="actions rvt-text-center">
                 <button type="button" class="edit-category rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]" data-rvt-dialog-trigger="banner-category-dialog"

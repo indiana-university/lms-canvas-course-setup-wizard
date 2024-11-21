@@ -37,9 +37,11 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "CSW_BANNER_IMAGE")
@@ -83,6 +85,25 @@ public class BannerImage {
     @Column(name = "MODIFIEDON")
     private Date modifiedOn;
 
+    /**
+     * Merge fields from the input into this object
+     * @param editable
+     */
+    public void mergeEditableFields(BannerImage editable) {
+        if (editable != null) {
+            this.active = editable.isActive();
+            this.name = editable.getName().trim();
+            this.uiName = editable.getUiName().trim();
+            this.altText = editable.getAltText().trim();
+            this.bannerImageUrl = editable.getBannerImageUrl().trim();
+            this.bannerImageCategories = editable.getBannerImageCategories();
+        }
+    }
+
+    public boolean isValid() {
+        return StringUtils.isNoneBlank(name, uiName, altText, bannerImageUrl);
+    }
+
     @PreUpdate
     @PrePersist
     public void updateTimeStamps() {
@@ -91,4 +112,5 @@ public class BannerImage {
             createdOn = new Date();
         }
     }
+
 }

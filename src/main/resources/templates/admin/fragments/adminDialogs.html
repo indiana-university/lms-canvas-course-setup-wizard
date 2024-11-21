@@ -127,8 +127,38 @@
     </div>
 </div>
 
+<div th:fragment="bannerCategoryCreateInline">
+    <div class="rvt-dialog" id="banner-category-inline-dialog" role="dialog" tabindex="-1" aria-labelledby="banner-category-inline-title" data-rvt-dialog="banner-category-inline-dialog" data-rvt-dialog-modal data-rvt-dialog-darken-page data-rvt-dialog-disable-page-interaction hidden>
+        <header class="rvt-dialog__header">
+            <h1 class="rvt-dialog__title" id="banner-category-inline-title">Create Banner Image Category</h1>
+        </header>
+        <div class="rvt-dialog__body">
+            <div class="rvt-m-bottom-sm">
+                <label class="rvt-label required-label" for="category-name-inline">Category name</label>
+                <input class="rvt-text-input required-input-dialog" type="text" id="category-name-inline" aria-required="true" data-error-id="category-name-inline-error" name="categoryName">
+                <div th:insert="~{fragments.html :: textInputError(errorMsg='Category name is required.', errorId='category-name-inline-error')}"></div>
+            </div>
+        </div>
+        <div class="rvt-dialog__controls">
+            <button id="save-category-inline-cancel" type="button" class="rvt-button rvt-button--secondary" data-rvt-dialog-close="banner-category-inline-dialog"
+                    role="button" >
+                Cancel
+            </button>
+            <button type="button" id="save-category-inline-confirm" class="rvt-button no-submit create-category-from-banner" role="button"
+                    th:data-submiturl="@{/app/admin/bannerCategory/createInline}">
+                <span th:replace="~{fragments.html :: loadingButton(buttonText='Save banner image category', srText='Saving banner image category')}"></span>
+            </button>
+        </div>
+
+        <button class="rvt-button rvt-button--plain rvt-dialog__close" data-rvt-dialog-close="banner-category-inline-dialog" role="button">
+            <span class="rvt-sr-only">Close</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">  <path d="m3.5 2.086 4.5 4.5 4.5-4.5L13.914 3.5 9.414 8l4.5 4.5-1.414 1.414-4.5-4.5-4.5 4.5L2.086 12.5l4.5-4.5-4.5-4.5L3.5 2.086Z"/></svg>
+        </button>
+    </div>
+</div>
+
 <div th:fragment="enableFeature">
-    <div class="rvt-dialog" id="enable-feature-dialog" role="dialog" tabindex="-1" aria-labelledby="dialog-title" data-rvt-dialog="enable-feature-dialog" data-rvt-dialog-modal data-rvt-dialog-darken-page data-rvt-dialog-disable-page-interaction hidden>
+    <div class="rvt-dialog" id="enable-feature-dialog" role="dialog" tabindex="-1" aria-labelledby="enable-feature-title" data-rvt-dialog="enable-feature-dialog" data-rvt-dialog-modal data-rvt-dialog-darken-page data-rvt-dialog-disable-page-interaction hidden>
         <header class="rvt-dialog__header">
             <h1 class="rvt-dialog__title" id="enable-feature-title">Enable feature for an account</h1>
         </header>
@@ -144,7 +174,7 @@
                         <option value="0">Select a feature</option>
                         <option th:each="feature : ${featureOptions}" th:value="${feature.featureId}" th:text="${feature.displayName}"></option>
                     </select>
-                    <div th:insert="~{fragments.html :: textInputError(errorMsg='Feature ID is required.', errorId='feature-id-error')}"></div>
+                    <div th:insert="~{fragments.html :: textInputError(errorMsg='Feature is required.', errorId='feature-id-error')}"></div>
                 </div>
             </div>
             <div class="rvt-dialog__controls">
@@ -179,7 +209,7 @@
                 </dl>
                 <div class="rvt-file rvt-m-top-lg rvt-m-bottom-sm" data-rvt-file-input="theme-file-input">
                     <span id="upload-required" hidden>Required</span>
-                    <input type="file" data-rvt-file-input-button="theme-file-input" id="theme-file-input" name="templateTextFile" aria-describedby="upload-required file-description">
+                    <input type="file" class="required-input-dialog" data-rvt-file-input-button="theme-file-input" id="theme-file-input" name="templateTextFile" aria-describedby="upload-required file-description" data-error-id="missing-file-error">
                     <label for="theme-file-input" class="rvt-button">
                         <span>Upload file</span>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">  <path d="M2 1h8.414L14 4.586V15H2V1Zm2 2v10h8V7.5H7.5V3H4Zm5.5 0v2.5H12v-.086L9.586 3H9.5Z"/></svg>
@@ -188,6 +218,7 @@
                         No file selected
                     </div>
                 </div>
+                <div th:insert="~{fragments.html :: textInputError(errorMsg='Theme content file is required.', errorId='missing-file-error')}"></div>
                 <input type="hidden" id="theme-content-id" name="contentName" />
 
             </div>

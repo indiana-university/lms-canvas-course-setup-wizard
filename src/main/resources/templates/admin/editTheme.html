@@ -57,7 +57,7 @@
 <!--      </nav>-->
 
       <div id="edit-theme">
-        <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm" th:text="${create} ? 'Create new theme' : |Edit theme: ${themeForm.uiName}|">Edit Theme</h2>
+        <h2 id="page-title" class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm" th:text="${create} ? 'Create new theme' : |Edit theme: ${themeForm.uiName}|">Edit Theme</h2>
 
         <form id="wizard-theme-form-submit" th:object="${themeForm}" th:action="${create}? @{/app/admin/theme/new/submit} : @{|/app/admin/theme/${themeId}/update|}" method="post" enctype="multipart/form-data">
           <div class="rvt-m-tb-md">
@@ -127,7 +127,7 @@
             <label for="banner-css" class="rvt-label rvt-m-top-sm rvt-ts-16">Banner image classes</label>
             <input th:field="*{bannerImageCssClasses}" type="text" id="banner-css" class="rvt-text-input">
 
-            <label for="banner-css" class="rvt-label rvt-m-top-sm rvt-ts-16">Navigation classes</label>
+            <label for="nav-css" class="rvt-label rvt-m-top-sm rvt-ts-16">Navigation classes</label>
             <input th:field="*{navigationCssClasses}" type="text" id="nav-css" class="rvt-text-input">
           </fieldset>
 

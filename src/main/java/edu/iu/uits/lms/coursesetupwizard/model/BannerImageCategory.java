@@ -48,6 +48,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -97,4 +98,9 @@ public class BannerImageCategory {
             createdOn = new Date();
         }
     }
+
+    public boolean isValid() {
+        return StringUtils.isNoneBlank(name);
+    }
+
 }

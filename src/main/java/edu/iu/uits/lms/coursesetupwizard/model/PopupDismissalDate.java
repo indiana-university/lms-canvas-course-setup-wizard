@@ -40,6 +40,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
@@ -59,12 +60,15 @@ public class PopupDismissalDate {
 
    @JsonFormat(pattern = DateFormatUtil.JSON_DATE_FORMAT, timezone="America/Indianapolis")
    @DateTimeFormat (pattern = "MM/dd/yyyy")
-   //@Temporal(TemporalType.DATE)
    @Column(name = "SHOW_ON")
    private Date showOn;
 
    @Lob
    @Column(name = "NOTES", columnDefinition = "TEXT")
    private String notes;
+
+   public boolean isValid() {
+      return showOn != null && StringUtils.isNoneBlank(notes);
+   }
 
 }

@@ -46,7 +46,7 @@
   <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='banner')}"></div>
 
   <div id="banners">
-    <h2 class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Banner Images</h2>
+    <h2 id="page-title" class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Banner Images</h2>
 
     <a href="/app/admin/banner/new" class="rvt-ts-20">
       <rvt-icon name="plus"></rvt-icon>
@@ -55,23 +55,27 @@
 
     <form id="banner-list-form" th:action="@{|/app/admin/banner/toggle|}" method="post" enctype="multipart/form-data">
 
+      <span id="searchText" hidden>Search for theme content within the table</span>
+
       <table id="bannerTable" class="rvt-table-stripes rvt-m-top-lg">
         <caption class="rvt-sr-only">Table of banner images</caption>
         <thead>
         <tr>
           <th scope="col"><button type="button">UI Name</button></th>
           <th scope="col"><button type="button">Name</button></th>
-          <th scope="col"><button type="button">Categories</button></th>
+          <th scope="col" class="colCat"><button type="button">Categories</button></th>
           <th scope="col"><button type="button">Active?</button></th>
+          <th class="colActive">Active</th>
           <th scope="col" class="colActions rvt-text-center">Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="banner : ${bannerList}">
           <td th:id="|banner-${bannerStat.index}|">
-            <a th:href="|/app/admin/banner/${banner.id}/edit|" class="rvt-link" th:text="${banner.uiName}">
+            <a th:href="|/app/admin/banner/${banner.id}/edit|" class="rvt-link" th:text="${banner.uiName}" th:aria-describedby="|banner-desc-${bannerStat.index}|">
               UI Name
             </a>
+            <span th:id="|banner-desc-${bannerStat.index}|" hidden th:text="|Edit the ${banner.uiName} banner image|"></span>
           </td>
           <td th:text="${banner.name}">Name</td>
           <td>
@@ -81,10 +85,15 @@
           </td>
           <td class="rvt-text-center">
             <span th:if=${banner.active}>
-                  <rvt-icon  name="check-circle-solid" class="rvt-color-green-400"></rvt-icon>
-                  <span class="rvt-sr-only">Active</span>
-                </span>
-            <span th:unless="${banner.active}" class="rvt-sr-only">Not active</span>
+              <rvt-icon  name="check-circle-solid" class="rvt-color-green-400"></rvt-icon>
+              <span class="rvt-sr-only">Active</span>
+            </span>
+            <span th:unless="${banner.active}">
+              <rvt-icon  name="close-circle-solid" class="rvt-color-crimson-400"></rvt-icon>
+              <span class="rvt-sr-only">Not Active</span>
+            </span>
+          </td>
+          <td th:text="${banner.active} ? 'Active' : 'Not active'">
           </td>
           <td class="actions rvt-text-center">
 <!--            <a th:href="|/app/admin/banner/${banner.id}/edit|" class="rvt-button rvt-button&#45;&#45;small rvt-button&#45;&#45;plain [ rvt-text-regular ]"-->
@@ -97,7 +106,7 @@
               <rvt-icon name="close" class="rvt-p-left-xs"></rvt-icon>
               <span>Inactivate</span>
             </button>
-            <button th:unless="${banner.active}" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ] rvt-border-left"
+            <button th:unless="${banner.active}" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]"
                     th:data-banner-id="${banner.id}" th:aria-describedBy="|banner-${bannerStat.index}|" name="bannerId" th:value="${banner.id}">
               <rvt-icon name="check" class="rvt-p-left-xs"></rvt-icon>
               <span>Activate</span>
