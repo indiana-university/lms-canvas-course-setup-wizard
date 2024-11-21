@@ -69,7 +69,7 @@ import static edu.iu.uits.lms.coursesetupwizard.Constants.*;
 
 @Controller
 @RequestMapping("/app/admin")
-@Secured(LTIConstants.INSTRUCTOR_AUTHORITY)
+@Secured(LTIConstants.BASE_USER_AUTHORITY)
 @Slf4j
 public class WizardAdminController extends WizardController {
 
@@ -280,6 +280,7 @@ public class WizardAdminController extends WizardController {
         log.debug("in /admin/banner/" + bannerId + "/edit");
         getTokenWithoutContext();
 
+        // needed for the fetch to create a category while editing
         model.addAttribute("customId", httpSession.getId());
 
         model.addAttribute("bannerId", bannerId);
@@ -462,7 +463,7 @@ public class WizardAdminController extends WizardController {
             savedCategory = bannerCategoryRepository.save(newCategory);
         } catch (Exception e) {
             log.error("Unable to save new banner image category: " + category.getName(), e);
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body("Error saving banner image category");
         }
 
         return ResponseEntity.ok(savedCategory.getId().toString());
