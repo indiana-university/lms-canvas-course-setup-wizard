@@ -55,7 +55,7 @@
           <span>Add a banner image category</span>
         </button>
 
-        <form id="banner-category-list-form" th:action="@{|/app/admin/bannerCategory/toggle|}" method="post" enctype="multipart/form-data">
+        <form id="banner-category-list-form" th:action="@{|/app/admin/${courseId}/bannerCategory/toggle|}" method="post" enctype="multipart/form-data">
 
           <span id="searchText" hidden>Search for banner image categories within the table</span>
 

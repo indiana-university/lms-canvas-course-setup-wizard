@@ -45,17 +45,6 @@
 
     <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='popup')}"></div>
 
-    <!--      <nav role="navigation" aria-label="Breadcrumbs" class="rvt-m-bottom-sm">-->
-    <!--        <ol class="rvt-breadcrumbs">-->
-    <!--          <li>-->
-    <!--            <a href="/app/admin/popup">-->
-    <!--              Popup reset list-->
-    <!--            </a>-->
-    <!--          </li>-->
-    <!--          <li aria-current="page"th:text="${create} ? 'New popup reset' : 'Edit popup reset'">Edit popup reset</li>-->
-    <!--        </ol>-->
-    <!--      </nav>-->
-
     <div th:if="${readOnly}">
         <!-- Default -->
         <div class="rvt-alert rvt-alert--info rvt-m-bottom-md" role="alert" data-rvt-alert="info">
@@ -68,7 +57,7 @@
         Edit popup reset settings</h2>
 
     <form id="popup-form" th:object="${popupForm}"
-          th:action="${create}? @{/app/admin/popup/new/submit} : @{|/app/admin/popup/${popupId}/update|}" method="post"
+          th:action="${create}? @{|/app/admin/${courseId}/popup/new/submit|} : @{|/app/admin/${courseId}/popup/${popupId}/update|}" method="post"
           enctype="multipart/form-data">
 
         <div th:unless="${readOnly}" id="edit-popup-settings">
@@ -86,12 +75,12 @@
             </div>
 
             <div class="rvt-button-group rvt-m-top-xl">
-                <button id="popup-cancel" class="rvt-button rvt-button--secondary loading-btn" name="action" value="cancel">
-                    <span th:replace="~{fragments.html :: loadingButton(buttonText='Cancel and return to list', srText='Loading list of popup resets')}"></span>
-                </button>
                 <button id="popup-save" class="rvt-button validate-not-empty" name="action"
                         value="submit">
                     <span th:replace="~{fragments.html :: loadingButton(buttonText='Save', srText='Saving popup reset')}"></span>
+                </button>
+                <button id="popup-cancel" class="rvt-button rvt-button--secondary loading-btn" name="action" value="cancel">
+                    <span th:replace="~{fragments.html :: loadingButton(buttonText='Cancel and return to list', srText='Loading list of popup resets')}"></span>
                 </button>
             </div>
 

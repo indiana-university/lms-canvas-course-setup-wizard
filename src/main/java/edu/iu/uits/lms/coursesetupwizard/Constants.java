@@ -46,6 +46,7 @@ public class Constants {
     public static final String INSTRUCTOR_COURSES_CACHE_NAME = "InstructorCourses";
     public static final String COURSE_TEMPLATES_CACHE_NAME = "CourseTemplates";
 
+    public static final String WIZARD_ADMIN_COURSE = "wizard_admin_course";
 
     public static final String KEY_IMPORT_MODEL = "importModel";
     public static final String KEY_THEME_MODEL = "themeModel";
@@ -101,33 +102,6 @@ public class Constants {
         TEMPLATE,
         HOMEPAGE,
         THEME
-    }
-
-    @AllArgsConstructor
-    @Getter
-    public enum AdminOption {
-        POPUP,
-        EDITPOPUP,
-        FEATURE,
-        MANAGEFEATURES,
-        THEME,
-        EDITTHEME,
-        THEMECONTENT,
-        EDITTHEMECONTENT,
-        BANNER,
-        EDITBANNER,
-        BANNERCATEGORY;
-
-        public static AdminOption findByName(String name) {
-            AdminOption result = null;
-            for (AdminOption option : values()) {
-                if (option.name().equalsIgnoreCase(name)) {
-                    result = option;
-                    break;
-                }
-            }
-            return result;
-        }
     }
 
     @AllArgsConstructor

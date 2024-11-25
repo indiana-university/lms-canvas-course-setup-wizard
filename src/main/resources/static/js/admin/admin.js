@@ -43,6 +43,7 @@ jQuery(document).ready(function($) {
     });
 
     $("#add-banner-category-inline").click(function(event) {
+        $('#category-dialog-error').addClass('rvt-display-none');
         $("#category-name-inline").val('');
         $("#category-name-inline").focus();
     });
@@ -213,6 +214,8 @@ async function createBannerCategory(submitUrl, categoryName) {
     } else {
         console.log("Error attempting to save new banner category.");
         console.log(response.message);
+        $('#category-dialog-error').removeClass('rvt-display-none');
+        resetLoading(document.getElementById('save-category-inline-confirm'));
     }
 }
 
@@ -315,11 +318,6 @@ var table = $('#featureTable').DataTable({
        $('#appTable').wrap("<div style='overflow:auto;width:100%;position:relative;'></div>");
        $('.search-wrapper label').addClass('rvt-label rvt-ts-16');
    },
-   select: {
-        selector: 'th:first-child',
-        style: 'multi',
-        info: false
-   },
    layout: {
        topStart: {
            // Configuration for the filters
@@ -361,11 +359,6 @@ var table = $('#bannerTable, #bannerCategoryTable').DataTable({
    initComplete: function () {
        $('#appTable').wrap("<div style='overflow:auto;width:100%;position:relative;'></div>");
        $('.search-wrapper label').addClass('rvt-label rvt-ts-16');
-   },
-   select: {
-        selector: 'th:first-child',
-        style: 'multi',
-        info: false
    },
    layout: {
        topStart: {
@@ -410,10 +403,5 @@ var table = $('#themeTable, #themeContentTable, #popupTable').DataTable({
        $('#appTable').wrap("<div style='overflow:auto;width:100%;position:relative;'></div>");
        $('.search-wrapper label').addClass('rvt-label rvt-ts-16');
        $('.search-wrapper').addClass('-rvt-m-bottom-sm rvt-p-top-none');
-   },
-   select: {
-        selector: 'th:first-child',
-        style: 'multi',
-        info: false
    }
 });

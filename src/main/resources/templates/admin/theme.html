@@ -48,12 +48,12 @@
       <div id="themes">
         <h2 id="page-title" class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Themes</h2>
 
-        <a href="/app/admin/theme/new" class="rvt-ts-20">
+        <a th:href="|/app/admin/${courseId}/theme/new|" class="rvt-ts-20">
           <rvt-icon name="plus"></rvt-icon>
           <span>Add a new theme</span>
         </a>
 
-        <form id="theme-list-form" th:action="@{|/app/admin/theme/toggle|}" method="post" enctype="multipart/form-data">
+        <form id="theme-list-form" th:action="@{|/app/admin/${courseId}/theme/toggle|}" method="post" enctype="multipart/form-data">
 
           <span id="searchText" hidden>Search for themes within the table</span>
 
@@ -70,7 +70,7 @@
             <tbody>
             <tr th:each="theme : ${themeList}">
               <th scope="row" th:id="|theme-${themeStat.index}|">
-                <a th:href="|/app/admin/theme/${theme.id}/edit|" th:text="${theme.uiName}" class="rvt-link" th:aria-describedby="|theme-desc-${themeStat.index}|">
+                <a th:href="|/app/admin/${courseId}/theme/${theme.id}/edit|" th:text="${theme.uiName}" class="rvt-link" th:aria-describedby="|theme-desc-${themeStat.index}|">
                   Basic color
                 </a>
                 <span th:id="|theme-desc-${themeStat.index}|" hidden th:text="|Edit the ${theme.uiName} theme|"></span>

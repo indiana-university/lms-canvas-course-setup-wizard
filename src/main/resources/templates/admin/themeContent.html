@@ -51,7 +51,7 @@
       <div id="popup-settings">
         <h2 id="page-title" class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Theme Content</h2>
 
-        <a href="/app/admin/themeContent/new" class="rvt-ts-20">
+        <a th:href="|/app/admin/${courseId}/themeContent/new|" class="rvt-ts-20">
           <rvt-icon name="plus"></rvt-icon>
           <span>Add new theme content</span>
         </a>
@@ -69,7 +69,7 @@
           <tbody>
           <tr th:each="content : ${contentList}">
             <td>
-              <a th:href="|/app/admin/themeContent/${content.name}/edit|" class="rvt-link" th:aria-describedby="|content-desc-${contentStat.index}|">
+              <a th:href="|/app/admin/${courseId}/themeContent/${content.name}/edit|" class="rvt-link" th:aria-describedby="|content-desc-${contentStat.index}|">
                 <span th:id="|content-${contentStat.index}|" th:text="${content.name}" ></span>
               </a>
               <span th:id="|content-desc-${contentStat.index}|" hidden th:text="|Edit the ${content.name} theme content|"></span>

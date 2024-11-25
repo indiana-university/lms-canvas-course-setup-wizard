@@ -48,7 +48,7 @@
   <div id="popup-details">
     <h2 id="page-title" class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Popup Reset</h2>
 
-    <a href="/app/admin/popup/new" class="rvt-ts-20">
+    <a th:href="|/app/admin/${courseId}/popup/new|" class="rvt-ts-20">
       <rvt-icon name="plus"></rvt-icon>
       <span>Add a new popup reset</span>
     </a>
@@ -61,26 +61,18 @@
       <tr>
         <th scope="col" class="colDates"><button type="button">Show on date</button></th>
         <th scope="col" class="colNotes"><button type="button">Notes</button></th>
-<!--        <th scope="col" class="colActions rvt-text-center">Actions</th>-->
       </tr>
       </thead>
       <tbody>
       <tr th:each="popup : ${popupList}">
         <td class="rvt-text-left">
-          <a th:href="|/app/admin/popup/${popup.id}/edit|" class="rvt-link" th:text="${#dates.format(popup.showOn, 'MM/dd/yyyy')}"
+          <a th:href="|/app/admin/${courseId}/popup/${popup.id}/edit|" class="rvt-link" th:text="${#dates.format(popup.showOn, 'MM/dd/yyyy')}"
             th:aria-describedby="|desc-${popupStat.index}|" id="|popup-${popupStat.index}|">
             popup reset date
           </a>
           <span th:id="|desc-${popupStat.index}|" hidden th:text="|Edit ${#dates.format(popup.showOn, 'MM/dd/yyyy')} popup reset|"></span>
         </td>
         <td id="|notes-${popupStat.index}|" th:text="${popup.notes}">As part of a periodic reset, the Course Setup Wizard popup has been re-enabled. In the future, this area will contain information on new Wizard features and essential system maintenance notifications.</td>
-<!--        <td class="actions rvt-text-center">-->
-<!--          <a th:href="|/app/admin/popup/${popup.id}/edit|" class="rvt-button rvt-button&#45;&#45;small rvt-button&#45;&#45;plain [ rvt-text-regular ]"-->
-<!--            th:aria-describedBy="|popup-${popupStat.index}|">-->
-<!--            <rvt-icon name="pencil"></rvt-icon>-->
-<!--            <span>Edit</span>-->
-<!--          </a>-->
-<!--        </td>-->
       </tr>
       </tbody>
     </table>

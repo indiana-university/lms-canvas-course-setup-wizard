@@ -48,12 +48,12 @@
   <div id="banners">
     <h2 id="page-title" class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Banner Images</h2>
 
-    <a href="/app/admin/banner/new" class="rvt-ts-20">
+    <a th:href="|/app/admin/${courseId}/banner/new|" class="rvt-ts-20">
       <rvt-icon name="plus"></rvt-icon>
       <span>Add a new banner image</span>
     </a>
 
-    <form id="banner-list-form" th:action="@{|/app/admin/banner/toggle|}" method="post" enctype="multipart/form-data">
+    <form id="banner-list-form" th:action="@{|/app/admin/${courseId}/banner/toggle|}" method="post" enctype="multipart/form-data">
 
       <span id="searchText" hidden>Search for theme content within the table</span>
 
@@ -72,7 +72,7 @@
         <tbody>
         <tr th:each="banner : ${bannerList}">
           <td th:id="|banner-${bannerStat.index}|">
-            <a th:href="|/app/admin/banner/${banner.id}/edit|" class="rvt-link" th:text="${banner.uiName}" th:aria-describedby="|banner-desc-${bannerStat.index}|">
+            <a th:href="|/app/admin/${courseId}/banner/${banner.id}/edit|" class="rvt-link" th:text="${banner.uiName}" th:aria-describedby="|banner-desc-${bannerStat.index}|">
               UI Name
             </a>
             <span th:id="|banner-desc-${bannerStat.index}|" hidden th:text="|Edit the ${banner.uiName} banner image|"></span>
@@ -96,11 +96,6 @@
           <td th:text="${banner.active} ? 'Active' : 'Not active'">
           </td>
           <td class="actions rvt-text-center">
-<!--            <a th:href="|/app/admin/banner/${banner.id}/edit|" class="rvt-button rvt-button&#45;&#45;small rvt-button&#45;&#45;plain [ rvt-text-regular ]"-->
-<!--               th:aria-describedBy="|banner-${bannerStat.index}|">-->
-<!--              <rvt-icon name="pencil"></rvt-icon>-->
-<!--              <span>Edit</span>-->
-<!--            </a>-->
             <button th:if="${banner.active}" class="rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]"
                     th:data-banner-id="${banner.id}" th:aria-describedBy="|banner-${bannerStat.index}|" name="bannerId" th:value="${banner.id}">
               <rvt-icon name="close" class="rvt-p-left-xs"></rvt-icon>
@@ -121,10 +116,6 @@
   </div>
 
 </div>
-
-<th:block layout:fragment="script">
-  <script type="text/javascript" th:src="@{/app/js/import/import.js}"></script>
-</th:block>
 
 </body>
 </html>

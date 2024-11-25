@@ -48,7 +48,7 @@
       <div id="edit-theme-content">
         <h2 id="page-title" class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm" th:text="${create} ? 'Create new theme content' : |Edit theme content: ${contentForm.name}|">Edit Theme Content</h2>
 
-        <form id="theme-content-form" th:object="${contentForm}" th:action="${create}? @{/app/admin/themeContent/new/submit} : @{|/app/admin/themeContent/${contentName}/update|}" method="post" enctype="multipart/form-data">
+        <form id="theme-content-form" th:object="${contentForm}" th:action="${create}? @{|/app/admin/${courseId}/themeContent/new/submit|} : @{|/app/admin/${courseId}/themeContent/${contentName}/update|}" method="post" enctype="multipart/form-data">
 
           <label for="content-name" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Name</label>
           <input type="text" th:field="*{name}" id="content-name" class="rvt-text-input required-input" data-error-id="content-name-error" aria-required="true">
@@ -62,11 +62,11 @@
           </div>
 
           <div class="rvt-button-group rvt-m-top-xl">
-            <button id="content-edit-cancel" class="rvt-button rvt-button--secondary loading-btn" name="action" value="cancel">
-              <span th:replace="~{fragments.html :: loadingButton(buttonText='Cancel and return to list', srText='Loading theme content list')}"></span>
-            </button>
             <button id="content-edit-save" class="rvt-button validate-not-empty" name="action" value="submit">
               <span th:replace="~{fragments.html :: loadingButton(buttonText='Save', srText='Saving theme content')}"></span>
+            </button>
+            <button id="content-edit-cancel" class="rvt-button rvt-button--secondary loading-btn" name="action" value="cancel">
+              <span th:replace="~{fragments.html :: loadingButton(buttonText='Cancel and return to list', srText='Loading theme content list')}"></span>
             </button>
           </div>
         </form>

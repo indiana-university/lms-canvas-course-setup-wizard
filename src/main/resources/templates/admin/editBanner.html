@@ -49,7 +49,7 @@
       <div id="edit-banner">
         <h2 id="page-title" class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm" th:text="${create} ? 'Create new banner image' : |Edit banner image: ${bannerForm.uiName}|">Edit Banner Image</h2>
 
-        <form id="wizard-banner-form-submit" th:object="${bannerForm}" th:action="${create}? @{/app/admin/banner/new/submit} : @{|/app/admin/banner/${bannerId}/update|}" method="post" enctype="multipart/form-data">
+        <form id="wizard-banner-form-submit" th:object="${bannerForm}" th:action="${create}? @{|/app/admin/${courseId}/banner/new/submit|} : @{|/app/admin/${courseId}/banner/${bannerId}/update|}" method="post" enctype="multipart/form-data">
         <div class="rvt-m-tb-md">
           <div class="rvt-checkbox">
             <input th:field="*{active}" type="checkbox" name="checkbox-demo" id="active-banner" checked>
@@ -89,7 +89,7 @@
           </div>
 
           <select id="category-select" th:field="*{bannerImageCategories}" class="recipient-select textAreaDefault rvt-select required-input"
-                  aria-required="true" multiple data-error-id="category-error" th:data-refreshurl="@{/app/admin/bannerCategory/all}">
+                  aria-required="true" multiple data-error-id="category-error" th:data-refreshurl="@{|/app/admin/${courseId}/bannerCategory/all|}">
               <option th:each="category : ${categories}" th:text="${category.name}" th:value="${category.id}" th:selected="${selectedCategories.contains(category.id)}"> </option>
           </select>
           <div th:insert="~{fragments.html :: textInputError(errorMsg='Please select at least one banner image category.', errorId='category-error')}"></div>
@@ -98,11 +98,11 @@
           <p class="rvt-sr-only" id="sr-announcement" aria-live="polite"></p>
 
           <div class="rvt-button-group rvt-m-top-xl">
-            <button id="banner-edit-cancel" class="rvt-button rvt-button--secondary loading-btn" name="action" value="cancel">
-              <span th:replace="~{fragments.html :: loadingButton(buttonText='Cancel and return to list', srText='Loading list of banner images')}"></span>
-            </button>
             <button id="banner-edit-save" class="rvt-button validate-not-empty" name="action" value="submit">
               <span th:replace="~{fragments.html :: loadingButton(buttonText='Save', srText='Saving banner image')}"></span>
+            </button>
+            <button id="banner-edit-cancel" class="rvt-button rvt-button--secondary loading-btn" name="action" value="cancel">
+              <span th:replace="~{fragments.html :: loadingButton(buttonText='Cancel and return to list', srText='Loading list of banner images')}"></span>
             </button>
           </div>
         </form>
