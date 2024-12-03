@@ -63,10 +63,4 @@ public class ApplicationConfig implements WebMvcConfigurer {
       registry.addResourceHandler("/app/jsrivet/**").addResourceLocations("classpath:/META-INF/resources/jsrivet/").resourceChain(true);
    }
 
-   @Override
-   public void configurePathMatch(PathMatchConfigurer configurer) {
-      var parser = new PathPatternParser();
-      parser.setCaseSensitive(false);
-      configurer.setPatternParser(parser);
-   }
 }

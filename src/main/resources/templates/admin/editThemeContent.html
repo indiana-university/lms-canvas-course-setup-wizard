@@ -43,7 +43,7 @@
   <body class="rvt-layout">
     <div layout:fragment="content">
 
-      <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='themecontent')}"></div>
+      <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='themeContent')}"></div>
 
       <div id="edit-theme-content">
         <h2 id="page-title" class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm" th:text="${create} ? 'Create new theme content' : |Edit theme content: ${contentForm.name}|">Edit Theme Content</h2>
