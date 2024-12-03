@@ -83,9 +83,9 @@ public class PopupDateUtil {
    }
 
    /**
-    * Check if valid popup date. Throws IllegalArgumentException with vaildation failure details
+    * Check if valid popup date. Throws IllegalArgumentException with validation failure details
     * @param popupDate
-    * @param dateFormat
+    * @param dateFormat - used for the returned error message only to describe your expected format
     */
    public static void validate(Date popupDate, String dateFormat) {
       Date now = new Date();
@@ -115,11 +115,6 @@ public class PopupDateUtil {
          }
       }
       return null;
-   }
-
-   public static String date2String(Date date, @NonNull String formatString) {
-      SimpleDateFormat formatter = new SimpleDateFormat(formatString);
-      return formatter.format(date);
    }
 
 }
