@@ -42,6 +42,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 
@@ -71,5 +72,9 @@ public class ThemeContent {
         if (createdOn == null) {
             createdOn = new Date();
         }
+    }
+
+    public boolean isValid() {
+        return StringUtils.isNoneBlank(name, templateText);
     }
 }

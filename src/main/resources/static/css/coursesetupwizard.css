@@ -110,3 +110,26 @@
 .radio-card--clickable--checked {
     box-shadow: 0 0 0 0.25rem #328bb8;
 }
+
+#textarea-content {
+    height: 25rem;
+}
+
+.required-label:after {
+    content:" *";
+    color: red;
+}
+
+.actions {
+    white-space: nowrap;
+}
+
+table.dataTable thead > tr > th button {
+    cursor: pointer;
+}
+
+#success-alert:focus, #error-alert:focus {
+    outline: none;
+}
+
+

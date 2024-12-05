@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<!--
+  #%L
+  course-setup-wizard
+  %%
+  Copyright (C) 2022 Indiana University
+  %%
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice, this
+     list of conditions and the following disclaimer.
+  
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+  3. Neither the name of the Indiana University nor the names of its contributors
+     may be used to endorse or promote products derived from this software without
+     specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+  #L%
+  -->
+
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{adminLayout}">
+  <head>
+    <title>Course Setup Wizard - Edit Banner Image</title>
+  </head>
+
+  <body class="rvt-layout">
+    <div layout:fragment="content">
+
+      <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='banner')}"></div>
+      <div th:insert="~{admin/fragments/adminDialogs :: bannerCategoryCreateInline}"></div>
+
+      <div id="edit-banner">
+        <h2 id="page-title" class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm" th:text="${create} ? 'Create new banner image' : |Edit banner image: ${bannerForm.uiName}|">Edit Banner Image</h2>
+
+        <form id="wizard-banner-form-submit" th:object="${bannerForm}" th:action="${create}? @{|/app/admin/${courseId}/banner/new/submit|} : @{|/app/admin/${courseId}/banner/${bannerId}/update|}" method="post" enctype="multipart/form-data">
+        <div class="rvt-m-tb-md">
+          <div class="rvt-checkbox">
+            <input th:field="*{active}" type="checkbox" name="checkbox-demo" id="active-banner" checked>
+            <label for="active-banner">Active</label>
+          </div>
+        </div>
+
+        <fieldset class="rvt-fieldset rvt-m-top-md">
+          <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Banner image details</legend>
+
+          <label for="banner-ui-name" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">UI Name</label>
+          <input th:field="*{uiName}" type="text" id="banner-ui-name" class="rvt-text-input required-input" aria-required="true" data-error-id="ui-name-error">
+          <div th:insert="~{fragments.html :: textInputError(errorMsg='UI name is required.', errorId='ui-name-error')}"></div>
+
+          <label for="banner-name" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Name</label>
+          <input th:field="*{name}" type="text" id="banner-name" class="rvt-text-input required-input" aria-required="true" data-error-id="banner-name-error">
+          <div th:insert="~{fragments.html :: textInputError(errorMsg='Name is required.', errorId='banner-name-error')}"></div>
+
+          <label for="banner-alt-text" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Alt Text</label>
+          <textarea th:field="*{altText}" class="rvt-textarea required-input" id="banner-alt-text" aria-required="true" data-error-id="alt-text-error"></textarea>
+          <div th:insert="~{fragments.html :: textInputError(errorMsg='Alt text is required.', errorId='alt-text-error')}"></div>
+
+          <label for="banner-image-url" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Image URL</label>
+          <input th:field="*{bannerImageUrl}" type="text" id="banner-image-url" class="rvt-text-input required-input" data-error-id="image-url-error" aria-required="true">
+          <div th:insert="~{fragments.html :: textInputError(errorMsg='Image URL is required.', errorId='image-url-error')}"></div>
+
+          <div class="rvt-flex rvt-p-tb-sm rvt-m-top-md">
+            <div class="rvt-flex rvt-items-center">
+              <label for="category-select" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Banner Image Categories</label>
+            </div>
+            <div class="rvt-flex rvt-items-center rvt-grow-1 rvt-justify-end rvt-m-left-md">
+              <button id="add-banner-category-inline" type="button" class="rvt-button" data-rvt-dialog-trigger="banner-category-inline-dialog">
+                <svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">  <path d="M7 7V.5h2V7h6.5v2H9v6.5H7V9H.5V7H7Z"/></svg>
+                <span>Add a new banner image category</span>
+              </button>
+            </div>
+          </div>
+
+          <select id="category-select" th:field="*{bannerImageCategories}" class="recipient-select textAreaDefault rvt-select required-input"
+                  aria-required="true" multiple data-error-id="category-error" th:data-refreshurl="@{|/app/admin/${courseId}/bannerCategory/all|}">
+              <option th:each="category : ${categories}" th:text="${category.name}" th:value="${category.id}" th:selected="${selectedCategories.contains(category.id)}"> </option>
+          </select>
+          <div th:insert="~{fragments.html :: textInputError(errorMsg='Please select at least one banner image category.', errorId='category-error')}"></div>
+        </fieldset>
+
+          <p class="rvt-sr-only" id="sr-announcement" aria-live="polite"></p>
+
+          <div class="rvt-button-group rvt-m-top-xl">
+            <button id="banner-edit-save" class="rvt-button validate-not-empty" name="action" value="submit">
+              <span th:replace="~{fragments.html :: loadingButton(buttonText='Save', srText='Saving banner image')}"></span>
+            </button>
+            <button id="banner-edit-cancel" class="rvt-button rvt-button--secondary loading-btn" name="action" value="cancel">
+              <span th:replace="~{fragments.html :: loadingButton(buttonText='Cancel and return to list', srText='Loading list of banner images')}"></span>
+            </button>
+          </div>
+        </form>
+
+      </div>
+
+    </div>
+
+    <th:block layout:fragment="script">
+      <script th:inline="javascript">
+        /*<![CDATA[*/
+            const customId = /*[[${customId}]]*/
+            const csrfHeaderName = /*[[${_csrf.headerName}]]*/
+            const csrfValue = /*[[${_csrf.token}]]*/
+        /*]]>*/
+       </script>
+
+    </th:block>
+
+  </body>
+</html>
