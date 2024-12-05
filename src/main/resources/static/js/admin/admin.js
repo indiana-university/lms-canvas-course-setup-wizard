@@ -291,7 +291,7 @@ DataTable.render.ellipsis = function () {
 };
 
 // Uses filters
-var table = $('#featureTable').DataTable({
+$('#featureTable').DataTable({
    orderCellsTop: true,
    paging: false,
    order: [[0, 'asc']],
@@ -330,7 +330,7 @@ var table = $('#featureTable').DataTable({
 });
 
 // sort ascending, active filter
-var table = $('#bannerTable, #bannerCategoryTable').DataTable({
+$('#bannerTable, #bannerCategoryTable').DataTable({
    orderCellsTop: true,
    paging: false,
    order: [[0, 'asc']],
@@ -372,7 +372,7 @@ var table = $('#bannerTable, #bannerCategoryTable').DataTable({
 });
 
 // Sorted ascending, no filters
-var table = $('#themeTable, #themeContentTable, #popupTable').DataTable({
+$('#themeTable, #themeContentTable, #popupTable').DataTable({
    orderCellsTop: true,
    paging: false,
    order: [[0, 'asc']],

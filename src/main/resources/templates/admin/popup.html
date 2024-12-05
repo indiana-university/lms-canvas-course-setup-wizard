@@ -66,13 +66,13 @@
       <tbody>
       <tr th:each="popup : ${popupList}">
         <td class="rvt-text-left">
-          <a th:href="|/app/admin/${courseId}/popup/${popup.id}/edit|" class="rvt-link" th:text="${#dates.format(popup.showOn, 'MM/dd/yyyy')}"
-            th:aria-describedby="|desc-${popupStat.index}|" id="|popup-${popupStat.index}|">
+          <a th:href="|/app/admin/${courseId}/popup/${popup.id}/edit|" class="rvt-link" th:text="${{popup.showOn}}"
+            th:aria-describedby="|desc-${popupStat.index}|" th:id="|popup-${popupStat.index}|">
             popup reset date
           </a>
-          <span th:id="|desc-${popupStat.index}|" hidden th:text="|Edit ${#dates.format(popup.showOn, 'MM/dd/yyyy')} popup reset|"></span>
+          <span th:id="|desc-${popupStat.index}|" hidden th:text="|Edit ${{popup.showOn}} popup reset|"></span>
         </td>
-        <td id="|notes-${popupStat.index}|" th:text="${popup.notes}">As part of a periodic reset, the Course Setup Wizard popup has been re-enabled. In the future, this area will contain information on new Wizard features and essential system maintenance notifications.</td>
+        <td th:id="|notes-${popupStat.index}|" th:text="${popup.notes}">As part of a periodic reset, the Course Setup Wizard popup has been re-enabled. In the future, this area will contain information on new Wizard features and essential system maintenance notifications.</td>
       </tr>
       </tbody>
     </table>
