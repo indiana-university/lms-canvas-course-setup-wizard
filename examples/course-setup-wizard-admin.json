@@ -1,5 +1,5 @@
 {
-  "title": "Course Setup Wizard Admin Tool",
+  "title": "Wizard Admin",
   "description": "Course Setup Wizard Admin Tool",
   "oidc_initiation_url": "http://localhost:8080/lti/login_initiation/lms_coursesetupwizard_admin",
   "target_link_uri": "http://localhost:8080/app/admin/launch",
