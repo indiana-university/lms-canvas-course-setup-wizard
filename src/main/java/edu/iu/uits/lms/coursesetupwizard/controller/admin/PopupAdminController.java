@@ -87,7 +87,7 @@ public class PopupAdminController extends WizardAdminController {
 
         model.addAttribute("popupList", popupList);
 
-        return new ModelAndView("/admin/popup");
+        return new ModelAndView("/popup");
     }
 
     @GetMapping("/{popupId}/edit")
