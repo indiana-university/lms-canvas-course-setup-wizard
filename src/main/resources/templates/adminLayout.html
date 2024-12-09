@@ -37,27 +37,38 @@
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
-    <title>Course Setup Wizard</title>
+    <title>Course Setup Wizard Admin Tool</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta charset="utf-8" />
+    <meta id="_csrf" name="_csrf" th:content="${_csrf.token}"/>
+    <meta id="_csrf_header" name="_csrf_header" th:content="${_csrf.headerName}"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <link rel="stylesheet" type="text/css" th:href="@{/app/jsrivet/rivet-core/rivet.min.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/app/jsrivet/rivet-icons/rivet-icon-element.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/app/webjars/datatables/css/dataTables.dataTables.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/app/webjars/datatables-select/css/select.dataTables.min.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/app/jsrivet/datatables-ext/datatables-ally.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/app/css/coursesetupwizard.css}"/>
-    <link rel="stylesheet" type="text/css" th:href="@{/app/css/datepicker.css}"/>
 </head>
 <body class="rvt-layout">
 
 <main id="main-content" class="rvt-flex rvt-flex-column rvt-grow-1" aria-labelledby="page-title">
     <div class="rvt-bg-black-000 rvt-border-bottom rvt-p-top-lg">
         <div class="rvt-container-lg rvt-prose rvt-flow rvt-p-bottom-xl">
-            <h1 id="csw-header" class="rvt-m-top-xs" tabindex="-1">Course Setup Wizard</h1>
+            <h1 id="csw-header" class="rvt-m-top-xs" tabindex="-1">
+                Course Setup Wizard Admin Tool
+            </h1>
         </div>
     </div>
 
     <div class="rvt-layout__wrapper [ rvt-p-tb-md ]">
         <span id="sr-new-window" hidden>Opens in new window</span>
+
+        <div id="messaging" class="rvt-container-lg">
+            <div th:if="${successMsg}" th:insert="~{fragments.html :: successMsg(msgText=${successMsg})}"></div>
+            <div th:if="${errorMsg}" th:insert="~{fragments.html :: errorMsg(errorText=${errorMsg})}"></div>
+        </div>
+
         <div layout:fragment="content" class="rvt-container-lg">
             Page content goes here
             <!--
@@ -74,7 +85,6 @@
 
         </div>
     </div>
-    <div th:insert="~{fragments.html :: exitDialog}"></div>
 </main>
 
 
@@ -85,16 +95,22 @@
 <script type="text/javascript" th:src="@{/app/jsrivet/rivet-core/rivet.min.js}"></script>
 <script type="module" th:src="@{/app/jsrivet/rivet-icons/rivet-icons.js}"></script>
 <script type="text/javascript" th:src="@{/app/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/app/webjars/datatables/js/dataTables.min.js}"></script>
+<script type="text/javascript" th:src="@{/app/webjars/datatables-buttons/js/dataTables.buttons.min.js}"></script>
+<script type="text/javascript" th:src="@{/app/webjars/datatables-buttons/js/buttons.html5.min.js}"></script>
+<script type="text/javascript" th:src="@{/app/webjars/datatables-select/js/dataTables.select.min.js}"></script>
+<script type="text/javascript" th:src="@{/app/jsrivet/datatables-ext/datatables-filters.js}"></script>
+<script type="text/javascript" th:src="@{/app/jsrivet/datatables-ext/datatables-ally.js}"></script>
 <script type="text/javascript" th:src="@{/app/js/coursesetupwizard.js}"></script>
 <script type="text/javascript" th:src="@{/app/js/datepicker.js}"></script>
+<script type="text/javascript" th:src="@{/app/js/admin/admin.js}"></script>
+
 <script>
   Rivet.init();
-
-  function doExit() {
-      return false;
-  }
-
 </script>
+
+<th:block layout:fragment="fragments.html :: datatablesScript">
+</th:block>
 
 <th:block layout:fragment="script">
     <!--

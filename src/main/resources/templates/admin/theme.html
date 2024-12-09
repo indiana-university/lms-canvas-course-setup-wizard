@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<!--
+  #%L
+  course-setup-wizard
+  %%
+  Copyright (C) 2022 Indiana University
+  %%
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice, this
+     list of conditions and the following disclaimer.
+  
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+  3. Neither the name of the Indiana University nor the names of its contributors
+     may be used to endorse or promote products derived from this software without
+     specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+  #L%
+  -->
+
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{adminLayout}">
+  <head>
+    <title>Course Setup Wizard - Themes</title>
+  </head>
+
+  <body class="rvt-layout">
+    <div layout:fragment="content">
+
+      <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='theme')}"></div>
+
+      <div id="themes">
+        <h2 id="page-title" class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm">Themes</h2>
+
+        <a th:href="|/app/admin/${courseId}/theme/new|" class="rvt-ts-20">
+          <rvt-icon name="plus"></rvt-icon>
+          <span>Add a new theme</span>
+        </a>
+
+        <form id="theme-list-form" th:action="@{|/app/admin/${courseId}/theme/toggle|}" method="post" enctype="multipart/form-data">
+
+          <span id="searchText" hidden>Search for themes within the table</span>
+
+          <table id="themeTable" class="rvt-m-top-lg rvt-table-stripes">
+            <caption class="rvt-sr-only">Table of themes</caption>
+            <thead>
+            <tr>
+              <th scope="col" class="colUIName"><button type="button">UI Name</button></th>
+              <th scope="col" class="colName"><button type="button">Name</button></th>
+              <th scope="col"><button type="button">Active?</button></th>
+              <th scope="col" class="colActions rvt-text-center">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="theme : ${themeList}">
+              <th scope="row" th:id="|theme-${themeStat.index}|">
+                <a th:href="|/app/admin/${courseId}/theme/${theme.id}/edit|" th:text="${theme.uiName}" class="rvt-link" th:aria-describedby="|theme-desc-${themeStat.index}|">
+                  Basic color
+                </a>
+                <span th:id="|theme-desc-${themeStat.index}|" hidden th:text="|Edit the ${theme.uiName} theme|"></span>
+              </th>
+              <td th:text="${theme.name}">basic_color1!</td>
+              <td class="rvt-text-center">
+                <span th:if=${theme.active}>
+                  <rvt-icon  name="check-circle-solid" class="rvt-color-green-400"></rvt-icon>
+                  <span class="rvt-sr-only">Active</span>
+                </span>
+                <span th:unless="${theme.active}">
+                  <span th:unless="${theme.active}">
+                    <rvt-icon  name="close-circle-solid" class="rvt-color-crimson-400"></rvt-icon>
+                    <span class="rvt-sr-only">Not Active</span>
+                  </span>
+                </span>
+              </td>
+              <td class="actions rvt-text-center">
+                <button th:if="${theme.active}" class="toggle-theme rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]"
+                        th:data-theme-id="${theme.id}" th:aria-describedBy="|theme-${themeStat.index}|" name="themeId" th:value="${theme.id}">
+                  <rvt-icon name="close" class="rvt-p-left-xs"></rvt-icon>
+                  <span>Inactivate</span>
+                </button>
+                <button th:unless="${theme.active}" class="toggle-theme rvt-button rvt-button--small rvt-button--plain [ rvt-text-regular ]"
+                        th:data-theme-id="${theme.id}" th:aria-describedBy="|theme-${themeStat.index}|" name="themeId" th:value="${theme.id}">
+                  <rvt-icon name="check" class="rvt-p-left-xs"></rvt-icon>
+                  <span>Activate</span>
+                </button>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+
+        </form>
+
+      </div>
+    </div>
+
+  </body>
+</html>

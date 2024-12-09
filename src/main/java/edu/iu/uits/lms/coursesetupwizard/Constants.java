@@ -46,6 +46,7 @@ public class Constants {
     public static final String INSTRUCTOR_COURSES_CACHE_NAME = "InstructorCourses";
     public static final String COURSE_TEMPLATES_CACHE_NAME = "CourseTemplates";
 
+    public static final String WIZARD_ADMIN_COURSE = "wizard_admin_course";
 
     public static final String KEY_IMPORT_MODEL = "importModel";
     public static final String KEY_THEME_MODEL = "themeModel";
@@ -53,11 +54,35 @@ public class Constants {
     public static final String ACTION_NEXT = "next";
     public static final String ACTION_HOME = "home";
     public static final String ACTION_SUBMIT = "submit";
+    public static final String ACTION_CANCEL = "cancel";
 
-    public static final String FEATURE_ID_THEME_FRONTPAGE_ENABLE  = "coursesetupwizard.theme.frontpage.enable";
-    public static final String FEATURE_ID_THEME_GUIDANCE_ENABLE   = "coursesetupwizard.theme.guidance.enable";
-    public static final String FEATURE_ID_THEME_NAVIGATION_ENABLE = "coursesetupwizard.theme.navigation.enable";
+    @Getter
+    @AllArgsConstructor
+    public enum WizardFeature {
+        THEME_FRONTPAGE("coursesetupwizard.theme.frontpage.enable", "Theme Front Page"),
+        THEME_GUIDANCE("coursesetupwizard.theme.guidance.enable", "Theme Guidance"),
+        THEME_NAVIGATION("coursesetupwizard.theme.navigation.enable", "Theme Navigation");
 
+        public final String featureId;
+        public final String displayName;
+
+        /**
+         *
+         * @param featureId
+         * @return the display name for the feature with the given id.  If no feature is found with the given id,
+         * the featureId is returned.
+         */
+        public static String findDisplayNameById(String featureId) {
+            String featureDisplayName = featureId;
+            for (WizardFeature feature : values()) {
+                if (feature.getFeatureId().equalsIgnoreCase(featureId)) {
+                    featureDisplayName = feature.getDisplayName();
+                    break;
+                }
+            }
+            return featureDisplayName;
+        }
+    }
     public static final String THEME_DELAYED_POST_AT_STRING = "2099-12-30";
     public static final String THEME_NEXT_STEPS_BODY_TEMPLATE_NAME = "theme.nextsteps.body.template";
     public static final String THEME_HOME_PAGE_BODY_TEMPLATE_NAME = "theme.homepage.body.template";

@@ -67,20 +67,6 @@ jQuery(document).ready(function($) {
 });
 
 function applyLoadingButton(loadingBtn) {
-    let btnForm = loadingBtn.form;
-    let btnValue = loadingBtn.value;
-
-    if (btnValue) {
-        // The value of disabled buttons is not submitted with the form, so we need to create
-        // a hidden input to add the value to the form
-        var hiddenInput = document.createElement('input');
-        hiddenInput.setAttribute('name', 'action');
-        hiddenInput.setAttribute('value', btnValue);
-        hiddenInput.setAttribute('type', 'hidden');
-
-        btnForm.appendChild(hiddenInput); //append the input to the form
-    }
-
     loadingBtn.setAttribute("aria-busy", true);
 
     // disable all buttons on the page
@@ -101,8 +87,46 @@ function applyLoadingButton(loadingBtn) {
         srText[0].classList.remove("rvt-display-none");
     }
 
-    // FF doesn't need this, but Chrome and Edge do
-    btnForm.submit();
+    let btnForm = loadingBtn.form;
+    if (btnForm && !loadingBtn.classList.contains('no-submit')) {
+        let btnValue = loadingBtn.value;
+
+        if (btnValue) {
+            // The value of disabled buttons is not submitted with the form, so we need to create
+            // a hidden input to add the value to the form
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('name', 'action');
+            hiddenInput.setAttribute('value', btnValue);
+            hiddenInput.setAttribute('type', 'hidden');
+
+            btnForm.appendChild(hiddenInput); //append the input to the form
+        }
+
+        btnForm.submit();
+    }
+
+}
+
+function resetLoading(loadingBtn) {
+    loadingBtn.removeAttribute("aria-busy");
+
+    // enable all buttons on the page
+    let allButtons = document.getElementsByTagName('button');
+    for(var i = 0; i < allButtons.length; i++) {
+        allButtons[i].removeAttribute("disabled");
+    }
+
+    loadingBtn.classList.remove("rvt-button--loading");
+
+    let spinners = loadingBtn.getElementsByClassName('rvt-loader');
+    if (spinners && spinners.length > 0) {
+        spinners[0].classList.add("rvt-display-none");
+    }
+
+    let srText = loadingBtn.getElementsByClassName('sr-loader-text');
+    if (srText && srText.length > 0) {
+        srText[0].classList.add("rvt-display-none");
+    }
 }
 
 function doSubmitOptionChoice(button) {
@@ -120,4 +144,6 @@ function doSubmitOptionChoice(button) {
 
     applyLoadingButton(button);
 }
+
+
 

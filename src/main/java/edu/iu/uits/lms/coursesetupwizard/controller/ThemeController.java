@@ -73,9 +73,8 @@ import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_BACK;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_HOME;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_NEXT;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_SUBMIT;
-import static edu.iu.uits.lms.coursesetupwizard.Constants.FEATURE_ID_THEME_GUIDANCE_ENABLE;
-import static edu.iu.uits.lms.coursesetupwizard.Constants.FEATURE_ID_THEME_NAVIGATION_ENABLE;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.KEY_THEME_MODEL;
+import static edu.iu.uits.lms.coursesetupwizard.Constants.WizardFeature;
 
 @Controller
 @RequestMapping("/app/theme")
@@ -130,11 +129,11 @@ public class ThemeController extends WizardController {
         steps.add(new ThemeStep("Select theme", MessageFormat.format(PAGES[2], courseId)));
         steps.add(new ThemeStep("Select banner", MessageFormat.format(PAGES[3], courseId)));
 
-        if (featureAccessService.isFeatureEnabledForAccount(FEATURE_ID_THEME_NAVIGATION_ENABLE, canvasService.getRootAccount(), null)) {
+        if (featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_NAVIGATION.featureId, canvasService.getRootAccount(), null)) {
             steps.add(new ThemeStep("Include navigation", MessageFormat.format(PAGES[4], courseId)));
         }
 
-        if (featureAccessService.isFeatureEnabledForAccount(FEATURE_ID_THEME_GUIDANCE_ENABLE, canvasService.getRootAccount(), null)) {
+        if (featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_GUIDANCE.featureId, canvasService.getRootAccount(), null)) {
             steps.add(new ThemeStep("Include guidance", MessageFormat.format(PAGES[PAGES.length - 3], courseId)));
         }
 
@@ -313,7 +312,7 @@ public class ThemeController extends WizardController {
                 // if asking for the guidance page
                 if (pageIndex == PAGES.length - 3) {
                     boolean isGuidanceFeatureEnabled = featureAccessService
-                            .isFeatureEnabledForAccount(FEATURE_ID_THEME_GUIDANCE_ENABLE, canvasService.getRootAccount(), null);
+                            .isFeatureEnabledForAccount(WizardFeature.THEME_GUIDANCE.featureId, canvasService.getRootAccount(), null);
 
                     if (! isGuidanceFeatureEnabled) {
                         pageIndex--;
@@ -323,7 +322,7 @@ public class ThemeController extends WizardController {
                 // if asking for the navigation page
                 if (pageIndex == 4) {
                     boolean isNavigationFeatureEnabled =
-                            featureAccessService.isFeatureEnabledForAccount(FEATURE_ID_THEME_NAVIGATION_ENABLE, canvasService.getRootAccount(), null);
+                            featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_NAVIGATION.featureId, canvasService.getRootAccount(), null);
 
                     if (! isNavigationFeatureEnabled) {
                         pageIndex--;
@@ -341,7 +340,7 @@ public class ThemeController extends WizardController {
                 // if asking for the navigation page
                 if (pageIndex == 4) {
                     boolean isNavigationFeatureEnabled =
-                            featureAccessService.isFeatureEnabledForAccount(FEATURE_ID_THEME_NAVIGATION_ENABLE, canvasService.getRootAccount(), null);
+                            featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_NAVIGATION.featureId, canvasService.getRootAccount(), null);
 
                     if (! isNavigationFeatureEnabled) {
                         pageIndex++;
@@ -351,7 +350,7 @@ public class ThemeController extends WizardController {
                 // if asking for the guidance page
                 if (pageIndex == PAGES.length - 3) {
                     boolean isGuidanceFeatureEnabled = featureAccessService
-                            .isFeatureEnabledForAccount(FEATURE_ID_THEME_GUIDANCE_ENABLE, canvasService.getRootAccount(), null);
+                            .isFeatureEnabledForAccount(WizardFeature.THEME_GUIDANCE.featureId, canvasService.getRootAccount(), null);
 
                     if (! isGuidanceFeatureEnabled) {
                         pageIndex++;

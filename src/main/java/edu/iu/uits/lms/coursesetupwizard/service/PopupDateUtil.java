@@ -53,6 +53,7 @@ public class PopupDateUtil {
     * Date format used for the input, prior to formatting into an actual java date
     */
    public static final String INPUT_DATE_FORMAT = "yyyy/MM/dd";
+   public static final String INPUT_DATE_FORMAT_MMDDYYYY = "MM/dd/yyyy";
 
    /**
     * Validate a string date representation before turning it into a java.util.Date
@@ -61,19 +62,39 @@ public class PopupDateUtil {
     * @throws IllegalArgumentException Throws exception if input date is missing, in the wrong format, or in the past
     */
    public static Date validateDate(String dateInput, String timezone) throws IllegalArgumentException {
+      return validateDate(dateInput, INPUT_DATE_FORMAT, timezone);
+   }
+
+   /**
+    * Validate a string date representation before turning it into a java.util.Date
+    * @param dateInput String date.  Hopefully in the form of "yyyy/MM/dd"
+    * @param dateFormat
+    * @return A valid java.util.Date object
+    * @throws IllegalArgumentException Throws exception if input date is missing, in the wrong format, or in the past
+    */
+   public static Date validateDate(String dateInput, String dateFormat, String timezone) throws IllegalArgumentException {
       if (dateInput == null) {
          throw new IllegalArgumentException("Please provide a date");
       }
-      Date convertedDate = string2Date(dateInput, INPUT_DATE_FORMAT, timezone);
-      Date now = new Date();
-      if (convertedDate == null) {
-         throw new IllegalArgumentException("Please provide a date in the format: " + INPUT_DATE_FORMAT);
-      }
-      if (convertedDate.before(now)) {
-         throw new IllegalArgumentException("Please provide a date in the future");
-      }
+      Date convertedDate = string2Date(dateInput, dateFormat, timezone);
+      validate(convertedDate, dateFormat);
 
       return convertedDate;
+   }
+
+   /**
+    * Check if valid popup date. Throws IllegalArgumentException with validation failure details
+    * @param popupDate
+    * @param dateFormat - used for the returned error message only to describe your expected format
+    */
+   public static void validate(Date popupDate, String dateFormat) {
+      Date now = new Date();
+      if (popupDate == null) {
+         throw new IllegalArgumentException("Please provide a date in the format: " + dateFormat);
+      }
+      if (popupDate.before(now)) {
+         throw new IllegalArgumentException("Please provide a date in the future");
+      }
    }
 
    /**
