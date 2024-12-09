@@ -86,7 +86,7 @@ public class ThemeContentAdminController extends WizardAdminController {
         List<ThemeContent> contentList = (List<ThemeContent>)themeContentRepository.findAll(Sort.by("name"));
         model.addAttribute("contentList", contentList);
 
-        return new ModelAndView("/admin/themeContent");
+        return new ModelAndView("admin/themeContent");
     }
 
     @GetMapping("/{contentName}/edit")
@@ -99,7 +99,7 @@ public class ThemeContentAdminController extends WizardAdminController {
 
         model.addAttribute("contentForm", content);
 
-        return new ModelAndView("/admin/editThemeContent");
+        return new ModelAndView("admin/editThemeContent");
     }
 
     @GetMapping("/new")
@@ -112,7 +112,7 @@ public class ThemeContentAdminController extends WizardAdminController {
         ThemeContent content = new ThemeContent();
         model.addAttribute("contentForm", content);
 
-        return new ModelAndView("/admin/editThemeContent");
+        return new ModelAndView("admin/editThemeContent");
     }
 
     @PostMapping(value = "/new/submit")

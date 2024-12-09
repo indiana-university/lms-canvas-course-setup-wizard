@@ -88,7 +88,7 @@ public class ThemeAdminController extends WizardAdminController {
 
         model.addAttribute("themeList", themeList);
 
-        return new ModelAndView("/admin/theme");
+        return new ModelAndView("admin/theme");
     }
 
     @GetMapping("/{themeId}/edit")
@@ -101,7 +101,7 @@ public class ThemeAdminController extends WizardAdminController {
         Theme theme = themeRepository.findById(themeId).orElse(null);
         model.addAttribute("themeForm", theme);
 
-        return new ModelAndView("/admin/editTheme");
+        return new ModelAndView("admin/editTheme");
     }
 
     @PostMapping(value = "/{themeId}/update")
@@ -146,7 +146,7 @@ public class ThemeAdminController extends WizardAdminController {
 
         model.addAttribute("themeForm", newTheme);
 
-        return new ModelAndView("/admin/editTheme");
+        return new ModelAndView("admin/editTheme");
     }
 
     @PostMapping(value = "/new/submit")

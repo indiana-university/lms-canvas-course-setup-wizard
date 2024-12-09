@@ -104,7 +104,7 @@ public class FeatureAdminController extends WizardAdminController {
         List<Constants.WizardFeature> featureOptions = Arrays.asList(Constants.WizardFeature.values());
         model.addAttribute("featureOptions", featureOptions);
 
-        return new ModelAndView("/admin/feature");
+        return new ModelAndView("admin/feature");
     }
 
     @PostMapping(value = "/enable")

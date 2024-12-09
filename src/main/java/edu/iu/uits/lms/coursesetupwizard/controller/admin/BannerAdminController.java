@@ -93,7 +93,7 @@ public class BannerAdminController extends WizardAdminController {
         model.addAttribute("bannerList", bannerList);
 
 
-        return new ModelAndView("/admin/banner");
+        return new ModelAndView("admin/banner");
     }
 
     @GetMapping("/{bannerId}/edit")
@@ -116,7 +116,7 @@ public class BannerAdminController extends WizardAdminController {
                 .collect(Collectors.toList());
         model.addAttribute("selectedCategories", selectedCategories);
 
-        return new ModelAndView("/admin/editBanner");
+        return new ModelAndView("admin/editBanner");
     }
 
     @PostMapping(value = "/{bannerId}/update")
@@ -167,7 +167,7 @@ public class BannerAdminController extends WizardAdminController {
 
         model.addAttribute("selectedCategories", new ArrayList<>());
         model.addAttribute("bannerForm", newBanner);
-        return new ModelAndView("/admin/editBanner");
+        return new ModelAndView("admin/editBanner");
     }
 
     @PostMapping(value = "/new/submit")

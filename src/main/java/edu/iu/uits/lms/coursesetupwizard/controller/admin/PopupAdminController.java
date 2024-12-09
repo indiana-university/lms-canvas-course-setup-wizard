@@ -87,7 +87,7 @@ public class PopupAdminController extends WizardAdminController {
 
         model.addAttribute("popupList", popupList);
 
-        return new ModelAndView("/popup");
+        return new ModelAndView("admin/popup");
     }
 
     @GetMapping("/{popupId}/edit")
@@ -106,7 +106,7 @@ public class PopupAdminController extends WizardAdminController {
 
         model.addAttribute("popupForm", popup);
 
-        return new ModelAndView("/admin/editPopup");
+        return new ModelAndView("admin/editPopup");
     }
 
     @GetMapping("/new")
@@ -120,7 +120,7 @@ public class PopupAdminController extends WizardAdminController {
             model.addAttribute("popupForm", new PopupDismissalDate());
         }
 
-        return new ModelAndView("/admin/editPopup");
+        return new ModelAndView("admin/editPopup");
     }
 
     @PostMapping(value = "/{popupId}/update")

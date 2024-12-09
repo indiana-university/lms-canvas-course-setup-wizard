@@ -83,7 +83,7 @@ public class BannerCategoryAdminController extends WizardAdminController {
         List<BannerImageCategory> bannerCategoryList = (List<BannerImageCategory>)bannerCategoryRepository.findAll(Sort.by("name"));
         model.addAttribute("categoryList", bannerCategoryList);
 
-        return new ModelAndView("/admin/bannerCategory");
+        return new ModelAndView("admin/bannerCategory");
     }
 
     @PostMapping(value = "/save")
