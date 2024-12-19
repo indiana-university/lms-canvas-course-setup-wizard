@@ -255,10 +255,10 @@ public class ThemeProcessingService {
         doesGroupAlreadyExist = false;
 
         for (AssignmentGroup existingGroup : assignmentGroups) {
-            if (ASSIGNMENTS_GROUP_NAME.equalsIgnoreCase(existingGroup.getName())) {
+            if (TEMPLATES_GROUP_NAME.equalsIgnoreCase(existingGroup.getName())) {
                 doesGroupAlreadyExist = true;
                 assignmentGroup = existingGroup;
-                log.info(String.format("%s group already exists so not creating", ASSIGNMENTS_GROUP_NAME));
+                log.info(String.format("%s group already exists so not creating", TEMPLATES_GROUP_NAME));
                 break;
             }
         }
