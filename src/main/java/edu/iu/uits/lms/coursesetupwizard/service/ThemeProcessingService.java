@@ -124,6 +124,9 @@ public class ThemeProcessingService {
     @Autowired
     private FreeMarkerConfigurer freemarkerConfigurer;
 
+    public final static String ASSIGNMENTS_GROUP_NAME = "Assignments";
+    public final static String TEMPLATES_GROUP_NAME = "Templates";
+
     public WikiPage processSubmit(ThemeModel themeModel, String courseId, String userToCreateAs) {
         log.info("In process Model!!!");
 
@@ -223,22 +226,52 @@ public class ThemeProcessingService {
         //  5. Create Assignment Groups - these will be used by the end user later when interacting with the Multi-tool
         AssignmentGroup assignmentGroup = null;
 
-        try {
-            assignmentGroup = assignmentService.createAssignmentGroup(courseId, "Templates",
-                    CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
+        // See if Assignment Group named Assignments already exists.  If not, create it.
+        List<AssignmentGroup> assignmentGroups = assignmentService.getAssignmentGroups(courseId);
 
-            log.info(String.format("Successfully created Assignment Group 'Templates' for courseId %s", courseId));
-        } catch (Exception e) {
-            exceptionMessages.add("Templates Assignment Group creation: " + e.getMessage());
+        boolean doesGroupAlreadyExist = false;
+
+        for (AssignmentGroup existingGroup : assignmentGroups) {
+            if (ASSIGNMENTS_GROUP_NAME.equalsIgnoreCase(existingGroup.getName())) {
+                doesGroupAlreadyExist = true;
+                assignmentGroup = existingGroup;
+                log.info(String.format("%s group already exists so not creating", ASSIGNMENTS_GROUP_NAME));
+                break;
+            }
         }
 
-        try {
-            assignmentGroup = assignmentService.createAssignmentGroup(courseId, "Assignments",
-                    CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
+        if (! doesGroupAlreadyExist) {
+            try {
+                assignmentGroup = assignmentService.createAssignmentGroup(courseId, ASSIGNMENTS_GROUP_NAME,
+                        CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
 
-            log.info(String.format("Successfully created Assignment Group 'Assignments' for courseId %s", courseId));
-        } catch (Exception e) {
-            exceptionMessages.add("Assignments Assignment group creation: " + e.getMessage());
+                log.info(String.format("Successfully created Assignment Group '%s' for courseId %s", ASSIGNMENTS_GROUP_NAME, courseId));
+            } catch (Exception e) {
+                exceptionMessages.add("Assignments Assignment group creation: " + e.getMessage());
+            }
+        }
+
+        // Create Templates Assignment Group if it doesn't exist
+        doesGroupAlreadyExist = false;
+
+        for (AssignmentGroup existingGroup : assignmentGroups) {
+            if (TEMPLATES_GROUP_NAME.equalsIgnoreCase(existingGroup.getName())) {
+                doesGroupAlreadyExist = true;
+                assignmentGroup = existingGroup;
+                log.info(String.format("%s group already exists so not creating", TEMPLATES_GROUP_NAME));
+                break;
+            }
+        }
+
+        if (! doesGroupAlreadyExist) {
+            try {
+                assignmentGroup = assignmentService.createAssignmentGroup(courseId, TEMPLATES_GROUP_NAME,
+                        CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
+
+                log.info(String.format("Successfully created Assignment Group '%s' for courseId %s", TEMPLATES_GROUP_NAME, courseId));
+            } catch (Exception e) {
+                exceptionMessages.add("Templates Assignment Group creation: " + e.getMessage());
+            }
         }
 
         if (assignmentGroup != null && assignmentGroup.getId() != null) {
