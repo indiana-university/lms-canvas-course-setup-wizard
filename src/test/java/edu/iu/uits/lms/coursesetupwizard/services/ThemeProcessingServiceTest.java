@@ -355,7 +355,11 @@ public class ThemeProcessingServiceTest {
       AssignmentGroup assignmentGroup = new AssignmentGroup();
       assignmentGroup.setId(1);
 
-      when(assignmentService.createAssignmentGroup(courseId, "Assignments",
+      when(assignmentService.createAssignmentGroup(courseId, ThemeProcessingService.ASSIGNMENTS_GROUP_NAME,
+              CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
+              .thenReturn(assignmentGroup);
+
+      when(assignmentService.createAssignmentGroup(courseId, ThemeProcessingService.TEMPLATES_GROUP_NAME,
               CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
               .thenReturn(assignmentGroup);
 
@@ -396,7 +400,11 @@ public class ThemeProcessingServiceTest {
       AssignmentGroup assignmentGroup = new AssignmentGroup();
       assignmentGroup.setId(1);
 
-      when(assignmentService.createAssignmentGroup(courseId, "Assignments",
+      when(assignmentService.createAssignmentGroup(courseId, ThemeProcessingService.ASSIGNMENTS_GROUP_NAME,
+              CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
+              .thenReturn(assignmentGroup);
+
+      when(assignmentService.createAssignmentGroup(courseId, ThemeProcessingService.TEMPLATES_GROUP_NAME,
               CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
               .thenReturn(assignmentGroup);
 
@@ -437,7 +445,11 @@ public class ThemeProcessingServiceTest {
       AssignmentGroup assignmentGroup = new AssignmentGroup();
       assignmentGroup.setId(1);
 
-      when(assignmentService.createAssignmentGroup(courseId, "Assignments",
+      when(assignmentService.createAssignmentGroup(courseId, ThemeProcessingService.ASSIGNMENTS_GROUP_NAME,
+              CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
+              .thenReturn(assignmentGroup);
+
+      when(assignmentService.createAssignmentGroup(courseId, ThemeProcessingService.TEMPLATES_GROUP_NAME,
               CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
               .thenReturn(assignmentGroup);
 
