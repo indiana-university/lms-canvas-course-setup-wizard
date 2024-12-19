@@ -44,6 +44,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OrderBy;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.SequenceGenerator;
@@ -52,6 +53,7 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -89,6 +91,7 @@ public class BannerImage {
                           @Index(name = "IDX_CSW_BAN_IMG_X_CAT_CAT", columnList = "BANNER_IMAGE_CATEGORY_ID")},
                foreignKey = @ForeignKey(name = "FK_CSW_BANNER_IMAGE_ID"), inverseForeignKey = @ForeignKey(name = "FK_CSW_BANNER_IMAGE_CATEGORY_ID"),
                uniqueConstraints = @UniqueConstraint(columnNames = {"BANNER_IMAGE_ID", "BANNER_IMAGE_CATEGORY_ID"}))
+    @OrderBy("name ASC")
     private List<BannerImageCategory> bannerImageCategories;
 
     @Column(name = "CREATEDON")
@@ -96,6 +99,25 @@ public class BannerImage {
 
     @Column(name = "MODIFIEDON")
     private Date modifiedOn;
+
+    /**
+     * Merge fields from the input into this object
+     * @param editable
+     */
+    public void mergeEditableFields(BannerImage editable) {
+        if (editable != null) {
+            this.active = editable.isActive();
+            this.name = editable.getName().trim();
+            this.uiName = editable.getUiName().trim();
+            this.altText = editable.getAltText().trim();
+            this.bannerImageUrl = editable.getBannerImageUrl().trim();
+            this.bannerImageCategories = editable.getBannerImageCategories();
+        }
+    }
+
+    public boolean isValid() {
+        return StringUtils.isNoneBlank(name, uiName, altText, bannerImageUrl);
+    }
 
     @PreUpdate
     @PrePersist

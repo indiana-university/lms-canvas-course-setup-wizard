@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<!--
+  #%L
+  course-setup-wizard
+  %%
+  Copyright (C) 2022 Indiana University
+  %%
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+
+  1. Redistributions of source code must retain the above copyright notice, this
+     list of conditions and the following disclaimer.
+
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+
+  3. Neither the name of the Indiana University nor the names of its contributors
+     may be used to endorse or promote products derived from this software without
+     specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+  #L%
+  -->
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+
+<div th:fragment="deleteThemeContent">
+    <div class="rvt-dialog" id="delete-content-confirmation" role="dialog" tabindex="-1" aria-labelledby="delete-content-title" aria-describedby="delete-content-description"
+         data-rvt-dialog="delete-content-confirmation" data-rvt-dialog-modal data-rvt-dialog-darken-page data-rvt-dialog-disable-page-interaction hidden>
+        <header class="rvt-dialog__header">
+            <h1 class="rvt-dialog__title" id="delete-content-title">Delete theme content</h1>
+        </header>
+        <div class="rvt-dialog__body">
+            <p id="delete-content-description">
+                <span>Are you sure you want to delete </span>
+                <span id="delete-content-name" class="rvt-text-bold"></span>?
+            </p>
+        </div>
+        <form id="delete-content-form" th:action="@{|/app/admin/${courseId}/themeContent/delete|}" method="post" enctype="multipart/form-data">
+            <div class="rvt-dialog__controls">
+                <button id="delete-content-cancel" type="button" class="rvt-button rvt-button--secondary" data-rvt-dialog-close="delete-content-confirmation">
+                    Cancel
+                </button>
+                <button id="delete-content-confirm" class="rvt-button rvt-button--danger loading-btn">
+                    <span th:replace="~{fragments.html :: loadingButton(buttonText='Delete theme content', srText='Deleting theme content')}"></span>
+                </button>
+                <input type="hidden" id="delete-content-input" name="contentName">
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:fragment="deleteFeature">
+    <div class="rvt-dialog" id="delete-feature-confirmation" role="dialog" tabindex="-1" aria-labelledby="delete-feature-title" aria-describedby="delete-feature-description"
+         data-rvt-dialog="delete-feature-confirmation" data-rvt-dialog-modal data-rvt-dialog-darken-page data-rvt-dialog-disable-page-interaction hidden>
+        <header class="rvt-dialog__header">
+            <h1 class="rvt-dialog__title" id="delete-feature-title">Delete feature for account</h1>
+        </header>
+
+        <div class="rvt-dialog__body" id="delete-feature-description">
+            <p>
+                Are you sure you want to delete this account feature?
+            </p>
+            <dl class="rvt-list-description">
+                <dt>Feature name</dt>
+                <dd id="delete-feature-name">feature name</dd>
+                <dt>Feature ID</dt>
+                <dd id="delete-feature-id">feature id</dd>
+                <dt>Account ID</dt>
+                <dd id="delete-account-id">account</dd>
+            </dl>
+        </div>
+
+        <form id="delete-feature-form" th:action="@{|/app/admin/${courseId}/feature/delete|}" method="post" enctype="multipart/form-data">
+            <div class="rvt-dialog__controls">
+                <button id="delete-feature-cancel" type="button" class="rvt-button rvt-button--secondary" data-rvt-dialog-close="delete-feature-confirmation">
+                    Cancel
+                </button>
+                <button id="delete-feature-confirm" class="rvt-button rvt-button--danger loading-btn">
+                    <span th:replace="~{fragments.html :: loadingButton(buttonText='Delete feature', srText='Deleting feature')}"></span>
+                </button>
+                <input type="hidden" id="delete-id-input" name="deleteId">
+            </div>
+        </form>
+    </div>
+</div>
+
+<div th:fragment="bannerCategory">
+    <div class="rvt-dialog" id="banner-category-dialog" role="dialog" tabindex="-1" aria-labelledby="banner-category-title" data-rvt-dialog="banner-category-dialog" data-rvt-dialog-modal data-rvt-dialog-darken-page data-rvt-dialog-disable-page-interaction hidden>
+        <header class="rvt-dialog__header">
+            <h1 class="rvt-dialog__title" id="banner-category-title">Edit Banner Image Category</h1>
+        </header>
+        <form id="banner-dialog-form" th:action="@{|/app/admin/${courseId}/bannerCategory/save|}" method="post" enctype="multipart/form-data">
+            <div class="rvt-dialog__body">
+                <div class="rvt-m-bottom-sm">
+                    <label class="rvt-label required-label" for="category-name">Category name</label>
+                    <input class="rvt-text-input required-input-dialog" type="text" id="category-name" aria-required="true" data-error-id="category-name-error" name="categoryName">
+                    <div th:insert="~{fragments.html :: textInputError(errorMsg='Category name is required.', errorId='category-name-error')}"></div>
+                </div>
+                <input type="hidden" id="category-id" name="categoryId">
+            </div>
+            <div class="rvt-dialog__controls">
+                <button id="save-category-cancel" class="rvt-button validate-dialog" role="button">
+                    <span th:replace="~{fragments.html :: loadingButton(buttonText='Save banner image category', srText='Saving banner image category')}"></span>
+                </button>
+                <button id="save-category-confirm" type="button" class="rvt-button rvt-button--secondary" data-rvt-dialog-close="banner-category-dialog" role="button">
+                    Cancel
+                </button>
+            </div>
+        </form>
+        <button class="rvt-button rvt-button--plain rvt-dialog__close" data-rvt-dialog-close="banner-category-dialog" role="button">
+            <span class="rvt-sr-only">Close</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">  <path d="m3.5 2.086 4.5 4.5 4.5-4.5L13.914 3.5 9.414 8l4.5 4.5-1.414 1.414-4.5-4.5-4.5 4.5L2.086 12.5l4.5-4.5-4.5-4.5L3.5 2.086Z"/></svg>
+        </button>
+    </div>
+</div>
+
+<div th:fragment="bannerCategoryCreateInline">
+    <div class="rvt-dialog" id="banner-category-inline-dialog" role="dialog" tabindex="-1" aria-labelledby="banner-category-inline-title" data-rvt-dialog="banner-category-inline-dialog" data-rvt-dialog-modal data-rvt-dialog-darken-page data-rvt-dialog-disable-page-interaction hidden>
+        <header class="rvt-dialog__header">
+            <h1 class="rvt-dialog__title" id="banner-category-inline-title">Create Banner Image Category</h1>
+        </header>
+        <div class="rvt-dialog__body">
+            <div id="category-dialog-error" class="rvt-display-none rvt-alert rvt-alert--danger [ rvt-m-bottom-md ]" role="alert" aria-labelledby="error-title" data-rvt-alert="error">
+                <div class="rvt-alert__title" id="error-title">Error</div>
+                <p class="rvt-alert__message">An error occurred while saving the banner image category. The category was not saved.</p>
+            </div>
+            <div class="rvt-m-bottom-sm">
+                <label class="rvt-label required-label" for="category-name-inline">Category name</label>
+                <input class="rvt-text-input required-input-dialog" type="text" id="category-name-inline" aria-required="true" data-error-id="category-name-inline-error" name="categoryName">
+                <div th:insert="~{fragments.html :: textInputError(errorMsg='Category name is required.', errorId='category-name-inline-error')}"></div>
+            </div>
+        </div>
+        <div class="rvt-dialog__controls">
+            <button type="button" id="save-category-inline-confirm" class="rvt-button no-submit create-category-from-banner" role="button"
+                    th:data-submiturl="@{|/app/admin/${courseId}/bannerCategory/createInline|}">
+                <span th:replace="~{fragments.html :: loadingButton(buttonText='Save banner image category', srText='Saving banner image category')}"></span>
+            </button>
+            <button id="save-category-inline-cancel" type="button" class="rvt-button rvt-button--secondary" data-rvt-dialog-close="banner-category-inline-dialog"
+                    role="button" >
+                Cancel
+            </button>
+        </div>
+
+        <button class="rvt-button rvt-button--plain rvt-dialog__close" data-rvt-dialog-close="banner-category-inline-dialog" role="button">
+            <span class="rvt-sr-only">Close</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">  <path d="m3.5 2.086 4.5 4.5 4.5-4.5L13.914 3.5 9.414 8l4.5 4.5-1.414 1.414-4.5-4.5-4.5 4.5L2.086 12.5l4.5-4.5-4.5-4.5L3.5 2.086Z"/></svg>
+        </button>
+    </div>
+</div>
+
+<div th:fragment="enableFeature">
+    <div class="rvt-dialog" id="enable-feature-dialog" role="dialog" tabindex="-1" aria-labelledby="enable-feature-title" data-rvt-dialog="enable-feature-dialog" data-rvt-dialog-modal data-rvt-dialog-darken-page data-rvt-dialog-disable-page-interaction hidden>
+        <header class="rvt-dialog__header">
+            <h1 class="rvt-dialog__title" id="enable-feature-title">Enable feature for an account</h1>
+        </header>
+        <form id="enable-feature-form" th:action="@{|/app/admin/${courseId}/feature/enable|}" method="post" enctype="multipart/form-data">
+            <div class="rvt-dialog__body">
+                <div class="rvt-m-bottom-sm">
+                    <label class="rvt-label rvt-ts-16 required-label" for="account-id">Account ID</label>
+                    <input class="rvt-text-input required-input-dialog" type="text" id="account-id" name="accountId" aria-required="true" data-error-id="account-id-error">
+                    <div th:insert="~{fragments.html :: textInputError(errorMsg='Account ID is required.', errorId='account-id-error')}"></div>
+
+                    <label class="rvt-label rvt-ts-16 rvt-m-top-md required-label" for="select-feature">Feature</label>
+                    <select id="select-feature" name="featureId" class="rvt-select required-input-dialog" aria-required="true" data-error-id="feature-id-error">
+                        <option value="0">Select a feature</option>
+                        <option th:each="feature : ${featureOptions}" th:value="${feature.featureId}" th:text="${feature.displayName}"></option>
+                    </select>
+                    <div th:insert="~{fragments.html :: textInputError(errorMsg='Feature is required.', errorId='feature-id-error')}"></div>
+                </div>
+            </div>
+            <div class="rvt-dialog__controls">
+                <button id="enable-feature-confirm" class="rvt-button validate-dialog">
+                    <span th:replace="~{fragments.html :: loadingButton(buttonText='Enable feature', srText='Enabling feature')}"></span>
+                </button>
+                <button id="enable-feature-cancel" type="button" class="rvt-button rvt-button--secondary" data-rvt-dialog-close="enable-feature-dialog">
+                    Cancel
+                </button>
+            </div>
+        </form>
+        <button class="rvt-button rvt-button--plain rvt-dialog__close" data-rvt-dialog-close="enable-feature-dialog">
+            <span class="rvt-sr-only">Close</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">  <path d="m3.5 2.086 4.5 4.5 4.5-4.5L13.914 3.5 9.414 8l4.5 4.5-1.414 1.414-4.5-4.5-4.5 4.5L2.086 12.5l4.5-4.5-4.5-4.5L3.5 2.086Z"/></svg>
+        </button>
+    </div>
+</div>
+</body>
+
+<div th:fragment="uploadThemeContent">
+    <div class="rvt-dialog" id="upload-content-dialog" role="dialog" tabindex="-1" aria-labelledby="upload-content-title" data-rvt-dialog="upload-content-dialog" data-rvt-dialog-modal data-rvt-dialog-darken-page data-rvt-dialog-disable-page-interaction hidden>
+        <header class="rvt-dialog__header">
+            <h1 class="rvt-dialog__title" id="upload-content-title">Upload theme content</h1>
+        </header>
+
+        <form id="upload-content-form" th:action="@{|/app/admin/${courseId}/themeContent/upload|}" method="post" enctype="multipart/form-data">
+            <div class="rvt-dialog__body">
+                <p>Replace the current theme content with the contents of the uploaded file.</p>
+                <dl class="rvt-list-description">
+                    <dt>Theme content name</dt>
+                    <dd id="content-name">content name</dd>
+                </dl>
+                <div class="rvt-file rvt-m-top-lg rvt-m-bottom-sm" data-rvt-file-input="theme-file-input">
+                    <span id="upload-required" hidden>Required</span>
+                    <input type="file" class="required-input-dialog" data-rvt-file-input-button="theme-file-input" id="theme-file-input" name="templateTextFile" aria-describedby="upload-required file-description" data-error-id="missing-file-error">
+                    <label for="theme-file-input" class="rvt-button">
+                        <span>Upload file</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">  <path d="M2 1h8.414L14 4.586V15H2V1Zm2 2v10h8V7.5H7.5V3H4Zm5.5 0v2.5H12v-.086L9.586 3H9.5Z"/></svg>
+                    </label>
+                    <div class="rvt-file__preview" data-rvt-file-input-preview="theme-file-input" id="file-description">
+                        No file selected
+                    </div>
+                </div>
+                <div th:insert="~{fragments.html :: textInputError(errorMsg='Theme content file is required.', errorId='missing-file-error')}"></div>
+                <input type="hidden" id="theme-content-id" name="contentName" />
+            </div>
+            <div class="rvt-dialog__controls">
+                <button id="upload-content-confirm" class="rvt-button validate-dialog" role="button">
+                    <span th:replace="~{fragments.html :: loadingButton(buttonText='Save theme content', srText='Saving theme content')}"></span>
+                </button>
+                <button id="upload-content-cancel" type="button" class="rvt-button rvt-button--secondary" data-rvt-dialog-close="upload-content-dialog" role="button">
+                    Cancel
+                </button>
+            </div>
+        </form>
+        <button class="rvt-button rvt-button--plain rvt-dialog__close" data-rvt-dialog-close="upload-content-dialog" role="button">
+            <span class="rvt-sr-only">Close</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">  <path d="m3.5 2.086 4.5 4.5 4.5-4.5L13.914 3.5 9.414 8l4.5 4.5-1.414 1.414-4.5-4.5-4.5 4.5L2.086 12.5l4.5-4.5-4.5-4.5L3.5 2.086Z"/></svg>
+        </button>
+    </div>
+</div>
+</body>
+
+</html>

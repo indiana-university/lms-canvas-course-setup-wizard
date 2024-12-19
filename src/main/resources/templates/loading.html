@@ -36,16 +36,16 @@
 <html lang="en-US"
       xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
+      layout:decorate="~{${adminTool} ? 'adminLayout' : 'layout'}">
 <head>
     <meta charset="utf-8" />
-    <title>Course Setup Wizard - Loading</title>
+    <title th:text="${adminTool} ? 'Course Setup Wizard Admin Tool - Loading' : 'Course Setup Wizard - Loading'">Course Setup Wizard - Loading</title>
     <meta http-equiv="refresh" th:content="|0; url=${toolPath}|" />
 </head>
 <body>
 <div layout:fragment="content">
     <div id="load" class="rvt-flex rvt-justify-center">
-        <div class="rvt-loader rvt-loader--lg" aria-label="Content loading"></div><span class="rvt-ts-md rvt-m-left-sm">Loading...</span>
+        <div class="rvt-loader rvt-loader--lg"></div><span class="rvt-ts-md rvt-m-left-sm">Loading...</span>
     </div>
 </div>
 </body>

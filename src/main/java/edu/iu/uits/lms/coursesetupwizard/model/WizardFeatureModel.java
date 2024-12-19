@@ -4,7 +4,7 @@ package edu.iu.uits.lms.coursesetupwizard.model;
  * #%L
  * course-setup-wizard
  * %%
- * Copyright (C) 2022 - 2023 Indiana University
+ * Copyright (C) 2022 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -33,48 +33,16 @@ package edu.iu.uits.lms.coursesetupwizard.model;
  * #L%
  */
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import edu.iu.uits.lms.common.date.DateFormatUtil;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.io.Serializable;
 
-@Entity
-@Table(name = "WIZARD_POPUP_DISMISSAL_DATES")
-@SequenceGenerator(name = "WIZARD_POPUP_DISMISSAL_DATES_ID_SEQ", sequenceName = "WIZARD_POPUP_DISMISSAL_DATES_ID_SEQ", allocationSize = 1)
 @Data
-@Builder
 @AllArgsConstructor
-@NoArgsConstructor
-public class PopupDismissalDate {
-
-   @Id
-   @GeneratedValue(generator = "WIZARD_POPUP_DISMISSAL_DATES_ID_SEQ")
+public class WizardFeatureModel implements Serializable {
    private Long id;
-
-   @JsonFormat(pattern = DateFormatUtil.JSON_DATE_FORMAT, timezone="America/Indianapolis")
-   @DateTimeFormat (pattern = "MM/dd/yyyy")
-   @Column(name = "SHOW_ON")
-   private Date showOn;
-
-   @Lob
-   @Column(name = "NOTES", columnDefinition = "TEXT")
-   private String notes;
-
-   public boolean isValid() {
-      return showOn != null && StringUtils.isNoneBlank(notes);
-   }
-
+   private String featureId;
+   private String accountId;
+   private String displayName;
 }

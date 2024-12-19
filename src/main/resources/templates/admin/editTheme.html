@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<!--
+  #%L
+  course-setup-wizard
+  %%
+  Copyright (C) 2022 Indiana University
+  %%
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice, this
+     list of conditions and the following disclaimer.
+  
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+  3. Neither the name of the Indiana University nor the names of its contributors
+     may be used to endorse or promote products derived from this software without
+     specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+  #L%
+  -->
+
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{adminLayout}">
+  <head>
+    <title>Course Setup Wizard - Themes</title>
+  </head>
+
+  <body class="rvt-layout">
+    <div layout:fragment="content">
+
+      <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='theme')}"></div>
+
+      <div id="edit-theme">
+        <h2 id="page-title" class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm" th:text="${create} ? 'Create new theme' : |Edit theme: ${themeForm.uiName}|">Edit Theme</h2>
+
+        <form id="wizard-theme-form-submit" th:object="${themeForm}" th:action="${create}? @{|/app/admin/${courseId}/theme/new/submit|} : @{|/app/admin/${courseId}/theme/${themeId}/update|}" method="post" enctype="multipart/form-data">
+          <div class="rvt-m-tb-md">
+            <div class="rvt-checkbox">
+              <input type="checkbox" name="checkbox-demo" id="active-theme" th:field="*{active}">
+              <label for="active-theme">Active</label>
+            </div>
+          </div>
+
+          <fieldset class="rvt-fieldset rvt-m-top-md">
+            <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Theme details</legend>
+
+            <label for="theme-ui-name" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">UI Name</label>
+            <input th:field="*{uiName}" type="text" id="theme-ui-name" class="rvt-text-input required-input" aria-required="true" data-error-id="ui-name-error">
+            <div th:insert="~{fragments.html :: textInputError(errorMsg='UI name is required.', errorId='ui-name-error')}"></div>
+
+            <label for="theme-name" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Name</label>
+            <input type="text" id="theme-name" th:field="*{name}" class="rvt-text-input required-input" aria-required="true" data-error-id="theme-name-error">
+            <div th:insert="~{fragments.html :: textInputError(errorMsg='Name is required.', errorId='theme-name-error')}"></div>
+
+          </fieldset>
+
+          <fieldset class="rvt-fieldset rvt-m-top-md">
+            <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Theme image details</legend>
+
+            <label for="theme-image-url" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Image URL</label>
+            <input type="text" th:field="*{imageUrl}" id="theme-image-url" class="rvt-text-input required-input" data-error-id="image-url-error" aria-required="true">
+            <div th:insert="~{fragments.html :: textInputError(errorMsg='Image URL is required.', errorId='image-url-error')}"></div>
+
+            <label for="theme-alt-text" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Alt Text</label>
+            <textarea th:field="*{altText}" class="rvt-textarea required-input" id="theme-alt-text" data-error-id="alt-text-error" aria-required="true">Alt text</textarea>
+            <div th:insert="~{fragments.html :: textInputError(errorMsg='Alt text is required.', errorId='alt-text-error')}"></div>
+          </fieldset>
+
+          <fieldset class="rvt-fieldset rvt-m-top-md">
+            <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Preview image URLs</legend>
+            <label for="nav-image-preview" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Full navigation image</label>
+            <input th:field="*{navImagePreviewUrl}" type="text" id="nav-image-preview" class="rvt-text-input required-input"
+                   data-error-id="full-nav-error" aria-required="true">
+            <div th:insert="~{fragments.html :: textInputError(errorMsg='Full navigation image is required.', errorId='full-nav-error')}"></div>
+
+            <label for="banner-image-preview" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Banner image only</label>
+            <input th:field="*{justBannerImagePreviewUrl}" type="text" id="banner-image-preview" class="rvt-text-input required-input"
+                   data-error-id="banner-only-error" aria-required="true">
+            <div th:insert="~{fragments.html :: textInputError(errorMsg='Banner image is required.', errorId='banner-only-error')}"></div>
+
+            <label for="nav-only-preview" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label" >Navigation image only</label>
+            <input th:field="*{justNavImagePreviewUrl}" type="text" id="nav-only-preview" class="rvt-text-input required-input"
+                   data-error-id="nav-image-error" aria-required="true">
+            <div th:insert="~{fragments.html :: textInputError(errorMsg='Navigation image is required.', errorId='nav-image-error')}"></div>
+
+            <label for="header-only-preview" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Header image only</label>
+            <input th:field="*{justHeaderImagePreviewUrl}" type="text" id="header-only-preview" class="rvt-text-input required-input"
+                   data-error-id="header-image-error" aria-required="true">
+            <div th:insert="~{fragments.html :: textInputError(errorMsg='Header image is required.', errorId='header-image-error')}"></div>
+          </fieldset>
+
+          <fieldset class="rvt-fieldset rvt-m-top-md">
+            <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">CSS</legend>
+
+            <label for="wrapper-css" class="rvt-label rvt-m-top-sm rvt-ts-16">Wrapper classes</label>
+            <input th:field="*{wrapperCssClasses}" type="text" id="wrapper-css" class="rvt-text-input">
+
+            <label for="header-css" class="rvt-label rvt-m-top-sm rvt-ts-16">Header classes</label>
+            <input th:field="*{headerCssClasses}" type="text" id="header-css" class="rvt-text-input">
+
+            <label for="banner-css" class="rvt-label rvt-m-top-sm rvt-ts-16">Banner image classes</label>
+            <input th:field="*{bannerImageCssClasses}" type="text" id="banner-css" class="rvt-text-input">
+
+            <label for="nav-css" class="rvt-label rvt-m-top-sm rvt-ts-16">Navigation classes</label>
+            <input th:field="*{navigationCssClasses}" type="text" id="nav-css" class="rvt-text-input">
+          </fieldset>
+
+          <div class="rvt-button-group rvt-m-top-xl">
+            <button id="theme-edit-save" class="rvt-button validate-not-empty" name="action" value="submit">
+              <span th:replace="~{fragments.html :: loadingButton(buttonText='Save', srText='Saving theme')}"></span>
+            </button>
+            <button id="theme-edit-cancel" class="rvt-button rvt-button--secondary loading-btn" name="action" value="cancel">
+              <span th:replace="~{fragments.html :: loadingButton(buttonText='Cancel and return to list', srText='Loading list of themes')}"></span>
+            </button>
+          </div>
+        </form>
+
+      </div>
+
+    </div>
+
+  </body>
+</html>

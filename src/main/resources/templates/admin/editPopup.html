@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<!--
+  #%L
+  course-setup-wizard
+  %%
+  Copyright (C) 2022 Indiana University
+  %%
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice, this
+     list of conditions and the following disclaimer.
+  
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+  3. Neither the name of the Indiana University nor the names of its contributors
+     may be used to endorse or promote products derived from this software without
+     specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+  #L%
+  -->
+
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{adminLayout}">
+<head>
+    <title>Course Setup Wizard - Popup</title>
+</head>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+    <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='popup')}"></div>
+
+    <div th:if="${readOnly}">
+        <!-- Default -->
+        <div class="rvt-alert rvt-alert--info rvt-m-bottom-md" role="alert" data-rvt-alert="info">
+            <p class="rvt-alert__message">Resets in the past cannot be modified.</p>
+        </div>
+    </div>
+
+    <h2 id="page-title" class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm"
+        th:text="${readOnly} ? |Popup reset: ${{popupForm.showOn}}| : (${create} ? 'Create new popup reset' : |Edit popup reset: ${{popupForm.showOn}}|)">
+        Edit popup reset settings</h2>
+
+    <form id="popup-form" th:object="${popupForm}"
+          th:action="${create}? @{|/app/admin/${courseId}/popup/new/submit|} : @{|/app/admin/${courseId}/popup/${popupId}/update|}" method="post"
+          enctype="multipart/form-data">
+
+        <div th:unless="${readOnly}" id="edit-popup-settings">
+            <div class="rvt-m-bottom-md">
+                <label for="reset-date" class="rvt-label rvt-ts-16 required-label">Show on date (MM/DD/YYYY)</label>
+                <input type="text" id="reset-date" aria-required="true" th:field="*{{showOn}}"
+                       class="rvt-text-input required-input validate-date" data-error-id="reset-date-error">
+                <div th:insert="~{fragments.html :: textInputError(errorMsg='Enter a date in MM/DD/YYYY format. Reset dates must be in the future.', errorId='reset-date-error')}"></div>
+            </div>
+            <div class="rvt-m-bottom-md">
+                <label for="reset-notes" class="rvt-label rvt-ts-16 required-label">Notes</label>
+                <textarea id="reset-notes" aria-required="true" th:field="*{notes}" class="rvt-textarea required-input"
+                          data-error-id="reset-notes-error"></textarea>
+                <div th:insert="~{fragments.html :: textInputError(errorMsg='Notes are required.', errorId='reset-notes-error')}"></div>
+            </div>
+
+            <div class="rvt-button-group rvt-m-top-xl">
+                <button id="popup-save" class="rvt-button validate-not-empty" name="action"
+                        value="submit">
+                    <span th:replace="~{fragments.html :: loadingButton(buttonText='Save', srText='Saving popup reset')}"></span>
+                </button>
+                <button id="popup-cancel" class="rvt-button rvt-button--secondary loading-btn" name="action" value="cancel">
+                    <span th:replace="~{fragments.html :: loadingButton(buttonText='Cancel and return to list', srText='Loading list of popup resets')}"></span>
+                </button>
+            </div>
+
+        </div>
+
+        <div th:if="${readOnly}" id="past-popup-settings">
+            <dl class="rvt-list-description">
+                <dt>Show on date (MM/DD/YYYY)</dt>
+                <dd id="past-show-on-date" th:text="*{{showOn}}">show on date</dd>
+                <dt>Notes</dt>
+                <dd id="past-notes" th:text="*{notes}">notes</dd>
+            </dl>
+
+            <div class="rvt-button-group rvt-m-top-xl">
+                <button id="past-cancel" class="rvt-button rvt-button--secondary loading-btn" name="action" value="cancel">
+                    <span th:replace="~{fragments.html :: loadingButton(buttonText='Return to list', srText='Loading list of popup resets')}"></span>
+                </button>
+            </div>
+        </div>
+
+
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!--
+  #%L
+  course-setup-wizard
+  %%
+  Copyright (C) 2022 Indiana University
+  %%
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice, this
+     list of conditions and the following disclaimer.
+  
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+  3. Neither the name of the Indiana University nor the names of its contributors
+     may be used to endorse or promote products derived from this software without
+     specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+  #L%
+  -->
+
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{adminLayout}">
+  <head>
+    <title>Course Setup Wizard - Theme Content</title>
+  </head>
+
+  <body class="rvt-layout">
+    <div layout:fragment="content">
+
+      <div th:insert="~{admin/fragments/adminNav :: adminNav(currentPage='themeContent')}"></div>
+
+      <div id="edit-theme-content">
+        <h2 id="page-title" class="rvt-ts-23 rvt-text-bold rvt-m-bottom-sm" th:text="${create} ? 'Create new theme content' : |Edit theme content: ${contentForm.name}|">Edit Theme Content</h2>
+
+        <form id="theme-content-form" th:object="${contentForm}" th:action="${create}? @{|/app/admin/${courseId}/themeContent/new/submit|} : @{|/app/admin/${courseId}/themeContent/${contentName}/update|}" method="post" enctype="multipart/form-data">
+
+          <label for="content-name" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Name</label>
+          <input type="text" th:field="*{name}" id="content-name" class="rvt-text-input required-input" data-error-id="content-name-error" aria-required="true">
+          <div th:insert="~{fragments.html :: textInputError(errorMsg='Theme content name is required.', errorId='content-name-error')}"></div>
+
+          <div class="rvt-p-top-md">
+            <label for="textarea-content" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Template text</label>
+            <textarea id="textarea-content" th:field="*{templateText}" class="rvt-textarea required-input" data-error-id="content-text-error" aria-required="true"></textarea>
+            <div th:insert="~{fragments.html :: textInputError(errorMsg='Template text is required.', errorId='content-text-error')}"></div>
+
+          </div>
+
+          <div class="rvt-button-group rvt-m-top-xl">
+            <button id="content-edit-save" class="rvt-button validate-not-empty" name="action" value="submit">
+              <span th:replace="~{fragments.html :: loadingButton(buttonText='Save', srText='Saving theme content')}"></span>
+            </button>
+            <button id="content-edit-cancel" class="rvt-button rvt-button--secondary loading-btn" name="action" value="cancel">
+              <span th:replace="~{fragments.html :: loadingButton(buttonText='Cancel and return to list', srText='Loading theme content list')}"></span>
+            </button>
+          </div>
+        </form>
+
+      </div>
+
+    </div>
+
+  </body>
+</html>

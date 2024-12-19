@@ -44,6 +44,7 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 
@@ -102,6 +103,28 @@ public class Theme {
 
     @Column(name = "MODIFIEDON")
     private Date modifiedOn;
+
+    public void mergeEditableFields(Theme editable) {
+        if (editable != null) {
+            this.active = editable.isActive();
+            this.name = editable.getName().trim();
+            this.uiName = editable.getUiName().trim();
+            this.altText = editable.getAltText().trim();
+            this.imageUrl = editable.getImageUrl().trim();
+            this.navImagePreviewUrl = editable.getNavImagePreviewUrl().trim();
+            this.justBannerImagePreviewUrl = editable.getJustBannerImagePreviewUrl().trim();
+            this.justNavImagePreviewUrl = editable.getJustNavImagePreviewUrl().trim();
+            this.justHeaderImagePreviewUrl = editable.getJustHeaderImagePreviewUrl().trim();
+            this.wrapperCssClasses = editable.getWrapperCssClasses().trim();
+            this.headerCssClasses = editable.getHeaderCssClasses().trim();
+            this.bannerImageCssClasses = editable.getBannerImageCssClasses().trim();
+            this.navigationCssClasses = editable.getNavigationCssClasses().trim();
+        }
+    }
+
+    public boolean isValid() {
+        return StringUtils.isNoneBlank(name, uiName, altText, imageUrl, navImagePreviewUrl, justBannerImagePreviewUrl, justNavImagePreviewUrl, justHeaderImagePreviewUrl);
+    }
 
     @PreUpdate
     @PrePersist
