@@ -47,7 +47,7 @@
                         <span class="rvt-sr-only sr-spacing"> Step </span>
                         <span class="rvt-steps__indicator" th:text="${itemStat.index+1}">Step number</span>
                     </span>
-                    <a th:if="${activeLink}" th:href="${item.link}" class="rvt-steps__item-content" th:aria-current="${isCurrentIndicator}">
+                    <a th:if="${activeLink}" th:href="${item.link}" th:id="|step-${itemStat.index}|" class="rvt-steps__item-content" th:aria-current="${isCurrentIndicator}">
                         <span class="rvt-steps__label" th:text="${item.name}">Step name</span>
                         <span class="rvt-sr-only sr-spacing"> Step </span>
                         <span class="rvt-steps__indicator" th:text="${itemStat.index+1}">Step number</span>
