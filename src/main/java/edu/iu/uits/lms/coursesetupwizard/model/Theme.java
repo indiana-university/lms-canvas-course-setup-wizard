@@ -74,14 +74,26 @@ public class Theme {
     @Column(name = "NAV_IMAGE_PREVIEW_URL", nullable = false)
     private String navImagePreviewUrl;
 
+    @Column(name = "NAV_IMAGE_ALT_TEXT", nullable = false)
+    private String navImageAltText;
+
     @Column(name = "JUST_BANNER_IMAGE_PREVIEW_URL", nullable = false)
     private String justBannerImagePreviewUrl;
+
+    @Column(name = "JUST_BANNER_IMAGE_ALT_TEXT", nullable = false)
+    private String justBannerImageAltText;
 
     @Column(name = "JUST_NAV_IMAGE_PREVIEW_URL", nullable = false)
     private String justNavImagePreviewUrl;
 
+    @Column(name = "JUST_NAV_IMAGE_ALT_TEXT", nullable = false)
+    private String justNavImageAltText;
+
     @Column(name = "JUST_HEADER_IMAGE_PREVIEW_URL", nullable = false)
     private String justHeaderImagePreviewUrl;
+
+    @Column(name = "JUST_HEADER_IMAGE_ALT_TEXT", nullable = false)
+    private String justHeaderImageAltText;
 
     @Column(name = "WRAPPER_CSS_CLASSES", nullable = false)
     private String wrapperCssClasses;
@@ -112,9 +124,13 @@ public class Theme {
             this.altText = editable.getAltText().trim();
             this.imageUrl = editable.getImageUrl().trim();
             this.navImagePreviewUrl = editable.getNavImagePreviewUrl().trim();
+            this.navImageAltText = editable.getNavImageAltText().trim();
             this.justBannerImagePreviewUrl = editable.getJustBannerImagePreviewUrl().trim();
+            this.justBannerImageAltText = editable.getJustBannerImageAltText().trim();
             this.justNavImagePreviewUrl = editable.getJustNavImagePreviewUrl().trim();
+            this.justNavImageAltText = editable.getJustNavImageAltText().trim();
             this.justHeaderImagePreviewUrl = editable.getJustHeaderImagePreviewUrl().trim();
+            this.justHeaderImageAltText = editable.getJustHeaderImageAltText().trim();
             this.wrapperCssClasses = editable.getWrapperCssClasses().trim();
             this.headerCssClasses = editable.getHeaderCssClasses().trim();
             this.bannerImageCssClasses = editable.getBannerImageCssClasses().trim();
@@ -123,7 +139,7 @@ public class Theme {
     }
 
     public boolean isValid() {
-        return StringUtils.isNoneBlank(name, uiName, altText, imageUrl, navImagePreviewUrl, justBannerImagePreviewUrl, justNavImagePreviewUrl, justHeaderImagePreviewUrl);
+        return StringUtils.isNoneBlank(name, uiName, altText, imageUrl, navImagePreviewUrl, navImageAltText, justBannerImagePreviewUrl, justBannerImageAltText, justNavImagePreviewUrl, justNavImageAltText, justHeaderImagePreviewUrl, justHeaderImageAltText);
     }
 
     @PreUpdate
