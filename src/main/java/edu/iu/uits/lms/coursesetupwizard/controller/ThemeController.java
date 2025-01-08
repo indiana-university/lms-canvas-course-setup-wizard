@@ -176,6 +176,8 @@ public class ThemeController extends WizardController {
 
         model.addAttribute("exampleNavigationUrl",
                 theme != null && theme.getNavImagePreviewUrl() != null ? theme.getNavImagePreviewUrl() : "");
+        model.addAttribute("exampleNavigationAltText",
+                theme != null && theme.getNavImageAltText() != null ? theme.getNavImageAltText() : "Navigation preview");
         model.addAttribute("themeForm", themeModel);
 
         return new ModelAndView("theme/navigation");
@@ -259,18 +261,22 @@ public class ThemeController extends WizardController {
 
         if (themeModel.getIncludeBannerImage() && bannerImage.isPresent()) {
             model.addAttribute("bannerImagePreviewUrl", bannerImage.get().getBannerImageUrl());
+            model.addAttribute("bannerImageAltText", bannerImage.get().getAltText());
         }
 
         model.addAttribute("includeNavigation", themeModel.getIncludeNavigation());
         model.addAttribute("includeGuidance", themeModel.getIncludeGuidance());
 
         model.addAttribute("justBannerImagePreviewUrl", theme.isPresent() ? theme.get().getJustBannerImagePreviewUrl() : "None");
+        model.addAttribute("justBannerImageAltText", theme.isPresent() ? theme.get().getJustBannerImageAltText() : "Banner preview");
 
         if (themeModel.getIncludeNavigation()) {
             model.addAttribute("justNavImagePreviewUrl", theme.isPresent() ? theme.get().getJustNavImagePreviewUrl() : "None");
+            model.addAttribute("justNavImageAltText", theme.isPresent() ? theme.get().getJustNavImageAltText() : "Navigation preview");
         }
 
         model.addAttribute("justHeaderImagePreviewUrl", theme.isPresent() ? theme.get().getJustHeaderImagePreviewUrl() : "None");
+        model.addAttribute("justHeaderImageAltText", theme.isPresent() ? theme.get().getJustHeaderImageAltText() : "Preview of headings");
 
         return new ModelAndView("theme/review");
     }
