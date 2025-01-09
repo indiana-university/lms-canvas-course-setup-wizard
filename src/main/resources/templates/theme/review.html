@@ -68,17 +68,17 @@
                 <dd>
                     <!-- normal markup will be 3-4 images stacked on top of each other to mimick the choices made throughout -->
                     <img id="theme-preview" th:src="${justBannerImagePreviewUrl}" class="rvt-m-top-sm"
-                         alt="Image shows how page elements will appear for this theme. Main header and navigation are in red with white font. Heading 3 will be centered, while headings 4-6 are left justified with a horizontal rule." />
+                         th:alt="${justBannerImageAltText}" />
                     <th:block th:if="${bannerImagePreviewUrl != null}">
                         <img id="banner-preview" th:src="${bannerImagePreviewUrl}" class="rvt-m-top-sm"
-                             alt="Image shows how page elements will appear for this theme. Main header and navigation are in red with white font. Heading 3 will be centered, while headings 4-6 are left justified with a horizontal rule." />
+                             th:alt="${bannerImageAltText}" />
                     </th:block>
                     <th:block th:if="${justNavImagePreviewUrl != null}">
                         <img id="nav-preview" th:src="${justNavImagePreviewUrl}" class="rvt-m-top-sm"
-                             alt="Image shows how page elements will appear for this theme. Main header and navigation are in red with white font. Heading 3 will be centered, while headings 4-6 are left justified with a horizontal rule." />
+                             th:alt="${justNavImageAltText}" />
                     </th:block>
                     <img id="header-preview" th:src="${justHeaderImagePreviewUrl}" class="rvt-m-top-sm"
-                         alt="Image shows how page elements will appear for this theme. Main header and navigation are in red with white font. Heading 3 will be centered, while headings 4-6 are left justified with a horizontal rule." />
+                         th:alt="${justHeaderImageAltText}" />
                 </dd>
             </dl>
 

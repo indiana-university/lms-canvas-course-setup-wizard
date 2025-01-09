@@ -59,7 +59,7 @@
             </p>
             <p>
                 Example:
-                <img th:src="${exampleNavigationUrl}" alt="Image showing an example of the theme" />
+                <img th:src="${exampleNavigationUrl}" th:alt="${exampleNavigationAltText}" />
             </p>
             <form id="wizard-theme-form-submit" th:object="${themeForm}" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
                 <fieldset class="rvt-fieldset">
