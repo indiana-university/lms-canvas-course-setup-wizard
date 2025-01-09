@@ -99,7 +99,7 @@
                                             </a>
                                         </p>
 
-                                        <p th:id="|${#strings.replace(mapEntry.key,' ','-')}-desc|" th:text="${template.description}"></p>
+                                        <p th:id="|desc-${template.id}|" th:text="${template.description}"></p>
                                         <div>
                                             <button class="rvt-button rvt-button--secondary" name="action"
                                                     th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_NEXT}"
