@@ -69,7 +69,7 @@
 
           </fieldset>
 
-          <fieldset class="rvt-fieldset rvt-m-top-md">
+          <fieldset class="rvt-fieldset rvt-m-top-lg">
             <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Theme image details</legend>
 
             <label for="theme-image-url" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Image URL</label>
@@ -81,30 +81,50 @@
             <div th:insert="~{fragments.html :: textInputError(errorMsg='Alt text is required.', errorId='alt-text-error')}"></div>
           </fieldset>
 
-          <fieldset class="rvt-fieldset rvt-m-top-md">
-            <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Preview image URLs</legend>
-            <label for="nav-image-preview" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Full navigation image</label>
+          <fieldset class="rvt-fieldset rvt-m-top-lg">
+            <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">Preview images</legend>
+            <label for="nav-image-preview" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Full navigation image URL</label>
             <input th:field="*{navImagePreviewUrl}" type="text" id="nav-image-preview" class="rvt-text-input required-input"
                    data-error-id="full-nav-error" aria-required="true">
             <div th:insert="~{fragments.html :: textInputError(errorMsg='Full navigation image is required.', errorId='full-nav-error')}"></div>
 
-            <label for="banner-image-preview" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Banner image only</label>
+            <label for="nav-image-alt-text" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Full navigation image alt text</label>
+            <textarea th:field="*{navImageAltText}" type="text" id="nav-image-alt-text" class="rvt-textarea required-input"
+                      data-error-id="full-nav-alt-text-error" aria-required="true"></textarea>
+            <div th:insert="~{fragments.html :: textInputError(errorMsg='Full navigation image alt text is required.', errorId='full-nav-alt-text-error')}"></div>
+
+            <label for="banner-image-preview" class="rvt-label rvt-m-top-lg rvt-ts-16 required-label">Banner image only URL</label>
             <input th:field="*{justBannerImagePreviewUrl}" type="text" id="banner-image-preview" class="rvt-text-input required-input"
                    data-error-id="banner-only-error" aria-required="true">
             <div th:insert="~{fragments.html :: textInputError(errorMsg='Banner image is required.', errorId='banner-only-error')}"></div>
 
-            <label for="nav-only-preview" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label" >Navigation image only</label>
+            <label for="banner-image-alt-text" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Banner image alt text</label>
+            <textarea th:field="*{justBannerImageAltText}" type="text" id="banner-image-alt-text" class="rvt-textarea required-input"
+                      data-error-id="banner-only-alt-text-error" aria-required="true"></textarea>
+            <div th:insert="~{fragments.html :: textInputError(errorMsg='Banner image alt text is required.', errorId='banner-only-alt-text-error')}"></div>
+
+            <label for="nav-only-preview" class="rvt-label rvt-m-top-lg rvt-ts-16 required-label" >Navigation image only URL</label>
             <input th:field="*{justNavImagePreviewUrl}" type="text" id="nav-only-preview" class="rvt-text-input required-input"
                    data-error-id="nav-image-error" aria-required="true">
             <div th:insert="~{fragments.html :: textInputError(errorMsg='Navigation image is required.', errorId='nav-image-error')}"></div>
 
-            <label for="header-only-preview" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Header image only</label>
+            <label for="nav-only-alt-text" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label" >Navigation image alt text</label>
+            <textarea th:field="*{justNavImageAltText}" type="text" id="nav-only-alt-text" class="rvt-textarea required-input"
+                      data-error-id="nav-image-alt-text-error" aria-required="true"></textarea>
+            <div th:insert="~{fragments.html :: textInputError(errorMsg='Navigation image alt text is required.', errorId='nav-image-alt-text-error')}"></div>
+
+            <label for="header-only-preview" class="rvt-label rvt-m-top-lg rvt-ts-16 required-label">Header image only URL</label>
             <input th:field="*{justHeaderImagePreviewUrl}" type="text" id="header-only-preview" class="rvt-text-input required-input"
                    data-error-id="header-image-error" aria-required="true">
             <div th:insert="~{fragments.html :: textInputError(errorMsg='Header image is required.', errorId='header-image-error')}"></div>
+
+            <label for="header-only-alt-text" class="rvt-label rvt-m-top-sm rvt-ts-16 required-label">Header image alt text</label>
+            <textarea th:field="*{justHeaderImageAltText}" type="text" id="header-only-alt-text" class="rvt-textarea required-input"
+                      data-error-id="header-image-alt-text-error" aria-required="true"></textarea>
+            <div th:insert="~{fragments.html :: textInputError(errorMsg='Header image alt text is required.', errorId='header-image-alt-text-error')}"></div>
           </fieldset>
 
-          <fieldset class="rvt-fieldset rvt-m-top-md">
+          <fieldset class="rvt-fieldset rvt-m-top-lg">
             <legend class="rvt-legend [ rvt-text-bold rvt-ts-18 rvt-border-bottom rvt-p-bottom-xs ]">CSS</legend>
 
             <label for="wrapper-css" class="rvt-label rvt-m-top-sm rvt-ts-16">Wrapper classes</label>

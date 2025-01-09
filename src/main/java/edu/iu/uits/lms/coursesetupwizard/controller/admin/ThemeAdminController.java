@@ -127,6 +127,8 @@ public class ThemeAdminController extends WizardAdminController {
                     return editTheme(courseId, themeId, model, session);
                 }
 
+                themeRepository.save(theme);
+
                 model.addAttribute("successMsg", theme.getUiName() + " theme was updated.");
                 return themeList(courseId, model, session);
         }
