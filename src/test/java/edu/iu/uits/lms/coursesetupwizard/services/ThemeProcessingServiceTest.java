@@ -170,15 +170,19 @@ public class ThemeProcessingServiceTest {
       themeContent08.setTemplateText("");
 
       ThemeContent themeContent09 = new ThemeContent();
-      themeContent09.setName(Constants.THEME_CREATE_TEMPLATE_PAGE_BODY_TEMPLATE_NAME);
+      themeContent09.setName(Constants.THEME_CREATE_TEMPLATE_INSTRUCTOR_AND_NOTES_PAGE_TEMPLATE_NAME);
       themeContent09.setTemplateText("");
 
       ThemeContent themeContent10 = new ThemeContent();
-      themeContent10.setName(Constants.THEME_MODULE_PAGE_BODY_TEMPLATE_NAME);
+      themeContent10.setName(Constants.THEME_MODULE_OVERVIEW_PAGE_TEMPLATE_NAME);
       themeContent10.setTemplateText("");
 
+      ThemeContent themeContent11 = new ThemeContent();
+      themeContent11.setName(Constants.THEME_GENERIC_CONTENT_PAGE_THEME_NAME);
+      themeContent11.setTemplateText("");
+
       List<ThemeContent> themeContents = Arrays.asList(themeContent01, themeContent02, themeContent03, themeContent04, themeContent05,
-              themeContent06, themeContent07, themeContent08, themeContent09, themeContent10);
+              themeContent06, themeContent07, themeContent08, themeContent09, themeContent10, themeContent11);
 
       when(themeContentRepository.findAll()).thenReturn(themeContents);
       when(freemarkerConfigurer.createConfiguration()).thenReturn(new Configuration());
@@ -548,7 +552,7 @@ public class ThemeProcessingServiceTest {
       List<ThemeContent> newThemeContent = new ArrayList<>();
 
       for (ThemeContent themeContent : themeContents) {
-         if (! themeContent.getName().equals(Constants.THEME_CREATE_TEMPLATE_PAGE_BODY_TEMPLATE_NAME)) {
+         if (! themeContent.getName().equals(Constants.THEME_CREATE_TEMPLATE_INSTRUCTOR_AND_NOTES_PAGE_TEMPLATE_NAME)) {
             newThemeContent.add(themeContent);
          }
       }
@@ -568,7 +572,7 @@ public class ThemeProcessingServiceTest {
 
       Assertions.assertNotNull(nextStepsWikiPage);
       Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
-      Assertions.assertTrue(body.contains("Template Page Creation: Could not find value for theme.template.body.template"));
+      Assertions.assertTrue(body.contains("Template Instructor Lecture and Notes Page Creation: Could not find value for theme.template.instructor.notes.template"));
    }
 
    @Test
@@ -582,7 +586,7 @@ public class ThemeProcessingServiceTest {
       List<ThemeContent> newThemeContent = new ArrayList<>();
 
       for (ThemeContent themeContent : themeContents) {
-         if (! themeContent.getName().equals(Constants.THEME_MODULE_PAGE_BODY_TEMPLATE_NAME)) {
+         if (! themeContent.getName().equals(Constants.THEME_MODULE_OVERVIEW_PAGE_TEMPLATE_NAME)) {
             newThemeContent.add(themeContent);
          }
       }
@@ -602,6 +606,40 @@ public class ThemeProcessingServiceTest {
 
       Assertions.assertNotNull(nextStepsWikiPage);
       Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
-      Assertions.assertTrue(body.contains("Module Page Creation: Could not find value for theme.module.body.template"));
+      Assertions.assertTrue(body.contains("Module Overview Page Creation: Could not find value for theme.module.overview.template"));
+   }
+
+   @Test
+   void testFailure_processSubmit_generic_templateNotFound() throws Exception {
+      final Theme theme = new Theme();
+      theme.setId(2L);
+
+      ThemeModel themeModel = new ThemeModel();
+
+      Iterable<ThemeContent> themeContents = themeContentRepository.findAll();
+      List<ThemeContent> newThemeContent = new ArrayList<>();
+
+      for (ThemeContent themeContent : themeContents) {
+         if (! themeContent.getName().equals(Constants.THEME_GENERIC_CONTENT_PAGE_THEME_NAME)) {
+            newThemeContent.add(themeContent);
+         }
+      }
+
+      reset(themeContentRepository);
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
+
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
+
+      verify(emailService).sendEmail(emailCaptor.capture());
+
+      EmailDetails emailDetails = emailCaptor.getValue();
+      Assertions.assertNotNull(emailDetails);
+
+      final String body = emailDetails.getBody();
+      Assertions.assertNotNull(body);
+
+      Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
+      Assertions.assertTrue(body.contains("Generic Content Page Creation: Could not find value for theme.generic.content.template"));
    }
 }

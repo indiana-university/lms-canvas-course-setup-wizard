@@ -390,16 +390,16 @@ public class ThemeProcessingService {
             }
         }
 
-        // 11. Create [Template] Page
+        // 11. Create [Template] Instructor Lecture and Notes Page
         try {
-            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_CREATE_TEMPLATE_PAGE_BODY_TEMPLATE_NAME);
+            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_CREATE_TEMPLATE_INSTRUCTOR_AND_NOTES_PAGE_TEMPLATE_NAME);
 
             if (textToUse == null) {
-                throw new RuntimeException("Could not find value for " + Constants.THEME_CREATE_TEMPLATE_PAGE_BODY_TEMPLATE_NAME);
+                throw new RuntimeException("Could not find value for " + Constants.THEME_CREATE_TEMPLATE_INSTRUCTOR_AND_NOTES_PAGE_TEMPLATE_NAME);
             }
 
             newWikiPage = new WikiPage();
-            newWikiPage.setTitle("[Template] Page");
+            newWikiPage.setTitle("[Template] Instructor Lecture and Notes");
             newWikiPage.setPublished(false);
             newWikiPage.setFrontPage(false);
             newWikiPage.setBody(textToUse);
@@ -407,21 +407,21 @@ public class ThemeProcessingService {
             courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
                     CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
 
-            log.info(String.format("Successfully created template page for courseId %s", courseId));
+            log.info(String.format("Successfully created template instructor lecture and notes page for courseId %s", courseId));
         } catch (Exception e) {
-            exceptionMessages.add("Template Page Creation: " + e.getMessage());
+            exceptionMessages.add("Template Instructor Lecture and Notes Page Creation: " + e.getMessage());
         }
 
-        // 12. Create [Template] Module Page
+        // 12. Create [Template] Module Overview Page
         try {
-            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_MODULE_PAGE_BODY_TEMPLATE_NAME);
+            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_MODULE_OVERVIEW_PAGE_TEMPLATE_NAME);
 
             if (textToUse == null) {
-                throw new RuntimeException("Could not find value for " + Constants.THEME_MODULE_PAGE_BODY_TEMPLATE_NAME);
+                throw new RuntimeException("Could not find value for " + Constants.THEME_MODULE_OVERVIEW_PAGE_TEMPLATE_NAME);
             }
 
             newWikiPage = new WikiPage();
-            newWikiPage.setTitle("[Template] Module Page");
+            newWikiPage.setTitle("[Template] Module Overview");
             newWikiPage.setPublished(false);
             newWikiPage.setFrontPage(false);
             newWikiPage.setBody(textToUse);
@@ -429,12 +429,34 @@ public class ThemeProcessingService {
             courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
                     CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
 
-            log.info(String.format("Successfully created module page for courseId %s", courseId));
+            log.info(String.format("Successfully created module overview page for courseId %s", courseId));
         } catch (Exception e) {
-            exceptionMessages.add("Module Page Creation: " + e.getMessage());
+            exceptionMessages.add("Module Overview Page Creation: " + e.getMessage());
         }
 
-        // 13. Log any steps that fail but continue on to the next step. Send error message to our team email accounts with info on course and failed steps.
+        // 13. Create [Template] Generic Content Page
+        try {
+            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_GENERIC_CONTENT_PAGE_THEME_NAME);
+
+            if (textToUse == null) {
+                throw new RuntimeException("Could not find value for " + Constants.THEME_GENERIC_CONTENT_PAGE_THEME_NAME);
+            }
+
+            newWikiPage = new WikiPage();
+            newWikiPage.setTitle("[Template] Generic Content Page");
+            newWikiPage.setPublished(false);
+            newWikiPage.setFrontPage(false);
+            newWikiPage.setBody(textToUse);
+
+            courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
+                    CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
+
+            log.info(String.format("Successfully created generic content page for courseId %s", courseId));
+        } catch (Exception e) {
+            exceptionMessages.add("Generic Content Page Creation: " + e.getMessage());
+        }
+
+        // 14. Log any steps that fail but continue on to the next step. Send error message to our team email accounts with info on course and failed steps.
         if (!exceptionMessages.isEmpty()) {
 
             StringBuilder stringBuilder = new StringBuilder();
