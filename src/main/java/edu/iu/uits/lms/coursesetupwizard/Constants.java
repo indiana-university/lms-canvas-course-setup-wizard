@@ -96,6 +96,14 @@ public class Constants {
     public static final String THEME_MODULE_OVERVIEW_PAGE_TEMPLATE_NAME = "theme.module.overview.template";
     public static final String THEME_GENERIC_CONTENT_PAGE_THEME_NAME = "theme.generic.content.template";
 
+    public final static String THEME_WIZARD_NEXT_STEPS_TITLE = "Wizard Next Steps";
+    public final static String THEME_ASSIGNMENTS_GROUP_NAME = "Assignments";
+    public final static String THEME_TEMPLATES_GROUP_NAME = "Templates";
+    public final static String THEME_MODULE_NAME = "Modules Templates";
+    public final static String THEME_INSTRUCTOR_LECTURE_AND_NOTES_TITLE = "[Template] Instructor Lecture and Notes";
+    public final static String THEME_GENERIC_CONTENT_PAGE_TITLE = "[Template] Generic Content Page";
+
+
     @AllArgsConstructor
     @Getter
     public enum MAIN_OPTION {

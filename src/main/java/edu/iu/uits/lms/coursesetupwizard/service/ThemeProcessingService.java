@@ -41,12 +41,17 @@ import edu.iu.uits.lms.canvas.model.AssignmentGroup;
 import edu.iu.uits.lms.canvas.model.CourseSyllabusBody;
 import edu.iu.uits.lms.canvas.model.CourseSyllabusBodyWrapper;
 import edu.iu.uits.lms.canvas.model.DiscussionTopic;
+import edu.iu.uits.lms.canvas.model.Module;
+import edu.iu.uits.lms.canvas.model.ModuleCreateWrapper;
+import edu.iu.uits.lms.canvas.model.ModuleItem;
+import edu.iu.uits.lms.canvas.model.ModuleItemCreateWrapper;
 import edu.iu.uits.lms.canvas.model.WikiPage;
 import edu.iu.uits.lms.canvas.model.WikiPageCreateWrapper;
 import edu.iu.uits.lms.canvas.services.AnnouncementService;
 import edu.iu.uits.lms.canvas.services.AssignmentService;
 import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.canvas.services.DiscussionService;
+import edu.iu.uits.lms.canvas.services.ModuleService;
 import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.coursesetupwizard.model.BannerImage;
@@ -101,6 +106,9 @@ public class ThemeProcessingService {
     private EmailService emailService;
 
     @Autowired
+    private ModuleService moduleService;
+
+    @Autowired
     protected BannerImageCategoryRepository bannerImageCategoryRepository;
 
     @Autowired
@@ -124,12 +132,14 @@ public class ThemeProcessingService {
     @Autowired
     private FreeMarkerConfigurer freemarkerConfigurer;
 
-    public final static String ASSIGNMENTS_GROUP_NAME = "Assignments";
-    public final static String TEMPLATES_GROUP_NAME = "Templates";
-
+    /**
+     *
+     * @param themeModel - the form backing model that stores the UI choices that the user selected
+     * @param courseId - the Canvas courseId that one creates the items in
+     * @param userToCreateAs - the IU networkId user that the items will be created/owned as in Canvas
+     * @return - the Wizard Next Steps wiki page that was created
+     */
     public WikiPage processSubmit(ThemeModel themeModel, String courseId, String userToCreateAs) {
-        log.info("In process Model!!!");
-
         List<String> exceptionMessages = new ArrayList<>();
 
         Map<String, String> freemarkerProcessedTextMap = null;
@@ -147,6 +157,7 @@ public class ThemeProcessingService {
         }
 
         String textToUse;
+        final String AS_USER_STRING = CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs;
         WikiPage nextStepsWikiPage = null;
 
         //  1. Create a page called Wizard Next Steps. This page will contain information only.
@@ -158,13 +169,13 @@ public class ThemeProcessingService {
             }
 
             nextStepsWikiPage = new WikiPage();
-            nextStepsWikiPage.setTitle("Wizard Next Steps");
+            nextStepsWikiPage.setTitle(Constants.THEME_WIZARD_NEXT_STEPS_TITLE);
             nextStepsWikiPage.setPublished(false);
             nextStepsWikiPage.setFrontPage(false);
             nextStepsWikiPage.setBody(textToUse);
 
             nextStepsWikiPage = courseService.createWikiPage(courseId, new WikiPageCreateWrapper(nextStepsWikiPage),
-                    CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
+                    AS_USER_STRING);
 
             log.info(String.format("Successfully created Wizard Next Steps Wiki page for courseId %s", courseId));
         } catch (Exception e) {
@@ -188,7 +199,7 @@ public class ThemeProcessingService {
             newWikiPage.setBody(textToUse);
 
             courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
-                    CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
+                    AS_USER_STRING);
 
             log.info(String.format("Successfully created course home page for courseId %s", courseId));
         } catch (Exception e) {
@@ -232,20 +243,21 @@ public class ThemeProcessingService {
         boolean doesGroupAlreadyExist = false;
 
         for (AssignmentGroup existingGroup : assignmentGroups) {
-            if (ASSIGNMENTS_GROUP_NAME.equalsIgnoreCase(existingGroup.getName())) {
+            if (Constants.THEME_ASSIGNMENTS_GROUP_NAME.equalsIgnoreCase(existingGroup.getName())) {
                 doesGroupAlreadyExist = true;
                 assignmentGroup = existingGroup;
-                log.info(String.format("%s group already exists so not creating", ASSIGNMENTS_GROUP_NAME));
+                log.info(String.format("%s group already exists so not creating", Constants.THEME_ASSIGNMENTS_GROUP_NAME));
                 break;
             }
         }
 
         if (! doesGroupAlreadyExist) {
             try {
-                assignmentGroup = assignmentService.createAssignmentGroup(courseId, ASSIGNMENTS_GROUP_NAME,
-                        CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
+                assignmentGroup = assignmentService.createAssignmentGroup(courseId, Constants.THEME_ASSIGNMENTS_GROUP_NAME,
+                        AS_USER_STRING);
 
-                log.info(String.format("Successfully created Assignment Group '%s' for courseId %s", ASSIGNMENTS_GROUP_NAME, courseId));
+                log.info(String.format("Successfully created Assignment Group '%s' for courseId %s",
+                        Constants.THEME_ASSIGNMENTS_GROUP_NAME, courseId));
             } catch (Exception e) {
                 exceptionMessages.add("Assignments Assignment group creation: " + e.getMessage());
             }
@@ -255,20 +267,20 @@ public class ThemeProcessingService {
         doesGroupAlreadyExist = false;
 
         for (AssignmentGroup existingGroup : assignmentGroups) {
-            if (TEMPLATES_GROUP_NAME.equalsIgnoreCase(existingGroup.getName())) {
+            if (Constants.THEME_TEMPLATES_GROUP_NAME.equalsIgnoreCase(existingGroup.getName())) {
                 doesGroupAlreadyExist = true;
                 assignmentGroup = existingGroup;
-                log.info(String.format("%s group already exists so not creating", TEMPLATES_GROUP_NAME));
+                log.info(String.format("%s group already exists so not creating", Constants.THEME_TEMPLATES_GROUP_NAME));
                 break;
             }
         }
 
         if (! doesGroupAlreadyExist) {
             try {
-                assignmentGroup = assignmentService.createAssignmentGroup(courseId, TEMPLATES_GROUP_NAME,
-                        CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
+                assignmentGroup = assignmentService.createAssignmentGroup(courseId, Constants.THEME_TEMPLATES_GROUP_NAME,
+                        AS_USER_STRING);
 
-                log.info(String.format("Successfully created Assignment Group '%s' for courseId %s", TEMPLATES_GROUP_NAME, courseId));
+                log.info(String.format("Successfully created Assignment Group '%s' for courseId %s", Constants.THEME_TEMPLATES_GROUP_NAME, courseId));
             } catch (Exception e) {
                 exceptionMessages.add("Templates Assignment Group creation: " + e.getMessage());
             }
@@ -291,7 +303,7 @@ public class ThemeProcessingService {
                 assignment.setDescription(textToUse);
 
                 assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment),
-                        CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
+                        AS_USER_STRING);
 
                 log.info(String.format("Successfully created Assignment for courseId %s", courseId));
             } catch (Exception e) {
@@ -313,7 +325,7 @@ public class ThemeProcessingService {
                 assignment.setDescription(textToUse);
 
                 assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment),
-                        CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
+                        AS_USER_STRING);
 
                 log.info(String.format("Successfully created Graded discussion Assignment for courseId %s", courseId));
             } catch (Exception e) {
@@ -335,7 +347,7 @@ public class ThemeProcessingService {
                 assignment.setDescription(textToUse);
 
                 assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment),
-                        CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
+                        AS_USER_STRING);
 
                 log.info(String.format("Successfully created quiz Assignment for courseId %s", courseId));
             } catch (Exception e) {
@@ -343,29 +355,7 @@ public class ThemeProcessingService {
             }
         }
 
-        //  9. Create ungraded discussion item in Discussions tool
-        try {
-            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_DISCUSSION_TOPIC_MESSAGE_TEMPLATE_NAME);
-
-            if (textToUse == null) {
-                throw new RuntimeException("Could not find value for " + Constants.THEME_DISCUSSION_TOPIC_MESSAGE_TEMPLATE_NAME);
-            }
-
-            DiscussionTopic discussionTopic = new DiscussionTopic();
-            discussionTopic.setTitle("[Template] Ungraded Discussion");
-            discussionTopic.setMessage(textToUse);
-            discussionTopic.setDiscussionType(DiscussionTopic.TYPE.THREADED);
-            discussionTopic.setDelayedPostAt(Constants.THEME_DELAYED_POST_AT_STRING);
-
-            discussionService.createDiscussionTopic(courseId, discussionTopic,
-                    CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
-
-            log.info(String.format("Successfully created ungraded discussion topic for courseId %s", courseId));
-        } catch (Exception e) {
-            exceptionMessages.add("Discussion Topic #1 Creation: " + e.getMessage());
-        }
-
-        // 10. Create items in the Announcements tool (step 9 in Lynn’s stuff) ** still being worked on
+        // 9. Create items in the Announcements tool (step 9 in Lynn’s stuff) ** still being worked on
         if (themeModel != null && themeModel.getIncludeGuidance() != null && themeModel.getIncludeGuidance()) {
             try {
                 textToUse = freemarkerProcessedTextMap.get(Constants.THEME_ANNOUNCEMENT_MESSAGE_TEMPLATE_NAME);
@@ -382,7 +372,7 @@ public class ThemeProcessingService {
                 announcement.setMessage(textToUse);
 
                 announcementService.createAnnouncement(courseId, announcement, false,
-                        CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs, null, null);
+                        AS_USER_STRING, null, null);
 
                 log.info(String.format("Successfully created Announcement for courseId %s", courseId));
             } catch (Exception e) {
@@ -390,29 +380,7 @@ public class ThemeProcessingService {
             }
         }
 
-        // 11. Create [Template] Instructor Lecture and Notes Page
-        try {
-            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_CREATE_TEMPLATE_INSTRUCTOR_AND_NOTES_PAGE_TEMPLATE_NAME);
-
-            if (textToUse == null) {
-                throw new RuntimeException("Could not find value for " + Constants.THEME_CREATE_TEMPLATE_INSTRUCTOR_AND_NOTES_PAGE_TEMPLATE_NAME);
-            }
-
-            newWikiPage = new WikiPage();
-            newWikiPage.setTitle("[Template] Instructor Lecture and Notes");
-            newWikiPage.setPublished(false);
-            newWikiPage.setFrontPage(false);
-            newWikiPage.setBody(textToUse);
-
-            courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
-                    CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
-
-            log.info(String.format("Successfully created template instructor lecture and notes page for courseId %s", courseId));
-        } catch (Exception e) {
-            exceptionMessages.add("Template Instructor Lecture and Notes Page Creation: " + e.getMessage());
-        }
-
-        // 12. Create [Template] Module Overview Page
+        // 10. Create [Template] Module Overview Page
         try {
             textToUse = freemarkerProcessedTextMap.get(Constants.THEME_MODULE_OVERVIEW_PAGE_TEMPLATE_NAME);
 
@@ -427,14 +395,80 @@ public class ThemeProcessingService {
             newWikiPage.setBody(textToUse);
 
             courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
-                    CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
+                    AS_USER_STRING);
 
             log.info(String.format("Successfully created module overview page for courseId %s", courseId));
         } catch (Exception e) {
             exceptionMessages.add("Module Overview Page Creation: " + e.getMessage());
         }
 
-        // 13. Create [Template] Generic Content Page
+        // 11. Create a new Module if one with the proper name doesn't already exist in the course
+        List<Module> modules = moduleService.getModules(courseId, null);
+        String usedModuleId = null;
+
+        if (modules == null || modules.isEmpty()) {
+            Module newModule = new Module();
+            newModule.setName(Constants.THEME_MODULE_NAME);
+            newModule.setPosition("1");
+
+            ModuleCreateWrapper newModuleCreateWrapper = new ModuleCreateWrapper();
+            newModuleCreateWrapper.setModule(newModule);
+
+            newModule = moduleService.createModule(courseId, newModuleCreateWrapper,
+                    AS_USER_STRING);
+
+            if (newModule == null || newModule.getId() == null) {
+                exceptionMessages.add("Could not create new module");
+            } else {
+                usedModuleId = newModule.getId();
+            }
+
+        } else { // the course already has modules
+            for (Module module : modules) {
+                if (Constants.THEME_MODULE_NAME.equals(module.getName())) {
+                    usedModuleId = module.getId();
+                    break;
+                }
+            }
+        }
+
+        // 12. Create [Template] Instructor Lecture and Notes Page in the module created in step 11
+        try {
+            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_CREATE_TEMPLATE_INSTRUCTOR_AND_NOTES_PAGE_TEMPLATE_NAME);
+
+            if (textToUse == null) {
+                throw new RuntimeException("Could not find value for " + Constants.THEME_CREATE_TEMPLATE_INSTRUCTOR_AND_NOTES_PAGE_TEMPLATE_NAME);
+            }
+
+            newWikiPage = new WikiPage();
+            newWikiPage.setTitle(Constants.THEME_INSTRUCTOR_LECTURE_AND_NOTES_TITLE);
+            newWikiPage.setPublished(false);
+            newWikiPage.setFrontPage(false);
+            newWikiPage.setBody(textToUse);
+
+            newWikiPage = courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
+                    AS_USER_STRING);
+
+            ModuleItem lectureAndNotesPageModuleItem = new ModuleItem();
+            lectureAndNotesPageModuleItem.setTitle(Constants.THEME_INSTRUCTOR_LECTURE_AND_NOTES_TITLE);
+            lectureAndNotesPageModuleItem.setType("Page");
+            lectureAndNotesPageModuleItem.setContentId(newWikiPage.getPageId());
+            lectureAndNotesPageModuleItem.setPosition("2");
+            lectureAndNotesPageModuleItem.setPageUrl("template-instructor-lecture-and-notes");
+
+            ModuleItemCreateWrapper lectureAndNotesPageModuleItemCreateWrapper = new ModuleItemCreateWrapper();
+            lectureAndNotesPageModuleItemCreateWrapper.setModuleItem(lectureAndNotesPageModuleItem);
+
+            moduleService.createModuleItem(courseId, usedModuleId, lectureAndNotesPageModuleItemCreateWrapper,
+                    AS_USER_STRING);
+
+
+            log.info(String.format("Successfully created template instructor lecture and notes page for courseId %s", courseId));
+        } catch (Exception e) {
+            exceptionMessages.add("Template Instructor Lecture and Notes Page Creation: " + e.getMessage());
+        }
+
+        // 13. Create [Template] Generic Content Page in the module created in step 11
         try {
             textToUse = freemarkerProcessedTextMap.get(Constants.THEME_GENERIC_CONTENT_PAGE_THEME_NAME);
 
@@ -443,20 +477,70 @@ public class ThemeProcessingService {
             }
 
             newWikiPage = new WikiPage();
-            newWikiPage.setTitle("[Template] Generic Content Page");
+            newWikiPage.setTitle(Constants.THEME_GENERIC_CONTENT_PAGE_TITLE);
             newWikiPage.setPublished(false);
             newWikiPage.setFrontPage(false);
             newWikiPage.setBody(textToUse);
 
-            courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
-                    CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs);
+            newWikiPage = courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
+                    AS_USER_STRING);
+
+
+            ModuleItem genericPageModuleItem = new ModuleItem();
+            genericPageModuleItem.setTitle(Constants.THEME_GENERIC_CONTENT_PAGE_TITLE);
+            genericPageModuleItem.setType("Page");
+            genericPageModuleItem.setContentId(newWikiPage.getPageId());
+            genericPageModuleItem.setPosition("3");
+            genericPageModuleItem.setPageUrl("template-generic-content-page");
+
+            ModuleItemCreateWrapper genericPageModuleItemCreateWrapper = new ModuleItemCreateWrapper();
+            genericPageModuleItemCreateWrapper.setModuleItem(genericPageModuleItem);
+
+            moduleService.createModuleItem(courseId, usedModuleId, genericPageModuleItemCreateWrapper,
+                    AS_USER_STRING);
+
 
             log.info(String.format("Successfully created generic content page for courseId %s", courseId));
         } catch (Exception e) {
             exceptionMessages.add("Generic Content Page Creation: " + e.getMessage());
         }
 
-        // 14. Log any steps that fail but continue on to the next step. Send error message to our team email accounts with info on course and failed steps.
+        //  14. Create ungraded discussion item in the module created in step 11
+        try {
+            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_DISCUSSION_TOPIC_MESSAGE_TEMPLATE_NAME);
+
+            if (textToUse == null) {
+                throw new RuntimeException("Could not find value for " + Constants.THEME_DISCUSSION_TOPIC_MESSAGE_TEMPLATE_NAME);
+            }
+
+            DiscussionTopic discussionTopic = new DiscussionTopic();
+            discussionTopic.setTitle("[Template] Ungraded Discussion");
+            discussionTopic.setMessage(textToUse);
+            discussionTopic.setDiscussionType(DiscussionTopic.TYPE.THREADED);
+            discussionTopic.setDelayedPostAt(Constants.THEME_DELAYED_POST_AT_STRING);
+
+            discussionTopic = discussionService.createDiscussionTopic(courseId, discussionTopic,
+                    AS_USER_STRING);
+
+            ModuleItem discussionModuleItem = new ModuleItem();
+            discussionModuleItem.setTitle("[Template] Discussion Topic");
+            discussionModuleItem.setType("Discussion");
+            discussionModuleItem.setContentId(discussionTopic.getId());
+            discussionModuleItem.setPosition("4");
+
+            ModuleItemCreateWrapper discussionModuleItemCreateWrapper = new ModuleItemCreateWrapper();
+            discussionModuleItemCreateWrapper.setModuleItem(discussionModuleItem);
+
+            moduleService.createModuleItem(courseId, usedModuleId, discussionModuleItemCreateWrapper,
+                    AS_USER_STRING);
+
+
+            log.info(String.format("Successfully created ungraded discussion topic for courseId %s", courseId));
+        } catch (Exception e) {
+            exceptionMessages.add("Discussion Topic #1 Creation: " + e.getMessage());
+        }
+
+        // 15. Log any steps that fail but continue on to the next step. Send error message to our team email accounts with info on course and failed steps.
         if (!exceptionMessages.isEmpty()) {
 
             StringBuilder stringBuilder = new StringBuilder();
