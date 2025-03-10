@@ -35,11 +35,15 @@ package edu.iu.uits.lms.coursesetupwizard.services;
 
 import edu.iu.uits.lms.canvas.helpers.CanvasConstants;
 import edu.iu.uits.lms.canvas.model.AssignmentGroup;
+import edu.iu.uits.lms.canvas.model.DiscussionTopic;
+import edu.iu.uits.lms.canvas.model.Module;
+import edu.iu.uits.lms.canvas.model.ModuleItem;
 import edu.iu.uits.lms.canvas.model.WikiPage;
 import edu.iu.uits.lms.canvas.services.AnnouncementService;
 import edu.iu.uits.lms.canvas.services.AssignmentService;
 import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.canvas.services.DiscussionService;
+import edu.iu.uits.lms.canvas.services.ModuleService;
 import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
 import edu.iu.uits.lms.coursesetupwizard.model.Theme;
@@ -104,6 +108,9 @@ public class ThemeProcessingServiceTest {
    @MockBean
    private EmailService emailService;
 
+   @MockBean
+   private ModuleService moduleService;
+
    @Captor
    ArgumentCaptor<EmailDetails> emailCaptor;
 
@@ -134,6 +141,7 @@ public class ThemeProcessingServiceTest {
    private final String courseId = "12345";
    private final String userToCreateAs = "me";
    private final String nextStepsWikiPageId = "10";
+   private final String moduleOverviewWikiPageId = "11";
 
    @BeforeEach
    public void globalMocks() throws Exception {
@@ -170,29 +178,73 @@ public class ThemeProcessingServiceTest {
       themeContent08.setTemplateText("");
 
       ThemeContent themeContent09 = new ThemeContent();
-      themeContent09.setName(Constants.THEME_CREATE_TEMPLATE_PAGE_BODY_TEMPLATE_NAME);
+      themeContent09.setName(Constants.THEME_CREATE_TEMPLATE_INSTRUCTOR_AND_NOTES_PAGE_TEMPLATE_NAME);
       themeContent09.setTemplateText("");
 
       ThemeContent themeContent10 = new ThemeContent();
-      themeContent10.setName(Constants.THEME_MODULE_PAGE_BODY_TEMPLATE_NAME);
+      themeContent10.setName(Constants.THEME_MODULE_OVERVIEW_PAGE_TEMPLATE_NAME);
       themeContent10.setTemplateText("");
 
+      ThemeContent themeContent11 = new ThemeContent();
+      themeContent11.setName(Constants.THEME_GENERIC_CONTENT_PAGE_THEME_NAME);
+      themeContent11.setTemplateText("");
+
       List<ThemeContent> themeContents = Arrays.asList(themeContent01, themeContent02, themeContent03, themeContent04, themeContent05,
-              themeContent06, themeContent07, themeContent08, themeContent09, themeContent10);
+              themeContent06, themeContent07, themeContent08, themeContent09, themeContent10, themeContent11);
 
       when(themeContentRepository.findAll()).thenReturn(themeContents);
       when(freemarkerConfigurer.createConfiguration()).thenReturn(new Configuration());
       
       WikiPage nextStepsWikiPage = new WikiPage();
       nextStepsWikiPage.setPageId(nextStepsWikiPageId);
-      nextStepsWikiPage.setTitle("Wizard Next Steps");
+      nextStepsWikiPage.setTitle(Constants.THEME_WIZARD_NEXT_STEPS_TITLE);
       nextStepsWikiPage.setPublished(false);
       nextStepsWikiPage.setFrontPage(false);
       nextStepsWikiPage.setBody("");
 
       when(courseService.createWikiPage(any(),
-              argThat(wikiPageCreateWrapper -> "Wizard Next Steps".equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
+              argThat(wikiPageCreateWrapper ->
+                      wikiPageCreateWrapper != null && Constants.THEME_WIZARD_NEXT_STEPS_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
               any())).thenReturn(nextStepsWikiPage);
+
+      WikiPage instructorLectureAndNotesWikiPage = new WikiPage();
+      instructorLectureAndNotesWikiPage.setPageId("1");
+      instructorLectureAndNotesWikiPage.setTitle(Constants.THEME_INSTRUCTOR_LECTURE_AND_NOTES_TITLE);
+
+      when(courseService.createWikiPage(any(),
+              argThat(wikiPageCreateWrapper ->
+                      wikiPageCreateWrapper != null &&
+                              Constants.THEME_INSTRUCTOR_LECTURE_AND_NOTES_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
+              any())).thenReturn(instructorLectureAndNotesWikiPage);
+
+      WikiPage genericContentWikiPage = new WikiPage();
+      genericContentWikiPage.setPageId("2");
+      genericContentWikiPage.setTitle(Constants.THEME_GENERIC_CONTENT_PAGE_TITLE);
+
+      when(courseService.createWikiPage(any(),
+              argThat(wikiPageCreateWrapper ->
+                      wikiPageCreateWrapper != null && Constants.THEME_GENERIC_CONTENT_PAGE_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
+              any())).thenReturn(genericContentWikiPage);
+
+      DiscussionTopic ungradedDiscussionTopic = new DiscussionTopic();
+      ungradedDiscussionTopic.setId("1");
+      ungradedDiscussionTopic.setTitle("[Template] Ungraded Discussion");
+
+      when(discussionService.createDiscussionTopic(any(),
+              argThat(discussionTopic -> "[Template] Ungraded Discussion".equals(discussionTopic.getTitle())),
+              any())).thenReturn(ungradedDiscussionTopic);
+
+      ModuleItem discussionModuleItem = new ModuleItem();
+      discussionModuleItem.setTitle("[Template] Discussion Topic");
+      discussionModuleItem.setType("Discussion");
+      discussionModuleItem.setContentId(ungradedDiscussionTopic.getId());
+      discussionModuleItem.setPosition("4");
+
+      Module modulesTemplatesModule = new Module();
+      modulesTemplatesModule.setId("1");
+      modulesTemplatesModule.setName("Modules Templates");
+
+      when(moduleService.createModule(any(), any(), any())).thenReturn(modulesTemplatesModule);
 
       ThemeLog themeLog = new ThemeLog();
       themeLog.setId(1L);
@@ -355,11 +407,11 @@ public class ThemeProcessingServiceTest {
       AssignmentGroup assignmentGroup = new AssignmentGroup();
       assignmentGroup.setId(1);
 
-      when(assignmentService.createAssignmentGroup(courseId, ThemeProcessingService.ASSIGNMENTS_GROUP_NAME,
+      when(assignmentService.createAssignmentGroup(courseId, Constants.THEME_ASSIGNMENTS_GROUP_NAME,
               CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
               .thenReturn(assignmentGroup);
 
-      when(assignmentService.createAssignmentGroup(courseId, ThemeProcessingService.TEMPLATES_GROUP_NAME,
+      when(assignmentService.createAssignmentGroup(courseId, Constants.THEME_TEMPLATES_GROUP_NAME,
               CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
               .thenReturn(assignmentGroup);
 
@@ -400,11 +452,11 @@ public class ThemeProcessingServiceTest {
       AssignmentGroup assignmentGroup = new AssignmentGroup();
       assignmentGroup.setId(1);
 
-      when(assignmentService.createAssignmentGroup(courseId, ThemeProcessingService.ASSIGNMENTS_GROUP_NAME,
+      when(assignmentService.createAssignmentGroup(courseId, Constants.THEME_ASSIGNMENTS_GROUP_NAME,
               CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
               .thenReturn(assignmentGroup);
 
-      when(assignmentService.createAssignmentGroup(courseId, ThemeProcessingService.TEMPLATES_GROUP_NAME,
+      when(assignmentService.createAssignmentGroup(courseId, Constants.THEME_TEMPLATES_GROUP_NAME,
               CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
               .thenReturn(assignmentGroup);
 
@@ -445,11 +497,11 @@ public class ThemeProcessingServiceTest {
       AssignmentGroup assignmentGroup = new AssignmentGroup();
       assignmentGroup.setId(1);
 
-      when(assignmentService.createAssignmentGroup(courseId, ThemeProcessingService.ASSIGNMENTS_GROUP_NAME,
+      when(assignmentService.createAssignmentGroup(courseId, Constants.THEME_ASSIGNMENTS_GROUP_NAME,
               CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
               .thenReturn(assignmentGroup);
 
-      when(assignmentService.createAssignmentGroup(courseId, ThemeProcessingService.TEMPLATES_GROUP_NAME,
+      when(assignmentService.createAssignmentGroup(courseId, Constants.THEME_TEMPLATES_GROUP_NAME,
               CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
               .thenReturn(assignmentGroup);
 
@@ -548,7 +600,7 @@ public class ThemeProcessingServiceTest {
       List<ThemeContent> newThemeContent = new ArrayList<>();
 
       for (ThemeContent themeContent : themeContents) {
-         if (! themeContent.getName().equals(Constants.THEME_CREATE_TEMPLATE_PAGE_BODY_TEMPLATE_NAME)) {
+         if (! themeContent.getName().equals(Constants.THEME_CREATE_TEMPLATE_INSTRUCTOR_AND_NOTES_PAGE_TEMPLATE_NAME)) {
             newThemeContent.add(themeContent);
          }
       }
@@ -568,7 +620,7 @@ public class ThemeProcessingServiceTest {
 
       Assertions.assertNotNull(nextStepsWikiPage);
       Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
-      Assertions.assertTrue(body.contains("Template Page Creation: Could not find value for theme.template.body.template"));
+      Assertions.assertTrue(body.contains("Template Instructor Lecture and Notes Page Creation: Could not find value for theme.template.instructor.notes.template"));
    }
 
    @Test
@@ -582,7 +634,7 @@ public class ThemeProcessingServiceTest {
       List<ThemeContent> newThemeContent = new ArrayList<>();
 
       for (ThemeContent themeContent : themeContents) {
-         if (! themeContent.getName().equals(Constants.THEME_MODULE_PAGE_BODY_TEMPLATE_NAME)) {
+         if (! themeContent.getName().equals(Constants.THEME_MODULE_OVERVIEW_PAGE_TEMPLATE_NAME)) {
             newThemeContent.add(themeContent);
          }
       }
@@ -602,6 +654,40 @@ public class ThemeProcessingServiceTest {
 
       Assertions.assertNotNull(nextStepsWikiPage);
       Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
-      Assertions.assertTrue(body.contains("Module Page Creation: Could not find value for theme.module.body.template"));
+      Assertions.assertTrue(body.contains("Module Overview Page Creation: Could not find value for theme.module.overview.template"));
+   }
+
+   @Test
+   void testFailure_processSubmit_generic_templateNotFound() throws Exception {
+      final Theme theme = new Theme();
+      theme.setId(2L);
+
+      ThemeModel themeModel = new ThemeModel();
+
+      Iterable<ThemeContent> themeContents = themeContentRepository.findAll();
+      List<ThemeContent> newThemeContent = new ArrayList<>();
+
+      for (ThemeContent themeContent : themeContents) {
+         if (! themeContent.getName().equals(Constants.THEME_GENERIC_CONTENT_PAGE_THEME_NAME)) {
+            newThemeContent.add(themeContent);
+         }
+      }
+
+      reset(themeContentRepository);
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
+
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
+
+      verify(emailService).sendEmail(emailCaptor.capture());
+
+      EmailDetails emailDetails = emailCaptor.getValue();
+      Assertions.assertNotNull(emailDetails);
+
+      final String body = emailDetails.getBody();
+      Assertions.assertNotNull(body);
+
+      Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
+      Assertions.assertTrue(body.contains("Generic Content Page Creation: Could not find value for theme.generic.content.template"));
    }
 }
