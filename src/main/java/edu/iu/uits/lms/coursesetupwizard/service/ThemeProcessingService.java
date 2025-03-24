@@ -380,33 +380,19 @@ public class ThemeProcessingService {
             }
         }
 
-        // 10. Create [Template] Module Overview Page
-        try {
-            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_MODULE_OVERVIEW_PAGE_TEMPLATE_NAME);
-
-            if (textToUse == null) {
-                throw new RuntimeException("Could not find value for " + Constants.THEME_MODULE_OVERVIEW_PAGE_TEMPLATE_NAME);
-            }
-
-            newWikiPage = new WikiPage();
-            newWikiPage.setTitle("[Template] Module Overview");
-            newWikiPage.setPublished(false);
-            newWikiPage.setFrontPage(false);
-            newWikiPage.setBody(textToUse);
-
-            courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
-                    AS_USER_STRING);
-
-            log.info(String.format("Successfully created module overview page for courseId %s", courseId));
-        } catch (Exception e) {
-            exceptionMessages.add("Module Overview Page Creation: " + e.getMessage());
-        }
-
-        // 11. Create a new Module if one with the proper name doesn't already exist in the course
+        // 10. Create a new Module if one with the proper name doesn't already exist in the course.
+        //     If one does exist with that name, use that.
         List<Module> modules = moduleService.getModules(courseId, null);
         String usedModuleId = null;
 
-        if (modules == null || modules.isEmpty()) {
+        for (Module module : modules) {
+            if (Constants.THEME_MODULE_NAME.equalsIgnoreCase(module.getName())) {
+                usedModuleId = module.getId();
+                break;
+            }
+        }
+
+        if (usedModuleId == null) {
             Module newModule = new Module();
             newModule.setName(Constants.THEME_MODULE_NAME);
             newModule.setPosition("1");
@@ -422,17 +408,45 @@ public class ThemeProcessingService {
             } else {
                 usedModuleId = newModule.getId();
             }
-
-        } else { // the course already has modules
-            for (Module module : modules) {
-                if (Constants.THEME_MODULE_NAME.equals(module.getName())) {
-                    usedModuleId = module.getId();
-                    break;
-                }
-            }
         }
 
-        // 12. Create [Template] Instructor Lecture and Notes Page in the module created in step 11
+        // 11. Create [Template] Module Overview Page
+        try {
+            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_MODULE_OVERVIEW_PAGE_TEMPLATE_NAME);
+
+            if (textToUse == null) {
+                throw new RuntimeException("Could not find value for " + Constants.THEME_MODULE_OVERVIEW_PAGE_TEMPLATE_NAME);
+            }
+
+            newWikiPage = new WikiPage();
+            newWikiPage.setTitle(Constants.THEME_MODULE_OVERVIEW_TITLE);
+            newWikiPage.setPublished(false);
+            newWikiPage.setFrontPage(false);
+            newWikiPage.setBody(textToUse);
+
+            courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
+                    AS_USER_STRING);
+
+            ModuleItem moduleOverviewPageModuleItem = new ModuleItem();
+            moduleOverviewPageModuleItem.setTitle(Constants.THEME_MODULE_OVERVIEW_TITLE);
+            moduleOverviewPageModuleItem.setType("Page");
+            moduleOverviewPageModuleItem.setContentId(newWikiPage.getPageId());
+            moduleOverviewPageModuleItem.setPosition("1");
+            moduleOverviewPageModuleItem.setPageUrl("template-module-overview");
+
+            ModuleItemCreateWrapper moduleOverviewPageModuleItemCreateWrapper = new ModuleItemCreateWrapper();
+            moduleOverviewPageModuleItemCreateWrapper.setModuleItem(moduleOverviewPageModuleItem);
+
+            moduleService.createModuleItem(courseId, usedModuleId, moduleOverviewPageModuleItemCreateWrapper,
+                    AS_USER_STRING);
+
+            log.info(String.format("Successfully created module overview page for courseId %s", courseId));
+        } catch (Exception e) {
+            exceptionMessages.add("Module Overview Page Creation: " + e.getMessage());
+        }
+
+
+        // 12. Create [Template] Instructor Lecture and Notes Page in the module created in step 10
         try {
             textToUse = freemarkerProcessedTextMap.get(Constants.THEME_CREATE_TEMPLATE_INSTRUCTOR_AND_NOTES_PAGE_TEMPLATE_NAME);
 
@@ -468,7 +482,7 @@ public class ThemeProcessingService {
             exceptionMessages.add("Template Instructor Lecture and Notes Page Creation: " + e.getMessage());
         }
 
-        // 13. Create [Template] Generic Content Page in the module created in step 11
+        // 13. Create [Template] Generic Content Page in the module created in step 10
         try {
             textToUse = freemarkerProcessedTextMap.get(Constants.THEME_GENERIC_CONTENT_PAGE_THEME_NAME);
 
@@ -505,7 +519,7 @@ public class ThemeProcessingService {
             exceptionMessages.add("Generic Content Page Creation: " + e.getMessage());
         }
 
-        //  14. Create ungraded discussion item in the module created in step 11
+        //  14. Create ungraded discussion item in the module created in step 10
         try {
             textToUse = freemarkerProcessedTextMap.get(Constants.THEME_DISCUSSION_TOPIC_MESSAGE_TEMPLATE_NAME);
 
