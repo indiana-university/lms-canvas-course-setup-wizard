@@ -459,7 +459,7 @@ public class ThemeProcessingService {
         }
 
 
-        // 12. Create [Template] Instructor Lecture and Notes Page in the module created in step 10
+        // 12. Create [Template] Instructor Lecture and Notes Page in the module created in step 5
         try {
             textToUse = freemarkerProcessedTextMap.get(Constants.THEME_CREATE_TEMPLATE_INSTRUCTOR_AND_NOTES_PAGE_TEMPLATE_NAME);
 
@@ -495,7 +495,7 @@ public class ThemeProcessingService {
             exceptionMessages.add("Template Instructor Lecture and Notes Page Creation: " + e.getMessage());
         }
 
-        // 13. Create [Template] Generic Content Page in the module created in step 10
+        // 13. Create [Template] Generic Content Page in the module created in step 5
         try {
             textToUse = freemarkerProcessedTextMap.get(Constants.THEME_GENERIC_CONTENT_PAGE_THEME_NAME);
 
