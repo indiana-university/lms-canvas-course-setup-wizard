@@ -234,7 +234,37 @@ public class ThemeProcessingService {
             exceptionMessages.add("Update Syllabus: " + e.getMessage());
         }
 
-        //  5. Create Assignment Groups - these will be used by the end user later when interacting with the Multi-tool
+        // 5. Create a new Module if one with the proper name doesn't already exist in the course.
+        //     If one does exist with that name, use that.
+        List<Module> modules = moduleService.getModules(courseId, null);
+        String usedModuleId = null;
+
+        for (Module module : modules) {
+            if (Constants.THEME_MODULE_NAME.equalsIgnoreCase(module.getName())) {
+                usedModuleId = module.getId();
+                break;
+            }
+        }
+
+        if (usedModuleId == null) {
+            Module newModule = new Module();
+            newModule.setName(Constants.THEME_MODULE_NAME);
+            newModule.setPosition("1");
+
+            ModuleCreateWrapper newModuleCreateWrapper = new ModuleCreateWrapper();
+            newModuleCreateWrapper.setModule(newModule);
+
+            newModule = moduleService.createModule(courseId, newModuleCreateWrapper,
+                    AS_USER_STRING);
+
+            if (newModule == null || newModule.getId() == null) {
+                exceptionMessages.add("Could not create new module");
+            } else {
+                usedModuleId = newModule.getId();
+            }
+        }
+
+        //  6. Create Assignment Groups - these will be used by the end user later when interacting with the Multi-tool
         AssignmentGroup assignmentGroup = null;
 
         // See if Assignment Group named Assignments already exists.  If not, create it.
@@ -287,7 +317,7 @@ public class ThemeProcessingService {
         }
 
         if (assignmentGroup != null && assignmentGroup.getId() != null) {
-            //  6. Create assignment in the Templates assignment group in the Assignments tool.
+            //  7. Create assignment in the Templates assignment group in the Assignments tool as well as in the module created in step 5
             Assignment assignment;
 
             try {
@@ -302,7 +332,20 @@ public class ThemeProcessingService {
                 assignment.setAssignmentGroupId(assignmentGroup.getId());
                 assignment.setDescription(textToUse);
 
-                assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment),
+                assignment = assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment),
+                        AS_USER_STRING);
+
+                ModuleItem moduleAssignmentModuleItem = new ModuleItem();
+                moduleAssignmentModuleItem.setTitle(assignment.getName());
+                moduleAssignmentModuleItem.setType("Assignment");
+                moduleAssignmentModuleItem.setContentId(assignment.getId());
+                moduleAssignmentModuleItem.setPosition("5");
+                moduleAssignmentModuleItem.setPageUrl("template-assignment");
+
+                ModuleItemCreateWrapper moduleOverviewPageModuleItemCreateWrapper = new ModuleItemCreateWrapper();
+                moduleOverviewPageModuleItemCreateWrapper.setModuleItem(moduleAssignmentModuleItem);
+
+                moduleService.createModuleItem(courseId, usedModuleId, moduleOverviewPageModuleItemCreateWrapper,
                         AS_USER_STRING);
 
                 log.info(String.format("Successfully created Assignment for courseId %s", courseId));
@@ -310,7 +353,7 @@ public class ThemeProcessingService {
                 exceptionMessages.add("Assignment Creation: " + e.getMessage());
             }
 
-            //  7. Create graded discussion in the Templates assignment group in the Assignments tool
+            //  8. Create graded discussion in the Templates assignment group in the Assignments tool
             try {
                 textToUse = freemarkerProcessedTextMap.get(Constants.THEME_GRADED_ASSIGNMENT_DESCRIPTION_TEMPLATE_NAME);
 
@@ -332,7 +375,7 @@ public class ThemeProcessingService {
                 exceptionMessages.add("Graded Assignment Creation: " + e.getMessage());
             }
 
-            //  8. Create quiz in the Templates assignment group in the Assignments tool
+            //  9. Create quiz in the Templates assignment group in the Assignments tool
             try {
                 textToUse = freemarkerProcessedTextMap.get(Constants.THEME_QUIZ_DESCRIPTION_TEMPLATE_NAME);
 
@@ -355,7 +398,7 @@ public class ThemeProcessingService {
             }
         }
 
-        // 9. Create items in the Announcements tool (step 9 in Lynn’s stuff) ** still being worked on
+        // 10. Create items in the Announcements tool (step 9 in Lynn’s stuff) ** still being worked on
         if (themeModel != null && themeModel.getIncludeGuidance() != null && themeModel.getIncludeGuidance()) {
             try {
                 textToUse = freemarkerProcessedTextMap.get(Constants.THEME_ANNOUNCEMENT_MESSAGE_TEMPLATE_NAME);
@@ -377,36 +420,6 @@ public class ThemeProcessingService {
                 log.info(String.format("Successfully created Announcement for courseId %s", courseId));
             } catch (Exception e) {
                 exceptionMessages.add("Announcement Creation: " + e.getMessage());
-            }
-        }
-
-        // 10. Create a new Module if one with the proper name doesn't already exist in the course.
-        //     If one does exist with that name, use that.
-        List<Module> modules = moduleService.getModules(courseId, null);
-        String usedModuleId = null;
-
-        for (Module module : modules) {
-            if (Constants.THEME_MODULE_NAME.equalsIgnoreCase(module.getName())) {
-                usedModuleId = module.getId();
-                break;
-            }
-        }
-
-        if (usedModuleId == null) {
-            Module newModule = new Module();
-            newModule.setName(Constants.THEME_MODULE_NAME);
-            newModule.setPosition("1");
-
-            ModuleCreateWrapper newModuleCreateWrapper = new ModuleCreateWrapper();
-            newModuleCreateWrapper.setModule(newModule);
-
-            newModule = moduleService.createModule(courseId, newModuleCreateWrapper,
-                    AS_USER_STRING);
-
-            if (newModule == null || newModule.getId() == null) {
-                exceptionMessages.add("Could not create new module");
-            } else {
-                usedModuleId = newModule.getId();
             }
         }
 
@@ -446,7 +459,7 @@ public class ThemeProcessingService {
         }
 
 
-        // 12. Create [Template] Instructor Lecture and Notes Page in the module created in step 10
+        // 12. Create [Template] Instructor Lecture and Notes Page in the module created in step 5
         try {
             textToUse = freemarkerProcessedTextMap.get(Constants.THEME_CREATE_TEMPLATE_INSTRUCTOR_AND_NOTES_PAGE_TEMPLATE_NAME);
 
@@ -482,7 +495,7 @@ public class ThemeProcessingService {
             exceptionMessages.add("Template Instructor Lecture and Notes Page Creation: " + e.getMessage());
         }
 
-        // 13. Create [Template] Generic Content Page in the module created in step 10
+        // 13. Create [Template] Generic Content Page in the module created in step 5
         try {
             textToUse = freemarkerProcessedTextMap.get(Constants.THEME_GENERIC_CONTENT_PAGE_THEME_NAME);
 
@@ -519,7 +532,7 @@ public class ThemeProcessingService {
             exceptionMessages.add("Generic Content Page Creation: " + e.getMessage());
         }
 
-        //  14. Create ungraded discussion item in the module created in step 10
+        //  14. Create ungraded discussion item in the module created in step 5
         try {
             textToUse = freemarkerProcessedTextMap.get(Constants.THEME_DISCUSSION_TOPIC_MESSAGE_TEMPLATE_NAME);
 
