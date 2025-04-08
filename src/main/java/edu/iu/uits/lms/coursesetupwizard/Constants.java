@@ -99,7 +99,7 @@ public class Constants {
     public final static String THEME_WIZARD_NEXT_STEPS_TITLE = "Wizard Next Steps";
     public final static String THEME_ASSIGNMENTS_GROUP_NAME = "Assignments";
     public final static String THEME_TEMPLATES_GROUP_NAME = "Templates";
-    public final static String THEME_MODULE_NAME = "Modules Templates";
+    public final static String THEME_MODULE_NAME = "Module Templates";
     public final static String THEME_MODULE_OVERVIEW_TITLE = "[Template] Module Overview";
     public final static String THEME_INSTRUCTOR_LECTURE_AND_NOTES_TITLE = "[Template] Instructor Lecture and Notes";
     public final static String THEME_GENERIC_CONTENT_PAGE_TITLE = "[Template] Generic Content Page";

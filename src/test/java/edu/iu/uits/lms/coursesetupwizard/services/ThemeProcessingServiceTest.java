@@ -141,7 +141,6 @@ public class ThemeProcessingServiceTest {
    private final String courseId = "12345";
    private final String userToCreateAs = "me";
    private final String nextStepsWikiPageId = "10";
-   private final String moduleOverviewWikiPageId = "11";
 
    @BeforeEach
    public void globalMocks() throws Exception {
@@ -242,7 +241,7 @@ public class ThemeProcessingServiceTest {
 
       Module modulesTemplatesModule = new Module();
       modulesTemplatesModule.setId("1");
-      modulesTemplatesModule.setName("Modules Templates");
+      modulesTemplatesModule.setName(Constants.THEME_MODULE_NAME);
 
       when(moduleService.createModule(any(), any(), any())).thenReturn(modulesTemplatesModule);
 
