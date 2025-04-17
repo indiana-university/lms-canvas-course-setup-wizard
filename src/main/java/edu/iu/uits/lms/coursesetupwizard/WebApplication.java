@@ -57,7 +57,7 @@ import java.util.Date;
 @SpringBootApplication
 @Slf4j
 @EnableLtiClient(toolKeys = {"lms_coursesetupwizard", "lms_coursesetupwizard_admin"})
-@EnableGlobalErrorHandler
+//@EnableGlobalErrorHandler
 @EnableCanvasClient
 @EnableIuOnlyClient
 @EnableEmailClient
