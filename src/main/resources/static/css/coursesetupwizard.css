@@ -132,4 +132,8 @@ table.dataTable thead > tr > th button {
     outline: none;
 }
 
+#preview-container img {
+    width: 100%;
+}
+
 
