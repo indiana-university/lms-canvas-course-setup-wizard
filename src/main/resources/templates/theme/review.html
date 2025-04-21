@@ -66,8 +66,8 @@
                 <dd th:text="${includeGuidance} ? 'Yes' : 'No'">YES</dd>
             </dl>
 
-            <h3>Full preview</h3>
-            <div id="preview-container" class="rvt-m-top-md">
+            <h3 class="rvt-m-top-md">Full preview</h3>
+            <div id="preview-container">
                 <!-- normal markup will be 3-4 images stacked on top of each other to mimick the choices made throughout -->
                 <img id="theme-preview" th:src="${justBannerImagePreviewUrl}" class="rvt-m-top-sm"
                      th:alt="${justBannerImageAltText}" />
