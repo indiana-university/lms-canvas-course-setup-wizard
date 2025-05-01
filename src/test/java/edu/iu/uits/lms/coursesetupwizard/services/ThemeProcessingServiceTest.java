@@ -432,6 +432,9 @@ public class ThemeProcessingServiceTest {
 
    @Test
    @Disabled
+   /*
+   This test is disabled until we re-enable the step: "Create graded discussion in the Templates assignment group in the Assignments tool"
+    */
    void testFailure_processSubmit_graded_assignment_templateNotFound() throws Exception {
       final Theme theme = new Theme();
       theme.setId(2L);
