@@ -354,26 +354,27 @@ public class ThemeProcessingService {
             }
 
             //  8. Create graded discussion in the Templates assignment group in the Assignments tool
-            try {
-                textToUse = freemarkerProcessedTextMap.get(Constants.THEME_GRADED_ASSIGNMENT_DESCRIPTION_TEMPLATE_NAME);
-
-                if (textToUse == null) {
-                    throw new RuntimeException("Could not find value for " + Constants.THEME_GRADED_ASSIGNMENT_DESCRIPTION_TEMPLATE_NAME);
-                }
-
-                assignment = new Assignment();
-                assignment.setName("[Template] Graded Discussion");
-                assignment.setAssignmentGroupId(assignmentGroup.getId());
-                assignment.setSubmissionTypes(List.of("discussion_topic"));
-                assignment.setDescription(textToUse);
-
-                assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment),
-                        AS_USER_STRING);
-
-                log.info(String.format("Successfully created Graded discussion Assignment for courseId %s", courseId));
-            } catch (Exception e) {
-                exceptionMessages.add("Graded Assignment Creation: " + e.getMessage());
-            }
+            // NOTE!!!! If we decide to re-enable this, also re-enable the test testFailure_processSubmit_graded_assignment_templateNotFound()
+//            try {
+//                textToUse = freemarkerProcessedTextMap.get(Constants.THEME_GRADED_ASSIGNMENT_DESCRIPTION_TEMPLATE_NAME);
+//
+//                if (textToUse == null) {
+//                    throw new RuntimeException("Could not find value for " + Constants.THEME_GRADED_ASSIGNMENT_DESCRIPTION_TEMPLATE_NAME);
+//                }
+//
+//                assignment = new Assignment();
+//                assignment.setName("[Template] Graded Discussion");
+//                assignment.setAssignmentGroupId(assignmentGroup.getId());
+//                assignment.setSubmissionTypes(List.of("discussion_topic"));
+//                assignment.setDescription(textToUse);
+//
+//                assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment),
+//                        AS_USER_STRING);
+//
+//                log.info(String.format("Successfully created Graded discussion Assignment for courseId %s", courseId));
+//            } catch (Exception e) {
+//                exceptionMessages.add("Graded Assignment Creation: " + e.getMessage());
+//            }
 
             //  9. Create quiz in the Templates assignment group in the Assignments tool
             try {
@@ -541,7 +542,7 @@ public class ThemeProcessingService {
             }
 
             DiscussionTopic discussionTopic = new DiscussionTopic();
-            discussionTopic.setTitle("[Template] Ungraded Discussion");
+            discussionTopic.setTitle("[Template] Discussion Topic");
             discussionTopic.setMessage(textToUse);
             discussionTopic.setDiscussionType(DiscussionTopic.TYPE.THREADED);
             discussionTopic.setDelayedPostAt(Constants.THEME_DELAYED_POST_AT_STRING);
