@@ -119,7 +119,7 @@
                 <div class="[ rvt-m-top-xl ]">
                     <button class="rvt-button rvt-button--secondary loading-btn" name="action" id="restart-wizard"
                             th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">
-                        <span th:replace="fragments.html :: loadingButton(buttonText='Restart Wizard', srText='Restarting wizard')"></span>
+                        <span th:replace="~{fragments.html :: loadingButton(buttonText='Restart Wizard', srText='Restarting wizard')}"></span>
                     </button>
                 </div>
 

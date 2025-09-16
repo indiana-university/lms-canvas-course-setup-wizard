@@ -43,11 +43,11 @@
 <body class="rvt-layout">
 <div layout:fragment="content">
 
-  <div th:insert="import/wizardSteps.html :: steps(currentStep=1)"></div>
+  <div th:insert="~{import/wizardSteps.html :: steps(currentStep=1)}"></div>
 
   <div class="rvt-row rvt-p-top-md">
     <div class="rvt-cols-8-md rvt-flow rvt-prose">
-      <div th:if="${noImportSelected}" th:insert="fragments.html :: noImportSelected"></div>
+      <div th:if="${noImportSelected}" th:insert="~{fragments.html :: noImportSelected}"></div>
       <h2 id="page-title" class="rvt-ts-23 rvt-p-bottom-xs">Select course</h2>
       <form id="wizard-form-course" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
         <fieldset class="rvt-fieldset">
@@ -57,12 +57,12 @@
 
           <!-- The below container div will dynamically be replaced by a react component with a label and select input -->
           <div id="react_select_container"></div>
-          <div th:insert="fragments.html :: selectAlert"></div>
+          <div th:insert="~{fragments.html :: selectAlert}"></div>
           <input type="hidden" name="currentPage" value="1">
 
         </fieldset>
 
-        <div th:insert="import/wizardSteps.html :: buttons(nextOnclick='return selectCourseSubmit(this);')"></div>
+        <div th:insert="~{import/wizardSteps.html :: buttons(nextOnclick='return selectCourseSubmit(this);')}"></div>
       </form>
     </div>
   </div>

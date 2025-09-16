@@ -61,21 +61,21 @@
     <div class="rvt-button-group [ rvt-m-top-xl ]">
         <button class="rvt-button rvt-button--secondary loading-btn" name="action" id="back-btn"
                 th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_BACK}">
-            <span th:replace="fragments.html :: loadingButton(buttonText='Back', srText='Loading previous step')"></span>
+            <span th:replace="~{fragments.html :: loadingButton(buttonText='Back', srText='Loading previous step')}"></span>
         </button>
         <button th:unless="${isSubmit}" class="rvt-button" name="action" th:attr="onclick=${nextOnclick != null} ? |${nextOnclick}| : 'applyLoadingButton(this);'"
                 th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_NEXT}" id="next-step">
-            <span th:replace="fragments.html :: loadingButton(buttonText='Next', srText='Loading next step')"></span>
+            <span th:replace="~{fragments.html :: loadingButton(buttonText='Next', srText='Loading next step')}"></span>
         </button>
         <button th:if="${isSubmit}" class="rvt-button loading-btn" name="action" id="submit-btn"
                 th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_SUBMIT}">
-            <span th:replace="fragments.html :: loadingButton(buttonText='Submit', srText='Initiating import. Redirecting to the Import Content Tool.')"></span>
+            <span th:replace="~{fragments.html :: loadingButton(buttonText='Submit', srText='Initiating import. Redirecting to the Import Content Tool.')}"></span>
         </button>
     </div>
     <div class="[ rvt-m-top-xl ]">
         <button class="rvt-button rvt-button--secondary loading-btn" name="action" id="restart-wizard"
                 th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">
-            <span th:replace="fragments.html :: loadingButton(buttonText='Restart Wizard', srText='Restarting wizard')"></span>
+            <span th:replace="~{fragments.html :: loadingButton(buttonText='Restart Wizard', srText='Restarting wizard')}"></span>
         </button>
     </div>
 </div>

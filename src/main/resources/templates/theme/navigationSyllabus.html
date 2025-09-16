@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Course Setup Wizard - Include navigation</title>
+</head>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+    <div th:insert="~{theme/wizardSteps.html :: steps(currentStep=4)}"></div>
+
+    <div class="rvt-row rvt-p-top-md">
+        <div class="rvt-cols-8-md rvt-flow rvt-prose">
+            <h2 id="page-title">Include navigation</h2>
+
+            <span id="sr-msg" class="rvt-sr-only" aria-live="polite"></span>
+
+            <p>
+                You have the option to include navigational elements with your course. The navigation
+                appears beneath the banner image in the example below. It has four quick links that say
+                "Start Here", "Syllabus", "Modules", and "Resources". The link names may be changed. Review the
+                Wizard Next Steps page for detailed instructions or contact your
+                <a href="https://servicenow.iu.edu/kb?id=kb_article_view&sysparm_article=KB0024374" target="_blank" rel="noopener noreferrer" aria-describedby="sr-new-window">campus teaching and learning center <rvt-icon name="link-external"></rvt-icon></a>
+                for assistance.
+            </p>
+            <p>
+                Example:
+                <img th:src="${exampleNavigationUrl}" th:alt="${exampleNavigationAltText}" />
+            </p>
+            <form id="wizard-theme-form-submit" th:object="${themeForm}" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+                <div th:if="${showCopyHomePageCheckbox}" class="rvt-m-top-md">
+                    <div class="rvt-checkbox">
+                        <input type="checkbox" name="copy-homepage" id="copy-homepage-checkbox">
+                        <label for="copy-homepage-checkbox">Use same buttons from Home Page for Syllabus?</label>
+                    </div>
+                </div>
+                <fieldset class="rvt-fieldset rvt-m-top-md">
+                    <legend>How many buttons on the navigation would you like for the syllabus?</legend>
+                    <ul class="rvt-list-plain">
+                        <li>
+                            <div class="rvt-radio">
+                                <input type="radio" th:field="*{navigationSyllabusNumber}" name="navigation-syllabus-selection" id="navigation-syllabus-selection-2" value="2">
+                                <label for="navigation-syllabus-selection-2">2</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="rvt-radio">
+                                <input type="radio" th:field="*{navigationSyllabusNumber}" name="navigation-syllabus-selection" id="navigation-syllabus-selection-3" value="3">
+                                <label for="navigation-syllabus-selection-3">3</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="rvt-radio">
+                                <input type="radio" th:field="*{navigationSyllabusNumber}" name="navigation-syllabus-selection" id="navigation-syllabus-selection-4" value="4">
+                                <label for="navigation-syllabus-selection-4">4</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="rvt-radio">
+                                <input type="radio" th:field="*{navigationSyllabusNumber}" name="navigation-syllabus-selection" id="navigation-syllabus-selection-6" value="6">
+                                <label for="navigation-syllabus-selection-6">6</label>
+                            </div>
+                        </li>
+                    </ul>
+                </fieldset>
+
+                <div class="rvt-m-top-md">
+                    <span>Assign labels for each of the syllabus buttons. This will automatically link to the corresponding pages in Canvas.</span>
+                </div>
+                <div th:insert="~{fragments.html :: selectAlert (message='All button labels must have a selection.')}"></div>
+                <div th:insert="~{fragments.html :: selectAlert2 (message='Button labels must be unique.')}"></div>
+                <table class="rvt-table-plain table-width-override rvt-m-top-md">
+                    <caption class="rvt-sr-only">Table of inputs for syllabus button selections</caption>
+                    <thead>
+                    <tr>
+                        <th scope="col" id="syllabus-button-header">Syllabus button</th>
+                        <th scope="col" id="syllabus-button-label-header">Button label</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr id="button-row-1">
+                        <th scope="row" id="button1">Button 1</th>
+                        <td>
+                            <select id="syllabus-button1" th:field="*{navigationSyllabusButtonLabels[0]}" class="rvt-select" th:aria-labelledby="|button1 syllabus-button-label-header|">
+                                <option value="">---</option>
+                                <option value="Home">Home</option>
+                                <option value="Syllabus">Syllabus</option>
+                                <option value="Getting Started">Getting Started</option>
+                                <option value="Modules">Modules</option>
+                                <option value="Schedule/Calendar">Schedule/Calendar</option>
+                                <option value="Sixth Option TBD">Sixth Option TBD</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="button-row-2">
+                        <th scope="row" id="button2">Button 2</th>
+                        <td>
+                            <select id="syllabus-button2" th:field="*{navigationSyllabusButtonLabels[1]}" class="rvt-select" th:aria-labelledby="|button2 syllabus-button-label-header|">
+                                <option value="">---</option>
+                                <option value="Home">Home</option>
+                                <option value="Syllabus">Syllabus</option>
+                                <option value="Getting Started">Getting Started</option>
+                                <option value="Modules">Modules</option>
+                                <option value="Schedule/Calendar">Schedule/Calendar</option>
+                                <option value="Sixth Option TBD">Sixth Option TBD</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="button-row-3">
+                        <th scope="row" id="button3">Button 3</th>
+                        <td>
+                            <select id="syllabus-button3" th:field="*{navigationSyllabusButtonLabels[2]}" class="rvt-select" th:aria-labelledby="|button3 syllabus-button-label-header|">
+                                <option value="">---</option>
+                                <option value="Home">Home</option>
+                                <option value="Syllabus">Syllabus</option>
+                                <option value="Getting Started">Getting Started</option>
+                                <option value="Modules">Modules</option>
+                                <option value="Schedule/Calendar">Schedule/Calendar</option>
+                                <option value="Sixth Option TBD">Sixth Option TBD</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="button-row-4">
+                        <th scope="row" id="button4">Button 4</th>
+                        <td>
+                            <select id="syllabus-button4" th:field="*{navigationSyllabusButtonLabels[3]}" class="rvt-select" th:aria-labelledby="|button4 syllabus-button-label-header|">
+                                <option value="">---</option>
+                                <option value="Home">Home</option>
+                                <option value="Syllabus">Syllabus</option>
+                                <option value="Getting Started">Getting Started</option>
+                                <option value="Modules">Modules</option>
+                                <option value="Schedule/Calendar">Schedule/Calendar</option>
+                                <option value="Sixth Option TBD">Sixth Option TBD</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="button-row-5">
+                        <th scope="row" id="button5">Button 5</th>
+                        <td>
+                            <select id="syllabus-button5" th:field="*{navigationSyllabusButtonLabels[4]}" class="rvt-select" th:aria-labelledby="|button5 syllabus-button-label-header|">
+                                <option value="">---</option>
+                                <option value="Home">Home</option>
+                                <option value="Syllabus">Syllabus</option>
+                                <option value="Getting Started">Getting Started</option>
+                                <option value="Modules">Modules</option>
+                                <option value="Schedule/Calendar">Schedule/Calendar</option>
+                                <option value="Sixth Option TBD">Sixth Option TBD</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="button-row-6">
+                        <th scope="row" id="button6">Button 6</th>
+                        <td>
+                            <select id="syllabus-button6" th:field="*{navigationSyllabusButtonLabels[5]}" class="rvt-select" th:aria-labelledby="|button6 syllabus-button-label-header|">
+                                <option value="">---</option>
+                                <option value="Home">Home</option>
+                                <option value="Syllabus">Syllabus</option>
+                                <option value="Getting Started">Getting Started</option>
+                                <option value="Modules">Modules</option>
+                                <option value="Schedule/Calendar">Schedule/Calendar</option>
+                                <option value="Sixth Option TBD">Sixth Option TBD</option>
+                            </select>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <input type="hidden" name="currentPage" value="6">
+                <div th:insert="~{theme/wizardSteps.html :: buttons(nextOnclick='return selectNavigationSyllabusSubmit(this);')}"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+            const themeModel = /*[[${themeForm}]]*/;
+        /*]]>*/
+    </script>
+    <script type="text/javascript" th:src="@{/app/js/theme/selectNavigationSyllabus.js}"></script>
+</th:block>
+</body>
+</html>

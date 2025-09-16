@@ -36,6 +36,7 @@ package edu.iu.uits.lms.coursesetupwizard.model;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 public class ThemeModel implements Serializable {
@@ -45,5 +46,9 @@ public class ThemeModel implements Serializable {
     private String bannerImageCategoryId;
     private Boolean includeNavigation;
     private Boolean includeGuidance;
-
+    private String navigationOption;
+    private Long navigationHomeNumber;
+    private List<String> navigationHomeButtonLabels;
+    private Long navigationSyllabusNumber;
+    private List<String> navigationSyllabusButtonLabels;
 }

@@ -43,14 +43,14 @@
 <body class="rvt-layout">
 <div layout:fragment="content">
 
-  <div th:insert="import/wizardSteps.html :: steps(currentStep=2)"></div>
+  <div th:insert="~{import/wizardSteps.html :: steps(currentStep=2)}"></div>
 
   <div class="rvt-row rvt-p-top-md">
     <div class="rvt-cols-8-md rvt-flow rvt-prose">
       <h2 id="page-title">Select content</h2>
       <form id="wizard-form-content" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
 
-        <div class="rvt-p-bottom-xs" th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
+        <div class="rvt-p-bottom-xs" th:insert="~{fragments.html :: importFromCourse(courseName=${selectedCourseLabel})}"></div>
 
         <fieldset class="rvt-fieldset">
           <legend>
@@ -81,11 +81,11 @@
               </div>
             </li>
           </ul>
-          <div th:insert="fragments.html :: selectAlert"></div>
+          <div th:insert="~{fragments.html :: selectAlert}"></div>
           <input type="hidden" name="currentPage" value="2">
         </fieldset>
 
-        <div th:insert="import/wizardSteps.html :: buttons(nextOnclick='return selectContentSubmit(this);')"></div>
+        <div th:insert="~{import/wizardSteps.html :: buttons(nextOnclick='return selectContentSubmit(this);')}"></div>
 
       </form>
     </div>

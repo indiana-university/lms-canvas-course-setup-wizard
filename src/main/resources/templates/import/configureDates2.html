@@ -43,13 +43,13 @@
 <body class="rvt-layout">
 <div layout:fragment="content">
 
-  <div th:insert="import/wizardSteps.html :: steps(currentStep=3)"></div>
+  <div th:insert="~{import/wizardSteps.html :: steps(currentStep=3)}"></div>
 
   <div class="rvt-row rvt-p-top-md">
     <div class="rvt-cols-8-md rvt-flow rvt-prose">
       <h2 id="page-title">Adjust dates</h2>
 
-        <div th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
+        <div th:insert="~{fragments.html :: importFromCourse(courseName=${selectedCourseLabel})}"></div>
 
         <p>You have opted to adjust dates during the import.</p>
         <p>
@@ -67,20 +67,20 @@
       <form id="wizard-form-dates2" th:action="@{|/app/import/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
         <div class="rvt-container-xl">
             <div class="rvt-row rvt-p-top-sm">
-                <div class="rvt-cols-6-md" th:insert="datepicker.html :: datePicker(${selectedClassDates?.origFirst}, 'original-first','date-format','classDates.origFirst', 'Original first day of class', ${origStartError})"></div>
-                <div class="rvt-cols-6-md" th:insert="datepicker.html :: datePicker(${selectedClassDates?.origLast}, 'original-last','date-format','classDates.origLast', 'Original last day of class', ${origLastError})"></div>
+                <div class="rvt-cols-6-md" th:insert="~{datepicker.html :: datePicker(${selectedClassDates?.origFirst}, 'original-first','date-format','classDates.origFirst', 'Original first day of class', ${origStartError})}"></div>
+                <div class="rvt-cols-6-md" th:insert="~{datepicker.html :: datePicker(${selectedClassDates?.origLast}, 'original-last','date-format','classDates.origLast', 'Original last day of class', ${origLastError})}"></div>
             </div>
 
             <div class="rvt-row rvt-p-top-md">
-                <div class="rvt-cols-6-md" th:insert="datepicker.html :: datePicker(${selectedClassDates?.currentFirst}, 'current-first','date-format','classDates.currentFirst', 'Current first day of class', ${currentStartError})"></div>
-                <div class="rvt-cols-6-md" th:insert="datepicker.html :: datePicker(${selectedClassDates?.currentLast}, 'current-last','date-format','classDates.currentLast', 'Current last day of class', ${currentLastError})"></div>
+                <div class="rvt-cols-6-md" th:insert="~{datepicker.html :: datePicker(${selectedClassDates?.currentFirst}, 'current-first','date-format','classDates.currentFirst', 'Current first day of class', ${currentStartError})}"></div>
+                <div class="rvt-cols-6-md" th:insert="~{datepicker.html :: datePicker(${selectedClassDates?.currentLast}, 'current-last','date-format','classDates.currentLast', 'Current last day of class', ${currentLastError})}"></div>
             </div>
         </div>
 
         <span hidden id="date-format">MM/DD/YYYY format</span>
 
         <input type="hidden" name="currentPage" value="4">
-        <div th:insert="import/wizardSteps.html :: buttons"></div>
+        <div th:insert="~{import/wizardSteps.html :: buttons}"></div>
 
       </form>
     </div>

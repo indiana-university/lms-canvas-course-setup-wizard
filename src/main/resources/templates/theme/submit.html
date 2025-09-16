@@ -44,7 +44,7 @@
 <body class="rvt-layout">
 <div layout:fragment="content">
 
-    <div th:insert="theme/wizardSteps.html :: steps(currentStep=${themeSteps.size()})"></div>
+    <div th:insert="~{theme/wizardSteps.html :: steps(currentStep=${themeSteps.size()})}"></div>
 
     <div class="rvt-row rvt-p-top-md">
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
@@ -66,8 +66,8 @@
             </p>
 
             <form id="wizard-form-submit" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="currentPage" value="7">
-                <div th:insert="theme/wizardSteps.html :: buttons(isSubmit=true)"></div>
+                <input type="hidden" name="currentPage" value="9">
+                <div th:insert="~{theme/wizardSteps.html :: buttons(isSubmit=true)}"></div>
             </form>
         </div>
     </div>

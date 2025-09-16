@@ -48,7 +48,7 @@
   <div class="rvt-row rvt-p-top-md">
     <div class="rvt-cols-8-md rvt-flow rvt-prose">
       <h2 id="page-title">Review and submit</h2>
-      <div th:insert="fragments.html :: importFromCourse(courseName=${selectedCourseLabel})"></div>
+      <div th:insert="~{fragments.html :: importFromCourse(courseName=${selectedCourseLabel})}"></div>
 
       <th:block th:if="${selectedContentOption == T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).ALL.name() ||
                            selectedContentOption == T(edu.iu.uits.lms.coursesetupwizard.Constants.CONTENT_OPTION).ALL_WITH_BLUEPRINT_SETTINGS.name()}">

@@ -45,7 +45,7 @@
 
     <div class="rvt-row rvt-p-top-md">
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
-            <div th:if="${submitError}" th:insert="fragments.html :: submitError"></div>
+            <div th:if="${submitError}" th:insert="~{fragments.html :: submitError}"></div>
             <h2 id="page-title">Review and submit</h2>
             <form id="wizard-form-review" th:action="@{|/app/template/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
                 <div class="rvt-alert rvt-alert--info rvt-m-top-md" id="template-warning">
@@ -77,17 +77,17 @@
                 <div class="rvt-button-group [ rvt-m-top-xl ]">
                     <button class="rvt-button rvt-button--secondary loading-btn" name="action" id="back-btn"
                             th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_BACK}">
-                        <span th:replace="fragments.html :: loadingButton(buttonText='Back', srText='Loading previous page')"></span>
+                        <span th:replace="~{fragments.html :: loadingButton(buttonText='Back', srText='Loading previous page')}"></span>
                     </button>
                     <button class="rvt-button loading-btn" name="action" id="submit-btn"
                             th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_SUBMIT}">
-                        <span th:replace="fragments.html :: loadingButton(buttonText='Submit', srText='Applying template. Redirecting to the Import Content Tool.')"></span>
+                        <span th:replace="~{fragments.html :: loadingButton(buttonText='Submit', srText='Applying template. Redirecting to the Import Content Tool.')}"></span>
                     </button>
                 </div>
                 <div class="[ rvt-m-top-xl ]">
                     <button class="rvt-button rvt-button--secondary loading-btn" name="action" id="restart-wizard"
                             th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_HOME}">
-                        <span th:replace="fragments.html :: loadingButton(buttonText='Restart Wizard', srText='Restarting wizard')"></span>
+                        <span th:replace="~{fragments.html :: loadingButton(buttonText='Restart Wizard', srText='Restarting wizard')}"></span>
                     </button>
                 </div>
             </form>

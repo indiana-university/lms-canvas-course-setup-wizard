@@ -44,7 +44,7 @@
 <body class="rvt-layout">
 <div layout:fragment="content">
 
-    <div th:insert="theme/wizardSteps.html :: steps(currentStep=3)"></div>
+    <div th:insert="~{theme/wizardSteps.html :: steps(currentStep=3)}"></div>
 
     <div class="rvt-row rvt-p-top-md">
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
@@ -97,14 +97,14 @@
                             <span th:text="'Image options for ' + ${bannerImageCategories.get(0).name}"></span>
                             <span> Required</span>
                         </legend>
-                        <div th:insert="fragments.html :: selectAlert (message='Select a banner image to continue.')"></div>
+                        <div th:insert="~{fragments.html :: selectAlert (message='Select a banner image to continue.')}"></div>
                         <!-- ul will be filled by javascript on pulldown change -->
                         <ul id="image-ul" class="rvt-list-plain">
                         </ul>
                     </fieldset>
                 </div>
                 <input type="hidden" name="currentPage" value="3">
-                <div th:insert="theme/wizardSteps.html :: buttons(nextOnclick='return selectBannerSubmit(this);')"></div>
+                <div th:insert="~{theme/wizardSteps.html :: buttons(nextOnclick='return selectBannerSubmit(this);')}"></div>
             </form>
         </div>
     </div>

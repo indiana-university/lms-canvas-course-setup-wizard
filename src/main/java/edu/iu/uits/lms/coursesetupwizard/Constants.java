@@ -130,6 +130,14 @@ public class Constants {
         SELECT
     }
 
+    @AllArgsConstructor
+    @Getter
+    public enum NAVIGATION_OPTION {
+        BOTH,
+        HOME,
+        SYLLABUS
+    }
+
     private Constants() {
         throw new IllegalStateException("Utility class");
     }
