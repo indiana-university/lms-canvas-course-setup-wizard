@@ -60,11 +60,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -86,34 +86,34 @@ public class PopupDismissalDateTest {
    @Autowired
    private PopupDismissalDateRepository popupDismissalDateRepository;
 
-   @MockBean
+   @MockitoBean
    private JwtDecoder jwtDecoder;
 
-   @MockBean
+   @MockitoBean
    private BannerImageRepository bannerImageRepository;
 
-   @MockBean
+   @MockitoBean
    private ThemeRepository themeRepository;
 
-   @MockBean
+   @MockitoBean
    private BannerImageCategoryRepository bannerImageCategoryRepository;
 
-   @MockBean
+   @MockitoBean
    private CourseService courseService;
 
-   @MockBean
+   @MockitoBean
    private ContentMigrationService contentMigrationService;
 
-   @MockBean
+   @MockitoBean
    private AccountService accountService;
 
-   @MockBean
+   @MockitoBean
    private BlueprintService blueprintService;
 
-   @MockBean
+   @MockitoBean
    private HierarchyResourceService hierarchyResourceService;
 
-   @MockBean
+   @MockitoBean
    private TemplateAuditService templateAuditService;
 
    private static final String USER1 = "user1";

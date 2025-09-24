@@ -59,7 +59,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -71,6 +70,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -93,43 +93,43 @@ public class CorsTest {
    @Autowired
    private MockMvc mvc;
 
-   @MockBean
+   @MockitoBean
    private BannerImageJpaCustomRestController bannerImageJpaCustomRestController;
 
-   @MockBean
+   @MockitoBean
    WizardService wizardService = null;
 
-   @MockBean
+   @MockitoBean
    private WizardCourseStatusRepository wizardCourseStatusRepository = null;
 
-   @MockBean
+   @MockitoBean
    private WizardUserCourseRepository wizardUserCourseRepository = null;
 
-   @MockBean
+   @MockitoBean
    private PopupDismissalDateRepository popupDismissalDateRepository = null;
 
-   @MockBean
+   @MockitoBean
    private BannerImageCategoryRepository bannerImageCategoryRepository;
 
-   @MockBean
+   @MockitoBean
    private BannerImageRepository bannerImageRepository;
 
-   @MockBean
+   @MockitoBean
    private ThemeContentRepository themeContentRepository;
 
-   @MockBean
+   @MockitoBean
    private ThemeLogRepository themeLogRepository;
 
-   @MockBean
+   @MockitoBean
    private ThemeRepository themeRepository;
 
-   @MockBean
+   @MockitoBean
    private ThemeProcessingService themeProcessingService;
 
-   @MockBean
+   @MockitoBean
    private DefaultInstructorRoleRepository defaultInstructorRoleRepository;
 
-   @MockBean
+   @MockitoBean
    private ClientRegistrationRepository clientRegistrationRepository;
 
 

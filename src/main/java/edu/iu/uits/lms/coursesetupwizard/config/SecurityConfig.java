@@ -63,7 +63,6 @@ public class SecurityConfig {
                 .securityMatcher("/rest/**", "/api/**")
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/rest/popup/**").permitAll()
-//                        .access(new WebExpressionAuthorizationManager("hasAuthority('SCOPE_lms:edsdev') or (hasAuthority('SCOPE_lms:rest') and hasAuthority('ROLE_LMS_REST_ADMINS'))"))
                         .requestMatchers("/rest/**")
                         .access(new WebExpressionAuthorizationManager("hasAuthority('SCOPE_lms:rest') and hasAuthority('ROLE_LMS_REST_ADMINS')"))
                         .requestMatchers("/api/**").permitAll()

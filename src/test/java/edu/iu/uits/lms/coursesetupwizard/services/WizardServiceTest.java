@@ -58,8 +58,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,34 +78,34 @@ public class WizardServiceTest {
    @Autowired
    private WizardService wizardService;
 
-   @MockBean
+   @MockitoBean
    private ToolConfig toolConfig;
 
-   @MockBean
+   @MockitoBean
    private CourseService courseService;
 
-   @MockBean
+   @MockitoBean
    private BlueprintService blueprintService;
 
-   @MockBean
+   @MockitoBean
    private WizardUserCourseRepository wizardUserCourseRepository;
 
-   @MockBean
+   @MockitoBean
    private WizardCourseStatusRepository wizardCourseStatusRepository;
 
-   @MockBean
+   @MockitoBean
    private PopupDismissalDateRepository popupDismissalDateRepository = null;
 
-   @MockBean
+   @MockitoBean
    private ContentMigrationService contentMigrationService;
 
-   @MockBean
+   @MockitoBean
    private AccountService accountService;
 
-   @MockBean
+   @MockitoBean
    private HierarchyResourceService hierarchyResourceService;
 
-   @MockBean
+   @MockitoBean
    private TemplateAuditService templateAuditService;
 
    @Test

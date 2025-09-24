@@ -69,8 +69,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import java.lang.reflect.Method;
@@ -94,49 +94,49 @@ public class ThemeProcessingServiceTest {
    @Autowired
    private ThemeProcessingService themeProcessingService;
 
-   @MockBean
+   @MockitoBean
    private AnnouncementService announcementService;
 
-   @MockBean
+   @MockitoBean
    private AssignmentService assignmentService;
 
-   @MockBean
+   @MockitoBean
    private CourseService courseService;
 
-   @MockBean
+   @MockitoBean
    private DiscussionService discussionService;
 
-   @MockBean
+   @MockitoBean
    private EmailService emailService;
 
-   @MockBean
+   @MockitoBean
    private ModuleService moduleService;
 
    @Captor
    ArgumentCaptor<EmailDetails> emailCaptor;
 
-   @MockBean
+   @MockitoBean
    protected BannerImageCategoryRepository bannerImageCategoryRepository;
 
-   @MockBean
+   @MockitoBean
    protected BannerImageRepository bannerImageRepository;
 
-   @MockBean
+   @MockitoBean
    protected ThemeRepository themeRepository;
 
-   @MockBean
+   @MockitoBean
    protected ThemeContentRepository themeContentRepository;
 
-   @MockBean
+   @MockitoBean
    protected ThemeLogRepository themeLogRepository;
 
-   @MockBean
+   @MockitoBean
    protected ToolConfig toolConfig;
 
-   @MockBean
+   @MockitoBean
    protected WizardCourseStatusRepository wizardCourseStatusRepository;
 
-   @MockBean
+   @MockitoBean
    private FreeMarkerConfigurer freemarkerConfigurer;
 
    private final String courseId = "12345";

@@ -43,7 +43,6 @@ import edu.iu.uits.lms.lti.config.LtiRestConfiguration;
 import edu.iu.uits.lms.lti.repository.DefaultInstructorRoleRepository;
 import edu.iu.uits.lms.lti.swagger.SwaggerTestingBean;
 import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -67,18 +66,6 @@ import static edu.iu.uits.lms.iuonly.IuCustomConstants.IUCUSTOM_GROUP_CODE_PATH;
         LtiClientTestConfig.class
 })
 public class WizardSwaggerTestConfig {
-    @MockBean
-    private BufferingApplicationStartup bufferingApplicationStartup;
-
-    @MockBean
-    private DefaultInstructorRoleRepository defaultInstructorRoleRepository;
-
-    @MockBean
-    private ClientRegistrationRepository clientRegistrationRepository;
-
-    @MockBean
-    private OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
-
     @Bean
     public SwaggerTestingBean swaggerTestingBean() {
         SwaggerTestingBean stb = new SwaggerTestingBean();
