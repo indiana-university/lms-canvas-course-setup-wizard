@@ -126,7 +126,7 @@ public class It12LoggingTest {
             final Collection<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("SCOPE_lms:rest", "ROLE_LMS_REST_ADMINS");
             final JwtAuthenticationToken token = new JwtAuthenticationToken(jwt, authorities);
 
-            final String uriToCall = "/rest/coursestatus";
+            final String uriToCall = "/rest/coursestatus/all";
 
             mvc.perform(get(uriToCall)
                             .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
