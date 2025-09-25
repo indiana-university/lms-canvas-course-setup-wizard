@@ -4,7 +4,7 @@ package edu.iu.uits.lms.coursesetupwizard;
  * #%L
  * course-setup-wizard
  * %%
- * Copyright (C) 2022 Indiana University
+ * Copyright (C) 2022 - 2025 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -128,6 +128,14 @@ public class Constants {
         ALL,
         ALL_WITH_BLUEPRINT_SETTINGS,
         SELECT
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public enum NAVIGATION_OPTION {
+        BOTH,
+        HOME,
+        SYLLABUS
     }
 
     private Constants() {

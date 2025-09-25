@@ -3,7 +3,7 @@
   #%L
   course-setup-wizard
   %%
-  Copyright (C) 2022 Indiana University
+  Copyright (C) 2022 - 2025 Indiana University
   %%
   Redistribution and use in source and binary forms, with or without modification,
   are permitted provided that the following conditions are met:
@@ -45,7 +45,7 @@
 
     <div class="rvt-row rvt-p-top-md">
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
-            <div th:if="${submitError}" th:insert="fragments.html :: submitError"></div>
+            <div th:if="${submitError}" th:insert="~{fragments.html :: submitError}"></div>
             <h2 id="page-title">Add a customizable home page</h2>
             <p id="homepage-intro">
                 You have opted to copy a customizable, professionally-designed home page template to your course.
@@ -71,11 +71,11 @@
                 <div class="rvt-button-group [ rvt-m-top-xl ]">
                     <button class="rvt-button rvt-button--secondary loading-btn" name="action" id="back-btn"
                             th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_BACK}">
-                        <span th:replace="fragments.html :: loadingButton(buttonText='Back', srText='Loading previous page')"></span>
+                        <span th:replace="~{fragments.html :: loadingButton(buttonText='Back', srText='Loading previous page')}"></span>
                     </button>
                     <button class="rvt-button" name="action" id="submit-btn"
                             th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants).ACTION_SUBMIT}">
-                        <span th:replace="fragments.html :: loadingButton(buttonText='Submit', srText='Applying home page template. Redirecting to the Import Content Tool.')"></span>
+                        <span th:replace="~{fragments.html :: loadingButton(buttonText='Submit', srText='Applying home page template. Redirecting to the Import Content Tool.')}"></span>
                     </button>
                 </div>
             </form>

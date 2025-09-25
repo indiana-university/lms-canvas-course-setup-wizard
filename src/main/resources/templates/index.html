@@ -3,7 +3,7 @@
   #%L
   course-setup-wizard
   %%
-  Copyright (C) 2022 Indiana University
+  Copyright (C) 2022 - 2025 Indiana University
   %%
   Redistribution and use in source and binary forms, with or without modification,
   are permitted provided that the following conditions are met:
@@ -196,7 +196,7 @@
                     <button class="rvt-accordion__toggle rvt-p-tb-xs" id="home-page-accordion-4-label"
                             data-rvt-accordion-trigger="home-page-accordion-4"
                             aria-controls="home-page-accordion-4">
-                        <span class="rvt-accordion__toggle-text rvt-ts-20">Themes and banners</span>
+                        <span class="rvt-accordion__toggle-text rvt-ts-20">Themes and banners (beta)</span>
                         <div class="rvt-accordion__toggle-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
                                 <g fill="currentColor">
@@ -256,16 +256,16 @@
                             <div class="rvt-radio">
                                 <input type="radio" name="menuChoice" id="radio-1-4"
                                        th:value="${T(edu.iu.uits.lms.coursesetupwizard.Constants.MAIN_OPTION).THEME.name()}">
-                                <label for="radio-1-4">Select a theme and banner image for this course</label>
+                                <label for="radio-1-4">Select a theme and banner image for this course (beta)</label>
                             </div>
                         </li>
                     </ul>
-                    <div th:insert="fragments.html :: selectAlert"></div>
+                    <div th:insert="~{fragments.html :: selectAlert}"></div>
                 </fieldset>
                 <div class="rvt-button-group [ rvt-m-top-md ]">
                     <button class="rvt-button rvt-button--secondary" id="exit-wizard" onclick="return doExit();" data-rvt-dialog-trigger="dialogExit">Exit</button>
                     <button class="rvt-button" onclick="return doSubmitOptionChoice(this);" id="next-step" >
-                        <span th:replace="fragments.html :: loadingButton(buttonText='Next', srText='Next page is loading.')"></span>
+                        <span th:replace="~{fragments.html :: loadingButton(buttonText='Next', srText='Next page is loading.')}"></span>
                     </button>
                 </div>
             </form>

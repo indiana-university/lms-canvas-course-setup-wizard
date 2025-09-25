@@ -3,7 +3,7 @@
   #%L
   course-setup-wizard
   %%
-  Copyright (C) 2022 Indiana University
+  Copyright (C) 2022 - 2025 Indiana University
   %%
   Redistribution and use in source and binary forms, with or without modification,
   are permitted provided that the following conditions are met:
@@ -42,6 +42,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- The below link references commonFragments which lives in common-configuration and comes along on the classpath  -->
+    <link th:replace="~{commonFragments/favicon :: favicon}" />
     <link rel="stylesheet" type="text/css" th:href="@{/app/jsrivet/rivet-core/rivet.min.css}" />
     <link rel="stylesheet" type="text/css" th:href="@{/app/jsrivet/rivet-icons/rivet-icon-element.css}"/>
     <link rel="stylesheet" type="text/css" th:href="@{/app/css/coursesetupwizard.css}"/>
@@ -78,9 +80,7 @@
 </main>
 
 
-<footer th:unless="${hideFooter}" class="rvt-ts-12 rvt-container rvt-m-top-lg">
-    <div id="footer" th:text="${@serverInfo}"></div>
-</footer>
+<div th:replace="~{commonFragments/layouts :: footer(${hideFooter}, ${@serverInfo.elements})}" ></div>
 
 <script type="text/javascript" th:src="@{/app/jsrivet/rivet-core/rivet.min.js}"></script>
 <script type="module" th:src="@{/app/jsrivet/rivet-icons/rivet-icons.js}"></script>

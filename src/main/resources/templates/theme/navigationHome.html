@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<!--
+  #%L
+  course-setup-wizard
+  %%
+  Copyright (C) 2022 - 2025 Indiana University
+  %%
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
+  
+  1. Redistributions of source code must retain the above copyright notice, this
+     list of conditions and the following disclaimer.
+  
+  2. Redistributions in binary form must reproduce the above copyright notice,
+     this list of conditions and the following disclaimer in the documentation
+     and/or other materials provided with the distribution.
+  
+  3. Neither the name of the Indiana University nor the names of its contributors
+     may be used to endorse or promote products derived from this software without
+     specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+  INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+  BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+  OF THE POSSIBILITY OF SUCH DAMAGE.
+  #L%
+  -->
+
+<html lang="en-US"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Course Setup Wizard - Include navigation</title>
+</head>
+
+<body class="rvt-layout">
+<div layout:fragment="content">
+
+    <div th:insert="~{theme/wizardSteps.html :: steps(currentStep=4)}"></div>
+
+    <div class="rvt-row rvt-p-top-md">
+        <div class="rvt-cols-8-md rvt-flow rvt-prose">
+            <h2 id="page-title">Include navigation</h2>
+
+            <span id="sr-msg" class="rvt-sr-only" aria-live="polite"></span>
+
+            <p>
+                You have the option to include navigational elements with your course. The navigation
+                appears beneath the banner image in the example below. It has four quick links that say
+                "Start Here", "Syllabus", "Modules", and "Resources". The link names may be changed. Review the
+                Wizard Next Steps page for detailed instructions or contact your
+                <a href="https://servicenow.iu.edu/kb?id=kb_article_view&sysparm_article=KB0024374" target="_blank" rel="noopener noreferrer" aria-describedby="sr-new-window">campus teaching and learning center <rvt-icon name="link-external"></rvt-icon></a>
+                for assistance.
+            </p>
+            <p>
+                Example:
+                <img th:src="${exampleNavigationUrl}" th:alt="${exampleNavigationAltText}" />
+            </p>
+            <form id="wizard-theme-form-submit" th:object="${themeForm}" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
+                <fieldset class="rvt-fieldset rvt-m-top-md">
+                    <legend>How many buttons on the navigation would you like for the course home page?</legend>
+                    <ul class="rvt-list-plain">
+                        <li>
+                            <div class="rvt-radio">
+                                <input type="radio" th:field="*{navigationHomeNumber}" name="navigation-home-page-selection" id="navigation-home-page-selection-2" value="2">
+                                <label for="navigation-home-page-selection-2">2</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="rvt-radio">
+                                <input type="radio" th:field="*{navigationHomeNumber}" name="navigation-home-page-selection" id="navigation-home-page-selection-3" value="3">
+                                <label for="navigation-home-page-selection-3">3</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="rvt-radio">
+                                <input type="radio" th:field="*{navigationHomeNumber}" name="navigation-home-page-selection" id="navigation-home-page-selection-4" value="4">
+                                <label for="navigation-home-page-selection-4">4</label>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="rvt-radio">
+                                <input type="radio" th:field="*{navigationHomeNumber}" name="navigation-home-page-selection" id="navigation-home-page-selection-6" value="6">
+                                <label for="navigation-home-page-selection-6">6</label>
+                            </div>
+                        </li>
+                    </ul>
+                </fieldset>
+
+                <div class="rvt-m-top-md">
+                    <span>Assign labels for each of the home page buttons. This will automatically link to the corresponding pages in Canvas.</span>
+                </div>
+                <div th:insert="~{fragments.html :: selectAlert (message='All button labels must have a selection.')}"></div>
+                <div th:insert="~{fragments.html :: selectAlert2 (message='Button labels must be unique.')}"></div>
+                <table class="rvt-table-plain table-width-override rvt-m-top-md">
+                    <caption class="rvt-sr-only">Table of inputs for home page button selections</caption>
+                    <thead>
+                    <tr>
+                        <th scope="col" id="home-page-button-header">Home page button</th>
+                        <th scope="col" id="home-page-button-label-header">Button label</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr id="button-row-1">
+                        <th scope="row" id="button1">Button 1</th>
+                        <td>
+                            <select id="home-button1" th:field="*{navigationHomeButtonLabels[0]}" class="rvt-select" th:aria-labelledby="|button1 home-page-button-label-header|">
+                                <option value="">---</option>
+                                <option value="Home">Home</option>
+                                <option value="Syllabus">Syllabus</option>
+                                <option value="Getting Started">Getting Started</option>
+                                <option value="Modules">Modules</option>
+                                <option value="Schedule/Calendar">Schedule/Calendar</option>
+                                <option value="Sixth Option TBD">Sixth Option TBD</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="button-row-2">
+                        <th scope="row" id="button2">Button 2</th>
+                        <td>
+                            <select id="home-button2" th:field="*{navigationHomeButtonLabels[1]}" class="rvt-select" th:aria-labelledby="|button2 home-page-button-label-header|">
+                                <option value="">---</option>
+                                <option value="Home">Home</option>
+                                <option value="Syllabus">Syllabus</option>
+                                <option value="Getting Started">Getting Started</option>
+                                <option value="Modules">Modules</option>
+                                <option value="Schedule/Calendar">Schedule/Calendar</option>
+                                <option value="Sixth Option TBD">Sixth Option TBD</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="button-row-3">
+                        <th scope="row" id="button3">Button 3</th>
+                        <td>
+                            <select id="home-button3" th:field="*{navigationHomeButtonLabels[2]}" class="rvt-select" th:aria-labelledby="|button3 home-page-button-label-header|">
+                                <option value="">---</option>
+                                <option value="Home">Home</option>
+                                <option value="Syllabus">Syllabus</option>
+                                <option value="Getting Started">Getting Started</option>
+                                <option value="Modules">Modules</option>
+                                <option value="Schedule/Calendar">Schedule/Calendar</option>
+                                <option value="Sixth Option TBD">Sixth Option TBD</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="button-row-4">
+                        <th scope="row" id="button4">Button 4</th>
+                        <td>
+                            <select id="home-button4" th:field="*{navigationHomeButtonLabels[3]}" class="rvt-select" th:aria-labelledby="|button4 home-page-button-label-header|">
+                                <option value="">---</option>
+                                <option value="Home">Home</option>
+                                <option value="Syllabus">Syllabus</option>
+                                <option value="Getting Started">Getting Started</option>
+                                <option value="Modules">Modules</option>
+                                <option value="Schedule/Calendar">Schedule/Calendar</option>
+                                <option value="Sixth Option TBD">Sixth Option TBD</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="button-row-5">
+                        <th scope="row" id="button5">Button 5</th>
+                        <td>
+                            <select id="home-button5" th:field="*{navigationHomeButtonLabels[4]}" class="rvt-select" th:aria-labelledby="|button5 home-page-button-label-header|">
+                                <option value="">---</option>
+                                <option value="Home">Home</option>
+                                <option value="Syllabus">Syllabus</option>
+                                <option value="Getting Started">Getting Started</option>
+                                <option value="Modules">Modules</option>
+                                <option value="Schedule/Calendar">Schedule/Calendar</option>
+                                <option value="Sixth Option TBD">Sixth Option TBD</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr id="button-row-6">
+                        <th scope="row" id="button6">Button 6</th>
+                        <td>
+                            <select id="home-button6" th:field="*{navigationHomeButtonLabels[5]}" class="rvt-select" th:aria-labelledby="|button6 home-page-button-label-header|">
+                                <option value="">---</option>
+                                <option value="Home">Home</option>
+                                <option value="Syllabus">Syllabus</option>
+                                <option value="Getting Started">Getting Started</option>
+                                <option value="Modules">Modules</option>
+                                <option value="Schedule/Calendar">Schedule/Calendar</option>
+                                <option value="Sixth Option TBD">Sixth Option TBD</option>
+                            </select>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <input type="hidden" name="currentPage" value="5">
+                <div th:insert="~{theme/wizardSteps.html :: buttons(nextOnclick='return selectNavigationHomeSubmit(this);')}"></div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="script">
+    <script type="text/javascript" th:src="@{/app/js/theme/selectNavigationHome.js}"></script>
+</th:block>
+</body>
+</html>

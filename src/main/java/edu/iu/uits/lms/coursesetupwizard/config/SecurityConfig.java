@@ -4,7 +4,7 @@ package edu.iu.uits.lms.coursesetupwizard.config;
  * #%L
  * course-setup-wizard
  * %%
- * Copyright (C) 2022 Indiana University
+ * Copyright (C) 2022 - 2025 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -63,7 +63,6 @@ public class SecurityConfig {
                 .securityMatcher("/rest/**", "/api/**")
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers("/rest/popup/**").permitAll()
-//                        .access(new WebExpressionAuthorizationManager("hasAuthority('SCOPE_lms:edsdev') or (hasAuthority('SCOPE_lms:rest') and hasAuthority('ROLE_LMS_REST_ADMINS'))"))
                         .requestMatchers("/rest/**")
                         .access(new WebExpressionAuthorizationManager("hasAuthority('SCOPE_lms:rest') and hasAuthority('ROLE_LMS_REST_ADMINS')"))
                         .requestMatchers("/api/**").permitAll()

@@ -3,7 +3,7 @@
   #%L
   course-setup-wizard
   %%
-  Copyright (C) 2022 - 2024 Indiana University
+  Copyright (C) 2022 - 2025 Indiana University
   %%
   Redistribution and use in source and binary forms, with or without modification,
   are permitted provided that the following conditions are met:
@@ -44,7 +44,7 @@
 <body class="rvt-layout">
 <div layout:fragment="content">
 
-    <div th:insert="theme/wizardSteps.html :: steps(currentStep=${themeSteps.size() - 1})"></div>
+    <div th:insert="~{theme/wizardSteps.html :: steps(currentStep=${themeSteps.size() - 1})}"></div>
 
     <div class="rvt-row rvt-p-top-md">
         <div class="rvt-cols-8-md rvt-flow rvt-prose">
@@ -62,6 +62,14 @@
                 <dd th:text="${bannerImageName}">BANNER IMAGE NAME</dd>
                 <dt>Include navigation?</dt>
                 <dd th:text="${includeNavigation} ? 'Yes' : 'No'">YES</dd>
+                <th:block th:if="${includeHomeNavigation}">
+                    <dt>Home page navigation</dt>
+                    <dd th:each="homeButton, iterStat : ${navigationHomeButtonLabels}" th:text="|Button ${iterStat.index + 1}: ${homeButton}|">Button 1: Home</dd>
+                </th:block>
+                <th:block th:if="${includeSyllabusNavigation}">
+                    <dt>Syllabus navigation</dt>
+                    <dd th:each="syllabusButton, iterStat : ${navigationSyllabusButtonLabels}" th:text="|Button ${iterStat.index + 1}: ${syllabusButton}|">Button 1: Home</dd>
+                </th:block>
                 <dt>Include instructional design prompts and guidance?</dt>
                 <dd th:text="${includeGuidance} ? 'Yes' : 'No'">YES</dd>
             </dl>
@@ -84,8 +92,8 @@
             </div>
 
             <form id="wizard-theme-form-submit" th:object="${themeForm}" th:action="@{|/app/theme/${courseId}/navigate|}" method="post" enctype="multipart/form-data">
-                <input type="hidden" name="currentPage" value="6">
-                <div th:insert="theme/wizardSteps.html :: buttons"></div>
+                <input type="hidden" name="currentPage" value="8">
+                <div th:insert="~{theme/wizardSteps.html :: buttons}"></div>
             </form>
         </div>
     </div>

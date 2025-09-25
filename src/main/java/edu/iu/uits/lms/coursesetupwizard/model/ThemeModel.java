@@ -4,7 +4,7 @@ package edu.iu.uits.lms.coursesetupwizard.model;
  * #%L
  * course-setup-wizard
  * %%
- * Copyright (C) 2024 Indiana University
+ * Copyright (C) 2022 - 2025 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -36,6 +36,7 @@ package edu.iu.uits.lms.coursesetupwizard.model;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 public class ThemeModel implements Serializable {
@@ -45,5 +46,9 @@ public class ThemeModel implements Serializable {
     private String bannerImageCategoryId;
     private Boolean includeNavigation;
     private Boolean includeGuidance;
-
+    private String navigationOption;
+    private Long navigationHomeNumber;
+    private List<String> navigationHomeButtonLabels;
+    private Long navigationSyllabusNumber;
+    private List<String> navigationSyllabusButtonLabels;
 }

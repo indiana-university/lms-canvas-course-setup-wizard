@@ -4,22 +4,22 @@ package edu.iu.uits.lms.coursesetupwizard.controller;
  * #%L
  * course-setup-wizard
  * %%
- * Copyright (C) 2022 - 2024 Indiana University
+ * Copyright (C) 2022 - 2025 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
- *
+ * 
  * 1. Redistributions of source code must retain the above copyright notice, this
  *    list of conditions and the following disclaimer.
- *
+ * 
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- *
+ * 
  * 3. Neither the name of the Indiana University nor the names of its contributors
  *    may be used to endorse or promote products derived from this software without
  *    specific prior written permission.
- *
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
@@ -49,6 +49,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
@@ -74,6 +75,10 @@ import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_HOME;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_NEXT;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.ACTION_SUBMIT;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.KEY_THEME_MODEL;
+import static edu.iu.uits.lms.coursesetupwizard.Constants.NAVIGATION_OPTION;
+import static edu.iu.uits.lms.coursesetupwizard.Constants.NAVIGATION_OPTION.BOTH;
+import static edu.iu.uits.lms.coursesetupwizard.Constants.NAVIGATION_OPTION.HOME;
+import static edu.iu.uits.lms.coursesetupwizard.Constants.NAVIGATION_OPTION.SYLLABUS;
 import static edu.iu.uits.lms.coursesetupwizard.Constants.WizardFeature;
 
 @Controller
@@ -96,8 +101,9 @@ public class ThemeController extends WizardController {
     protected ThemeProcessingService themeProcessingService;
 
     private static final String[] PAGES = {"/app/{0}/index", "/app/theme/{0}/intro", "/app/theme/{0}/selectTheme",
-            "/app/theme/{0}/selectBanner", "/app/theme/{0}/navigation", "/app/theme/{0}/guidance",
-            "/app/theme/{0}/review", "/app/theme/{0}/submit"};
+            "/app/theme/{0}/selectBanner", "/app/theme/{0}/navigation", "/app/theme/{0}/navigationHome",
+            "/app/theme/{0}/navigationSyllabus", "/app/theme/{0}/guidance", "/app/theme/{0}/review", "/app/theme/{0}/submit"
+    };
 
     @Data
     @AllArgsConstructor
@@ -183,6 +189,50 @@ public class ThemeController extends WizardController {
         return new ModelAndView("theme/navigation");
     }
 
+    @GetMapping("/{courseId}/navigationHome")
+    @Secured({LTIConstants.INSTRUCTOR_AUTHORITY})
+    public ModelAndView navigationHome(@PathVariable("courseId") String courseId, Model model, HttpSession httpSession) {
+        log.debug("in /navigationHome");
+        OidcAuthenticationToken token = getValidatedToken(courseId);
+        OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
+
+        ThemeModel themeModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL, ThemeModel.class);
+
+        if (themeModel.getNavigationHomeNumber() == null) {
+            // set the default to 2
+            themeModel.setNavigationHomeNumber(2L);
+        }
+
+        model.addAttribute("themeForm", themeModel);
+
+        return new ModelAndView("theme/navigationHome");
+    }
+
+    @GetMapping("/{courseId}/navigationSyllabus")
+    @Secured({LTIConstants.INSTRUCTOR_AUTHORITY})
+    public ModelAndView navigationSyllabus(@PathVariable("courseId") String courseId, Model model, HttpSession httpSession) {
+        log.debug("in /navigationSyllabus");
+        OidcAuthenticationToken token = getValidatedToken(courseId);
+        OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
+
+        ThemeModel themeModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL, ThemeModel.class);
+
+        if (themeModel.getNavigationSyllabusNumber() == null) {
+            // set the default to 2
+            themeModel.setNavigationSyllabusNumber(2L);
+        }
+
+        NAVIGATION_OPTION navigationOption = EnumUtils.getEnum(NAVIGATION_OPTION.class, themeModel.getNavigationOption());
+        if (BOTH.equals(navigationOption)) {
+            // We want to render the "use home page" checkbox
+            model.addAttribute("showCopyHomePageCheckbox", true);
+        }
+
+        model.addAttribute("themeForm", themeModel);
+
+        return new ModelAndView("theme/navigationSyllabus");
+    }
+
     @GetMapping("/{courseId}/selectTheme")
     @Secured({LTIConstants.INSTRUCTOR_AUTHORITY})
     public ModelAndView selectTheme(@PathVariable("courseId") String courseId, Model model, HttpSession httpSession) {
@@ -265,6 +315,24 @@ public class ThemeController extends WizardController {
         }
 
         model.addAttribute("includeNavigation", themeModel.getIncludeNavigation());
+
+        NAVIGATION_OPTION navigationOption = EnumUtils.getEnum(NAVIGATION_OPTION.class, themeModel.getNavigationOption());
+        if (HOME.equals(navigationOption) || BOTH.equals(navigationOption)) {
+            model.addAttribute("includeHomeNavigation", true);
+            model.addAttribute("navigationHomeButtonLabels",
+                    themeModel.getNavigationHomeButtonLabels() != null
+                            ? themeModel.getNavigationHomeButtonLabels().stream().filter(s -> s != null && ! s.isBlank()).collect(Collectors.toList())
+                            : new ArrayList<String>());
+        }
+
+        if (SYLLABUS.equals(navigationOption) || BOTH.equals(navigationOption)) {
+            model.addAttribute("includeSyllabusNavigation", true);
+            model.addAttribute("navigationSyllabusButtonLabels",
+                    themeModel.getNavigationSyllabusButtonLabels() != null
+                            ? themeModel.getNavigationSyllabusButtonLabels().stream().filter(s -> s != null && ! s.isBlank()).collect(Collectors.toList())
+                            : new ArrayList<String>());
+        }
+
         model.addAttribute("includeGuidance", themeModel.getIncludeGuidance());
 
         model.addAttribute("justBannerImagePreviewUrl", theme.isPresent() ? theme.get().getJustBannerImagePreviewUrl() : "None");
@@ -301,6 +369,15 @@ public class ThemeController extends WizardController {
 
         ThemeModel sessionThemeModel = courseSessionService.getAttributeFromSession(httpSession, courseId, KEY_THEME_MODEL, ThemeModel.class);
 
+        //Re-save the session model
+        courseSessionService.addAttributeToSession(httpSession, courseId, KEY_THEME_MODEL,
+                updateThemeModelFields(sessionThemeModel, themeModel));
+
+        // common navigation variables
+        boolean isNavigationFeatureEnabled =
+                featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_NAVIGATION.featureId, canvasService.getRootAccount(), null);
+        NAVIGATION_OPTION navigationOption = EnumUtils.getEnum(NAVIGATION_OPTION.class, sessionThemeModel.getNavigationOption());
+
         int pageIndex = 0;
 
         switch (action) {
@@ -311,12 +388,8 @@ public class ThemeController extends WizardController {
             case ACTION_BACK:
                 pageIndex = currentPage - 1;
 
-                //Re-save the session model
-                courseSessionService.addAttributeToSession(httpSession, courseId, KEY_THEME_MODEL,
-                        updateThemeModelFields(sessionThemeModel, themeModel));
-
                 // if asking for the guidance page
-                if (pageIndex == PAGES.length - 3) {
+                if (pageIndex == 7) {
                     boolean isGuidanceFeatureEnabled = featureAccessService
                             .isFeatureEnabledForAccount(WizardFeature.THEME_GUIDANCE.featureId, canvasService.getRootAccount(), null);
 
@@ -325,11 +398,40 @@ public class ThemeController extends WizardController {
                     }
                 }
 
-                // if asking for the navigation page
-                if (pageIndex == 4) {
-                    boolean isNavigationFeatureEnabled =
-                            featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_NAVIGATION.featureId, canvasService.getRootAccount(), null);
+                // if asking for the syllabus navigation page
+                if (pageIndex == 6) {
+                    if (! isNavigationFeatureEnabled) {
+                        pageIndex = pageIndex - 3;
+                    } else if (sessionThemeModel.getIncludeNavigation()) {
+                        if (SYLLABUS.equals(navigationOption) || BOTH.equals(navigationOption)) {
+                            // passed the checks to make sure the navigation syllabus page is needed
+                        } else {
+                            // syllabus page not wanted, try home page navigation
+                            pageIndex = pageIndex - 1;
+                        }
+                    } else {
+                        pageIndex = pageIndex - 2;
+                    }
+                }
 
+                // if asking for the home page navigation page
+                if (pageIndex == 5) {
+                    if (! isNavigationFeatureEnabled) {
+                        pageIndex = pageIndex - 2;
+                    } else if (sessionThemeModel.getIncludeNavigation()) {
+                        if (HOME.equals(navigationOption) || BOTH.equals(navigationOption)) {
+                            // passed the checks to make sure the navigation 'home page' page is needed
+                        } else {
+                            // 'home page' page not wanted, try regular navigation
+                            pageIndex = pageIndex - 1;
+                        }
+                    } else {
+                        pageIndex = pageIndex - 1;
+                    }
+                }
+
+                // if asking for the navigation selection page
+                if (pageIndex == 4) {
                     if (! isNavigationFeatureEnabled) {
                         pageIndex--;
                     }
@@ -339,22 +441,52 @@ public class ThemeController extends WizardController {
             case ACTION_NEXT:
                 pageIndex = currentPage + 1;
 
-                //Re-save the session model
-                courseSessionService.addAttributeToSession(httpSession, courseId, KEY_THEME_MODEL,
-                        updateThemeModelFields(sessionThemeModel, themeModel));
-
-                // if asking for the navigation page
+                // if asking for the navigation selection page
                 if (pageIndex == 4) {
-                    boolean isNavigationFeatureEnabled =
-                            featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_NAVIGATION.featureId, canvasService.getRootAccount(), null);
-
                     if (! isNavigationFeatureEnabled) {
-                        pageIndex++;
+                        // skip ahead to guidance
+                        pageIndex = pageIndex + 3;
+                    }
+                }
+
+                // if asking for the home page navigation page
+                if (pageIndex == 5) {
+                    if (! isNavigationFeatureEnabled) {
+                        // this should never happen, but just in case, send them to guidance
+                        pageIndex = pageIndex + 2;
+                    } else if (sessionThemeModel.getIncludeNavigation()) {
+                        if (HOME.equals(navigationOption) || BOTH.equals(navigationOption)) {
+                            // passed the checks to make sure the navigation 'home page' page is needed
+                        } else {
+                            // 'home page' page not wanted, try regular navigation
+                            pageIndex = pageIndex + 1;
+                        }
+                    } else {
+                        // not including navigation, skip ahead to guidance
+                        pageIndex = pageIndex + 2;
+                    }
+                }
+
+                // if asking for the syllabus navigation page
+                if (pageIndex == 6) {
+                    if (! isNavigationFeatureEnabled) {
+                        // this should never happen, but just in case, send them to guidance
+                        pageIndex = pageIndex + 1;
+                    } else if (sessionThemeModel.getIncludeNavigation()) {
+                        if (SYLLABUS.equals(navigationOption) || BOTH.equals(navigationOption)) {
+                            // passed the checks to make sure the navigation syllabus page is needed
+                        } else {
+                            // syllabus page not wanted, skip ahead to guidance
+                            pageIndex = pageIndex + 1;
+                        }
+                    } else {
+                        // not including navigation, skip ahead to guidance
+                        pageIndex = pageIndex + 1;
                     }
                 }
 
                 // if asking for the guidance page
-                if (pageIndex == PAGES.length - 3) {
+                if (pageIndex == 7) {
                     boolean isGuidanceFeatureEnabled = featureAccessService
                             .isFeatureEnabledForAccount(WizardFeature.THEME_GUIDANCE.featureId, canvasService.getRootAccount(), null);
 
@@ -420,6 +552,26 @@ public class ThemeController extends WizardController {
 
         if (diffThemeModel.getIncludeNavigation() != null) {
             baseThemeModel.setIncludeNavigation(diffThemeModel.getIncludeNavigation());
+        }
+
+        if (diffThemeModel.getNavigationOption() != null) {
+            baseThemeModel.setNavigationOption(diffThemeModel.getNavigationOption());
+        }
+
+        if (diffThemeModel.getNavigationHomeNumber() != null) {
+            baseThemeModel.setNavigationHomeNumber(diffThemeModel.getNavigationHomeNumber());
+        }
+
+        if (diffThemeModel.getNavigationHomeButtonLabels() != null) {
+            baseThemeModel.setNavigationHomeButtonLabels(diffThemeModel.getNavigationHomeButtonLabels());
+        }
+
+        if (diffThemeModel.getNavigationSyllabusNumber() != null) {
+            baseThemeModel.setNavigationSyllabusNumber(diffThemeModel.getNavigationSyllabusNumber());
+        }
+
+        if (diffThemeModel.getNavigationSyllabusButtonLabels() != null) {
+            baseThemeModel.setNavigationSyllabusButtonLabels(diffThemeModel.getNavigationSyllabusButtonLabels());
         }
 
         if (diffThemeModel.getIncludeGuidance() != null) {
