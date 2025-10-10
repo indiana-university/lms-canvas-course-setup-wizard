@@ -65,8 +65,8 @@
         <jdk.target>21</jdk.target>
         <jquery.version>3.7.1</jquery.version>
         <lms-canvas-rivet.version>6.2.9.1_1</lms-canvas-rivet.version>
-        <lms-embedded-services.version>6.3.0</lms-embedded-services.version>
-        <lms-team-spring-boot-it12>6.5.2</lms-team-spring-boot-it12>
+        <lms-embedded-services.version>6.3.1</lms-embedded-services.version>
+        <lms-team-spring-boot-it12>6.5.2_2</lms-team-spring-boot-it12>
         <logcaptor.version>2.12.1</logcaptor.version>
         <nimbus-jose-jwt.version>9.10.1</nimbus-jose-jwt.version>
         <nodejs.version>v22.18.0</nodejs.version>
