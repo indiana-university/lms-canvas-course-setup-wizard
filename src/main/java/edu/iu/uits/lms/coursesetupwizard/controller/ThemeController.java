@@ -338,7 +338,7 @@ public class ThemeController extends WizardController {
         model.addAttribute("justBannerImagePreviewUrl", theme.isPresent() ? theme.get().getJustBannerImagePreviewUrl() : "None");
         model.addAttribute("justBannerImageAltText", theme.isPresent() ? theme.get().getJustBannerImageAltText() : "Banner preview");
 
-        if (themeModel.getIncludeNavigation()) {
+        if (themeModel.getIncludeNavigation() != null && themeModel.getIncludeNavigation()) {
             model.addAttribute("justNavImagePreviewUrl", theme.isPresent() ? theme.get().getJustNavImagePreviewUrl() : "None");
             model.addAttribute("justNavImageAltText", theme.isPresent() ? theme.get().getJustNavImageAltText() : "Navigation preview");
         }
