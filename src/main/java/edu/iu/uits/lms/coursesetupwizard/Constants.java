@@ -96,14 +96,23 @@ public class Constants {
     public static final String THEME_MODULE_OVERVIEW_PAGE_TEMPLATE_NAME = "theme.module.overview.template";
     public static final String THEME_GENERIC_CONTENT_PAGE_THEME_NAME = "theme.generic.content.template";
 
-    public final static String THEME_WIZARD_NEXT_STEPS_TITLE = "Wizard Next Steps";
-    public final static String THEME_ASSIGNMENTS_GROUP_NAME = "Assignments";
-    public final static String THEME_TEMPLATES_GROUP_NAME = "Templates";
-    public final static String THEME_MODULE_NAME = "Module Templates";
-    public final static String THEME_MODULE_OVERVIEW_TITLE = "[Template] Module Overview";
-    public final static String THEME_INSTRUCTOR_LECTURE_AND_NOTES_TITLE = "[Template] Instructor Lecture and Notes";
-    public final static String THEME_GENERIC_CONTENT_PAGE_TITLE = "[Template] Generic Content Page";
-
+    public static final String THEME_WIZARD_NEXT_STEPS_TITLE = "Wizard Next Steps";
+    public static final String THEME_ASSIGNMENTS_GROUP_NAME = "Assignments";
+    public static final String THEME_TEMPLATES_GROUP_NAME = "Templates";
+    public static final String THEME_MODULE_NAME = "Module Templates";
+    public static final String THEME_MODULE_OVERVIEW_TITLE = "[Template] Module Overview";
+    public static final String THEME_INSTRUCTOR_LECTURE_AND_NOTES_TITLE = "[Template] Instructor Lecture and Notes";
+    public static final String THEME_GENERIC_CONTENT_PAGE_TITLE = "[Template] Generic Content Page";
+    public static final String THEME_MODULE_GETTING_STARTED_NAME = "Getting Started";
+    public static final String THEME_MODULE_GETTING_STARTED_TIPS_FOR_SUCCESS_PAGE_TEMPLATE_NAME = "theme.module.gettingstarted.tipsforsuccess.template";
+    public static final String THEME_MODULE_GETTING_STARTED_TIPS_FOR_SUCCESS_TITLE = "READ: Tips for Success in an Online Class";
+    public static final String THEME_MODULE_GETTING_STARTED_COURSE_NAVIGATION_PAGE_TEMPLATE_NAME = "theme.module.gettingstarted.coursenavigation.template";
+    public static final String THEME_MODULE_GETTING_STARTED_COURSE_NAVIGATION_TITLE = "READ: Course Navigation";
+    public static final String THEME_MODULE_GETTING_STARTED_TECHNOLOGY_START_UP_PAGE_TEMPLATE_NAME = "theme.module.gettingstarted.technologystartup.template";
+    public static final String THEME_MODULE_GETTING_STARTED_TECHNOLOGY_START_UP_TITLE = "READ: Technology Start-Up and Canvas";
+    public static final String THEME_MODULE_GETTING_STARTED_VIDEOCONFERENCING_PAGE_TEMPLATE_NAME = "theme.module.gettingstarted.videoconferencing.template";
+    public static final String THEME_MODULE_GETTING_STARTED_VIDEOCONFERENCING_TITLE = "READ: Videoconferencing @ IU";
+    public static final String THEME_DISCUSSION_TOPIC_INTRODUCE_YOURSELF_MESSAGE_TEMPLATE_NAME = "theme.discussion.topic.introduceyourself.message.template";
 
     @AllArgsConstructor
     @Getter

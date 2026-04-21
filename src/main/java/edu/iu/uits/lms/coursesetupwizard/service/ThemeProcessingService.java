@@ -198,7 +198,9 @@ public class ThemeProcessingService {
             newWikiPage.setFrontPage(true);
             newWikiPage.setBody(textToUse);
 
-            courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
+            WikiPageCreateWrapper wikiPageCreateWrapper = new WikiPageCreateWrapper(newWikiPage);
+
+            courseService.createWikiPage(courseId, wikiPageCreateWrapper,
                     AS_USER_STRING);
 
             log.info(String.format("Successfully created course home page for courseId %s", courseId));
@@ -237,16 +239,16 @@ public class ThemeProcessingService {
         // 5. Create a new Module if one with the proper name doesn't already exist in the course.
         //     If one does exist with that name, use that.
         List<Module> modules = moduleService.getModules(courseId, null);
-        String usedModuleId = null;
+        String usedModuleTemplatesModuleId = null;
 
         for (Module module : modules) {
             if (Constants.THEME_MODULE_NAME.equalsIgnoreCase(module.getName())) {
-                usedModuleId = module.getId();
+                usedModuleTemplatesModuleId = module.getId();
                 break;
             }
         }
 
-        if (usedModuleId == null) {
+        if (usedModuleTemplatesModuleId == null) {
             Module newModule = new Module();
             newModule.setName(Constants.THEME_MODULE_NAME);
             newModule.setPosition("1");
@@ -260,7 +262,7 @@ public class ThemeProcessingService {
             if (newModule == null || newModule.getId() == null) {
                 exceptionMessages.add("Could not create new module");
             } else {
-                usedModuleId = newModule.getId();
+                usedModuleTemplatesModuleId = newModule.getId();
             }
         }
 
@@ -345,7 +347,7 @@ public class ThemeProcessingService {
                 ModuleItemCreateWrapper moduleOverviewPageModuleItemCreateWrapper = new ModuleItemCreateWrapper();
                 moduleOverviewPageModuleItemCreateWrapper.setModuleItem(moduleAssignmentModuleItem);
 
-                moduleService.createModuleItem(courseId, usedModuleId, moduleOverviewPageModuleItemCreateWrapper,
+                moduleService.createModuleItem(courseId, usedModuleTemplatesModuleId, moduleOverviewPageModuleItemCreateWrapper,
                         AS_USER_STRING);
 
                 log.info(String.format("Successfully created Assignment for courseId %s", courseId));
@@ -438,7 +440,7 @@ public class ThemeProcessingService {
             newWikiPage.setFrontPage(false);
             newWikiPage.setBody(textToUse);
 
-            courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
+            newWikiPage = courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
                     AS_USER_STRING);
 
             ModuleItem moduleOverviewPageModuleItem = new ModuleItem();
@@ -446,19 +448,18 @@ public class ThemeProcessingService {
             moduleOverviewPageModuleItem.setType("Page");
             moduleOverviewPageModuleItem.setContentId(newWikiPage.getPageId());
             moduleOverviewPageModuleItem.setPosition("1");
-            moduleOverviewPageModuleItem.setPageUrl("template-module-overview");
+            moduleOverviewPageModuleItem.setPageUrl(newWikiPage.getUrl());
 
             ModuleItemCreateWrapper moduleOverviewPageModuleItemCreateWrapper = new ModuleItemCreateWrapper();
             moduleOverviewPageModuleItemCreateWrapper.setModuleItem(moduleOverviewPageModuleItem);
 
-            moduleService.createModuleItem(courseId, usedModuleId, moduleOverviewPageModuleItemCreateWrapper,
+            moduleService.createModuleItem(courseId, usedModuleTemplatesModuleId, moduleOverviewPageModuleItemCreateWrapper,
                     AS_USER_STRING);
 
             log.info(String.format("Successfully created module overview page for courseId %s", courseId));
         } catch (Exception e) {
             exceptionMessages.add("Module Overview Page Creation: " + e.getMessage());
         }
-
 
         // 12. Create [Template] Instructor Lecture and Notes Page in the module created in step 5
         try {
@@ -482,12 +483,12 @@ public class ThemeProcessingService {
             lectureAndNotesPageModuleItem.setType("Page");
             lectureAndNotesPageModuleItem.setContentId(newWikiPage.getPageId());
             lectureAndNotesPageModuleItem.setPosition("2");
-            lectureAndNotesPageModuleItem.setPageUrl("template-instructor-lecture-and-notes");
+            lectureAndNotesPageModuleItem.setPageUrl(newWikiPage.getUrl());
 
             ModuleItemCreateWrapper lectureAndNotesPageModuleItemCreateWrapper = new ModuleItemCreateWrapper();
             lectureAndNotesPageModuleItemCreateWrapper.setModuleItem(lectureAndNotesPageModuleItem);
 
-            moduleService.createModuleItem(courseId, usedModuleId, lectureAndNotesPageModuleItemCreateWrapper,
+            moduleService.createModuleItem(courseId, usedModuleTemplatesModuleId, lectureAndNotesPageModuleItemCreateWrapper,
                     AS_USER_STRING);
 
 
@@ -519,12 +520,12 @@ public class ThemeProcessingService {
             genericPageModuleItem.setType("Page");
             genericPageModuleItem.setContentId(newWikiPage.getPageId());
             genericPageModuleItem.setPosition("3");
-            genericPageModuleItem.setPageUrl("template-generic-content-page");
+            genericPageModuleItem.setPageUrl(newWikiPage.getUrl());
 
             ModuleItemCreateWrapper genericPageModuleItemCreateWrapper = new ModuleItemCreateWrapper();
             genericPageModuleItemCreateWrapper.setModuleItem(genericPageModuleItem);
 
-            moduleService.createModuleItem(courseId, usedModuleId, genericPageModuleItemCreateWrapper,
+            moduleService.createModuleItem(courseId, usedModuleTemplatesModuleId, genericPageModuleItemCreateWrapper,
                     AS_USER_STRING);
 
 
@@ -559,7 +560,7 @@ public class ThemeProcessingService {
             ModuleItemCreateWrapper discussionModuleItemCreateWrapper = new ModuleItemCreateWrapper();
             discussionModuleItemCreateWrapper.setModuleItem(discussionModuleItem);
 
-            moduleService.createModuleItem(courseId, usedModuleId, discussionModuleItemCreateWrapper,
+            moduleService.createModuleItem(courseId, usedModuleTemplatesModuleId, discussionModuleItemCreateWrapper,
                     AS_USER_STRING);
 
 
@@ -568,7 +569,238 @@ public class ThemeProcessingService {
             exceptionMessages.add("Discussion Topic #1 Creation: " + e.getMessage());
         }
 
-        // 15. Log any steps that fail but continue on to the next step. Send error message to our team email accounts with info on course and failed steps.
+        //  15. Create a new module named Getting Started
+        //      Create a new Module if one with the proper name doesn't already exist in the course.
+        //      If one does exist with that name, use that.
+
+        // re-get the modules list so that we have an up to date list from the earlier step call
+        modules = moduleService.getModules(courseId, null);
+
+        String usedGettingStartedModuleId = null;
+
+        for (Module module : modules) {
+            if (Constants.THEME_MODULE_GETTING_STARTED_NAME.equalsIgnoreCase(module.getName())) {
+                usedGettingStartedModuleId = module.getId();
+                break;
+            }
+        }
+
+        if (usedGettingStartedModuleId == null) {
+            Module newModule = new Module();
+            newModule.setName(Constants.THEME_MODULE_GETTING_STARTED_NAME);
+            newModule.setPosition("2");
+
+            ModuleCreateWrapper newModuleCreateWrapper = new ModuleCreateWrapper();
+            newModuleCreateWrapper.setModule(newModule);
+
+            newModule = moduleService.createModule(courseId, newModuleCreateWrapper,
+                    AS_USER_STRING);
+
+            if (newModule == null || newModule.getId() == null) {
+                exceptionMessages.add(String.format("Could not create new module %s", Constants.THEME_MODULE_GETTING_STARTED_NAME));
+            } else {
+                usedGettingStartedModuleId = newModule.getId();
+            }
+        }
+
+        // 16. Create new page - Tips for Success
+        try {
+            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_MODULE_GETTING_STARTED_TIPS_FOR_SUCCESS_PAGE_TEMPLATE_NAME);
+
+            if (textToUse == null) {
+                throw new RuntimeException("Could not find value for " + Constants.THEME_MODULE_GETTING_STARTED_TIPS_FOR_SUCCESS_PAGE_TEMPLATE_NAME);
+            }
+
+            newWikiPage = new WikiPage();
+            newWikiPage.setTitle(Constants.THEME_MODULE_GETTING_STARTED_TIPS_FOR_SUCCESS_TITLE);
+            newWikiPage.setPublished(false);
+            newWikiPage.setFrontPage(false);
+            newWikiPage.setBody(textToUse);
+
+            newWikiPage = courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
+                    AS_USER_STRING);
+
+            ModuleItem moduleGettingStartedPageModuleItem = new ModuleItem();
+            moduleGettingStartedPageModuleItem.setTitle(Constants.THEME_MODULE_GETTING_STARTED_TIPS_FOR_SUCCESS_TITLE);
+            moduleGettingStartedPageModuleItem.setType("Page");
+            moduleGettingStartedPageModuleItem.setContentId(newWikiPage.getPageId());
+            moduleGettingStartedPageModuleItem.setPosition("1");
+            moduleGettingStartedPageModuleItem.setPageUrl(newWikiPage.getUrl());
+
+            ModuleItemCreateWrapper moduleGettingStartedPageModuleItemCreateWrapper = new ModuleItemCreateWrapper();
+            moduleGettingStartedPageModuleItemCreateWrapper.setModuleItem(moduleGettingStartedPageModuleItem);
+
+            moduleService.createModuleItem(courseId, usedGettingStartedModuleId, moduleGettingStartedPageModuleItemCreateWrapper,
+                    AS_USER_STRING);
+
+            log.info(String.format("Successfully created module page getting started tips for success for courseId %s", courseId));
+        } catch (Exception e) {
+            exceptionMessages.add("Getting Started Module, Tips for Success Page Creation: " + e.getMessage());
+        }
+
+        // 17. Add Quiz to this module:  Accessibility Acknowledgement
+        //  9. Create quiz in the Templates assignment group in the Assignments tool
+//        try {
+//            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_QUIZ_DESCRIPTION_TEMPLATE_NAME);
+//
+//            if (textToUse == null) {
+//                throw new RuntimeException("Could not find value for " + Constants.THEME_QUIZ_DESCRIPTION_TEMPLATE_NAME);
+//            }
+//
+//            Assignment accessibilityAcknowledgementAssignment = new Assignment();
+//            accessibilityAcknowledgementAssignment.setName("[Template] Quiz");
+////            accessibilityAcknowledgementAssignment.setAssignmentGroupId(assignmentGroup.getId());
+//            accessibilityAcknowledgementAssignment.setSubmissionTypes(List.of("online_quiz"));
+//            accessibilityAcknowledgementAssignment.setDescription(textToUse);
+//
+//            assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(accessibilityAcknowledgementAssignment),
+//                    AS_USER_STRING);
+//
+//            log.info(String.format("Successfully created quiz Accessibility Acknowledgement Assignment for courseId %s", courseId));
+//        } catch (Exception e) {
+//            exceptionMessages.add("Quiz Accessibility Acknowledgement Assignment Creation: " + e.getMessage());
+//        }
+
+        // 18. Create new page - Course Navigation
+        try {
+            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_MODULE_GETTING_STARTED_COURSE_NAVIGATION_PAGE_TEMPLATE_NAME);
+
+            if (textToUse == null) {
+                throw new RuntimeException("Could not find value for " + Constants.THEME_MODULE_GETTING_STARTED_COURSE_NAVIGATION_PAGE_TEMPLATE_NAME);
+            }
+
+            newWikiPage = new WikiPage();
+            newWikiPage.setTitle(Constants.THEME_MODULE_GETTING_STARTED_COURSE_NAVIGATION_TITLE);
+            newWikiPage.setPublished(false);
+            newWikiPage.setFrontPage(false);
+            newWikiPage.setBody(textToUse);
+
+            newWikiPage = courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
+                    AS_USER_STRING);
+
+            ModuleItem moduleGettingStartedPageModuleItem = new ModuleItem();
+            moduleGettingStartedPageModuleItem.setTitle(Constants.THEME_MODULE_GETTING_STARTED_COURSE_NAVIGATION_TITLE);
+            moduleGettingStartedPageModuleItem.setType("Page");
+            moduleGettingStartedPageModuleItem.setContentId(newWikiPage.getPageId());
+            moduleGettingStartedPageModuleItem.setPosition("3");
+            moduleGettingStartedPageModuleItem.setPageUrl(newWikiPage.getUrl());
+
+            ModuleItemCreateWrapper moduleGettingStartedPageModuleItemCreateWrapper = new ModuleItemCreateWrapper();
+            moduleGettingStartedPageModuleItemCreateWrapper.setModuleItem(moduleGettingStartedPageModuleItem);
+
+            moduleService.createModuleItem(courseId, usedGettingStartedModuleId, moduleGettingStartedPageModuleItemCreateWrapper,
+                    AS_USER_STRING);
+
+            log.info(String.format("Successfully created module page getting started course navigation for courseId %s", courseId));
+        } catch (Exception e) {
+            exceptionMessages.add("Getting Started Module, Course Navigation Page Creation: " + e.getMessage());
+        }
+
+        // 19. Create new page - Technology Start-Up
+        try {
+            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_MODULE_GETTING_STARTED_TECHNOLOGY_START_UP_PAGE_TEMPLATE_NAME);
+
+            if (textToUse == null) {
+                throw new RuntimeException("Could not find value for " + Constants.THEME_MODULE_GETTING_STARTED_TECHNOLOGY_START_UP_PAGE_TEMPLATE_NAME);
+            }
+
+            newWikiPage = new WikiPage();
+            newWikiPage.setTitle(Constants.THEME_MODULE_GETTING_STARTED_TECHNOLOGY_START_UP_TITLE);
+            newWikiPage.setPublished(false);
+            newWikiPage.setFrontPage(false);
+            newWikiPage.setBody(textToUse);
+
+            newWikiPage = courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
+                    AS_USER_STRING);
+
+            ModuleItem moduleGettingStartedPageModuleItem = new ModuleItem();
+            moduleGettingStartedPageModuleItem.setTitle(Constants.THEME_MODULE_GETTING_STARTED_TECHNOLOGY_START_UP_TITLE);
+            moduleGettingStartedPageModuleItem.setType("Page");
+            moduleGettingStartedPageModuleItem.setContentId(newWikiPage.getPageId());
+            moduleGettingStartedPageModuleItem.setPosition("4");
+            moduleGettingStartedPageModuleItem.setPageUrl(newWikiPage.getUrl());
+
+            ModuleItemCreateWrapper moduleGettingStartedPageModuleItemCreateWrapper = new ModuleItemCreateWrapper();
+            moduleGettingStartedPageModuleItemCreateWrapper.setModuleItem(moduleGettingStartedPageModuleItem);
+
+            moduleService.createModuleItem(courseId, usedGettingStartedModuleId, moduleGettingStartedPageModuleItemCreateWrapper,
+                    AS_USER_STRING);
+
+            log.info(String.format("Successfully created module page getting started technology start-up for courseId %s", courseId));
+        } catch (Exception e) {
+            exceptionMessages.add("Getting Started Module, Technology Start-up Page Creation: " + e.getMessage());
+        }
+
+        // 20. Create new page - Videoconferencing
+        try {
+            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_MODULE_GETTING_STARTED_VIDEOCONFERENCING_PAGE_TEMPLATE_NAME);
+
+            if (textToUse == null) {
+                throw new RuntimeException("Could not find value for " + Constants.THEME_MODULE_GETTING_STARTED_VIDEOCONFERENCING_PAGE_TEMPLATE_NAME);
+            }
+
+            newWikiPage = new WikiPage();
+            newWikiPage.setTitle(Constants.THEME_MODULE_GETTING_STARTED_VIDEOCONFERENCING_TITLE);
+            newWikiPage.setPublished(false);
+            newWikiPage.setFrontPage(false);
+            newWikiPage.setBody(textToUse);
+
+            newWikiPage = courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
+                    AS_USER_STRING);
+
+            ModuleItem moduleGettingStartedPageModuleItem = new ModuleItem();
+            moduleGettingStartedPageModuleItem.setTitle(Constants.THEME_MODULE_GETTING_STARTED_VIDEOCONFERENCING_TITLE);
+            moduleGettingStartedPageModuleItem.setType("Page");
+            moduleGettingStartedPageModuleItem.setContentId(newWikiPage.getPageId());
+            moduleGettingStartedPageModuleItem.setPosition("5");
+            moduleGettingStartedPageModuleItem.setPageUrl(newWikiPage.getUrl());
+
+            ModuleItemCreateWrapper moduleGettingStartedPageModuleItemCreateWrapper = new ModuleItemCreateWrapper();
+            moduleGettingStartedPageModuleItemCreateWrapper.setModuleItem(moduleGettingStartedPageModuleItem);
+
+            moduleService.createModuleItem(courseId, usedGettingStartedModuleId, moduleGettingStartedPageModuleItemCreateWrapper,
+                    AS_USER_STRING);
+
+            log.info(String.format("Successfully created module page getting started videoconferencing for courseId %s", courseId));
+        } catch (Exception e) {
+            exceptionMessages.add("Getting Started Module, Videoconferencing Page Creation: " + e.getMessage());
+        }
+
+        //  21. Create new discussion - Introduce Yourself
+        try {
+            textToUse = freemarkerProcessedTextMap.get(Constants.THEME_DISCUSSION_TOPIC_INTRODUCE_YOURSELF_MESSAGE_TEMPLATE_NAME);
+
+            if (textToUse == null) {
+                throw new RuntimeException("Could not find value for " + Constants.THEME_DISCUSSION_TOPIC_INTRODUCE_YOURSELF_MESSAGE_TEMPLATE_NAME);
+            }
+
+            DiscussionTopic introduceYourselfDiscussionTopic = new DiscussionTopic();
+            introduceYourselfDiscussionTopic.setTitle("SHARE: Please Introduce Yourself");
+            introduceYourselfDiscussionTopic.setMessage(textToUse);
+            introduceYourselfDiscussionTopic.setDiscussionType(DiscussionTopic.TYPE.THREADED);
+            introduceYourselfDiscussionTopic.setDelayedPostAt(Constants.THEME_DELAYED_POST_AT_STRING);
+
+            introduceYourselfDiscussionTopic = discussionService.createDiscussionTopic(courseId, introduceYourselfDiscussionTopic,
+                    AS_USER_STRING);
+
+            ModuleItem discussionModuleItem = new ModuleItem();
+            discussionModuleItem.setTitle("SHARE: Please Introduce Yourself");
+            discussionModuleItem.setType("Discussion");
+            discussionModuleItem.setContentId(introduceYourselfDiscussionTopic.getId());
+            discussionModuleItem.setPosition("6");
+
+            ModuleItemCreateWrapper discussionModuleItemCreateWrapper = new ModuleItemCreateWrapper();
+            discussionModuleItemCreateWrapper.setModuleItem(discussionModuleItem);
+
+            moduleService.createModuleItem(courseId, usedGettingStartedModuleId, discussionModuleItemCreateWrapper,
+                    AS_USER_STRING);
+
+            log.info(String.format("Successfully created discussion topic Introduce Yourself for courseId %s", courseId));
+        } catch (Exception e) {
+            exceptionMessages.add("Getting Started Module, Discussion Topic Introduce Yourself Creation: " + e.getMessage());
+        }
+
+        // XX. Log any steps that fail but continue on to the next step. Send error message to our team email accounts with info on course and failed steps.
         if (!exceptionMessages.isEmpty()) {
 
             StringBuilder stringBuilder = new StringBuilder();

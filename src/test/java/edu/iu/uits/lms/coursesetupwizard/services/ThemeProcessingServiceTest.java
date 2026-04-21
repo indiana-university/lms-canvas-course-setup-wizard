@@ -189,8 +189,29 @@ public class ThemeProcessingServiceTest {
       themeContent11.setName(Constants.THEME_GENERIC_CONTENT_PAGE_THEME_NAME);
       themeContent11.setTemplateText("");
 
+      ThemeContent themeContent12 = new ThemeContent();
+      themeContent12.setName(Constants.THEME_MODULE_GETTING_STARTED_TIPS_FOR_SUCCESS_PAGE_TEMPLATE_NAME);
+      themeContent12.setTemplateText("");
+
+      ThemeContent themeContent13 = new ThemeContent();
+      themeContent13.setName(Constants.THEME_MODULE_GETTING_STARTED_COURSE_NAVIGATION_PAGE_TEMPLATE_NAME);
+      themeContent13.setTemplateText("");
+
+      ThemeContent themeContent14 = new ThemeContent();
+      themeContent14.setName(Constants.THEME_MODULE_GETTING_STARTED_TECHNOLOGY_START_UP_PAGE_TEMPLATE_NAME);
+      themeContent14.setTemplateText("");
+
+      ThemeContent themeContent15 = new ThemeContent();
+      themeContent15.setName(Constants.THEME_MODULE_GETTING_STARTED_VIDEOCONFERENCING_PAGE_TEMPLATE_NAME);
+      themeContent15.setTemplateText("");
+
+      ThemeContent themeContent16 = new ThemeContent();
+      themeContent16.setName(Constants.THEME_DISCUSSION_TOPIC_INTRODUCE_YOURSELF_MESSAGE_TEMPLATE_NAME);
+      themeContent16.setTemplateText("");
+
       List<ThemeContent> themeContents = Arrays.asList(themeContent01, themeContent02, themeContent03, themeContent04, themeContent05,
-              themeContent06, themeContent07, themeContent08, themeContent09, themeContent10, themeContent11);
+              themeContent06, themeContent07, themeContent08, themeContent09, themeContent10, themeContent11,
+              themeContent12, themeContent13, themeContent14, themeContent15, themeContent16);
 
       when(themeContentRepository.findAll()).thenReturn(themeContents);
       when(freemarkerConfigurer.createConfiguration()).thenReturn(new Configuration());
@@ -207,6 +228,19 @@ public class ThemeProcessingServiceTest {
                       wikiPageCreateWrapper != null && Constants.THEME_WIZARD_NEXT_STEPS_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
               any())).thenReturn(nextStepsWikiPage);
 
+      WikiPage moduleOverviewWikiPage = new WikiPage();
+      moduleOverviewWikiPage.setPageId("6");
+      moduleOverviewWikiPage.setTitle(Constants.THEME_MODULE_OVERVIEW_TITLE);
+      moduleOverviewWikiPage.setPublished(false);
+      moduleOverviewWikiPage.setFrontPage(false);
+      moduleOverviewWikiPage.setBody("");
+      moduleOverviewWikiPage.setUrl("fakeUrl");
+
+      when(courseService.createWikiPage(any(),
+              argThat(wikiPageCreateWrapper ->
+                      wikiPageCreateWrapper != null && Constants.THEME_MODULE_OVERVIEW_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
+              any())).thenReturn(moduleOverviewWikiPage);
+
       WikiPage instructorLectureAndNotesWikiPage = new WikiPage();
       instructorLectureAndNotesWikiPage.setPageId("1");
       instructorLectureAndNotesWikiPage.setTitle(Constants.THEME_INSTRUCTOR_LECTURE_AND_NOTES_TITLE);
@@ -220,6 +254,7 @@ public class ThemeProcessingServiceTest {
       WikiPage genericContentWikiPage = new WikiPage();
       genericContentWikiPage.setPageId("2");
       genericContentWikiPage.setTitle(Constants.THEME_GENERIC_CONTENT_PAGE_TITLE);
+      genericContentWikiPage.setUrl("fakeurl");
 
       when(courseService.createWikiPage(any(),
               argThat(wikiPageCreateWrapper ->
@@ -231,7 +266,7 @@ public class ThemeProcessingServiceTest {
       ungradedDiscussionTopic.setTitle("[Template] Discussion Topic");
 
       when(discussionService.createDiscussionTopic(any(),
-              argThat(discussionTopic -> "[Template] Discussion Topic".equals(discussionTopic.getTitle())),
+              argThat(discussionTopic -> discussionTopic != null && "[Template] Discussion Topic".equals(discussionTopic.getTitle())),
               any())).thenReturn(ungradedDiscussionTopic);
 
       ModuleItem discussionModuleItem = new ModuleItem();
@@ -244,7 +279,66 @@ public class ThemeProcessingServiceTest {
       modulesTemplatesModule.setId("1");
       modulesTemplatesModule.setName(Constants.THEME_MODULE_NAME);
 
-      when(moduleService.createModule(any(), any(), any())).thenReturn(modulesTemplatesModule);
+      when(moduleService.createModule(any(),
+              argThat(moduleCreateWrapper -> moduleCreateWrapper != null && Constants.THEME_MODULE_NAME.equals(moduleCreateWrapper.getModule().getName())),
+              any())).thenReturn(modulesTemplatesModule);
+
+      Module gettingStartedModule = new Module();
+      gettingStartedModule.setId("2");
+      gettingStartedModule.setName(Constants.THEME_MODULE_GETTING_STARTED_NAME);
+
+      when(moduleService.createModule(any(),
+              argThat(moduleCreateWrapper -> moduleCreateWrapper != null && Constants.THEME_MODULE_GETTING_STARTED_NAME.equals(moduleCreateWrapper.getModule().getName())),
+              any())).thenReturn(gettingStartedModule);
+
+
+      WikiPage tipsForSuccessWikiPage = new WikiPage();
+      tipsForSuccessWikiPage.setPageId("10");
+      tipsForSuccessWikiPage.setTitle(Constants.THEME_MODULE_GETTING_STARTED_TIPS_FOR_SUCCESS_TITLE);
+
+      when(courseService.createWikiPage(any(),
+              argThat(wikiPageCreateWrapper ->
+                      wikiPageCreateWrapper != null &&
+                              Constants.THEME_MODULE_GETTING_STARTED_TIPS_FOR_SUCCESS_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
+              any())).thenReturn(tipsForSuccessWikiPage);
+
+      WikiPage courseNavigationWikiPage = new WikiPage();
+      courseNavigationWikiPage.setPageId("11");
+      courseNavigationWikiPage.setTitle(Constants.THEME_MODULE_GETTING_STARTED_COURSE_NAVIGATION_TITLE);
+
+      when(courseService.createWikiPage(any(),
+              argThat(wikiPageCreateWrapper ->
+                      wikiPageCreateWrapper != null &&
+                              Constants.THEME_MODULE_GETTING_STARTED_COURSE_NAVIGATION_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
+              any())).thenReturn(courseNavigationWikiPage);
+
+      WikiPage technologyStartupWikiPage = new WikiPage();
+      technologyStartupWikiPage.setPageId("12");
+      technologyStartupWikiPage.setTitle(Constants.THEME_MODULE_GETTING_STARTED_TECHNOLOGY_START_UP_TITLE);
+
+      when(courseService.createWikiPage(any(),
+              argThat(wikiPageCreateWrapper ->
+                      wikiPageCreateWrapper != null &&
+                              Constants.THEME_MODULE_GETTING_STARTED_TECHNOLOGY_START_UP_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
+              any())).thenReturn(technologyStartupWikiPage);
+
+      WikiPage videoconferencingWikiPage = new WikiPage();
+      videoconferencingWikiPage.setPageId("13");
+      videoconferencingWikiPage.setTitle(Constants.THEME_MODULE_GETTING_STARTED_VIDEOCONFERENCING_TITLE);
+
+      when(courseService.createWikiPage(any(),
+              argThat(wikiPageCreateWrapper ->
+                      wikiPageCreateWrapper != null &&
+                              Constants.THEME_MODULE_GETTING_STARTED_VIDEOCONFERENCING_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
+              any())).thenReturn(videoconferencingWikiPage);
+
+      DiscussionTopic introduceYourselfDiscussionTopic = new DiscussionTopic();
+      introduceYourselfDiscussionTopic.setId("1");
+      introduceYourselfDiscussionTopic.setTitle("SHARE: Please Introduce Yourself");
+
+      when(discussionService.createDiscussionTopic(any(),
+              argThat(discussionTopic -> discussionTopic != null && "SHARE: Please Introduce Yourself".equals(discussionTopic.getTitle())),
+              any())).thenReturn(introduceYourselfDiscussionTopic);
 
       ThemeLog themeLog = new ThemeLog();
       themeLog.setId(1L);
