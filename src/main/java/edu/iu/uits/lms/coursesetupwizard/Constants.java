@@ -112,7 +112,11 @@ public class Constants {
     public static final String THEME_MODULE_GETTING_STARTED_TECHNOLOGY_START_UP_TITLE = "READ: Technology Start-Up and Canvas";
     public static final String THEME_MODULE_GETTING_STARTED_VIDEOCONFERENCING_PAGE_TEMPLATE_NAME = "theme.module.gettingstarted.videoconferencing.template";
     public static final String THEME_MODULE_GETTING_STARTED_VIDEOCONFERENCING_TITLE = "READ: Videoconferencing @ IU";
+    public static final String THEME_MODULE_GETTING_STARTED_ACCESSIBILITY_SUPPORT_PAGE_TEMPLATE_NAME = "theme.module.gettingstarted.accessibilitysupport.template";
+    public static final String THEME_MODULE_GETTING_STARTED_ACCESSIBILITY_SUPPORT_TITLE = "READ: Accessibility Support";
     public static final String THEME_DISCUSSION_TOPIC_INTRODUCE_YOURSELF_MESSAGE_TEMPLATE_NAME = "theme.discussion.topic.introduceyourself.message.template";
+    public static final String THEME_RESOURCES_PAGE_TEMPLATE_NAME = "theme.resources.template";
+    public static final String THEME_RESOURCES_TITLE = "Resources";
 
     @AllArgsConstructor
     @Getter

@@ -332,6 +332,16 @@ public class ThemeProcessingServiceTest {
                               Constants.THEME_MODULE_GETTING_STARTED_VIDEOCONFERENCING_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
               any())).thenReturn(videoconferencingWikiPage);
 
+      WikiPage accessibilitySupportWikiPage = new WikiPage();
+      accessibilitySupportWikiPage.setPageId("14");
+      accessibilitySupportWikiPage.setTitle(Constants.THEME_MODULE_GETTING_STARTED_ACCESSIBILITY_SUPPORT_TITLE);
+
+      when(courseService.createWikiPage(any(),
+              argThat(wikiPageCreateWrapper ->
+                      wikiPageCreateWrapper != null &&
+                              Constants.THEME_MODULE_GETTING_STARTED_ACCESSIBILITY_SUPPORT_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
+              any())).thenReturn(accessibilitySupportWikiPage);
+
       DiscussionTopic introduceYourselfDiscussionTopic = new DiscussionTopic();
       introduceYourselfDiscussionTopic.setId("1");
       introduceYourselfDiscussionTopic.setTitle("SHARE: Please Introduce Yourself");
@@ -339,6 +349,16 @@ public class ThemeProcessingServiceTest {
       when(discussionService.createDiscussionTopic(any(),
               argThat(discussionTopic -> discussionTopic != null && "SHARE: Please Introduce Yourself".equals(discussionTopic.getTitle())),
               any())).thenReturn(introduceYourselfDiscussionTopic);
+
+      WikiPage resourcesWikiPage = new WikiPage();
+      resourcesWikiPage.setPageId("15");
+      resourcesWikiPage.setTitle(Constants.THEME_RESOURCES_TITLE);
+
+      when(courseService.createWikiPage(any(),
+              argThat(wikiPageCreateWrapper ->
+                      wikiPageCreateWrapper != null &&
+                              Constants.THEME_RESOURCES_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
+              any())).thenReturn(resourcesWikiPage);
 
       ThemeLog themeLog = new ThemeLog();
       themeLog.setId(1L);
