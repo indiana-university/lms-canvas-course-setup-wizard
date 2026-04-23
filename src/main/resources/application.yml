@@ -100,7 +100,7 @@ springdoc:
     enabled: true
     path: /api/v3/api-docs
   cache.disabled: true
-  packagesToScan: edu.iu.uits.lms.coursesetupwizard.controller.rest
+  packagesToScan: edu.iu.uits.lms.coursesetupwizard
   swagger-ui:
     enabled: false
     disable-swagger-default-url: true
