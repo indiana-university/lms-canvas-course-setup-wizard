@@ -206,12 +206,21 @@ public class ThemeProcessingServiceTest {
       themeContent15.setTemplateText("");
 
       ThemeContent themeContent16 = new ThemeContent();
-      themeContent16.setName(Constants.THEME_DISCUSSION_TOPIC_INTRODUCE_YOURSELF_MESSAGE_TEMPLATE_NAME);
+      themeContent16.setName(Constants.THEME_MODULE_GETTING_STARTED_ACCESSIBILITY_SUPPORT_PAGE_TEMPLATE_NAME);
       themeContent16.setTemplateText("");
+
+      ThemeContent themeContent17 = new ThemeContent();
+      themeContent17.setName(Constants.THEME_DISCUSSION_TOPIC_INTRODUCE_YOURSELF_MESSAGE_TEMPLATE_NAME);
+      themeContent17.setTemplateText("");
+
+      ThemeContent themeContent18 = new ThemeContent();
+      themeContent18.setName(Constants.THEME_RESOURCES_PAGE_TEMPLATE_NAME);
+      themeContent18.setTemplateText("");
 
       List<ThemeContent> themeContents = Arrays.asList(themeContent01, themeContent02, themeContent03, themeContent04, themeContent05,
               themeContent06, themeContent07, themeContent08, themeContent09, themeContent10, themeContent11,
-              themeContent12, themeContent13, themeContent14, themeContent15, themeContent16);
+              themeContent12, themeContent13, themeContent14, themeContent15, themeContent16, themeContent17,
+              themeContent18);
 
       when(themeContentRepository.findAll()).thenReturn(themeContents);
       when(freemarkerConfigurer.createConfiguration()).thenReturn(new Configuration());
@@ -807,5 +816,224 @@ public class ThemeProcessingServiceTest {
       Assertions.assertNotNull(nextStepsWikiPage);
       Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
       Assertions.assertTrue(body.contains("Generic Content Page Creation: Could not find value for theme.generic.content.template"));
+   }
+
+   // New tests added for steps 15+ so they are easy to find
+
+   @Test
+   void testFailure_processSubmit_gettingStarted_tipsForSuccess_templateNotFound() throws Exception {
+      ThemeModel themeModel = new ThemeModel();
+
+      Iterable<ThemeContent> themeContents = themeContentRepository.findAll();
+      List<ThemeContent> newThemeContent = new ArrayList<>();
+
+      for (ThemeContent themeContent : themeContents) {
+         if (! themeContent.getName().equals(Constants.THEME_MODULE_GETTING_STARTED_TIPS_FOR_SUCCESS_PAGE_TEMPLATE_NAME)) {
+            newThemeContent.add(themeContent);
+         }
+      }
+
+      reset(themeContentRepository);
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
+
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
+
+      verify(emailService).sendEmail(emailCaptor.capture());
+
+      EmailDetails emailDetails = emailCaptor.getValue();
+      Assertions.assertNotNull(emailDetails);
+
+      final String body = emailDetails.getBody();
+      Assertions.assertNotNull(body);
+
+      Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
+      Assertions.assertTrue(body.contains("Getting Started Module, Tips for Success Page Creation: Could not find value for theme.module.gettingstarted.tipsforsuccess.template"));
+   }
+
+   @Test
+   void testFailure_processSubmit_gettingStarted_courseNavigation_templateNotFound() throws Exception {
+      ThemeModel themeModel = new ThemeModel();
+
+      Iterable<ThemeContent> themeContents = themeContentRepository.findAll();
+      List<ThemeContent> newThemeContent = new ArrayList<>();
+
+      for (ThemeContent themeContent : themeContents) {
+         if (! themeContent.getName().equals(Constants.THEME_MODULE_GETTING_STARTED_COURSE_NAVIGATION_PAGE_TEMPLATE_NAME)) {
+            newThemeContent.add(themeContent);
+         }
+      }
+
+      reset(themeContentRepository);
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
+
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
+
+      verify(emailService).sendEmail(emailCaptor.capture());
+
+      EmailDetails emailDetails = emailCaptor.getValue();
+      Assertions.assertNotNull(emailDetails);
+
+      final String body = emailDetails.getBody();
+      Assertions.assertNotNull(body);
+
+      Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
+      Assertions.assertTrue(body.contains("Getting Started Module, Course Navigation Page Creation: Could not find value for theme.module.gettingstarted.coursenavigation.template"));
+   }
+
+   @Test
+   void testFailure_processSubmit_gettingStarted_technologyStartup_templateNotFound() throws Exception {
+      ThemeModel themeModel = new ThemeModel();
+
+      Iterable<ThemeContent> themeContents = themeContentRepository.findAll();
+      List<ThemeContent> newThemeContent = new ArrayList<>();
+
+      for (ThemeContent themeContent : themeContents) {
+         if (! themeContent.getName().equals(Constants.THEME_MODULE_GETTING_STARTED_TECHNOLOGY_START_UP_PAGE_TEMPLATE_NAME)) {
+            newThemeContent.add(themeContent);
+         }
+      }
+
+      reset(themeContentRepository);
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
+
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
+
+      verify(emailService).sendEmail(emailCaptor.capture());
+
+      EmailDetails emailDetails = emailCaptor.getValue();
+      Assertions.assertNotNull(emailDetails);
+
+      final String body = emailDetails.getBody();
+      Assertions.assertNotNull(body);
+
+      Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
+      Assertions.assertTrue(body.contains("Getting Started Module, Technology Start-up Page Creation: Could not find value for theme.module.gettingstarted.technologystartup.template"));
+   }
+
+   @Test
+   void testFailure_processSubmit_gettingStarted_videoconferencing_templateNotFound() throws Exception {
+      ThemeModel themeModel = new ThemeModel();
+
+      Iterable<ThemeContent> themeContents = themeContentRepository.findAll();
+      List<ThemeContent> newThemeContent = new ArrayList<>();
+
+      for (ThemeContent themeContent : themeContents) {
+         if (! themeContent.getName().equals(Constants.THEME_MODULE_GETTING_STARTED_VIDEOCONFERENCING_PAGE_TEMPLATE_NAME)) {
+            newThemeContent.add(themeContent);
+         }
+      }
+
+      reset(themeContentRepository);
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
+
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
+
+      verify(emailService).sendEmail(emailCaptor.capture());
+
+      EmailDetails emailDetails = emailCaptor.getValue();
+      Assertions.assertNotNull(emailDetails);
+
+      final String body = emailDetails.getBody();
+      Assertions.assertNotNull(body);
+
+      Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
+      Assertions.assertTrue(body.contains("Getting Started Module, Videoconferencing Page Creation: Could not find value for theme.module.gettingstarted.videoconferencing.template"));
+   }
+
+   @Test
+   void testFailure_processSubmit_gettingStarted_accessibilitySupport_templateNotFound() throws Exception {
+      ThemeModel themeModel = new ThemeModel();
+
+      Iterable<ThemeContent> themeContents = themeContentRepository.findAll();
+      List<ThemeContent> newThemeContent = new ArrayList<>();
+
+      for (ThemeContent themeContent : themeContents) {
+         if (! themeContent.getName().equals(Constants.THEME_MODULE_GETTING_STARTED_ACCESSIBILITY_SUPPORT_PAGE_TEMPLATE_NAME)) {
+            newThemeContent.add(themeContent);
+         }
+      }
+
+      reset(themeContentRepository);
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
+
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
+
+      verify(emailService).sendEmail(emailCaptor.capture());
+
+      EmailDetails emailDetails = emailCaptor.getValue();
+      Assertions.assertNotNull(emailDetails);
+
+      final String body = emailDetails.getBody();
+      Assertions.assertNotNull(body);
+
+      Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
+      Assertions.assertTrue(body.contains("Getting Started Module, Accessibility Support Page Creation: Could not find value for theme.module.gettingstarted.accessibilitysupport.template"));
+   }
+
+   @Test
+   void testFailure_processSubmit_gettingStarted_introduceYourself_templateNotFound() throws Exception {
+      ThemeModel themeModel = new ThemeModel();
+
+      Iterable<ThemeContent> themeContents = themeContentRepository.findAll();
+      List<ThemeContent> newThemeContent = new ArrayList<>();
+
+      for (ThemeContent themeContent : themeContents) {
+         if (! themeContent.getName().equals(Constants.THEME_DISCUSSION_TOPIC_INTRODUCE_YOURSELF_MESSAGE_TEMPLATE_NAME)) {
+            newThemeContent.add(themeContent);
+         }
+      }
+
+      reset(themeContentRepository);
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
+
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
+
+      verify(emailService).sendEmail(emailCaptor.capture());
+
+      EmailDetails emailDetails = emailCaptor.getValue();
+      Assertions.assertNotNull(emailDetails);
+
+      final String body = emailDetails.getBody();
+      Assertions.assertNotNull(body);
+
+      Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
+      Assertions.assertTrue(body.contains("Getting Started Module, Discussion Topic Introduce Yourself Creation: Could not find value for theme.discussion.topic.introduceyourself.message.template"));
+   }
+
+   @Test
+   void testFailure_processSubmit_resources_templateNotFound() throws Exception {
+      ThemeModel themeModel = new ThemeModel();
+
+      Iterable<ThemeContent> themeContents = themeContentRepository.findAll();
+      List<ThemeContent> newThemeContent = new ArrayList<>();
+
+      for (ThemeContent themeContent : themeContents) {
+         if (! themeContent.getName().equals(Constants.THEME_RESOURCES_PAGE_TEMPLATE_NAME)) {
+            newThemeContent.add(themeContent);
+         }
+      }
+
+      reset(themeContentRepository);
+      when(themeContentRepository.findAll()).thenReturn(newThemeContent);
+
+      WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
+
+      verify(emailService).sendEmail(emailCaptor.capture());
+
+      EmailDetails emailDetails = emailCaptor.getValue();
+      Assertions.assertNotNull(emailDetails);
+
+      final String body = emailDetails.getBody();
+      Assertions.assertNotNull(body);
+
+      Assertions.assertNotNull(nextStepsWikiPage);
+      Assertions.assertEquals(nextStepsWikiPageId, nextStepsWikiPage.getPageId());
+      Assertions.assertTrue(body.contains("Wiki Page Resources Creation: Could not find value for theme.resources.template"));
    }
 }
