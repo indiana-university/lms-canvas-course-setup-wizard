@@ -818,8 +818,6 @@ public class ThemeProcessingServiceTest {
       Assertions.assertTrue(body.contains("Generic Content Page Creation: Could not find value for theme.generic.content.template"));
    }
 
-   // New tests added for steps 15+ so they are easy to find
-
    @Test
    void testFailure_processSubmit_gettingStarted_tipsForSuccess_templateNotFound() throws Exception {
       ThemeModel themeModel = new ThemeModel();
