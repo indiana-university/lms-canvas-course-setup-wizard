@@ -36,11 +36,13 @@ package edu.iu.uits.lms.coursesetupwizard.config;
 import edu.iu.uits.lms.coursesetupwizard.model.BannerImage;
 import edu.iu.uits.lms.coursesetupwizard.model.BannerImageCategory;
 import edu.iu.uits.lms.coursesetupwizard.model.Theme;
+import edu.iu.uits.lms.common.swagger.LmsRepositoryDetectionStrategy;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.properties.SpringDocConfigProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
-import org.springframework.data.rest.core.mapping.RepositoryDetectionStrategy;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
@@ -50,6 +52,9 @@ public class JpaRestConfig implements RepositoryRestConfigurer {
     @Value("${lms.swagger.cors.origin}")
     private String corsSwaggerAllowedOrigin;
 
+    @Autowired
+    private SpringDocConfigProperties springDocConfigProperties;
+
     @Override
     public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config, CorsRegistry cors) {
         //  This is needed to allow the "ids" to be served up via the
@@ -57,7 +62,7 @@ public class JpaRestConfig implements RepositoryRestConfigurer {
         config.exposeIdsFor(BannerImage.class, BannerImageCategory.class, Theme.class);
 
         RepositoryRestConfigurer.super.configureRepositoryRestConfiguration(config, cors);
-        config.setRepositoryDetectionStrategy(RepositoryDetectionStrategy.RepositoryDetectionStrategies.ANNOTATED);
+        config.setRepositoryDetectionStrategy(new LmsRepositoryDetectionStrategy(springDocConfigProperties.getPackagesToScan()));
 
         // These are needed for swagger to be able to call these JPA REST endpoints via its webpage
         cors.addMapping("/rest/bannerimage/**")

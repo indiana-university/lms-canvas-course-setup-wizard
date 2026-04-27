@@ -43,6 +43,7 @@ import nl.altindag.log.LogCaptor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
+import org.springdoc.core.properties.SpringDocConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.health.HealthContributorAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.health.HealthEndpointAutoConfiguration;
@@ -105,6 +106,9 @@ public class It12LoggingTest {
 
     @MockitoBean
     private CorsSwaggerConfig corsSwaggerConfig;
+
+    @MockitoBean
+    private SpringDocConfigProperties springDocConfigProperties;
 
     @Test
     public void testLmsEnhancementToIt12LogExistence() throws Exception {
