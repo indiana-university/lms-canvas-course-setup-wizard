@@ -1,8 +1,45 @@
 <#-- Variables available: bannerImageAltText, bannerImageCssClasses, bannerImageUrl, courseId, headerCssClasses,
-                          includeBannerImage, includeGuidance, includeNavigation, navigationCssClasses and wrapperCssClasses -->
+                          includeBannerImage, includeGuidance, includeNavigation, navigationCssClasses, wrapperCssClasses,
+                          navigationOption (HOME | SYLLABUS | BOTH | ""),
+                          navigationSyllabusButtonLabels (list of button label strings) -->
 
-<div id="dp-wrapper" class="dp-wrapper ${wrapperCssClasses}">
-    <div class="dp-syllabus-nav">[Navigate the Syllabus]</div>
+<#-- Maps a button label chosen in the wizard UI to its canonical Canvas URL. -->
+<#function navButtonUrl label>
+    <#if label == "Home"><#return "/courses/" + courseId>
+    <#elseif label == "Syllabus"><#return "/courses/" + courseId + "/assignments/syllabus">
+    <#elseif label == "Getting Started"><#return "/courses/" + courseId + "/modules">
+    <#elseif label == "Modules"><#return "/courses/" + courseId + "/modules">
+    <#elseif label == "Schedule/Calendar"><#return "/courses/" + courseId + "/pages/schedule-calendar">
+    <#else><#return "#">
+    </#if>
+</#function>
+
+<#-- Show the syllabus navigation bar when:
+       • includeNavigation is true, AND
+       • navigationOption is SYLLABUS, BOTH, or unset (empty string = legacy / feature-flag-off case) -->
+<#assign showSyllabusNav = includeNavigation && (navigationOption == "SYLLABUS" || navigationOption == "BOTH" || navigationOption == "")>
+
+<div id="dp-wrapper" class="dp-wrapper ${wrapperCssClasses}" <#if showSyllabusNav> data-nav-class="container-fluid dp-link-grid ${navigationCssClasses}"</#if>>
+    <#if showSyllabusNav>
+        <#if navigationSyllabusButtonLabels?has_content>
+            <nav class="container-fluid dp-link-grid ${navigationCssClasses}" style="width: 100%; margin: 0; padding: 0;">
+                <ul style="display: flex; flex-wrap: wrap; width: 100%; margin: 0; padding: 0; list-style: none;">
+                    <#list navigationSyllabusButtonLabels as label>
+                        <li style="flex: 1 1 0; margin: 0;"><a href="${navButtonUrl(label)}" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> ${label}</a></li>
+                    </#list>
+                </ul>
+            </nav>
+        <#else>
+            <nav class="container-fluid dp-link-grid ${navigationCssClasses}" style="width: 100%; margin: 0; padding: 0;">
+                <ul style="display: flex; flex-wrap: wrap; width: 100%; margin: 0; padding: 0; list-style: none;">
+                    <li style="flex: 1 1 0; margin: 0;"><a style="white-space: nowrap; display: block; width: 100%; text-align: center;"> Start Here</a></li>
+                    <li style="flex: 1 1 0; margin: 0;"><a href="/courses/${courseId}/assignments/syllabus" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> Syllabus</a></li>
+                    <li style="flex: 1 1 0; margin: 0;"><a href="/courses/${courseId}/modules" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> Modules</a></li>
+                    <li style="flex: 1 1 0; margin: 0;"><a href="/courses/${courseId}/pages/more-resources" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> Resources</a></li>
+                </ul>
+            </nav>
+        </#if>
+    </#if>
     <p>&nbsp;</p>
     <header class="dp-header ${headerCssClasses}" style="margin-bottom: 0px;">
         <h2 class="dp-heading"><span class="dp-header-pre"><span class="dp-action-item dp-action-item-insert" style="display: none;" aria-hidden="true">Enter&nbsp; Course Number or ID</span><br /></span> <span class="dp-header-title">Syllabus</span></h2>
@@ -110,64 +147,64 @@
     <p>Your assignment and course grades will be determined using the following scale:</p>
     <table class="grading_standard_data ic-Table ic-Table--striped" style="border-collapse: collapse; width: 250px; margin-left: auto; margin-right: auto;" data-active-table="true">
         <thead>
-            <tr>
-                <th scope="col">Grade</th>
-                <th scope="col">Range</th>
-            </tr>
+        <tr>
+            <th scope="col">Grade</th>
+            <th scope="col">Range</th>
+        </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>A+</td>
-                <td>100% to 97%</td>
-            </tr>
-            <tr>
-                <td>A</td>
-                <td>&lt; 97% to 93%</td>
-            </tr>
-            <tr>
-                <td>A-</td>
-                <td>&lt; 93% to 90%</td>
-            </tr>
-            <tr>
-                <td>B+</td>
-                <td>&lt; 90% to 87%</td>
-            </tr>
-            <tr>
-                <td>B</td>
-                <td>&lt; 87% to 83%</td>
-            </tr>
-            <tr>
-                <td>B-</td>
-                <td>&lt; 83% to 80%</td>
-            </tr>
-            <tr>
-                <td>C+</td>
-                <td>&lt; 80% to 77%</td>
-            </tr>
-            <tr>
-                <td>C</td>
-                <td>&lt; 77% to 73%</td>
-            </tr>
-            <tr>
-                <td>C-</td>
-                <td>&lt; 73% to 70%</td>
-            </tr>
-            <tr>
-                <td>D+</td>
-                <td>&lt; 70% to 67%</td>
-            </tr>
-            <tr>
-                <td>D</td>
-                <td>&lt; 67% to 63%</td>
-            </tr>
-            <tr>
-                <td>D-</td>
-                <td>&lt; 63% to 60%</td>
-            </tr>
-            <tr>
-                <td>F</td>
-                <td>&lt; 60% to 0%</td>
-            </tr>
+        <tr>
+            <td>A+</td>
+            <td>100% to 97%</td>
+        </tr>
+        <tr>
+            <td>A</td>
+            <td>&lt; 97% to 93%</td>
+        </tr>
+        <tr>
+            <td>A-</td>
+            <td>&lt; 93% to 90%</td>
+        </tr>
+        <tr>
+            <td>B+</td>
+            <td>&lt; 90% to 87%</td>
+        </tr>
+        <tr>
+            <td>B</td>
+            <td>&lt; 87% to 83%</td>
+        </tr>
+        <tr>
+            <td>B-</td>
+            <td>&lt; 83% to 80%</td>
+        </tr>
+        <tr>
+            <td>C+</td>
+            <td>&lt; 80% to 77%</td>
+        </tr>
+        <tr>
+            <td>C</td>
+            <td>&lt; 77% to 73%</td>
+        </tr>
+        <tr>
+            <td>C-</td>
+            <td>&lt; 73% to 70%</td>
+        </tr>
+        <tr>
+            <td>D+</td>
+            <td>&lt; 70% to 67%</td>
+        </tr>
+        <tr>
+            <td>D</td>
+            <td>&lt; 67% to 63%</td>
+        </tr>
+        <tr>
+            <td>D-</td>
+            <td>&lt; 63% to 60%</td>
+        </tr>
+        <tr>
+            <td>F</td>
+            <td>&lt; 60% to 0%</td>
+        </tr>
         </tbody>
     </table>
     <div id="newHtmlTempId"></div>

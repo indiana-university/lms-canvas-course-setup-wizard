@@ -1,22 +1,50 @@
 <#-- Variables available: bannerImageAltText, bannerImageCssClasses, bannerImageUrl, courseId, headerCssClasses,
-                          includeBannerImage, includeGuidance, includeNavigation, navigationCssClasses and wrapperCssClasses -->
+                          includeBannerImage, includeGuidance, includeNavigation, navigationCssClasses, wrapperCssClasses,
+                          navigationOption (HOME | SYLLABUS | BOTH | ""),
+                          navigationHomeButtonLabels (list of button label strings) -->
 
-<div id="dp-wrapper" class="dp-wrapper ${wrapperCssClasses}" <#if includeNavigation> data-nav-class="container-fluid dp-link-grid ${navigationCssClasses}"</#if> >
+<#-- Maps a button label chosen in the wizard UI to its canonical Canvas URL. -->
+<#function navButtonUrl label>
+    <#if label == "Home"><#return "/courses/" + courseId>
+    <#elseif label == "Syllabus"><#return "/courses/" + courseId + "/assignments/syllabus">
+    <#elseif label == "Getting Started"><#return "/courses/" + courseId + "/modules">
+    <#elseif label == "Modules"><#return "/courses/" + courseId + "/modules">
+    <#elseif label == "Schedule/Calendar"><#return "/courses/" + courseId + "/pages/schedule-calendar">
+    <#else><#return "#">
+    </#if>
+</#function>
+
+<#-- Show the home-page navigation bar when:
+       • includeNavigation is true, AND
+       • navigationOption is HOME, BOTH, or unset (empty string = legacy / feature-flag-off case) -->
+<#assign showHomeNav = includeNavigation && (navigationOption == "HOME" || navigationOption == "BOTH" || navigationOption == "")>
+
+<div id="dp-wrapper" class="dp-wrapper ${wrapperCssClasses}" <#if showHomeNav> data-nav-class="container-fluid dp-link-grid ${navigationCssClasses}"</#if> >
     <header class="dp-header ${headerCssClasses}">
         <h2 class="dp-heading"><span class="dp-header-pre"><span class="dp-header-pre-1">Enter SIS ID</span> </span> <span class="dp-header-title">Enter your Course Title</span></h2>
     </header>
     <#if includeBannerImage>
-    <div class="dp-banner-image"><img class="${bannerImageCssClasses}}" role="presentation" src="${bannerImageUrl}" alt="${bannerImageAltText}" data-name="typewriter_five_ws.png" data-size="478 KB" data-available-range="false" data-hidden="false" data-file-id="165239671" data-filename="typewriter_five_ws.png" data-locked="false" /></div>
+        <div class="dp-banner-image"><img class="${bannerImageCssClasses}}" role="presentation" src="${bannerImageUrl}" alt="${bannerImageAltText}" data-name="typewriter_five_ws.png" data-size="478 KB" data-available-range="false" data-hidden="false" data-file-id="165239671" data-filename="typewriter_five_ws.png" data-locked="false" /></div>
     </#if>
-    <#if includeNavigation>
-    <nav class="container-fluid dp-link-grid ${navigationCssClasses}">
-        <ul class="row">
-            <li class="col-sm-12 col-md-6 col-lg-3"><a> Start Here</a></li>
-            <li class="col-sm-12 col-md-6 col-lg-3"><a href="/courses/${courseId}/assignments/syllabus"> Syllabus</a></li>
-            <li class="col-sm-12 col-md-6 col-lg-3"><a href="/courses/${courseId}/modules"> Modules</a></li>
-            <li class="col-sm-12 col-md-6 col-lg-3"><a href="/courses/${courseId}/pages/more-resources"> Resources</a></li>
-        </ul>
-    </nav>
+    <#if showHomeNav>
+        <#if navigationHomeButtonLabels?has_content>
+            <nav class="container-fluid dp-link-grid ${navigationCssClasses}" style="width: 100%; margin: 0; padding: 0;">
+                <ul style="display: flex; flex-wrap: wrap; width: 100%; margin: 0; padding: 0; list-style: none;">
+                    <#list navigationHomeButtonLabels as label>
+                        <li style="flex: 1 1 0; margin: 0;"><a href="${navButtonUrl(label)}" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> ${label}</a></li>
+                    </#list>
+                </ul>
+            </nav>
+        <#else>
+                    <nav class="container-fluid dp-link-grid ${navigationCssClasses}" style="width: 100%; margin: 0; padding: 0;">
+                        <ul style="display: flex; flex-wrap: wrap; width: 100%; margin: 0; padding: 0; list-style: none;">
+                            <li style="flex: 1 1 0; margin: 0;"><a style="white-space: nowrap; display: block; width: 100%; text-align: center;"> Start Here</a></li>
+                            <li style="flex: 1 1 0; margin: 0;"><a href="/courses/${courseId}/assignments/syllabus" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> Syllabus</a></li>
+                            <li style="flex: 1 1 0; margin: 0;"><a href="/courses/${courseId}/modules" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> Modules</a></li>
+                            <li style="flex: 1 1 0; margin: 0;"><a href="/courses/${courseId}/pages/more-resources" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> Resources</a></li>
+                </ul>
+            </nav>
+        </#if>
     </#if>
     <#if includeGuidance>
     <div class="dp-action-item dp-action-item-block dp-action-item-instructions" style="display: none;">
@@ -49,7 +77,7 @@
     <p>Enter_the_course_introduction</p>
     <h3>To begin this course</h3>
     <p>Here are some tasks to get you started right away:</p>
-   <ol class="dp-more-space">
+    <ol class="dp-more-space">
         <li>Review the remaining content on this page.</li>
         <li>Read the &nbsp<a href="/courses/2227484/assignments/syllabus">syllabus</a> - located in the course navigation menu at the left.</li>
         <li>Read and complete the activities in the <a class="dp-course-link" href="https://iu.test.instructure.com/courses/2227484/modules/4205999">Getting Started</a> module.</span></li>
