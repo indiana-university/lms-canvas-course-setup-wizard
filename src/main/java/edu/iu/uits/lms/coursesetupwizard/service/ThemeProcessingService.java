@@ -152,7 +152,7 @@ public class ThemeProcessingService {
             stringBuilder.append("The following exception happened during the freemarker template processing: \r\n\r\n");
             stringBuilder.append(e.getMessage());
 
-//            sendEmail(stringBuilder.toString());
+            sendEmail(stringBuilder.toString());
             return null;
         }
 
