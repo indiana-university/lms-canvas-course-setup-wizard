@@ -21,24 +21,18 @@
 
 <div id="dp-wrapper" class="dp-wrapper ${wrapperCssClasses}" <#if showSyllabusNav> data-nav-class="container-fluid dp-link-grid ${navigationCssClasses}"</#if>>
     <#if showSyllabusNav>
-        <#if navigationSyllabusButtonLabels?has_content>
-            <nav class="container-fluid dp-link-grid ${navigationCssClasses}" style="width: 100%; margin: 0; padding: 0;">
-                <ul style="display: flex; flex-wrap: wrap; width: 100%; margin: 0; padding: 0; list-style: none;">
-                    <#list navigationSyllabusButtonLabels as label>
-                        <li style="flex: 1 1 0; margin: 0;"><a href="${navButtonUrl(label)}" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> ${label}</a></li>
-                    </#list>
-                </ul>
-            </nav>
-        <#else>
-            <nav class="container-fluid dp-link-grid ${navigationCssClasses}" style="width: 100%; margin: 0; padding: 0;">
-                <ul style="display: flex; flex-wrap: wrap; width: 100%; margin: 0; padding: 0; list-style: none;">
-                    <li style="flex: 1 1 0; margin: 0;"><a style="white-space: nowrap; display: block; width: 100%; text-align: center;"> Start Here</a></li>
-                    <li style="flex: 1 1 0; margin: 0;"><a href="/courses/${courseId}/assignments/syllabus" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> Syllabus</a></li>
-                    <li style="flex: 1 1 0; margin: 0;"><a href="/courses/${courseId}/modules" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> Modules</a></li>
-                    <li style="flex: 1 1 0; margin: 0;"><a href="/courses/${courseId}/pages/more-resources" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> Resources</a></li>
-                </ul>
-            </nav>
-        </#if>
+        <#assign btnCount = navigationSyllabusButtonLabels?size>
+        <#assign liClass = (btnCount == 2)?then("col-sm-12 col-md-6 col-lg-6",
+                           (btnCount == 3)?then("col-sm-12 col-md-4 col-lg-4",
+                           (btnCount == 6)?then("col-xs-6 col-sm-6 col-md-4 col-lg-2",
+                           "col-sm-12 col-md-3 col-lg-3")))>
+        <nav class="container-fluid dp-link-grid ${navigationCssClasses}" style="width: 100%; margin: 0; padding: 0; padding-top: 1rem;">
+            <ul style="display: flex; flex-wrap: wrap; width: 100%; margin: 0; padding: 0; list-style: none;">
+                <#list navigationSyllabusButtonLabels as label>
+                    <li class="${liClass}" style="padding-left: 0; padding-right: 0;"><a href="${navButtonUrl(label)}" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> ${label}</a></li>
+                </#list>
+            </ul>
+        </nav>
     </#if>
     <p>&nbsp;</p>
     <header class="dp-header ${headerCssClasses}" style="margin-bottom: 0px;">

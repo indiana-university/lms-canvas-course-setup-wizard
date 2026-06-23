@@ -24,27 +24,21 @@
         <h2 class="dp-heading"><span class="dp-header-pre"><span class="dp-header-pre-1">Enter SIS ID</span> </span> <span class="dp-header-title">Enter your Course Title</span></h2>
     </header>
     <#if includeBannerImage>
-        <div class="dp-banner-image"><img class="${bannerImageCssClasses}}" role="presentation" src="${bannerImageUrl}" alt="${bannerImageAltText}" data-name="typewriter_five_ws.png" data-size="478 KB" data-available-range="false" data-hidden="false" data-file-id="165239671" data-filename="typewriter_five_ws.png" data-locked="false" /></div>
+        <div class="dp-banner-image" style="margin-top: 1rem;" ><img class="${bannerImageCssClasses}" role="presentation" src="${bannerImageUrl}" alt="${bannerImageAltText}" data-name="typewriter_five_ws.png" data-size="478 KB" data-available-range="false" data-hidden="false" data-file-id="165239671" data-filename="typewriter_five_ws.png" data-locked="false" /></div>
     </#if>
     <#if showHomeNav>
-        <#if navigationHomeButtonLabels?has_content>
-            <nav class="container-fluid dp-link-grid ${navigationCssClasses}" style="width: 100%; margin: 0; padding: 0;">
-                <ul style="display: flex; flex-wrap: wrap; width: 100%; margin: 0; padding: 0; list-style: none;">
-                    <#list navigationHomeButtonLabels as label>
-                        <li style="flex: 1 1 0; margin: 0;"><a href="${navButtonUrl(label)}" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> ${label}</a></li>
-                    </#list>
-                </ul>
-            </nav>
-        <#else>
-                    <nav class="container-fluid dp-link-grid ${navigationCssClasses}" style="width: 100%; margin: 0; padding: 0;">
-                        <ul style="display: flex; flex-wrap: wrap; width: 100%; margin: 0; padding: 0; list-style: none;">
-                            <li style="flex: 1 1 0; margin: 0;"><a style="white-space: nowrap; display: block; width: 100%; text-align: center;"> Start Here</a></li>
-                            <li style="flex: 1 1 0; margin: 0;"><a href="/courses/${courseId}/assignments/syllabus" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> Syllabus</a></li>
-                            <li style="flex: 1 1 0; margin: 0;"><a href="/courses/${courseId}/modules" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> Modules</a></li>
-                            <li style="flex: 1 1 0; margin: 0;"><a href="/courses/${courseId}/pages/more-resources" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> Resources</a></li>
-                </ul>
-            </nav>
-        </#if>
+        <#assign btnCount = navigationHomeButtonLabels?size>
+        <#assign liClass = (btnCount == 2)?then("col-sm-12 col-md-6 col-lg-6",
+                           (btnCount == 3)?then("col-sm-12 col-md-4 col-lg-4",
+                           (btnCount == 6)?then("col-xs-6 col-sm-6 col-md-4 col-lg-2",
+                           "col-sm-12 col-md-3 col-lg-3")))>
+        <nav class="container-fluid dp-link-grid ${navigationCssClasses}" style="width: 100%; margin: 0; padding: 0; margin-top: 1rem;">
+            <ul style="display: flex; flex-wrap: wrap; width: 100%; margin: 0; padding: 0; list-style: none;">
+                <#list navigationHomeButtonLabels as label>
+                    <li class="${liClass}" style="padding-left: 0; padding-right: 0;"><a href="${navButtonUrl(label)}" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> ${label}</a></li>
+                </#list>
+            </ul>
+        </nav>
     </#if>
     <#if includeGuidance>
     <div class="dp-action-item dp-action-item-block dp-action-item-instructions" style="display: none;">
