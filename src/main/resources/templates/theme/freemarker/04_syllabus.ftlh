@@ -141,64 +141,64 @@
     <p>Your assignment and course grades will be determined using the following scale:</p>
     <table class="grading_standard_data ic-Table ic-Table--striped" style="border-collapse: collapse; width: 250px; margin-left: auto; margin-right: auto;" data-active-table="true">
         <thead>
-        <tr>
-            <th scope="col">Grade</th>
-            <th scope="col">Range</th>
-        </tr>
+            <tr>
+                <th scope="col">Grade</th>
+                <th scope="col">Range</th>
+            </tr>
         </thead>
         <tbody>
-        <tr>
-            <td>A+</td>
-            <td>100% to 97%</td>
-        </tr>
-        <tr>
-            <td>A</td>
-            <td>&lt; 97% to 93%</td>
-        </tr>
-        <tr>
-            <td>A-</td>
-            <td>&lt; 93% to 90%</td>
-        </tr>
-        <tr>
-            <td>B+</td>
-            <td>&lt; 90% to 87%</td>
-        </tr>
-        <tr>
-            <td>B</td>
-            <td>&lt; 87% to 83%</td>
-        </tr>
-        <tr>
-            <td>B-</td>
-            <td>&lt; 83% to 80%</td>
-        </tr>
-        <tr>
-            <td>C+</td>
-            <td>&lt; 80% to 77%</td>
-        </tr>
-        <tr>
-            <td>C</td>
-            <td>&lt; 77% to 73%</td>
-        </tr>
-        <tr>
-            <td>C-</td>
-            <td>&lt; 73% to 70%</td>
-        </tr>
-        <tr>
-            <td>D+</td>
-            <td>&lt; 70% to 67%</td>
-        </tr>
-        <tr>
-            <td>D</td>
-            <td>&lt; 67% to 63%</td>
-        </tr>
-        <tr>
-            <td>D-</td>
-            <td>&lt; 63% to 60%</td>
-        </tr>
-        <tr>
-            <td>F</td>
-            <td>&lt; 60% to 0%</td>
-        </tr>
+            <tr>
+                <td>A+</td>
+                <td>100% to 97%</td>
+            </tr>
+            <tr>
+                <td>A</td>
+                <td>&lt; 97% to 93%</td>
+            </tr>
+            <tr>
+                <td>A-</td>
+                <td>&lt; 93% to 90%</td>
+            </tr>
+            <tr>
+                <td>B+</td>
+                <td>&lt; 90% to 87%</td>
+            </tr>
+            <tr>
+                <td>B</td>
+                <td>&lt; 87% to 83%</td>
+            </tr>
+            <tr>
+                <td>B-</td>
+                <td>&lt; 83% to 80%</td>
+            </tr>
+            <tr>
+                <td>C+</td>
+                <td>&lt; 80% to 77%</td>
+            </tr>
+            <tr>
+                <td>C</td>
+                <td>&lt; 77% to 73%</td>
+            </tr>
+            <tr>
+                <td>C-</td>
+                <td>&lt; 73% to 70%</td>
+            </tr>
+            <tr>
+                <td>D+</td>
+                <td>&lt; 70% to 67%</td>
+            </tr>
+            <tr>
+                <td>D</td>
+                <td>&lt; 67% to 63%</td>
+            </tr>
+            <tr>
+                <td>D-</td>
+                <td>&lt; 63% to 60%</td>
+            </tr>
+            <tr>
+                <td>F</td>
+                <td>&lt; 60% to 0%</td>
+            </tr>
         </tbody>
     </table>
     <div id="newHtmlTempId"></div>

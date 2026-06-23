@@ -71,7 +71,7 @@
     <p>Enter_the_course_introduction</p>
     <h3>To begin this course</h3>
     <p>Here are some tasks to get you started right away:</p>
-    <ol class="dp-more-space">
+   <ol class="dp-more-space">
         <li>Review the remaining content on this page.</li>
         <li>Read the &nbsp<a href="/courses/2227484/assignments/syllabus">syllabus</a> - located in the course navigation menu at the left.</li>
         <li>Read and complete the activities in the <a class="dp-course-link" href="https://iu.test.instructure.com/courses/2227484/modules/4205999">Getting Started</a> module.</span></li>
