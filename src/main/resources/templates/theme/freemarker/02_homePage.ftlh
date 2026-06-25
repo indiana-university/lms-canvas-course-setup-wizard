@@ -33,7 +33,7 @@
                            (btnCount == 6)?then("col-xs-6 col-sm-6 col-md-4 col-lg-2",
                            "col-sm-12 col-md-3 col-lg-3")))>
         <nav class="container-fluid dp-link-grid ${navigationCssClasses}" style="width: 100%; margin: 0; padding: 0; margin-top: 1rem;">
-            <ul style="display: flex; flex-wrap: wrap; width: 100%; margin: 0; padding: 0; list-style: none;">
+            <ul style="display: flex; flex-wrap: wrap; margin: 0; padding: 0; list-style: none;">
                 <#list navigationHomeButtonLabels as label>
                     <li class="${liClass}" style="padding-left: 0; padding-right: 0;"><a href="${navButtonUrl(label)}" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> ${label}</a></li>
                 </#list>
