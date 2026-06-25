@@ -67,7 +67,7 @@
         </ol>
     </div>
     </#if>
-    <h3>Introduction</h3>
+    <h3 style="margin-top: 1rem;">Introduction</h3>
     <p>Enter_the_course_introduction</p>
     <h3>To begin this course</h3>
     <p>Here are some tasks to get you started right away:</p>
