@@ -35,7 +35,7 @@
         <nav class="container-fluid dp-link-grid ${navigationCssClasses}" style="width: 100%; margin: 0; padding: 0; margin-top: 1rem;">
             <ul style="display: flex; flex-wrap: wrap; margin: 0; padding: 0; list-style: none;">
                 <#list navigationHomeButtonLabels as label>
-                    <li class="${liClass}" style="padding-left: 0; padding-right: 0;"><a href="${navButtonUrl(label)}" style="white-space: nowrap; display: block; width: 100%; text-align: center;"> ${label}</a></li>
+                    <li class="${liClass}" style="padding-left: 0; padding-right: 0;"><a href="${navButtonUrl(label)}" style="text-align: center;"> ${label}</a></li>
                 </#list>
             </ul>
         </nav>
