@@ -899,6 +899,26 @@ public class ThemeProcessingService {
         freemarkerModel.put("navigationCssClasses", navigationCssClasses);
         freemarkerModel.put("wrapperCssClasses", wrapperCssClasses);
 
+        // Navigation option determines which pages receive the navigation bar (HOME, SYLLABUS, or BOTH).
+        // An empty string is used when not set so FreeMarker comparisons remain safe without null checks.
+        freemarkerModel.put("navigationOption", themeModel.getNavigationOption() != null ? themeModel.getNavigationOption() : "");
+
+        // Filter each label list down to only the entries the user actually filled in.
+        List<String> homeButtonLabels = themeModel.getNavigationHomeButtonLabels() != null
+                ? themeModel.getNavigationHomeButtonLabels().stream()
+                        .filter(s -> s != null && !s.isBlank())
+                        .collect(Collectors.toList())
+                : new ArrayList<>();
+
+        List<String> syllabusButtonLabels = themeModel.getNavigationSyllabusButtonLabels() != null
+                ? themeModel.getNavigationSyllabusButtonLabels().stream()
+                        .filter(s -> s != null && !s.isBlank())
+                        .collect(Collectors.toList())
+                : new ArrayList<>();
+
+        freemarkerModel.put("navigationHomeButtonLabels", homeButtonLabels);
+        freemarkerModel.put("navigationSyllabusButtonLabels", syllabusButtonLabels);
+
         Map<String, String> freemarkerProcessedTextMap = new HashMap<>();
         StringTemplateLoader stringTemplateLoader = new StringTemplateLoader();
 
