@@ -135,11 +135,11 @@ public class ThemeController extends WizardController {
         steps.add(new ThemeStep("Select theme", MessageFormat.format(PAGES[2], courseId)));
         steps.add(new ThemeStep("Select banner", MessageFormat.format(PAGES[3], courseId)));
 
-        if (featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_NAVIGATION.featureId, canvasService.getRootAccount(), null)) {
+        if (isNavigationFeatureEnabled(canvasService.getRootAccount())) {
             steps.add(new ThemeStep("Include navigation", MessageFormat.format(PAGES[4], courseId)));
         }
 
-        if (featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_GUIDANCE.featureId, canvasService.getRootAccount(), null)) {
+        if (isGuidanceFeatureEnabled(canvasService.getRootAccount())) {
             steps.add(new ThemeStep("Include guidance", MessageFormat.format(PAGES[PAGES.length - 3], courseId)));
         }
 
@@ -314,26 +314,34 @@ public class ThemeController extends WizardController {
             model.addAttribute("bannerImageAltText", bannerImage.get().getAltText());
         }
 
-        model.addAttribute("includeNavigation", themeModel.getIncludeNavigation());
+        boolean isNavigationFeatureEnabled = isNavigationFeatureEnabled(canvasService.getRootAccount());
+        model.addAttribute("isNavigationFeatureEnabled", isNavigationFeatureEnabled);
+        if (isNavigationFeatureEnabled) {
+            model.addAttribute("includeNavigation", themeModel.getIncludeNavigation());
 
-        NAVIGATION_OPTION navigationOption = EnumUtils.getEnum(NAVIGATION_OPTION.class, themeModel.getNavigationOption());
-        if (HOME.equals(navigationOption) || BOTH.equals(navigationOption)) {
-            model.addAttribute("includeHomeNavigation", true);
-            model.addAttribute("navigationHomeButtonLabels",
-                    themeModel.getNavigationHomeButtonLabels() != null
-                            ? themeModel.getNavigationHomeButtonLabels().stream().filter(s -> s != null && ! s.isBlank()).collect(Collectors.toList())
-                            : new ArrayList<String>());
+            NAVIGATION_OPTION navigationOption = EnumUtils.getEnum(NAVIGATION_OPTION.class, themeModel.getNavigationOption());
+            if (HOME.equals(navigationOption) || BOTH.equals(navigationOption)) {
+                model.addAttribute("includeHomeNavigation", true);
+                model.addAttribute("navigationHomeButtonLabels",
+                        themeModel.getNavigationHomeButtonLabels() != null
+                                ? themeModel.getNavigationHomeButtonLabels().stream().filter(s -> s != null && ! s.isBlank()).collect(Collectors.toList())
+                                : new ArrayList<String>());
+            }
+
+            if (SYLLABUS.equals(navigationOption) || BOTH.equals(navigationOption)) {
+                model.addAttribute("includeSyllabusNavigation", true);
+                model.addAttribute("navigationSyllabusButtonLabels",
+                        themeModel.getNavigationSyllabusButtonLabels() != null
+                                ? themeModel.getNavigationSyllabusButtonLabels().stream().filter(s -> s != null && ! s.isBlank()).collect(Collectors.toList())
+                                : new ArrayList<String>());
+            }
         }
 
-        if (SYLLABUS.equals(navigationOption) || BOTH.equals(navigationOption)) {
-            model.addAttribute("includeSyllabusNavigation", true);
-            model.addAttribute("navigationSyllabusButtonLabels",
-                    themeModel.getNavigationSyllabusButtonLabels() != null
-                            ? themeModel.getNavigationSyllabusButtonLabels().stream().filter(s -> s != null && ! s.isBlank()).collect(Collectors.toList())
-                            : new ArrayList<String>());
+        boolean isGuidanceFeatureEnabled = isGuidanceFeatureEnabled(canvasService.getRootAccount());
+        model.addAttribute("isGuidanceFeatureEnabled", isGuidanceFeatureEnabled);
+        if (isGuidanceFeatureEnabled) {
+            model.addAttribute("includeGuidance", themeModel.getIncludeGuidance());
         }
-
-        model.addAttribute("includeGuidance", themeModel.getIncludeGuidance());
 
         model.addAttribute("justBannerImagePreviewUrl", theme.isPresent() ? theme.get().getJustBannerImagePreviewUrl() : "None");
         model.addAttribute("justBannerImageAltText", theme.isPresent() ? theme.get().getJustBannerImageAltText() : "Banner preview");
@@ -374,8 +382,7 @@ public class ThemeController extends WizardController {
                 updateThemeModelFields(sessionThemeModel, themeModel));
 
         // common navigation variables
-        boolean isNavigationFeatureEnabled =
-                featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_NAVIGATION.featureId, canvasService.getRootAccount(), null);
+        boolean isNavigationFeatureEnabled = isNavigationFeatureEnabled(canvasService.getRootAccount());
         NAVIGATION_OPTION navigationOption = EnumUtils.getEnum(NAVIGATION_OPTION.class, sessionThemeModel.getNavigationOption());
 
         int pageIndex = 0;
@@ -390,10 +397,7 @@ public class ThemeController extends WizardController {
 
                 // if asking for the guidance page
                 if (pageIndex == 7) {
-                    boolean isGuidanceFeatureEnabled = featureAccessService
-                            .isFeatureEnabledForAccount(WizardFeature.THEME_GUIDANCE.featureId, canvasService.getRootAccount(), null);
-
-                    if (! isGuidanceFeatureEnabled) {
+                    if (!isGuidanceFeatureEnabled(canvasService.getRootAccount())) {
                         pageIndex--;
                     }
                 }
@@ -487,10 +491,7 @@ public class ThemeController extends WizardController {
 
                 // if asking for the guidance page
                 if (pageIndex == 7) {
-                    boolean isGuidanceFeatureEnabled = featureAccessService
-                            .isFeatureEnabledForAccount(WizardFeature.THEME_GUIDANCE.featureId, canvasService.getRootAccount(), null);
-
-                    if (! isGuidanceFeatureEnabled) {
+                    if (!isGuidanceFeatureEnabled(canvasService.getRootAccount())) {
                         pageIndex++;
                     }
                 }
@@ -579,6 +580,14 @@ public class ThemeController extends WizardController {
         }
 
         return baseThemeModel;
+    }
+
+    private boolean isNavigationFeatureEnabled(String accountId) {
+        return featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_NAVIGATION.featureId, accountId, null);
+    }
+
+    private boolean isGuidanceFeatureEnabled(String accountId) {
+        return featureAccessService.isFeatureEnabledForAccount(WizardFeature.THEME_GUIDANCE.featureId, accountId, null);
     }
 
 }

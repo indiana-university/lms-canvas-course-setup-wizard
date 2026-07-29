@@ -60,18 +60,24 @@
                 <dt>Banner image</dt>
                 <!-- this can also just be "No banner selected" -->
                 <dd th:text="${bannerImageName}">BANNER IMAGE NAME</dd>
-                <dt>Include navigation?</dt>
-                <dd th:text="${includeNavigation} ? 'Yes' : 'No'">YES</dd>
-                <th:block th:if="${includeHomeNavigation}">
-                    <dt>Home page navigation</dt>
-                    <dd th:each="homeButton, iterStat : ${navigationHomeButtonLabels}" th:text="|Button ${iterStat.index + 1}: ${homeButton}|">Button 1: Home</dd>
+
+                <th:block th:if="${isNavigationFeatureEnabled}">
+                    <dt>Include navigation?</dt>
+                    <dd th:text="${includeNavigation} ? 'Yes' : 'No'">YES</dd>
+                    <th:block th:if="${includeHomeNavigation}">
+                        <dt>Home page navigation</dt>
+                        <dd th:each="homeButton, iterStat : ${navigationHomeButtonLabels}" th:text="|Button ${iterStat.index + 1}: ${homeButton}|">Button 1: Home</dd>
+                    </th:block>
+                    <th:block th:if="${includeSyllabusNavigation}">
+                        <dt>Syllabus navigation</dt>
+                        <dd th:each="syllabusButton, iterStat : ${navigationSyllabusButtonLabels}" th:text="|Button ${iterStat.index + 1}: ${syllabusButton}|">Button 1: Home</dd>
+                    </th:block>
                 </th:block>
-                <th:block th:if="${includeSyllabusNavigation}">
-                    <dt>Syllabus navigation</dt>
-                    <dd th:each="syllabusButton, iterStat : ${navigationSyllabusButtonLabels}" th:text="|Button ${iterStat.index + 1}: ${syllabusButton}|">Button 1: Home</dd>
+
+                <th:block th:if="${isGuidanceFeatureEnabled}">
+                    <dt>Include instructional design prompts and guidance?</dt>
+                    <dd th:text="${includeGuidance} ? 'Yes' : 'No'">YES</dd>
                 </th:block>
-                <dt>Include instructional design prompts and guidance?</dt>
-                <dd th:text="${includeGuidance} ? 'Yes' : 'No'">YES</dd>
             </dl>
 
             <h3 class="rvt-m-top-md">Full preview</h3>
