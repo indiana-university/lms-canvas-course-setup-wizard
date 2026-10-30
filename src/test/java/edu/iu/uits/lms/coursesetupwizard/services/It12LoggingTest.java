@@ -45,13 +45,13 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.springdoc.core.properties.SpringDocConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.autoconfigure.health.HealthContributorAutoConfiguration;
-import org.springframework.boot.actuate.autoconfigure.health.HealthEndpointAutoConfiguration;
-import org.springframework.boot.actuate.autoconfigure.mail.MailHealthContributorAutoConfiguration;
+import org.springframework.boot.health.autoconfigure.contributor.HealthContributorAutoConfiguration;
+import org.springframework.boot.health.autoconfigure.actuate.endpoint.HealthEndpointAutoConfiguration;
+import org.springframework.boot.mail.autoconfigure.MailHealthContributorAutoConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -63,6 +63,10 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.ac.ox.ctl.lti13.ags.DeepLinkService;
+import uk.ac.ox.ctl.lti13.ags.LineItemService;
+import uk.ac.ox.ctl.lti13.ags.ResultService;
+import uk.ac.ox.ctl.lti13.ags.ScoreService;
 import uk.ac.ox.ctl.lti13.nrps.NamesRoleService;
 
 import java.time.Instant;
@@ -103,6 +107,22 @@ public class It12LoggingTest {
 
     @MockitoBean
     private NamesRoleService namesRoleService;
+
+    // As of lms-embedded-services 7.1.1, LtiClientConfig eagerly builds a real
+    // LineItemService bean that calls Lti13Service.getJKS(), which needs a real
+    // signing keypair from the KeyPairRepository table - not present in the test
+    // H2 database. Mock it out so context load doesn't try to construct the real one.
+    @MockitoBean
+    private LineItemService lineItemService;
+
+    @MockitoBean
+    private ScoreService scoreService;
+
+    @MockitoBean
+    private ResultService resultService;
+
+    @MockitoBean
+    private DeepLinkService deepLinkService;
 
     @MockitoBean
     private CorsSwaggerConfig corsSwaggerConfig;

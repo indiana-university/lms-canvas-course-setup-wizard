@@ -50,10 +50,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -61,6 +60,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -115,12 +115,11 @@ public class AppLaunchSecurityTest {
       OidcAuthenticationToken token = TestUtils.buildToken("userId",
             "asdf", LTIConstants.INSTRUCTOR_AUTHORITY);
 
-      SecurityContextHolder.getContext().setAuthentication(token);
-
       ServletException t = Assertions.assertThrows(ServletException.class, () ->
               mvc.perform(get("/app/" + COURSE_ID_TST + "/index")
                       .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
-                      .contentType(MediaType.APPLICATION_JSON))
+                      .contentType(MediaType.APPLICATION_JSON)
+                      .with(authentication(token)))
       );
 
       Assertions.assertInstanceOf(InvalidTokenContextException.class, t.getCause());
@@ -133,12 +132,11 @@ public class AppLaunchSecurityTest {
       OidcAuthenticationToken token = TestUtils.buildToken("userId",
               COURSE_ID_TST, LTIConstants.INSTRUCTOR_AUTHORITY);
 
-      SecurityContextHolder.getContext().setAuthentication(token);
-
       // This is a secured endpoint and should not allow access without authn
       mvc.perform(get("/app/"  + COURSE_ID_TST + "/index")
               .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
-              .contentType(MediaType.APPLICATION_JSON))
+              .contentType(MediaType.APPLICATION_JSON)
+              .with(authentication(token)))
               .andExpect(status().isOk());
    }
 
@@ -147,12 +145,11 @@ public class AppLaunchSecurityTest {
       OidcAuthenticationToken token = TestUtils.buildToken("userId",
               COURSE_ID_TST, LTIConstants.TA_AUTHORITY);
 
-      SecurityContextHolder.getContext().setAuthentication(token);
-
       // This is a secured endpoint and should not allow access without instructor authn
       mvc.perform(get("/app/"  + COURSE_ID_TST + "/index")
               .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
-              .contentType(MediaType.APPLICATION_JSON))
+              .contentType(MediaType.APPLICATION_JSON)
+              .with(authentication(token)))
               .andExpect(status().isForbidden());
    }
 
@@ -169,12 +166,11 @@ public class AppLaunchSecurityTest {
    public void randomUrlWithAuth() throws Exception {
       OidcAuthenticationToken token = TestUtils.buildToken("userId",
               COURSE_ID_TST, LTIConstants.INSTRUCTOR_AUTHORITY);
-      SecurityContextHolder.getContext().setAuthentication(token);
-
       // This is a secured endpoint and should not allow access without authn
       mvc.perform(get("/asdf/foobar")
             .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
-            .contentType(MediaType.APPLICATION_JSON))
+            .contentType(MediaType.APPLICATION_JSON)
+            .with(authentication(token)))
             .andExpect(status().isNotFound());
    }
 }
