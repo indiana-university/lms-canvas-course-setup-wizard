@@ -34,6 +34,8 @@ package edu.iu.uits.lms.coursesetupwizard.controller;
  */
 
 import edu.iu.uits.lms.canvas.services.CanvasService;
+import edu.iu.uits.lms.canvasoauth2.CanvasOAuth2Registration;
+import edu.iu.uits.lms.canvasoauth2.security.CanvasOAuth2AuthorizedClientRepository;
 import edu.iu.uits.lms.common.session.CourseSessionService;
 import edu.iu.uits.lms.coursesetupwizard.Constants;
 import edu.iu.uits.lms.coursesetupwizard.config.ToolConfig;
@@ -43,12 +45,15 @@ import edu.iu.uits.lms.iuonly.services.FeatureAccessServiceImpl;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.controller.OidcTokenAwareController;
 import edu.iu.uits.lms.lti.service.OidcTokenUtils;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -80,6 +85,18 @@ public class WizardController extends OidcTokenAwareController {
 
     @Autowired
     protected CourseSessionService courseSessionService;
+
+    @Autowired
+    private CanvasOAuth2AuthorizedClientRepository canvasOAuth2AuthorizedClientRepository;
+
+    @Autowired
+    private CanvasOAuth2Registration canvasOAuth2Registration;
+
+    @ModelAttribute
+    public void ensureCanvasOAuth2Consent(HttpServletRequest request) {
+        canvasOAuth2AuthorizedClientRepository.ensureAuthorized(
+                canvasOAuth2Registration.getRegistrationId(), SecurityContextHolder.getContext().getAuthentication(), request);
+    }
 
     @RequestMapping({"/launch", "/loading"})
     public String loading(Model model) {

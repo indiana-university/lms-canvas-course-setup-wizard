@@ -81,7 +81,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         properties = {"oauth.tokenprovider.url=http://foo", "lms.rabbitmq.queue_env_suffix=CI",
                 "canvas.host=asdf", "canvas.token=asdf", "lti.errorcontact.name=asdf", "lti.errorcontact.link=asdf",
                 "catalog.token=asdf", "spring.rabbitmq.listener.simple.auto-startup=false", "lms.swagger.cors.origin=123",
-                "lms.js.cors.origin=123"})
+                "lms.js.cors.origin=123",
+                // canvas.oauth2.encryptionPassword/encryptionSalt are required the moment
+                // @EnableCanvasOAuth2Client is active (CanvasOAuth2AuthorizedClientRepository's
+                // constructor needs them to build its token-encryption cipher) - see
+                // docs/oauth/COURSE_SETUP_WIZARD_CANVAS_OAUTH2_EVALUATION.md and courselist's own
+                // WebApplicationTests.java, which hit this first.
+                "canvas.oauth2.encryptionPassword=test-only-placeholder-password",
+                "canvas.oauth2.encryptionSalt=deadbeef"})
 @AutoConfigureMockMvc
 @ActiveProfiles({"csw", "swagger"})
 @AutoConfigureTestDatabase
@@ -105,10 +112,11 @@ public class ApiDocsTest {
     @MockitoBean
     private NamesRoleService namesRoleService;
 
-    // As of lms-embedded-services 7.1.1, LtiClientConfig eagerly builds a real
-    // LineItemService bean that calls Lti13Service.getJKS(), which needs a real
-    // signing keypair from the KeyPairRepository table - not present in the test
-    // H2 database. Mock it out so context load doesn't try to construct the real one.
+    // LtiClientConfig eagerly builds real LineItemService/ScoreService/ResultService/DeepLinkService
+    // beans that call Lti13Service.getJKS(), which needs a real signing keypair from the
+    // KeyPairRepository table - not present in the test H2 database. Mock them out so context load
+    // doesn't try to construct the real ones. (Confirmed still present in lti-framework at the
+    // 7.0.7-SNAPSHOT pin used for the Canvas OAuth2 upgrade - this is not version-specific.)
     @MockitoBean
     private LineItemService lineItemService;
 

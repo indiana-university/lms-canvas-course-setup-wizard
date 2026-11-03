@@ -44,15 +44,21 @@ import edu.iu.uits.lms.iuonly.services.FeatureAccessServiceImpl;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.config.TestUtils;
 import edu.iu.uits.lms.lti.controller.InvalidTokenContextException;
+import edu.iu.uits.lms.canvasoauth2.CanvasOAuth2Registration;
+import edu.iu.uits.lms.canvasoauth2.security.CanvasOAuth2AuthorizedClientRepository;
 import edu.iu.uits.lms.lti.repository.DefaultInstructorRoleRepository;
 import jakarta.servlet.ServletException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -60,19 +66,65 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(properties = {"oauth.tokenprovider.url=http://foo"})
-@ContextConfiguration(classes = {ToolConfig.class, WizardController.class, SecurityConfig.class})
+@ContextConfiguration(classes = {ToolConfig.class, WizardController.class, SecurityConfig.class, AppLaunchSecurityTest.TestConfig.class})
 @ActiveProfiles("none")
 public class AppLaunchSecurityTest {
+
+   /**
+    * Plain {@code @Bean}s rather than {@code @MockitoBean} - see blueprint-manager's identical
+    * TestConfig in its AppLaunchSecurityTest for why: OAuth2ClientWebSecurityAutoConfiguration's
+    * {@code @ConditionalOnMissingBean(OAuth2AuthorizedClientRepository.class)} doesn't recognize a
+    * same-named {@code @MockitoBean} of the narrower concrete type as already satisfying it, so both
+    * beans get created and autowiring the interface type elsewhere becomes ambiguous. A regular
+    * {@code @Bean} factory method participates in that condition check correctly.
+    */
+   @TestConfiguration
+   static class TestConfig {
+      @Bean
+      public CanvasOAuth2Registration canvasOAuth2Registration() {
+         return new CanvasOAuth2Registration("coursesetupwizard", "/app/jsrivet");
+      }
+
+      @Bean
+      public CanvasOAuth2AuthorizedClientRepository canvasOAuth2AuthorizedClientRepository() {
+         return mock(CanvasOAuth2AuthorizedClientRepository.class);
+      }
+   }
 
    public static String COURSE_ID_TST = "1234";
 
    @Autowired
    private MockMvc mvc;
+
+   // SecurityConfig now @Autowired-injects this from CanvasOAuth2ClientConfig, which this narrow
+   // @WebMvcTest slice deliberately doesn't pull in (see TestConfig above) - it's never invoked by
+   // any of these tests, only needed to satisfy the filter chain's dependency at context-build time.
+   @MockitoBean
+   private OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> canvasOAuth2AccessTokenResponseClient;
+
+   // Provided by TestConfig's @Bean (not @MockitoBean - see its javadoc).
+   @Autowired
+   private CanvasOAuth2AuthorizedClientRepository canvasOAuth2AuthorizedClientRepository;
+
+   @BeforeEach
+   void resetCanvasOAuth2AuthorizedClientRepositoryMock() {
+      // TestConfig's @Bean isn't a @MockitoBean, so it doesn't get Mockito's automatic reset-between-
+      // tests behavior - do it manually, since the ApplicationContext (and this same mock instance) is
+      // cached and reused across every test method in this class.
+      reset(canvasOAuth2AuthorizedClientRepository);
+      // Defaults to "resolvable" so every test below - all built from fully-populated
+      // OidcAuthenticationTokens - is unaffected by the Canvas OAuth2 consent fail-fast check.
+      when(canvasOAuth2AuthorizedClientRepository.hasResolvableCanvasUserId(any())).thenReturn(true);
+   }
 
    @MockitoBean
    private FeatureAccessServiceImpl featureAccessService;

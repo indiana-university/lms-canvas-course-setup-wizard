@@ -65,7 +65,7 @@
         <jdk.target>25</jdk.target>
         <jquery.version>4.0.0</jquery.version>
         <lms-canvas-rivet.version>7.2.9.1_1</lms-canvas-rivet.version>
-        <lms-embedded-services.version>7.1.1</lms-embedded-services.version>
+        <lms-embedded-services.version>7.1.2-SNAPSHOT</lms-embedded-services.version>
         <lms-team-spring-boot-it12>7.6.0_1</lms-team-spring-boot-it12>
         <logcaptor.version>2.13.0</logcaptor.version>
         <nimbus-jose-jwt.version>9.10.1</nimbus-jose-jwt.version>
@@ -153,6 +153,11 @@
             <version>${lms-embedded-services.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>edu.iu.uits.lms</groupId>
+            <artifactId>lms-canvas-oauth2-client</artifactId>
+            <version>${lms-embedded-services.version}</version>
         </dependency>
         <dependency>
             <groupId>edu.iu.uits.lms</groupId>
@@ -344,6 +349,11 @@
                                     <groupId>edu.iu.uits.lms</groupId>
                                     <artifactId>lms-canvas-lti-framework</artifactId>
                                     <destFileName>lms-canvas-lti-framework.jar</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>edu.iu.uits.lms</groupId>
+                                    <artifactId>lms-canvas-oauth2-client</artifactId>
+                                    <destFileName>lms-canvas-oauth2-client.jar</destFileName>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>

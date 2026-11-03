@@ -73,6 +73,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import java.lang.reflect.Method;
@@ -114,6 +115,9 @@ public class ThemeProcessingServiceTest {
 
    @MockitoBean
    private ModuleService moduleService;
+
+   @MockitoBean(name = "CanvasRestTemplateAsUser")
+   private RestTemplate canvasRestTemplateAsUser;
 
    @Captor
    ArgumentCaptor<EmailDetails> emailCaptor;
@@ -238,7 +242,7 @@ public class ThemeProcessingServiceTest {
       when(courseService.createWikiPage(any(),
               argThat(wikiPageCreateWrapper ->
                       wikiPageCreateWrapper != null && Constants.THEME_WIZARD_NEXT_STEPS_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
-              any())).thenReturn(nextStepsWikiPage);
+              any(), any())).thenReturn(nextStepsWikiPage);
 
       WikiPage moduleOverviewWikiPage = new WikiPage();
       moduleOverviewWikiPage.setPageId("6");
@@ -251,7 +255,7 @@ public class ThemeProcessingServiceTest {
       when(courseService.createWikiPage(any(),
               argThat(wikiPageCreateWrapper ->
                       wikiPageCreateWrapper != null && Constants.THEME_MODULE_OVERVIEW_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
-              any())).thenReturn(moduleOverviewWikiPage);
+              any(), any())).thenReturn(moduleOverviewWikiPage);
 
       WikiPage instructorLectureAndNotesWikiPage = new WikiPage();
       instructorLectureAndNotesWikiPage.setPageId("1");
@@ -261,7 +265,7 @@ public class ThemeProcessingServiceTest {
               argThat(wikiPageCreateWrapper ->
                       wikiPageCreateWrapper != null &&
                               Constants.THEME_INSTRUCTOR_LECTURE_AND_NOTES_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
-              any())).thenReturn(instructorLectureAndNotesWikiPage);
+              any(), any())).thenReturn(instructorLectureAndNotesWikiPage);
 
       WikiPage genericContentWikiPage = new WikiPage();
       genericContentWikiPage.setPageId("2");
@@ -271,7 +275,7 @@ public class ThemeProcessingServiceTest {
       when(courseService.createWikiPage(any(),
               argThat(wikiPageCreateWrapper ->
                       wikiPageCreateWrapper != null && Constants.THEME_GENERIC_CONTENT_PAGE_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
-              any())).thenReturn(genericContentWikiPage);
+              any(), any())).thenReturn(genericContentWikiPage);
 
       DiscussionTopic ungradedDiscussionTopic = new DiscussionTopic();
       ungradedDiscussionTopic.setId("1");
@@ -279,7 +283,7 @@ public class ThemeProcessingServiceTest {
 
       when(discussionService.createDiscussionTopic(any(),
               argThat(discussionTopic -> discussionTopic != null && "[Template] Discussion Topic".equals(discussionTopic.getTitle())),
-              any())).thenReturn(ungradedDiscussionTopic);
+              any(), any())).thenReturn(ungradedDiscussionTopic);
 
       ModuleItem discussionModuleItem = new ModuleItem();
       discussionModuleItem.setTitle("[Template] Discussion Topic");
@@ -293,7 +297,7 @@ public class ThemeProcessingServiceTest {
 
       when(moduleService.createModule(any(),
               argThat(moduleCreateWrapper -> moduleCreateWrapper != null && Constants.THEME_MODULE_NAME.equals(moduleCreateWrapper.getModule().getName())),
-              any())).thenReturn(modulesTemplatesModule);
+              any(), any())).thenReturn(modulesTemplatesModule);
 
       Module gettingStartedModule = new Module();
       gettingStartedModule.setId("2");
@@ -301,7 +305,7 @@ public class ThemeProcessingServiceTest {
 
       when(moduleService.createModule(any(),
               argThat(moduleCreateWrapper -> moduleCreateWrapper != null && Constants.THEME_MODULE_GETTING_STARTED_NAME.equals(moduleCreateWrapper.getModule().getName())),
-              any())).thenReturn(gettingStartedModule);
+              any(), any())).thenReturn(gettingStartedModule);
 
 
       WikiPage tipsForSuccessWikiPage = new WikiPage();
@@ -312,7 +316,7 @@ public class ThemeProcessingServiceTest {
               argThat(wikiPageCreateWrapper ->
                       wikiPageCreateWrapper != null &&
                               Constants.THEME_MODULE_GETTING_STARTED_TIPS_FOR_SUCCESS_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
-              any())).thenReturn(tipsForSuccessWikiPage);
+              any(), any())).thenReturn(tipsForSuccessWikiPage);
 
       WikiPage courseNavigationWikiPage = new WikiPage();
       courseNavigationWikiPage.setPageId("11");
@@ -322,7 +326,7 @@ public class ThemeProcessingServiceTest {
               argThat(wikiPageCreateWrapper ->
                       wikiPageCreateWrapper != null &&
                               Constants.THEME_MODULE_GETTING_STARTED_COURSE_NAVIGATION_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
-              any())).thenReturn(courseNavigationWikiPage);
+              any(), any())).thenReturn(courseNavigationWikiPage);
 
       WikiPage technologyStartupWikiPage = new WikiPage();
       technologyStartupWikiPage.setPageId("12");
@@ -332,7 +336,7 @@ public class ThemeProcessingServiceTest {
               argThat(wikiPageCreateWrapper ->
                       wikiPageCreateWrapper != null &&
                               Constants.THEME_MODULE_GETTING_STARTED_TECHNOLOGY_START_UP_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
-              any())).thenReturn(technologyStartupWikiPage);
+              any(), any())).thenReturn(technologyStartupWikiPage);
 
       WikiPage videoconferencingWikiPage = new WikiPage();
       videoconferencingWikiPage.setPageId("13");
@@ -342,7 +346,7 @@ public class ThemeProcessingServiceTest {
               argThat(wikiPageCreateWrapper ->
                       wikiPageCreateWrapper != null &&
                               Constants.THEME_MODULE_GETTING_STARTED_VIDEOCONFERENCING_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
-              any())).thenReturn(videoconferencingWikiPage);
+              any(), any())).thenReturn(videoconferencingWikiPage);
 
       WikiPage accessibilitySupportWikiPage = new WikiPage();
       accessibilitySupportWikiPage.setPageId("14");
@@ -352,7 +356,7 @@ public class ThemeProcessingServiceTest {
               argThat(wikiPageCreateWrapper ->
                       wikiPageCreateWrapper != null &&
                               Constants.THEME_MODULE_GETTING_STARTED_ACCESSIBILITY_SUPPORT_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
-              any())).thenReturn(accessibilitySupportWikiPage);
+              any(), any())).thenReturn(accessibilitySupportWikiPage);
 
       DiscussionTopic introduceYourselfDiscussionTopic = new DiscussionTopic();
       introduceYourselfDiscussionTopic.setId("1");
@@ -360,7 +364,7 @@ public class ThemeProcessingServiceTest {
 
       when(discussionService.createDiscussionTopic(any(),
               argThat(discussionTopic -> discussionTopic != null && "SHARE: Please Introduce Yourself".equals(discussionTopic.getTitle())),
-              any())).thenReturn(introduceYourselfDiscussionTopic);
+              any(), any())).thenReturn(introduceYourselfDiscussionTopic);
 
       WikiPage resourcesWikiPage = new WikiPage();
       resourcesWikiPage.setPageId("15");
@@ -370,7 +374,7 @@ public class ThemeProcessingServiceTest {
               argThat(wikiPageCreateWrapper ->
                       wikiPageCreateWrapper != null &&
                               Constants.THEME_RESOURCES_TITLE.equals(wikiPageCreateWrapper.getWikiPage().getTitle())),
-              any())).thenReturn(resourcesWikiPage);
+              any(), any())).thenReturn(resourcesWikiPage);
 
       ThemeLog themeLog = new ThemeLog();
       themeLog.setId(1L);
@@ -534,11 +538,11 @@ public class ThemeProcessingServiceTest {
       assignmentGroup.setId(1);
 
       when(assignmentService.createAssignmentGroup(courseId, Constants.THEME_ASSIGNMENTS_GROUP_NAME,
-              CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
+              null, canvasRestTemplateAsUser))
               .thenReturn(assignmentGroup);
 
       when(assignmentService.createAssignmentGroup(courseId, Constants.THEME_TEMPLATES_GROUP_NAME,
-              CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
+              null, canvasRestTemplateAsUser))
               .thenReturn(assignmentGroup);
 
       WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
@@ -583,11 +587,11 @@ public class ThemeProcessingServiceTest {
       assignmentGroup.setId(1);
 
       when(assignmentService.createAssignmentGroup(courseId, Constants.THEME_ASSIGNMENTS_GROUP_NAME,
-              CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
+              null, canvasRestTemplateAsUser))
               .thenReturn(assignmentGroup);
 
       when(assignmentService.createAssignmentGroup(courseId, Constants.THEME_TEMPLATES_GROUP_NAME,
-              CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
+              null, canvasRestTemplateAsUser))
               .thenReturn(assignmentGroup);
 
       WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);
@@ -628,11 +632,11 @@ public class ThemeProcessingServiceTest {
       assignmentGroup.setId(1);
 
       when(assignmentService.createAssignmentGroup(courseId, Constants.THEME_ASSIGNMENTS_GROUP_NAME,
-              CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
+              null, canvasRestTemplateAsUser))
               .thenReturn(assignmentGroup);
 
       when(assignmentService.createAssignmentGroup(courseId, Constants.THEME_TEMPLATES_GROUP_NAME,
-              CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs))
+              null, canvasRestTemplateAsUser))
               .thenReturn(assignmentGroup);
 
       WikiPage nextStepsWikiPage = themeProcessingService.processSubmit(themeModel, courseId, userToCreateAs);

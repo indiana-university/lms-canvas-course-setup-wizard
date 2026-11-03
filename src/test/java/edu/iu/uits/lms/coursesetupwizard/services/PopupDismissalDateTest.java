@@ -62,6 +62,7 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -115,6 +116,9 @@ public class PopupDismissalDateTest {
 
    @MockitoBean
    private TemplateAuditService templateAuditService;
+
+   @MockitoBean(name = "CanvasRestTemplateAsUser")
+   private RestTemplate canvasRestTemplateAsUser;
 
    private static final String USER1 = "user1";
    private static final String COURSE1 = "course1";

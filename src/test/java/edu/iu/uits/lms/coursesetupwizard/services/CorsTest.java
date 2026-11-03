@@ -66,6 +66,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
@@ -131,6 +133,12 @@ public class CorsTest {
 
    @MockitoBean
    private ClientRegistrationRepository clientRegistrationRepository;
+
+   // SecurityConfig now @Autowired-injects this from CanvasOAuth2ClientConfig, which this narrow
+   // @WebMvcTest slice deliberately doesn't pull in - it's never invoked by any of these tests,
+   // only needed to satisfy the filter chain's dependency at context-build time.
+   @MockitoBean
+   private OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> canvasOAuth2AccessTokenResponseClient;
 
 
    public static String COURSE_ID_TST = "1234";
