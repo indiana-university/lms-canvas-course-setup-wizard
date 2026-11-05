@@ -37,13 +37,19 @@ import edu.iu.uits.lms.coursesetupwizard.model.BannerImage;
 import edu.iu.uits.lms.coursesetupwizard.model.BannerImageCategory;
 import edu.iu.uits.lms.coursesetupwizard.model.Theme;
 import edu.iu.uits.lms.common.swagger.LmsRepositoryDetectionStrategy;
+import io.swagger.v3.oas.models.OpenAPI;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.properties.SpringDocConfigProperties;
+import org.springdoc.core.utils.SpringDocDataRestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mapping.context.PersistentEntities;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
+import org.springframework.data.rest.core.mapping.ResourceMappings;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
+import org.springframework.hateoas.server.LinkRelationProvider;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 @Configuration
@@ -76,5 +82,30 @@ public class JpaRestConfig implements RepositoryRestConfigurer {
         cors.addMapping("/rest/theme/**")
                 .allowedOrigins(corsSwaggerAllowedOrigin)
                 .allowedMethods("*");
+    }
+
+    /**
+     * As of springdoc-openapi 3.0.0-3.1.0, hitting /api/v3/api-docs on a tool with
+     * @RepositoryRestResource repos can throw a NullPointerException in
+     * SpringDocDataRestUtils and 500 the whole swagger doc. Not fixed in any release as of
+     * this writing (fix only on springdoc-openapi's unreleased main, PR #3329). This
+     * workaround catches the NPE and continues without the Spring Data REST schema
+     * enrichment rather than failing the whole api-docs endpoint.
+     * See springdoc/springdoc-openapi#3337, #3328.
+     */
+    @Bean
+    public SpringDocDataRestUtils springDocDataRestUtils(LinkRelationProvider linkRelationProvider,
+                                                           RepositoryRestConfiguration repositoryRestConfiguration) {
+        return new SpringDocDataRestUtils(linkRelationProvider, repositoryRestConfiguration) {
+            @Override
+            public void customise(OpenAPI openAPI, ResourceMappings mappings, PersistentEntities persistentEntities) {
+                try {
+                    super.customise(openAPI, mappings, persistentEntities);
+                } catch (RuntimeException e) {
+                    log.warn("springdoc Spring Data REST schema enrichment hit a known bug " +
+                            "(springdoc/springdoc-openapi#3337), continuing without it: {}", e.toString());
+                }
+            }
+        };
     }
 }

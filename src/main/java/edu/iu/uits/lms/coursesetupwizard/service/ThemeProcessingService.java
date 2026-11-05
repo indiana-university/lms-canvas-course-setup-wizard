@@ -78,6 +78,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import java.util.ArrayList;
@@ -107,6 +109,12 @@ public class ThemeProcessingService {
 
     @Autowired
     private ModuleService moduleService;
+
+    // Per-user Canvas OAuth2 token, used for every call this tool makes in the launching
+    // instructor's own course-building context (see docs/oauth/COURSE_SETUP_WIZARD_CANVAS_OAUTH2_EVALUATION.md).
+    @Autowired
+    @Qualifier("CanvasRestTemplateAsUser")
+    private RestTemplate canvasRestTemplateAsUser;
 
     @Autowired
     protected BannerImageCategoryRepository bannerImageCategoryRepository;
@@ -157,7 +165,11 @@ public class ThemeProcessingService {
         }
 
         String textToUse;
-        final String AS_USER_STRING = CanvasConstants.API_FIELD_SIS_LOGIN_ID + ":" + userToCreateAs;
+        // Canvas content below is created under canvasRestTemplateAsUser (the launching instructor's
+        // own per-user OAuth2 token), so the manual as_user_id masquerade this used to build via
+        // userToCreateAs is no longer needed - the OAuth2 token supplies that identity natively, and
+        // Canvas doesn't accept as_user_id alongside a per-user token the same way. asUser is passed
+        // as null below for that reason, not because ownership tracking was dropped.
         WikiPage nextStepsWikiPage = null;
 
         //  1. Create a page called Wizard Next Steps. This page will contain information only.
@@ -175,7 +187,7 @@ public class ThemeProcessingService {
             nextStepsWikiPage.setBody(textToUse);
 
             nextStepsWikiPage = courseService.createWikiPage(courseId, new WikiPageCreateWrapper(nextStepsWikiPage),
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             log.info(String.format("Successfully created Wizard Next Steps Wiki page for courseId %s", courseId));
         } catch (Exception e) {
@@ -199,7 +211,7 @@ public class ThemeProcessingService {
             newWikiPage.setBody(textToUse);
 
             courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             log.info(String.format("Successfully created course home page for courseId %s", courseId));
         } catch (Exception e) {
@@ -236,7 +248,7 @@ public class ThemeProcessingService {
 
         // 5. Create a new Module if one with the proper name doesn't already exist in the course.
         //     If one does exist with that name, use that.
-        List<Module> modules = moduleService.getModules(courseId, null);
+        List<Module> modules = moduleService.getModules(courseId, null, canvasRestTemplateAsUser);
         String usedModuleTemplatesModuleId = null;
 
         for (Module module : modules) {
@@ -255,7 +267,7 @@ public class ThemeProcessingService {
             newModuleCreateWrapper.setModule(newModule);
 
             newModule = moduleService.createModule(courseId, newModuleCreateWrapper,
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             if (newModule == null || newModule.getId() == null) {
                 exceptionMessages.add("Could not create new module");
@@ -268,7 +280,7 @@ public class ThemeProcessingService {
         AssignmentGroup assignmentGroup = null;
 
         // See if Assignment Group named Assignments already exists.  If not, create it.
-        List<AssignmentGroup> assignmentGroups = assignmentService.getAssignmentGroups(courseId);
+        List<AssignmentGroup> assignmentGroups = assignmentService.getAssignmentGroups(courseId, canvasRestTemplateAsUser);
 
         boolean doesGroupAlreadyExist = false;
 
@@ -284,7 +296,7 @@ public class ThemeProcessingService {
         if (! doesGroupAlreadyExist) {
             try {
                 assignmentGroup = assignmentService.createAssignmentGroup(courseId, Constants.THEME_ASSIGNMENTS_GROUP_NAME,
-                        AS_USER_STRING);
+                        null, canvasRestTemplateAsUser);
 
                 log.info(String.format("Successfully created Assignment Group '%s' for courseId %s",
                         Constants.THEME_ASSIGNMENTS_GROUP_NAME, courseId));
@@ -308,7 +320,7 @@ public class ThemeProcessingService {
         if (! doesGroupAlreadyExist) {
             try {
                 assignmentGroup = assignmentService.createAssignmentGroup(courseId, Constants.THEME_TEMPLATES_GROUP_NAME,
-                        AS_USER_STRING);
+                        null, canvasRestTemplateAsUser);
 
                 log.info(String.format("Successfully created Assignment Group '%s' for courseId %s", Constants.THEME_TEMPLATES_GROUP_NAME, courseId));
             } catch (Exception e) {
@@ -333,7 +345,7 @@ public class ThemeProcessingService {
                 assignment.setDescription(textToUse);
 
                 assignment = assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment),
-                        AS_USER_STRING);
+                        null, canvasRestTemplateAsUser);
 
                 ModuleItem moduleAssignmentModuleItem = new ModuleItem();
                 moduleAssignmentModuleItem.setTitle(assignment.getName());
@@ -346,7 +358,7 @@ public class ThemeProcessingService {
                 moduleOverviewPageModuleItemCreateWrapper.setModuleItem(moduleAssignmentModuleItem);
 
                 moduleService.createModuleItem(courseId, usedModuleTemplatesModuleId, moduleOverviewPageModuleItemCreateWrapper,
-                        AS_USER_STRING);
+                        null, canvasRestTemplateAsUser);
 
                 log.info(String.format("Successfully created Assignment for courseId %s", courseId));
             } catch (Exception e) {
@@ -368,7 +380,7 @@ public class ThemeProcessingService {
                 assignment.setDescription(textToUse);
 
                 assignmentService.createAssignment(courseId, new AssignmentCreateWrapper(assignment),
-                        AS_USER_STRING);
+                        null, canvasRestTemplateAsUser);
 
                 log.info(String.format("Successfully created quiz Assignment for courseId %s", courseId));
             } catch (Exception e) {
@@ -393,7 +405,7 @@ public class ThemeProcessingService {
                 announcement.setMessage(textToUse);
 
                 announcementService.createAnnouncement(courseId, announcement, false,
-                        AS_USER_STRING, null, null);
+                        null, null, null, canvasRestTemplateAsUser);
 
                 log.info(String.format("Successfully created Announcement for courseId %s", courseId));
             } catch (Exception e) {
@@ -416,7 +428,7 @@ public class ThemeProcessingService {
             newWikiPage.setBody(textToUse);
 
             newWikiPage = courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             ModuleItem moduleOverviewPageModuleItem = new ModuleItem();
             moduleOverviewPageModuleItem.setTitle(Constants.THEME_MODULE_OVERVIEW_TITLE);
@@ -429,7 +441,7 @@ public class ThemeProcessingService {
             moduleOverviewPageModuleItemCreateWrapper.setModuleItem(moduleOverviewPageModuleItem);
 
             moduleService.createModuleItem(courseId, usedModuleTemplatesModuleId, moduleOverviewPageModuleItemCreateWrapper,
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             log.info(String.format("Successfully created module overview page for courseId %s", courseId));
         } catch (Exception e) {
@@ -451,7 +463,7 @@ public class ThemeProcessingService {
             newWikiPage.setBody(textToUse);
 
             newWikiPage = courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             ModuleItem lectureAndNotesPageModuleItem = new ModuleItem();
             lectureAndNotesPageModuleItem.setTitle(Constants.THEME_INSTRUCTOR_LECTURE_AND_NOTES_TITLE);
@@ -464,7 +476,7 @@ public class ThemeProcessingService {
             lectureAndNotesPageModuleItemCreateWrapper.setModuleItem(lectureAndNotesPageModuleItem);
 
             moduleService.createModuleItem(courseId, usedModuleTemplatesModuleId, lectureAndNotesPageModuleItemCreateWrapper,
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
 
             log.info(String.format("Successfully created template instructor lecture and notes page for courseId %s", courseId));
@@ -487,7 +499,7 @@ public class ThemeProcessingService {
             newWikiPage.setBody(textToUse);
 
             newWikiPage = courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
 
             ModuleItem genericPageModuleItem = new ModuleItem();
@@ -501,7 +513,7 @@ public class ThemeProcessingService {
             genericPageModuleItemCreateWrapper.setModuleItem(genericPageModuleItem);
 
             moduleService.createModuleItem(courseId, usedModuleTemplatesModuleId, genericPageModuleItemCreateWrapper,
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
 
             log.info(String.format("Successfully created generic content page for courseId %s", courseId));
@@ -524,7 +536,7 @@ public class ThemeProcessingService {
             discussionTopic.setDelayedPostAt(Constants.THEME_DELAYED_POST_AT_STRING);
 
             discussionTopic = discussionService.createDiscussionTopic(courseId, discussionTopic,
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             ModuleItem discussionModuleItem = new ModuleItem();
             discussionModuleItem.setTitle("[Template] Discussion Topic");
@@ -536,7 +548,7 @@ public class ThemeProcessingService {
             discussionModuleItemCreateWrapper.setModuleItem(discussionModuleItem);
 
             moduleService.createModuleItem(courseId, usedModuleTemplatesModuleId, discussionModuleItemCreateWrapper,
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
 
             log.info(String.format("Successfully created ungraded discussion topic for courseId %s", courseId));
@@ -549,7 +561,7 @@ public class ThemeProcessingService {
         //      If one does exist with that name, use that.
 
         // re-get the modules list so that we have an up to date list from the earlier step call
-        modules = moduleService.getModules(courseId, null);
+        modules = moduleService.getModules(courseId, null, canvasRestTemplateAsUser);
 
         String usedGettingStartedModuleId = null;
 
@@ -569,7 +581,7 @@ public class ThemeProcessingService {
             newModuleCreateWrapper.setModule(newModule);
 
             newModule = moduleService.createModule(courseId, newModuleCreateWrapper,
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             if (newModule == null || newModule.getId() == null) {
                 exceptionMessages.add(String.format("Could not create new module %s", Constants.THEME_MODULE_GETTING_STARTED_NAME));
@@ -593,7 +605,7 @@ public class ThemeProcessingService {
             newWikiPage.setBody(textToUse);
 
             newWikiPage = courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             ModuleItem moduleGettingStartedPageModuleItem = new ModuleItem();
             moduleGettingStartedPageModuleItem.setTitle(Constants.THEME_MODULE_GETTING_STARTED_TIPS_FOR_SUCCESS_TITLE);
@@ -606,7 +618,7 @@ public class ThemeProcessingService {
             moduleGettingStartedPageModuleItemCreateWrapper.setModuleItem(moduleGettingStartedPageModuleItem);
 
             moduleService.createModuleItem(courseId, usedGettingStartedModuleId, moduleGettingStartedPageModuleItemCreateWrapper,
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             log.info(String.format("Successfully created module page getting started tips for success for courseId %s", courseId));
         } catch (Exception e) {
@@ -628,7 +640,7 @@ public class ThemeProcessingService {
             newWikiPage.setBody(textToUse);
 
             newWikiPage = courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             ModuleItem moduleGettingStartedPageModuleItem = new ModuleItem();
             moduleGettingStartedPageModuleItem.setTitle(Constants.THEME_MODULE_GETTING_STARTED_COURSE_NAVIGATION_TITLE);
@@ -641,7 +653,7 @@ public class ThemeProcessingService {
             moduleGettingStartedPageModuleItemCreateWrapper.setModuleItem(moduleGettingStartedPageModuleItem);
 
             moduleService.createModuleItem(courseId, usedGettingStartedModuleId, moduleGettingStartedPageModuleItemCreateWrapper,
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             log.info(String.format("Successfully created module page getting started course navigation for courseId %s", courseId));
         } catch (Exception e) {
@@ -663,7 +675,7 @@ public class ThemeProcessingService {
             newWikiPage.setBody(textToUse);
 
             newWikiPage = courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             ModuleItem moduleGettingStartedPageModuleItem = new ModuleItem();
             moduleGettingStartedPageModuleItem.setTitle(Constants.THEME_MODULE_GETTING_STARTED_TECHNOLOGY_START_UP_TITLE);
@@ -676,7 +688,7 @@ public class ThemeProcessingService {
             moduleGettingStartedPageModuleItemCreateWrapper.setModuleItem(moduleGettingStartedPageModuleItem);
 
             moduleService.createModuleItem(courseId, usedGettingStartedModuleId, moduleGettingStartedPageModuleItemCreateWrapper,
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             log.info(String.format("Successfully created module page getting started technology start-up for courseId %s", courseId));
         } catch (Exception e) {
@@ -698,7 +710,7 @@ public class ThemeProcessingService {
             newWikiPage.setBody(textToUse);
 
             newWikiPage = courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             ModuleItem moduleGettingStartedPageModuleItem = new ModuleItem();
             moduleGettingStartedPageModuleItem.setTitle(Constants.THEME_MODULE_GETTING_STARTED_VIDEOCONFERENCING_TITLE);
@@ -711,7 +723,7 @@ public class ThemeProcessingService {
             moduleGettingStartedPageModuleItemCreateWrapper.setModuleItem(moduleGettingStartedPageModuleItem);
 
             moduleService.createModuleItem(courseId, usedGettingStartedModuleId, moduleGettingStartedPageModuleItemCreateWrapper,
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             log.info(String.format("Successfully created module page getting started videoconferencing for courseId %s", courseId));
         } catch (Exception e) {
@@ -733,7 +745,7 @@ public class ThemeProcessingService {
             newWikiPage.setBody(textToUse);
 
             newWikiPage = courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             ModuleItem moduleGettingStartedPageModuleItem = new ModuleItem();
             moduleGettingStartedPageModuleItem.setTitle(Constants.THEME_MODULE_GETTING_STARTED_ACCESSIBILITY_SUPPORT_TITLE);
@@ -746,7 +758,7 @@ public class ThemeProcessingService {
             moduleGettingStartedPageModuleItemCreateWrapper.setModuleItem(moduleGettingStartedPageModuleItem);
 
             moduleService.createModuleItem(courseId, usedGettingStartedModuleId, moduleGettingStartedPageModuleItemCreateWrapper,
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             log.info(String.format("Successfully created module page getting started Accessibility Support for courseId %s", courseId));
         } catch (Exception e) {
@@ -768,7 +780,7 @@ public class ThemeProcessingService {
             introduceYourselfDiscussionTopic.setDelayedPostAt(Constants.THEME_DELAYED_POST_AT_STRING);
 
             introduceYourselfDiscussionTopic = discussionService.createDiscussionTopic(courseId, introduceYourselfDiscussionTopic,
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             ModuleItem discussionModuleItem = new ModuleItem();
             discussionModuleItem.setTitle("SHARE: Please Introduce Yourself");
@@ -780,7 +792,7 @@ public class ThemeProcessingService {
             discussionModuleItemCreateWrapper.setModuleItem(discussionModuleItem);
 
             moduleService.createModuleItem(courseId, usedGettingStartedModuleId, discussionModuleItemCreateWrapper,
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             log.info(String.format("Successfully created discussion topic Introduce Yourself for courseId %s", courseId));
         } catch (Exception e) {
@@ -802,7 +814,7 @@ public class ThemeProcessingService {
             newWikiPage.setBody(textToUse);
 
             courseService.createWikiPage(courseId, new WikiPageCreateWrapper(newWikiPage),
-                    AS_USER_STRING);
+                    null, canvasRestTemplateAsUser);
 
             log.info(String.format("Successfully created wiki page Resources for courseId %s", courseId));
         } catch (Exception e) {

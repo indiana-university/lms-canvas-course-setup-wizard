@@ -69,6 +69,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.MessageFormat;
 import java.time.format.DateTimeFormatter;
@@ -91,6 +93,12 @@ public class WizardService {
 
    @Autowired
    private CourseService courseService;
+
+   // Per-user Canvas OAuth2 token - see docs/oauth/COURSE_SETUP_WIZARD_CANVAS_OAUTH2_EVALUATION.md
+   // for which calls below use this vs. the shared admin-token field above.
+   @Autowired
+   @Qualifier("CanvasRestTemplateAsUser")
+   private RestTemplate canvasRestTemplateAsUser;
 
    @Autowired
    private ContentMigrationService contentMigrationService;
@@ -165,7 +173,12 @@ public class WizardService {
    public List<SelectableCourse> getSelectableCourses(String networkId, String currentCourseId) {
       List<String> courseStates = Arrays.asList("available", "unpublished", "completed");
 
-      List<Course> courses = courseService.getCoursesForUser(networkId, false, true, false, courseStates);
+      // Per-user OAuth2 token has no "become_user" privilege - pass null here, not networkId, so
+      // Canvas resolves the call against the token's own identity instead of attempting an
+      // as_user_id masquerade it will reject. Every call site passes the *current* launched user's
+      // own networkId anyway (see CourseService.getCoursesForUser's javadoc), so this is equivalent.
+      List<Course> courses = courseService.getCoursesForUser(null, false, true, false, courseStates,
+            canvasRestTemplateAsUser);
       List<String> wantedEnrollments = Arrays.asList("teacher", "ta", "designer");
       List<String> wantedEnrollmentStates = Arrays.asList("active");
 
@@ -187,7 +200,7 @@ public class WizardService {
       boolean isBpCourse = false;
 
       if (courseId != null) {
-         Course course = courseService.getCourse(courseId);
+         Course course = courseService.getCourse(courseId, canvasRestTemplateAsUser);
 
          if (course != null) {
             isBpCourse = course.isBlueprint();
@@ -319,7 +332,8 @@ public class WizardService {
 
       log.debug("{}", wrapper);
 
-      ContentMigration cm = contentMigrationService.initiateContentMigration(courseId, null, wrapper);
+      ContentMigration cm = contentMigrationService.initiateContentMigration(courseId, null, wrapper,
+            canvasRestTemplateAsUser);
       log.info("{}", cm);
 
       if (cm != null) {
@@ -369,7 +383,8 @@ public class WizardService {
 
          settings.setFileUrl(fileUrl);
 
-         ContentMigration cm = contentMigrationService.initiateContentMigration(courseId, null, wrapper);
+         ContentMigration cm = contentMigrationService.initiateContentMigration(courseId, null, wrapper,
+            canvasRestTemplateAsUser);
          log.info("{}", cm);
 
          if (cm != null) {
@@ -417,7 +432,8 @@ public class WizardService {
 
          settings.setFileUrl(fileUrl);
 
-         ContentMigration cm = contentMigrationService.initiateContentMigration(courseId, null, wrapper);
+         ContentMigration cm = contentMigrationService.initiateContentMigration(courseId, null, wrapper,
+            canvasRestTemplateAsUser);
          log.info("{}", cm);
 
          if (cm != null) {

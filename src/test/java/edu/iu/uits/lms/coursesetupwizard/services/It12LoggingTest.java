@@ -45,13 +45,13 @@ import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.Test;
 import org.springdoc.core.properties.SpringDocConfigProperties;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.autoconfigure.health.HealthContributorAutoConfiguration;
-import org.springframework.boot.actuate.autoconfigure.health.HealthEndpointAutoConfiguration;
-import org.springframework.boot.actuate.autoconfigure.mail.MailHealthContributorAutoConfiguration;
+import org.springframework.boot.health.autoconfigure.contributor.HealthContributorAutoConfiguration;
+import org.springframework.boot.health.autoconfigure.actuate.endpoint.HealthEndpointAutoConfiguration;
+import org.springframework.boot.mail.autoconfigure.MailHealthContributorAutoConfiguration;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -63,6 +63,10 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.ac.ox.ctl.lti13.ags.DeepLinkService;
+import uk.ac.ox.ctl.lti13.ags.LineItemService;
+import uk.ac.ox.ctl.lti13.ags.ResultService;
+import uk.ac.ox.ctl.lti13.ags.ScoreService;
 import uk.ac.ox.ctl.lti13.nrps.NamesRoleService;
 
 import java.time.Instant;
@@ -78,7 +82,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         properties = {"oauth.tokenprovider.url=http://foo", "lms.rabbitmq.queue_env_suffix=CI",
                 "canvas.host=asdf", "canvas.token=asdf", "lti.errorcontact.name=asdf", "lti.errorcontact.link=asdf",
                 "catalog.token=asdf", "spring.rabbitmq.listener.simple.auto-startup=false", "lms.swagger.cors.origin=123",
-                "lms.js.cors.origin=123"})
+                "lms.js.cors.origin=123",
+                // canvas.oauth2.encryptionPassword/encryptionSalt are required the moment
+                // @EnableCanvasOAuth2Client is active (CanvasOAuth2AuthorizedClientRepository's
+                // constructor needs them to build its token-encryption cipher) - see
+                // docs/oauth/COURSE_SETUP_WIZARD_CANVAS_OAUTH2_EVALUATION.md and courselist's own
+                // WebApplicationTests.java, which hit this first.
+                "canvas.oauth2.encryptionPassword=test-only-placeholder-password",
+                "canvas.oauth2.encryptionSalt=deadbeef"})
 @AutoConfigureMockMvc
 @ActiveProfiles({"csw", "it12"})
 @EnableAutoConfiguration(exclude = {HealthContributorAutoConfiguration.class, HealthEndpointAutoConfiguration.class,
@@ -103,6 +114,23 @@ public class It12LoggingTest {
 
     @MockitoBean
     private NamesRoleService namesRoleService;
+
+    // LtiClientConfig eagerly builds real LineItemService/ScoreService/ResultService/DeepLinkService
+    // beans that call Lti13Service.getJKS(), which needs a real signing keypair from the
+    // KeyPairRepository table - not present in the test H2 database. Mock them out so context load
+    // doesn't try to construct the real ones. (Confirmed still present in lti-framework at the
+    // 7.0.7-SNAPSHOT pin used for the Canvas OAuth2 upgrade - this is not version-specific.)
+    @MockitoBean
+    private LineItemService lineItemService;
+
+    @MockitoBean
+    private ScoreService scoreService;
+
+    @MockitoBean
+    private ResultService resultService;
+
+    @MockitoBean
+    private DeepLinkService deepLinkService;
 
     @MockitoBean
     private CorsSwaggerConfig corsSwaggerConfig;

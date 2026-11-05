@@ -60,6 +60,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -107,6 +108,9 @@ public class WizardServiceTest {
 
    @MockitoBean
    private TemplateAuditService templateAuditService;
+
+   @MockitoBean(name = "CanvasRestTemplateAsUser")
+   private RestTemplate canvasRestTemplateAsUser;
 
    @Test
    void testFailureWithNullCourseId_CourseIdEligibleBlueprintSettingsDestination() {
@@ -266,7 +270,8 @@ public class WizardServiceTest {
       goodCourse.setName(goodCourseName);
       goodCourse.setEnrollments(List.of(goodEnrollment));
 
-      when(courseService.getCoursesForUser(networkId, false, true, false, courseStates))
+      when(courseService.getCoursesForUser(null, false, true, false, courseStates,
+              canvasRestTemplateAsUser))
               .thenReturn(List.of(badCourse, goodCourse));
 
       final List<SelectableCourse> badListSelectableCourses = wizardService.getSelectableCourses(networkId, "courseId");
