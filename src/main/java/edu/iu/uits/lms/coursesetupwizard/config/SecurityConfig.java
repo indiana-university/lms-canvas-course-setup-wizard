@@ -44,7 +44,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
 import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
@@ -85,9 +84,11 @@ public class SecurityConfig {
     @Order(3)
     @Bean
     public SecurityFilterChain appFilterChain(HttpSecurity http) throws Exception {
-        http.securityMatcher(WELL_KNOWN_ALL, "/error", "/app/**", "/tool/**")
+        http.securityMatcher(WELL_KNOWN_ALL, "/error", "/app/**", "/tool/**", "/favicon.ico")
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers(WELL_KNOWN_ALL, "/error").permitAll()
+                        .requestMatchers("/app/jsrivet/**", "/app/jsreact/**", "/app/webjars/**",
+                                "/app/css/**", "/app/js/**", "/app/images/**", "/favicon.ico").permitAll()
                         .requestMatchers("/app/**", "/tool/**").hasAuthority(INSTRUCTOR_AUTHORITY)
                 )
                 .headers(headers -> headers
@@ -98,12 +99,6 @@ public class SecurityConfig {
                 );
 
         return http.build();
-    }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/app/jsrivet/**", "/app/jsreact/**", "/app/webjars/**",
-                "/app/css/**", "/app/js/**", "/app/images/**", "/favicon.ico");
     }
 
     @Autowired
