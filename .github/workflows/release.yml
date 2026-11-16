@@ -11,6 +11,10 @@ name: Maven Release
 
 on:
   workflow_dispatch:
+
+permissions:
+  contents: read
+
 jobs:
   release:
     uses: indiana-university/lms-githubaction-library/.github/workflows/release.yml@v1

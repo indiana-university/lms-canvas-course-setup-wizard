@@ -9,6 +9,9 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+
 jobs:
   build:
     uses: indiana-university/lms-githubaction-library/.github/workflows/maven.yml@v1
