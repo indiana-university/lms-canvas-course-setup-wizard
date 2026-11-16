@@ -4,7 +4,7 @@ package edu.iu.uits.lms.coursesetupwizard;
  * #%L
  * course-setup-wizard
  * %%
- * Copyright (C) 2022 - 2025 Indiana University
+ * Copyright (C) 2022 - 2026 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -34,6 +34,7 @@ package edu.iu.uits.lms.coursesetupwizard;
  */
 
 import edu.iu.uits.lms.canvas.config.EnableCanvasClient;
+import edu.iu.uits.lms.canvasoauth2.config.EnableCanvasOAuth2Client;
 import edu.iu.uits.lms.common.samesite.EnableCookieFilter;
 import edu.iu.uits.lms.common.server.GitRepositoryState;
 import edu.iu.uits.lms.common.server.ServerInfo;
@@ -59,6 +60,7 @@ import java.util.Date;
 @EnableLtiClient(toolKeys = {"lms_coursesetupwizard", "lms_coursesetupwizard_admin"})
 @EnableGlobalErrorHandler
 @EnableCanvasClient
+@EnableCanvasOAuth2Client(registrationIdSuffix = "coursesetupwizard", rivetCssPathPrefix = "/app/jsrivet")
 @EnableIuOnlyClient
 @EnableEmailClient
 @EnableCookieFilter(ignoredRequestPatterns = "/rest/**")
