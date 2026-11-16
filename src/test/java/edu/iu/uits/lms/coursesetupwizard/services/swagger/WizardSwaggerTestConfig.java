@@ -4,7 +4,7 @@ package edu.iu.uits.lms.coursesetupwizard.services.swagger;
  * #%L
  * course-setup-wizard
  * %%
- * Copyright (C) 2022 - 2025 Indiana University
+ * Copyright (C) 2022 - 2026 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -47,12 +47,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
+import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static edu.iu.uits.lms.email.EmailConstants.EMAIL_GROUP_CODE_PATH;
 import static edu.iu.uits.lms.iuonly.IuCustomConstants.IUCUSTOM_GROUP_CODE_PATH;
+import static org.mockito.Mockito.mock;
 
 @Import({
         SecurityConfig.class,
@@ -76,5 +79,13 @@ public class WizardSwaggerTestConfig {
 
         stb.setEmbeddedSwaggerToolPaths(expandedList);
         return stb;
+    }
+
+    // SecurityConfig now @Autowired-injects this from CanvasOAuth2ClientConfig, which this swagger
+    // test config deliberately doesn't pull in - it's never invoked by any of these tests, only
+    // needed to satisfy the filter chain's dependency at context-build time.
+    @Bean
+    public OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest> canvasOAuth2AccessTokenResponseClient() {
+        return mock(OAuth2AccessTokenResponseClient.class);
     }
 }
