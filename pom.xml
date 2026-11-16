@@ -58,14 +58,14 @@
         <datatables.version>2.3.2</datatables.version>
         <datatables-buttons.version>3.2.6</datatables-buttons.version>
         <datatables-select.version>2.1.0</datatables-select.version>
-        <git-commit-id-maven-plugin.version>10.0.0</git-commit-id-maven-plugin.version>
+        <git-commit-id-maven-plugin.version>10.0.1</git-commit-id-maven-plugin.version>
         <hibernate-jpa-schemagen.version>7.2.2</hibernate-jpa-schemagen.version>
         <java.version>25</java.version>
         <jdk.source>25</jdk.source>
         <jdk.target>25</jdk.target>
         <jquery.version>4.0.0</jquery.version>
         <lms-canvas-rivet.version>7.2.9.1_1</lms-canvas-rivet.version>
-        <lms-embedded-services.version>7.1.2-SNAPSHOT</lms-embedded-services.version>
+        <lms-embedded-services.version>7.1.5</lms-embedded-services.version>
         <lms-team-spring-boot-it12>7.6.0_1</lms-team-spring-boot-it12>
         <logcaptor.version>2.13.0</logcaptor.version>
         <nimbus-jose-jwt.version>9.10.1</nimbus-jose-jwt.version>
@@ -74,9 +74,9 @@
         <spring-cloud.version>2025.1.4</spring-cloud.version>
         <spring-security-bom.version>5.5.2</spring-security-bom.version>
         
-        <frontend-maven-plugin.version>1.15.4</frontend-maven-plugin.version>
-        <plugins.compiler.version>3.15.0</plugins.compiler.version>
-        <plugins.license.version>2.7.1</plugins.license.version>
+        <frontend-maven-plugin.version>2.0.2</frontend-maven-plugin.version>
+        <plugins.compiler.version>3.16.0</plugins.compiler.version>
+        <plugins.license.version>2.9.0</plugins.license.version>
         <plugins.release.version>3.3.1</plugins.release.version>
     </properties>
 
