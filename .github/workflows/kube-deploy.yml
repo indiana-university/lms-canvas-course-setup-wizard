@@ -39,6 +39,9 @@ on:
         description: Indicate the branch that contains the helm deployment files
         default: develop
 
+permissions:
+  contents: read
+
 jobs:
   mvn_build_deploy:
     uses: indiana-university/lms-githubaction-library/.github/workflows/kube-deploy.yml@v1
